@@ -6,11 +6,14 @@ import { Link } from "@/i18n/navigation";
 import { LocaleSwitch } from "./LocaleSwitch";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { MobileMenu } from "./MobileMenu";
+import { ScrollState } from "./ScrollState";
 
 /**
- * P3 foundation header — data-driven navigation shell (Amendment 5).
- * The designed navigation experience (incl. the intentional mobile menu)
- * lands at P4; this shell proves routing, RTL, tokens and accessibility.
+ * Site header (P4 · F-7): transparent over the cinematic hero, gaining a
+ * controlled blur/solid state after scroll (with a reduced-transparency
+ * fallback). Absent during the opening choreography, entering with the
+ * final hero reveal; instantly available on skip. Data-driven from
+ * navigation.ts — labels and order are owner-editable content.
  */
 export async function Header() {
   const locale = (await getLocale()) as Locale;
@@ -20,7 +23,8 @@ export async function Header() {
   const cta = items.find((i) => i.highlight === "cta");
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-sm">
+    <header className="site-header">
+      <ScrollState />
       <div className="mx-auto flex h-20 max-w-360 items-center gap-6 px-6 lg:px-12">
         <Link href="/" className="flex items-center" aria-label="Smart Channels — Home">
           <Image

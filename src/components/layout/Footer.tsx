@@ -12,7 +12,7 @@ export async function Footer() {
   const links = getNavigation().filter((i) => !i.highlight);
 
   return (
-    <footer className="border-t border-line bg-bg-deep">
+    <footer className="site-footer border-t border-line bg-bg-deep">
       <div className="mx-auto grid max-w-360 gap-10 px-6 py-14 md:grid-cols-3 lg:px-12">
         <div>
           <Image

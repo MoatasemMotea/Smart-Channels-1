@@ -36,13 +36,34 @@
     "contact": "Contact"
   },
   "pages": {
-    "solutions": { "title": "Solutions", "description": "Seven integrated solution families — from infrastructure and networking to security, AV, communications and AI-powered surveillance." },
-    "projects": { "title": "Projects", "description": "Delivered projects across the Kingdom's venues, events and institutions." },
-    "industries": { "title": "Industries", "description": "Sectors Smart Channels serves." },
-    "gallery": { "title": "Gallery", "description": "Moments from the field." },
-    "company": { "title": "Company", "description": "About Smart Channels — mission, capabilities and track record." },
-    "partners": { "title": "Partners", "description": "Certified technology alliances and the clients who trust us." },
-    "contact": { "title": "Contact", "description": "Talk to our team about your next technology project." }
+    "solutions": {
+      "title": "Solutions",
+      "description": "Seven integrated solution families — from infrastructure and networking to security, AV, communications and AI-powered surveillance."
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Delivered projects across the Kingdom's venues, events and institutions."
+    },
+    "industries": {
+      "title": "Industries",
+      "description": "Sectors Smart Channels serves."
+    },
+    "gallery": {
+      "title": "Gallery",
+      "description": "Moments from the field."
+    },
+    "company": {
+      "title": "Company",
+      "description": "About Smart Channels — mission, capabilities and track record."
+    },
+    "partners": {
+      "title": "Partners",
+      "description": "Certified technology alliances and the clients who trust us."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Talk to our team about your next technology project."
+    }
   },
   "profileDownload": {
     "read": "Read the Company Profile",
@@ -55,5 +76,18 @@
   },
   "footer": {
     "rights": "All rights reserved."
+  },
+  "opening": {
+    "caption": "SMART CHANNELS",
+    "hqLabel": "RIYADH — HEADQUARTERS"
+  },
+  "hero": {
+    "ariaLabel": "Smart Channels — technology behind the experience",
+    "overline": "SMART CHANNELS — SYSTEMS INTEGRATION",
+    "sub": "We design, build and manage the intelligent technology behind connected environments across the Kingdom and the Gulf — infrastructure, networks, security, communications and smart buildings.",
+    "ctaProjects": "Explore Projects",
+    "ctaSmartAi": "Talk to Smart AI",
+    "proof": "F1 SAUDI ARABIAN GP — EVENT TECHNOLOGY",
+    "scroll": "SCROLL"
   }
 }
