@@ -3,15 +3,14 @@ import type { Locale } from "@/types/content";
 import {
   getCompany,
   getClients,
-  getDocuments,
   getFeaturedIndustries,
   getPartners,
   getPublicProjects,
   getSolutionFamilies,
-  getStats,
   localize,
 } from "@/lib/content";
 import { Hero } from "@/components/hero/Hero";
+import { NetworkScene } from "@/components/network/NetworkScene";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Link } from "@/i18n/navigation";
@@ -19,10 +18,12 @@ import { Link } from "@/i18n/navigation";
 /**
  * HOMEPAGE.
  *
- * Chapter 01/02 (opening + hero) are implemented (P4). Chapters 03–14
- * remain deliberately minimal foundation placeholders; each is a clean
- * mount point its authorized phase (P6–P13) replaces with the approved
- * designed experience.
+ * Chapters 01/02 (opening + hero) and 04 (Track Record × National
+ * Network, Revision 2) are implemented. The remaining chapters are
+ * deliberately minimal foundation placeholders; each is a clean mount
+ * point its authorized phase (P6–P13) replaces with the approved designed
+ * experience. The journey closes Alliances → Clients → Final CTA (D-020:
+ * no public Company Profile chapter exists).
  */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -57,23 +58,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
-      {/* 04 Track Record — count-up + National Signal Field at P6 */}
-      <MotionSection className={chapter} aria-label={t("trackRecord")} data-scene="track-record">
-        <div className={inner}>
-          <SectionHeading index={`04 — ${t("trackRecord")}`}>{t("trackRecord")}</SectionHeading>
-          <dl className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {getStats().map((s) => (
-              <div key={s.id} className="border-t border-line pt-4">
-                <dd className="font-display text-5xl font-bold tabular-nums" dir="ltr">
-                  {s.value}
-                  {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
-                </dd>
-                <dt className="mt-2 text-sm text-ink-muted">{localize(s.label, locale)}</dt>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </MotionSection>
+      {/* 04 Track Record × National Network — Saudi/Gulf cinematic scene
+          with choreography-synchronized counters (Revision 2 §§3–9). */}
+      <NetworkScene />
 
       {/* 05 Solutions — ecosystem experience at P7 */}
       <MotionSection className={chapter} aria-label={t("solutions")} data-scene="solutions">
@@ -172,26 +159,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
-      {/* 12 Company Profile download */}
-      <MotionSection className={chapter} aria-label={t("profile")} data-scene="profile">
-        <div className={inner}>
-          <SectionHeading index={`12 — ${t("profile")}`}>{t("profile")}</SectionHeading>
-          <ul className="flex flex-wrap gap-4">
-            {getDocuments().map((d) => (
-              <li key={d.src}>
-                <a
-                  href={d.src}
-                  className="inline-block rounded border border-line px-5 py-3 font-semibold transition-colors hover:border-accent"
-                >
-                  {localize(d.label, locale)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </MotionSection>
+      {/* D-020: the former Company Profile download chapter is removed by
+          owner ruling — the journey closes Alliances → Clients → Final CTA. */}
 
-      {/* 13 Final CTA — cinematic close at P13 */}
+      {/* 12 Final CTA — cinematic close at P13 */}
       <MotionSection aria-label={t("contact")} data-scene="cta">
         <div className={`${inner} text-center`}>
           <h2 className="font-display text-4xl font-bold md:text-5xl">
