@@ -385,3 +385,18 @@ application implementation; HTML sources for the boards live in
 All content on boards is drawn from approved sources (profile copy, approved
 stats, approved contact, source-backed geography); Arabic strings on boards
 are proposed copy requiring approval before publication (D-006).
+
+---
+
+## Addendum — P4 Revision Round 2 (2026-08-27)
+
+- **Chapter 04 is the Saudi/Gulf cinematic network scene (D-021):** the
+  Kingdom emerges from the established particle universe; Riyadh is the
+  cinematic origin of the brand/reach narrative (distinct from
+  project-evidence semantics, P2-A05); Track Record counters ride the
+  choreography. Dark-committed in both themes (D-019).
+- **Environment-aware header (D-022):** the header reads the scene beneath
+  it, not the global theme.
+- **Arabic art direction (D-023):** dedicated AR hero/type metrics, full
+  cinematic parity, and the approved Arabic brand wording
+  القنوات الذكية / نأخذك إلى المستقبل.

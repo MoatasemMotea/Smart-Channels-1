@@ -293,6 +293,70 @@ next 16.3.3 · react/react-dom 19.2.8 · next-intl 4.14.0 · tailwindcss + @tail
 - **P4-V3 — STATIC mount + engine start:** the opening host reads the pre-paint motion tier via `useSyncExternalStore` (server snapshot `static`); STATIC renders no canvas/DOM at all, and the engine effect keys on the resolved tier so the first cinematic frame still starts correctly after hydration.
 - **Verification:** behavior suite 20/20; Playwright smoke 40/40 (desktop+mobile, EN+AR, all routes); typecheck/lint/content-validation/unit tests clean; opening chunk 26 KB gz (budget ≤60 KB, J-12); measured FULL desktop ≈5.4 ms avg / ≈8 ms p95 per frame, LITE mobile ≈2.5 ms avg, zero console errors, no runtime downgrade triggered.
 
+## P4 — Visual Revision Round 2 (2026-08-27, owner live-browser review)
+
+**D-020 — Company Profile is source-only.** The supplied Company Profile PDF
+was provided ONLY as the source of truth for approved company information. It
+must never be published, downloadable, or publicly reachable: no copy under
+`public/`, no download CTA, no route, no sitemap/metadata reference, no public
+derivative. This supersedes the Q11/P1–P3 assumption of a public download.
+The approved information EXTRACTED from it remains valid website content. The
+source stays privately archived in `media-source/documents/` (marked SOURCE
+MATERIAL — NOT PUBLIC). `npm run validate` fails on any PDF under `public/`
+or any publicly-enabled Profile record. The former homepage "Company Profile"
+chapter is removed; the journey closes Alliances → Clients → Final CTA.
+
+**D-021 — Saudi/Gulf cinematic network scene (homepage chapter 04).** The
+approved geographic brand narrative is a designed homepage scene, not a map
+widget: the Kingdom emerges from the established particle universe → Riyadh
+activates as the cinematic origin (ring sweep, bloom, `RIYADH /
+HEADQUARTERS` · «الرياض / المقر الرئيسي») → the signal travels outward city
+by city along curved routes → the constellation matures → abstract unlabeled
+trajectories continue toward the Gulf horizon. **Semantic distinction
+(binding):** this scene is BRAND/REACH storytelling, where Riyadh may
+initiate the outward signal; project-evidence semantics (Track Record /
+future National Signal Field evidence claims) remain peer-based per P2-A05 —
+nodes carry no project labels and nothing claims operational HQ routing.
+All destination nodes are source-backed location records (validated);
+Gulf continuation is abstract with no fabricated nodes/labels. Track Record
+counters (D-002: 200+/7/16+/100+, as of 2026) count up from zero in step
+with the choreography and resolve exactly; STATIC/reduced-motion receives a
+designed final frame (server-rendered SVG map, Riyadh marker, final values)
+with no canvas mounted. The story plays once, pauses offscreen, and stops
+rendering after completion (one active canvas at a time).
+
+**D-022 — Environment-aware header.** The fixed header adopts the tokens of
+the environment BENEATH it (`data-header-env`, computed from
+`[data-env="dark"]` scene intersection; pre-paint seeded by the bootstrap):
+over dark-committed scenes it always uses dark-scene tokens and the dark
+lockup, whatever the global theme; over editorial surfaces it follows the
+theme. Root cause of the owner-observed disappearing header: the transparent
+header inherited Light-theme ink (#141416 at ~1.4:1) over the dark hero.
+
+**D-023 — Arabic is a first-class designed experience.** (a) Cinematic
+parity: every arrival without the full opening (locale switches, return
+visits, auto-skip) receives a staged hero entrance + earned accent sweep —
+never a static pop-in; the ambient field always resolves to the same cooled
+selective-accent state as the completed opening. Root cause of the
+owner-observed Arabic degradation: the once-per-session opening left
+non-first loads with zero entrance choreography, and the STATIC backdrop
+artwork double-rendered behind the live canvas (hide rule was keyed to
+`data-opening` instead of the motion tier). (b) Art direction: dedicated AR
+hero metrics (clamp 2.25rem–5.25rem, lh 1.32, bounded measure), AR sub
+19px/2.05, AR microlabels leave the Latin mono voice (Plex Sans Arabic, no
+tracking), larger AR nav type, taller mobile-menu leading. (c) **Approved
+Arabic brand wording (binding):** القنوات الذكية / نأخذك إلى المستقبل ↔
+Smart Channels / We Take You To The Future — applied to the opening caption,
+hero overline and footer textual brand block; the logo artwork itself is
+never altered (D-001).
+
+**Revision 2 verification:** 8-cell QA matrix (EN/AR × desktop/mobile ×
+dark/light) 64/64; STATIC/parity/profile checks 11/11; behavior suite 20/20;
+smoke 40/40; unit 7/7; content validation passing (now incl. D-020 gates);
+zero console errors; no horizontal overflow; Profile PDF returns 404;
+cinematic code+data ≈29 KB gz total (J-12 budget ≤60 KB); hero field pauses
+while the network scene plays (§19).
+
 ---
 
 ## Project-wide requirements (recorded 2026-08-27)

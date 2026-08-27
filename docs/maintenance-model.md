@@ -48,7 +48,7 @@ The single most important table in this document. Every row edits data only.
 | Add / disable a client | same pattern in `src/content/clients.ts` | |
 | Update phone / email / address | `src/content/contact.ts` | Only owner-approved values (D-011). |
 | Add social links / WhatsApp / map later | `links` array in `src/content/contact.ts` | Ships empty by design. |
-| Add the Arabic Company Profile PDF | file → `public/docs/` + one entry in `src/content/documents.ts` | Download UI adapts; no component change (Q11). |
+| Publish any public document (needs owner approval first — D-020) | file → `public/docs/` + one entry in `src/content/documents.ts` | The Company Profile itself is source-only and must NEVER be published; validation blocks it. |
 | Change navigation order / labels | `src/content/navigation.ts` | |
 | Change EN/AR interface wording | `src/messages/en.json` / `src/messages/ar.json` | UI strings only — business facts never live here. |
 | Change Arabic business copy | the `ar` field of the relevant record in `src/content/` | Facts stay single-sourced; only strings are localized. |

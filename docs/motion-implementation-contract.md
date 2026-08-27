@@ -328,3 +328,16 @@ gradients with opacity-only progression.
   (§2), seam devices (§6).
 - Deviations from this contract require an explicit owner decision recorded
   in `docs/decision-log.md`.
+
+---
+
+## Addendum — P4 Revision Round 2 (2026-08-27)
+
+- The homepage network scene (D-021) joins the contract: routed sequential
+  choreography (no simultaneous line dump), counters synchronized to the
+  network narrative, story plays once, pauses offscreen, and stops rendering
+  entirely after completion — one major active canvas at a time.
+- Cinematic parity on every arrival: loads without the full opening get a
+  staged hero entrance; Arabic is never a low-motion fallback (D-023).
+- STATIC tier for the network scene = designed server-rendered final frame
+  (SVG geography, Riyadh marker, final Track Record values), no canvas.

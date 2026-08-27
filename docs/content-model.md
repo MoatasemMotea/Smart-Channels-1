@@ -20,7 +20,6 @@ forever:
 - `200+ → 250+` — one number in `stats.ts`, no component edits.
 - Adding a gallery image/video — one file + one metadata entry, no JSX.
 - Changing featured industries — flags in `industries.ts`.
-- Adding the Arabic profile PDF — one array entry in `documents.ts`.
 - Adding a client or alliance — one record, no visual component edits.
 
 ## 1. Two content layers
@@ -362,8 +361,10 @@ type ProfileDocument = {
   src: string;                    // /docs/... under public/
   label: LocalizedText;
 };
-// Ships with the EN profile only (Q11). No "coming soon" placeholder.
-// Adding the AR profile = add file + one array entry.
+// D-020 (supersedes Q11): the Company Profile is SOURCE MATERIAL ONLY and
+// is never publicly served or downloadable. The model stays generic and
+// EMPTY; publishing any future document requires explicit owner approval.
+// Validation fails on any PDF under public/ or any Profile record.
 ```
 
 Enquiry form (Q9): form fields/validation modeled in UI at build time; NO

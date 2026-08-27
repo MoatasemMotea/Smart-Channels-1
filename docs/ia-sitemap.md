@@ -25,7 +25,7 @@
 /{locale}/projects                 Projects index (evidence wall) — NO detail pages at launch
 /{locale}/industries               Sectors we serve (all 16)
 /{locale}/gallery                  Data-driven gallery with category filters
-/{locale}/company                  About, mission, Track Record, Company Profile download
+/{locale}/company                  About, mission, Track Record (no Profile download — D-020)
 /{locale}/partners                 Technology Alliances + Clients (one page, two distinct treatments)
 /{locale}/contact                  Approved contact details + enquiry form (backend deferred, Q9)
 ```
@@ -56,7 +56,7 @@ composition and any re-sequencing proposals belong to P2:
 01 Opening Experience (first meaningful visit; see §8 of Master Directive)
 02 Hero (D-007 hybrid technical-cinematic direction)
 03 About Smart Channels
-04 Track Record (D-002 count-up)
+04 Track Record × National Network (D-002 count-up synced to the Saudi/Gulf scene — P4 Rev 2)
 05 Solutions (ecosystem entry)
 06 Industries (featured subset, data-driven per Q3)
 07 Selected Projects (D-004 selection pending)
@@ -64,9 +64,11 @@ composition and any re-sequencing proposals belong to P2:
 09 Smart AI Consultant (D-009 front-end experience)
 10 Technology Alliances
 11 Clients / Trust (distinct treatment from 10, §23)
-12 Company Profile (EN download only per Q11)
-13 Final CTA — "Let's Talk"
-14 Footer
+12 Final CTA — "Let's Talk"
+13 Footer
+
+(The former Company Profile chapter is removed by D-020 — the journey
+closes Technology Alliances → Clients → Final CTA → Footer.)
 ```
 
 ## 3. Locale routing & detection (Q4)
@@ -146,7 +148,7 @@ data. Content can therefore be staged in the repository ahead of approval.
 | /projects | `projects` (all with `display !== 'hidden'`), `sectors` cross-links |
 | /industries | `industries` (all 16, ordered) |
 | /gallery | `gallery` (published), `gallery-categories` |
-| /company | company copy content, `stats`, `documents` (EN profile) |
+| /company | company copy content, `stats` (no public documents — D-020) |
 | /partners | `partners` (enabled), `clients` (enabled) |
 | /contact | `contact`, enquiry form UI (integration state explicit per Q9) |
 
