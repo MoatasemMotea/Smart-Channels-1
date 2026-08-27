@@ -162,3 +162,14 @@ New gaps recorded: **O-013** (official light-background logo lockup), **O-014** 
 | Industry imagery | — | Richer industry visuals (non-blocking) |
 | Owner confirmation: legacy `img/` origins | O-008 | Gallery population (P10) |
 | Owner confirmation: client-identifying imagery rights | O-012 | Gallery population (P10) |
+
+---
+
+## P4 Revision 3 — required media assets (open)
+
+| Asset | Status | Spec |
+|-------|--------|------|
+| Hero AI cinematic video (desktop) | **REQUIRED — not yet generated** (O-015) | See `src/content/hero-media.ts` (D-027): 2560×1440, 10–16 s seamless loop, H.264 ≈8–10 Mbps, no audio, dark grade + magenta accents, text-safe calm region. |
+| Hero AI video (mobile derivative) | REQUIRED with the above | 9:16/4:5 recomposition (not a crop), ≤1080×1350, 8–10 s, ≈2.5 Mbps. |
+| Hero AI poster still | REQUIRED (also STATIC-tier visual) | 2560×1440 AVIF + JPEG fallback ≤300 KB. |
+| Official social URLs (LinkedIn/Instagram/X) | pending owner (O-016) | Data edit in `src/content/social.ts`. |

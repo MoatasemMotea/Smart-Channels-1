@@ -359,6 +359,94 @@ while the network scene plays (§19).
 
 ---
 
+## P4 — Visual Revision Round 3 (2026-08-27, owner live-review corrections)
+
+**D-024 — The opening plays on every full document load.** The cinematic
+brand opening (darkness → particles → assembly → readable authoritative
+logo with a lengthened ≈1.4 s premium hold → geography → hero) runs on
+EVERY full page load/refresh of the homepage — the previous once-per-session
+gating is removed. Soft interactions never replay it: locale switch, theme
+switch, menu, and client-side navigation keep the current state (the
+bootstrap only runs on real document loads). Skip-on-input, ≈1.5 s
+slow-load auto-skip, STATIC direct hero, and the performance budgets all
+remain binding. FULL ≈5.35 s, LITE ≈4.6 s.
+
+**D-025 — Cinematic state must survive locale and theme changes (root
+cause).** A locale switch is a soft navigation that re-renders the root
+`<html>`; React resets its attributes to the SSR defaults — `data-motion-tier`
+snapped to `static` (destroying every canvas until refresh) and
+`data-opening` was dropped. Fixed structurally: client-owned html state
+(theme from storage, the bootstrap-resolved motion tier, the opening state)
+is mirrored in module scope and re-asserted by a layout-commit guard
+(`HtmlStateGuard`) before paint. The Saudi geography is never rebuilt or
+mirrored by locale/theme changes; theme switches restyle token surfaces
+only. Regression-covered (in-app switch tests in the QA suites).
+
+**D-026 — No public section numbering.** Section headings carry premium
+titles only ("Solutions", «الحلول») — no visible `NN —` chapter labels
+anywhere public (homepage headings, network scene, mobile menu). Numbers
+remain internal (code, sequencing, tooling). Per-item numeric identifiers
+inside content compositions (project entries, solution list) are a
+sanctioned design device, and in Arabic the project identifier sits at the
+block's upper-right through logical RTL flow (Western numerals per D-014).
+
+**D-027 — Hero moves toward AI-generated cinematic event-technology
+media.** The Hero is architected media-first: poster-first muted looping
+`playsinline` video that never blocks LCP, FULL/LITE derivatives, STATIC
+poster, offscreen pause, full owner-editability in
+`src/content/hero-media.ts` (asset swap = data edit). The final asset is
+AI-generated brand/capability storytelling media — never presented as
+project evidence, never arbitrary stock footage, never misrepresenting
+clients. No approved asset exists yet, so the slot ships disabled with the
+approved field treatment in place (asset gap O-015; full generation brief
+delivered in the Round 3 report; spec recorded in hero-media.ts).
+
+**D-028 — Gulf regional reach: Bahrain · Qatar · UAE.** After the national
+network matures, three restrained dashed routes leave the Kingdom toward
+real regional geography, ending in HOLLOW rings with muted country labels
+under a delayed "Regional reach" / «امتداد إقليمي» legend — visually and
+semantically distinct from filled source-backed project nodes. These are
+regional-reach storytelling only (consistent with the approved "Kingdom
+and the Gulf" scope wording); claiming projects there requires approved
+evidence and a separate owner decision. Data-driven in
+`src/content/regions.ts`.
+
+**D-029 — Contact actions & interaction color.** (a) Floating WhatsApp
+action using owner-approved `+966 53 979 5999` (wa.me/966539795999), data
+sourced from `contact.ts`, accessible EN/AR label, safe-area aware, hidden
+during the opening, no prewritten message. (b) LinkedIn/Instagram/X
+architecture in `src/content/social.ts` — records render publicly ONLY
+when enabled with an owner-supplied URL (no invented URLs, no dead links,
+no placeholders; validation enforces it). (c) Interactive text (nav,
+links, project/solution titles, footer) glides neutral → brand magenta on
+hover AND keyboard focus (engineered 300 ms curve, AA accent token in
+Light theme, never the only affordance); body paragraphs stay stable.
+
+**Round 3 additions also recorded:** scene-transition family on the reveal
+primitive (rise / mask / converge / trace / sweep — per-section devices,
+native scrolling, no pinning); map-environment depth (low-alpha perspective
+grid + vignette + seeded atmospheric dust + one emergence scan sweep — map
+stays primary); lengthened readable-logo hold (§2).
+
+**Development review workflow (§28):** the opening now replays on every
+plain refresh — no storage clearing needed. To review all four language ×
+theme states without losing the cinematic world, use the in-app header
+switchers in sequence (EN dark → toggle theme → light; switch العربية → AR
+light → toggle → AR dark): the guard preserves tier/opening/theme state
+across every switch. Reduced-motion (OS or DevTools emulation) previews
+STATIC. Full matrix scripts live in the session QA harness
+(`behavior/matrix/verify/extra` suites, 125 checks).
+
+**Round 3 verification:** refresh-replay ×2, EN↔AR and Dark↔Light in-app
+switches with live canvases throughout, header availability, no `NN —`
+labels, WhatsApp/wa.me, zero dead links, hover-to-magenta, 8-cell matrix,
+STATIC/no-JS frames, AR project composition — 125/125 automated checks;
+zero console errors; no horizontal overflow; cinematic code+data 32 KB gz
+(J-12 ≤60 KB); frame cost unchanged (≈5.3 ms FULL desktop, ≈2.4 ms LITE
+mobile).
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
@@ -386,3 +474,5 @@ while the network scene plays (§19).
 | O-012 | Client-identifying imagery permissions (e.g., "SMC vibes" office photo, Al Nassr room) | P10 gallery population | Owner to confirm usage rights per photo. |
 | O-013 | Official light-background logo lockup not supplied | Light-theme brand presentation (P4+ polish) | Light theme currently uses the SC mark cropped from the authoritative asset; no lockup fabricated (D-001). |
 | O-014 | Two p.30 client names not confidently legible in source PDF (row-1 Arabic-named partner firm; the "HQWS"-like mark) | P12 clients completeness | Omitted from clients.ts pending owner confirmation (Amendment 2). |
+| O-015 | Hero AI cinematic video + poster (D-027) not yet generated/approved | Final Hero media | Slot architecture ready; generation brief in the Round 3 report; spec in src/content/hero-media.ts. |
+| O-016 | Official LinkedIn / Instagram / X company URLs | Footer social treatment | Records prepared disabled in src/content/social.ts; enabling is a data edit (D-029). |

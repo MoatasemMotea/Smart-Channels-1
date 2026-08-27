@@ -50,6 +50,10 @@ The single most important table in this document. Every row edits data only.
 | Add social links / WhatsApp / map later | `links` array in `src/content/contact.ts` | Ships empty by design. |
 | Publish any public document (needs owner approval first — D-020) | file → `public/docs/` + one entry in `src/content/documents.ts` | The Company Profile itself is source-only and must NEVER be published; validation blocks it. |
 | Change navigation order / labels | `src/content/navigation.ts` | |
+| Change the WhatsApp number | `whatsapp` in `src/content/contact.ts` | Owner-approved values only (D-011/D-029). |
+| Enable LinkedIn / Instagram / X | set `url` + `enabled: true` in `src/content/social.ts` | Renders only with a real URL — no dead links (D-029). |
+| Adjust Gulf regional-reach destinations | `src/content/regions.ts` | Reach storytelling only — never project claims without evidence (D-028). |
+| Install the Hero cinematic video/poster | paths + `enabled: true` in `src/content/hero-media.ts` | Spec in that file; AI capability media only (D-027). |
 | Change EN/AR interface wording | `src/messages/en.json` / `src/messages/ar.json` | UI strings only — business facts never live here. |
 | Change Arabic business copy | the `ar` field of the relevant record in `src/content/` | Facts stay single-sourced; only strings are localized. |
 | Update solution family copy / sub-solutions | `src/content/solutions.ts` | Families can be reorganized via data (Q2). |
