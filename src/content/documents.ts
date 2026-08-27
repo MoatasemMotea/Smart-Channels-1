@@ -1,16 +1,17 @@
 import type { ProfileDocument } from "@/types/content";
 
 /**
- * DOWNLOADABLE DOCUMENTS (Q11).
+ * PUBLIC DOWNLOADABLE DOCUMENTS.
  *
- * HOW TO EDIT: to add the Arabic Company Profile later, place the PDF in
- * /public/docs/ and add one entry with locale "ar". No component changes
- * needed. Do not add "coming soon" placeholders.
+ * D-020 (owner ruling, P4 Revision 2): the Company Profile PDF is SOURCE
+ * MATERIAL ONLY. It must never be placed under /public, linked, served or
+ * offered for download — the approved information extracted from it lives
+ * in the content modules instead. The source PDF is archived privately in
+ * media-source/documents/ for provenance.
+ *
+ * This model stays generic and EMPTY. Publishing any future document here
+ * requires explicit owner approval first (no placeholders, no "coming
+ * soon"). Content validation rejects Company Profile records and any PDF
+ * found under /public.
  */
-export const documents: ProfileDocument[] = [
-  {
-    locale: "en",
-    src: "/docs/company-profile-2026-en.pdf",
-    label: { en: "Company Profile 2026 (English)", ar: "الملف التعريفي 2026 (بالإنجليزية)" },
-  },
-];
+export const documents: ProfileDocument[] = [];

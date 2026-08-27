@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
-import { getCompany, getDocuments, getStats, localize } from "@/lib/content";
+import { getCompany, getStats, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -45,19 +45,8 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
           </div>
         ))}
       </dl>
-      <h2 className="mt-12 text-2xl font-semibold">{t("sections.profile")}</h2>
-      <ul className="mt-6 flex flex-wrap gap-4">
-        {getDocuments().map((d) => (
-          <li key={d.src}>
-            <a
-              href={d.src}
-              className="inline-block rounded border border-line px-5 py-3 font-semibold transition-colors hover:border-accent"
-            >
-              {localize(d.label, locale)} — {t("profileDownload.download")}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {/* D-020: the Company Profile is source material only — no public
+          download section exists by owner ruling. */}
     </div>
   );
 }

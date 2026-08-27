@@ -98,6 +98,22 @@ for (const g of galleryItems) {
   if (g.poster) checkPath(g.poster, `gallery ${g.id} poster`, g.published);
 }
 for (const d of documents) checkPath(d.src, `document ${d.locale}`, true);
+
+/* ---- D-020: Company Profile is source-only, never publicly served ---- */
+import { readdirSync, statSync } from "node:fs";
+function findPdfs(dir: string, acc: string[] = []): string[] {
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) findPdfs(p, acc);
+    else if (/\.pdf$/i.test(name)) acc.push(p);
+  }
+  return acc;
+}
+for (const pdf of findPdfs(join(root, "public")))
+  errors.push(`D-020: PDF found under public/ (${pdf}) — no public documents are approved`);
+for (const d of documents)
+  if (/profile/i.test(d.src) || /profile/i.test(d.label.en))
+    errors.push(`D-020: Company Profile record "${d.src}" must never be publicly enabled`);
 for (const p of projects) {
   for (const m of p.media ?? []) checkPath(m.src, `project ${p.id} media ${m.id}`, p.display !== "hidden");
   if (p.logo) checkPath(p.logo.src, `project ${p.id} logo`, p.display === "logo");
