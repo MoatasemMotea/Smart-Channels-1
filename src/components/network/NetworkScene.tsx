@@ -4,9 +4,10 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/types/content";
 import { locations } from "@/content/locations";
+import { gulfRegions } from "@/content/regions";
 import { stats } from "@/content/stats";
 import { SAUDI_OUTLINE, GEO_BOUNDS, project } from "@/lib/map/geo";
-import { NetworkEngine, type NetTier } from "./engine";
+import { NetworkEngine, type NetRegion, type NetTier } from "./engine";
 
 /**
  * Homepage chapter 04 — TRACK RECORD × NATIONAL NETWORK (Revision 2 §§3–9).
@@ -26,6 +27,27 @@ import { NetworkEngine, type NetTier } from "./engine";
  * The Saudi geometry is never mirrored in RTL (§11) — the SVG carries an
  * explicit dir="ltr" isolation and the canvas draws in screen space.
  */
+/** Regional-reach geometry (Rev3 §10): destination = projected lat/lon;
+ *  departure anchor = nearest Saudi outline vertex, so reach routes grow
+ *  out of the geography. Enabled records only (owner-editable data). */
+const REGIONS: NetRegion[] = gulfRegions
+  .filter((r) => r.enabled)
+  .map((r) => {
+    const d = project(r.latitude, r.longitude);
+    let best = SAUDI_OUTLINE[0]!;
+    let bestDist = Infinity;
+    for (const v of SAUDI_OUTLINE) {
+      const p = project(v[1], v[0]);
+      const dist = Math.hypot(p.x - d.x, p.y - d.y);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = v;
+      }
+    }
+    const a = project(best[1], best[0]);
+    return { id: r.id, nx: d.x, ny: d.y, ax: a.x, ay: a.y };
+  });
+
 /** Reads the pre-paint motion tier without setState-in-effect. */
 function subscribeTier(cb: () => void) {
   const obs = new MutationObserver(cb);
@@ -43,6 +65,8 @@ export function NetworkScene() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
+  const regionRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+  const legendRef = useRef<HTMLParagraphElement>(null);
   const valueRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const engineRef = useRef<NetworkEngine | null>(null);
 
@@ -60,7 +84,21 @@ export function NetworkScene() {
 
     const engine = new NetworkEngine(canvas, locations, {
       tier: engineTier,
+      regions: REGIONS,
       callbacks: {
+        onRegion: (id, pos) => {
+          const el = regionRefs.current[id];
+          if (!el) return;
+          if (!pos) {
+            el.style.opacity = "0";
+            return;
+          }
+          el.style.opacity = "1";
+          el.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
+        },
+        onRegional: () => {
+          if (legendRef.current) legendRef.current.style.opacity = "1";
+        },
         onLabel: (pos) => {
           const el = labelRef.current;
           if (!el) return;
@@ -130,6 +168,13 @@ export function NetworkScene() {
     return { id: l.id, x: p.x * W, y: p.y * H, hq: l.kind === "hq" };
   });
   const hqNode = nodePts.find((n) => n.hq);
+  const regionPts = REGIONS.map((r) => ({
+    id: r.id,
+    x: r.nx * W,
+    y: r.ny * H,
+    ax: r.ax * W,
+    ay: r.ay * H,
+  }));
 
   return (
     <section
@@ -140,7 +185,7 @@ export function NetworkScene() {
       data-env="dark"
     >
       <div className="relative mx-auto max-w-360 px-6 py-20 lg:px-12">
-        <p className="microlabel">04 — {t("sections.trackRecord")}</p>
+        <p className="microlabel">{t("sections.trackRecord")}</p>
         <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold md:text-4xl">
           {t("network.title")}
         </h2>
@@ -153,6 +198,25 @@ export function NetworkScene() {
               <p ref={labelRef} className="network-hq-label" dir={locale === "ar" ? "rtl" : "ltr"}>
                 <span className="network-hq-city">{t("network.city")}</span>
                 <span className="network-hq-role">{t("network.role")}</span>
+              </p>
+              {/* Regional-reach labels (§10): muted, hollow-marker voice —
+                  storytelling reach, never project evidence. */}
+              {gulfRegions
+                .filter((r) => r.enabled)
+                .map((r) => (
+                  <span
+                    key={r.id}
+                    ref={(el) => {
+                      regionRefs.current[r.id] = el;
+                    }}
+                    className="network-region-label"
+                    dir={locale === "ar" ? "rtl" : "ltr"}
+                  >
+                    {locale === "ar" && r.name.ar ? r.name.ar : r.name.en}
+                  </span>
+                ))}
+              <p ref={legendRef} className="network-regional-legend microlabel">
+                {t("network.regional")}
               </p>
             </>
           )}
@@ -184,6 +248,20 @@ export function NetworkScene() {
                       />
                     ))
                 : null}
+              {regionPts.map((r) => (
+                <g key={`reach-${r.id}`}>
+                  <line
+                    x1={r.ax}
+                    y1={r.ay}
+                    x2={r.x}
+                    y2={r.y}
+                    stroke="rgba(255,24,156,0.2)"
+                    strokeWidth="1"
+                    strokeDasharray="3 5"
+                  />
+                  <circle cx={r.x} cy={r.y} r="4.2" fill="none" stroke="rgba(226,226,229,0.6)" strokeWidth="1.2" />
+                </g>
+              ))}
               {nodePts.map((n) =>
                 n.hq ? (
                   <g key={n.id}>
@@ -200,6 +278,14 @@ export function NetworkScene() {
               <span className="network-hq-city">{t("network.city")}</span>
               <span aria-hidden="true"> — </span>
               <span className="network-hq-role">{t("network.role")}</span>
+              <span className="network-static-caption-sep" aria-hidden="true"> · </span>
+              <span className="text-ink-muted">
+                {t("network.regional")}:{" "}
+                {gulfRegions
+                  .filter((r) => r.enabled)
+                  .map((r) => (locale === "ar" && r.name.ar ? r.name.ar : r.name.en))
+                  .join(" · ")}
+              </span>
             </p>
           </div>
         </div>

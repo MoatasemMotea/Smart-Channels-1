@@ -217,8 +217,46 @@ export interface ContactInfo {
   phone: string;
   /** Rendered as a mailto: link. */
   email: string;
+  /** Owner-approved WhatsApp number (P4 Rev3 §12); display form.
+   *  The wa.me destination is derived by stripping non-digits. */
+  whatsapp?: string;
   /** Ships empty by design (D-011); future additions are data-only. */
   links?: { id: string; label: LocalizedText; href: string }[];
+}
+
+/** Social platform record (P4 Rev3 §13). URLs are owner-supplied; an
+ *  entry renders publicly ONLY when enabled with a real URL — no dead
+ *  links, no placeholders. */
+export interface SocialLink {
+  platform: "linkedin" | "instagram" | "x";
+  /** Official company URL — never invented. null until supplied. */
+  url: string | null;
+  enabled: boolean;
+  label: LocalizedText;
+  order: number;
+}
+
+/** Regional Gulf reach destination (P4 Rev3 §10): storytelling reach
+ *  trajectories, NOT project-evidence locations. */
+export interface GulfRegion {
+  id: string;
+  name: LocalizedText;
+  latitude: number;
+  longitude: number;
+  enabled: boolean;
+}
+
+/** Hero cinematic media slot (P4 Rev3 §§7–9). All paths under /public;
+ *  replacing the asset is a data edit, never a component change. */
+export interface HeroMediaConfig {
+  /** false until an owner-approved asset exists — nothing renders. */
+  enabled: boolean;
+  /** Desktop/tablet video (mp4/webm, muted-loop ambient). */
+  videoSrc: string | null;
+  /** Lighter mobile derivative; falls back to poster when null. */
+  videoMobileSrc: string | null;
+  /** Mandatory poster/fallback still (also the STATIC-tier visual). */
+  poster: string | null;
 }
 
 export interface ProfileDocument {

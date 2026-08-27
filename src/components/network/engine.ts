@@ -23,9 +23,23 @@ import type { MapLocation } from "@/content/locations";
 
 export type NetTier = "full" | "lite";
 
+export interface NetRegion {
+  id: string;
+  /** normalized map coords of the regional destination */
+  nx: number;
+  ny: number;
+  /** normalized departure anchor on the Saudi outline */
+  ax: number;
+  ay: number;
+}
+
 export interface NetCallbacks {
   /** Screen-space anchor for the Riyadh DOM label (or null to hide). */
   onLabel?: (pos: { x: number; y: number } | null) => void;
+  /** Regional-reach label anchors (P4 Rev3 §10), keyed by region id. */
+  onRegion?: (id: string, pos: { x: number; y: number } | null) => void;
+  /** The regional-reach legend becomes visible. */
+  onRegional?: () => void;
   /** Track-Record counter progress 0..1, eased upstream of the caller. */
   onCount?: (p: number) => void;
   /** The story finished; the loop has stopped on the final frame. */
@@ -112,12 +126,14 @@ export class NetworkEngine {
   private tier: NetTier;
   private cb: NetCallbacks;
   private mapRect = { x: 0, y: 0, w: 0, h: 0 };
+  private regions: NetRegion[] = [];
+  private regionalFired = false;
   private rnd = mulberry32(72026);
 
   constructor(
     private canvas: HTMLCanvasElement,
     locations: MapLocation[],
-    opts: { tier: NetTier; callbacks?: NetCallbacks },
+    opts: { tier: NetTier; regions?: NetRegion[]; callbacks?: NetCallbacks },
   ) {
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("2d context unavailable");
@@ -133,6 +149,7 @@ export class NetworkEngine {
       return { id: l.id, x: 0, y: 0, nx: p.x, ny: p.y, hq: l.kind === "hq" };
     });
     this.hq = this.nodes.find((n) => n.hq) ?? null;
+    this.regions = opts.regions ?? [];
     this.resize();
     this.buildParticles();
   }
@@ -247,6 +264,21 @@ export class NetworkEngine {
       p.x = p.tx + this.particleSeeds[i]!.scatter[0];
       p.y = p.ty + this.particleSeeds[i]!.scatter[1];
     });
+    this.buildDust();
+  }
+
+  /** Atmospheric depth dust (§11): a sparse far field behind the map. */
+  private dust: Array<{ x: number; y: number; s: number; ph: number }> = [];
+
+  private buildDust(): void {
+    const n = this.tier === "lite" ? 16 : 30;
+    const rnd = mulberry32(31026);
+    this.dust = Array.from({ length: n }, () => ({
+      x: rnd(),
+      y: rnd(),
+      s: 0.6 + rnd() * 0.9,
+      ph: rnd() * Math.PI * 2,
+    }));
   }
 
   private assignTarget(p: NetParticle, i: number): void {
@@ -293,6 +325,28 @@ export class NetworkEngine {
     ctx.translate(-this.width / 2, -this.height / 2 - 4 * push);
 
     const emerge = easeEngineered(clamp01(t / tl.emergeEnd));
+
+    /* supporting depth (§11): sparse atmospheric dust drifting behind the
+       map + one soft scan sweep during emergence. MAP = PRIMARY. */
+    for (const d of this.dust) {
+      const dx = (d.x + Math.sin(d.ph + t / 9000) * 0.012) * this.width;
+      const dy = (d.y + Math.cos(d.ph * 1.3 + t / 11000) * 0.01) * this.height;
+      const a = 0.1 * emerge * (0.6 + 0.4 * Math.sin(d.ph + t / 1600));
+      ctx.fillStyle = `rgba(180,180,190,${Math.max(0, a)})`;
+      ctx.beginPath();
+      ctx.arc(dx, dy, d.s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (!final && t < tl.emergeEnd + 500) {
+      const sp = clamp01(t / (tl.emergeEnd + 500));
+      const sx = this.width * (-0.2 + 1.4 * easeCinematic(sp));
+      const grad = ctx.createLinearGradient(sx - 120, 0, sx + 120, 0);
+      grad.addColorStop(0, "rgba(226,226,229,0)");
+      grad.addColorStop(0.5, "rgba(226,226,229,0.035)");
+      grad.addColorStop(1, "rgba(226,226,229,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(sx - 120, 0, 240, this.height);
+    }
 
     /* the Kingdom: layered point cloud, contour on the near layer */
     const time = t / 1000;
@@ -411,32 +465,66 @@ export class NetworkEngine {
       }
     }
 
-    /* Gulf horizon (§7): abstract regional continuation — unlabeled
-       trajectories easing beyond the eastern edge. No fabricated nodes. */
-    const gulfP = easeCinematic(clamp01((t - tl.gulf) / (tl.end - tl.gulf)));
-    if (gulfP > 0) {
-      // launches from the projected Gulf coastline — regional continuation
-      // grows out of the geography, not from empty space
-      const gx = this.mapRect.x + this.mapRect.w * 0.74;
-      const gy = this.mapRect.y + this.mapRect.h * 0.39;
-      for (let i = 0; i < (this.tier === "lite" ? 2 : 3); i++) {
-        const a = 0.2 * gulfP * (1 - i * 0.22);
-        const grad = ctx.createLinearGradient(gx, gy, this.width + 60, gy - 40 - i * 70);
-        grad.addColorStop(0, `rgba(226,226,229,${a})`);
-        grad.addColorStop(1, "rgba(226,226,229,0)");
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(gx, gy + i * 22);
-        ctx.quadraticCurveTo(
-          gx + this.width * 0.12,
-          gy - 26 - i * 34,
-          this.width + 60,
-          gy - 60 - i * 84,
-        );
-        ctx.stroke();
+    /* Gulf regional reach (Rev3 §10): after the national network, three
+       restrained routes leave the Kingdom toward real regional geography
+       (Bahrain / Qatar / UAE). Reach markers are HOLLOW rings — visually
+       distinct from filled project-evidence nodes — and their labels are
+       DOM text under a "Regional reach" legend. Nothing claims projects. */
+    this.regions.forEach((r, i) => {
+      const t0 = tl.gulf + i * 350;
+      const travel = clamp01((t - t0) / 700);
+      if (travel <= 0) {
+        this.cb.onRegion?.(r.id, null);
+        return;
       }
-    }
+      if (!this.regionalFired) {
+        this.regionalFired = true;
+        this.cb.onRegional?.();
+      }
+      const tp = easeCinematic(travel);
+      const ax = this.mapRect.x + r.ax * this.mapRect.w;
+      const ay = this.mapRect.y + r.ay * this.mapRect.h;
+      const nx = this.mapRect.x + r.nx * this.mapRect.w;
+      const ny = this.mapRect.y + r.ny * this.mapRect.h;
+      const dx = nx - ax;
+      const dy = ny - ay;
+      const len = Math.hypot(dx, dy) || 1;
+      const bow = Math.min(22, len * 0.2) * (i % 2 === 0 ? 1 : -1);
+      const cx = (ax + nx) / 2 + (-dy / len) * bow;
+      const cy = (ay + ny) / 2 + (dx / len) * bow;
+      const settled = travel >= 1;
+      ctx.strokeStyle = settled ? "rgba(255,24,156,0.18)" : `rgba(255,24,156,${0.4 - 0.2 * tp})`;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      const STEPS = 18;
+      const upto = Math.max(1, Math.round(STEPS * tp));
+      for (let q = 1; q <= upto; q++) {
+        const u = (q / STEPS) * tp;
+        const ix = (1 - u) * (1 - u) * ax + 2 * (1 - u) * u * cx + u * u * nx;
+        const iy = (1 - u) * (1 - u) * ay + 2 * (1 - u) * u * cy + u * u * ny;
+        ctx.lineTo(ix, iy);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const ringP = clamp01((t - (t0 + 700)) / 320);
+      if (ringP > 0) {
+        const a = easeEngineered(ringP);
+        ctx.strokeStyle = `rgba(226,226,229,${0.65 * a})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(nx, ny, 4.4, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = `rgba(255,24,156,${0.3 * a})`;
+        ctx.beginPath();
+        ctx.arc(nx, ny, 8.5, 0, Math.PI * 2);
+        ctx.stroke();
+        this.cb.onRegion?.(r.id, this.toScreen(nx, ny, s, push));
+      } else {
+        this.cb.onRegion?.(r.id, null);
+      }
+    });
 
     /* counters (§9): coordinated with the network choreography */
     if (this.cb.onCount && !this.done) {
