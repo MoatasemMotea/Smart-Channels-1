@@ -1,0 +1,214 @@
+/*
+ * Smart Channels — global styles & semantic design tokens.
+ *
+ * Single source of brand color and theme behavior (Q-P3-3). Components
+ * consume ONLY the semantic tokens below — never raw hex values.
+ * Contract: docs/creative-direction.md §2 (colors), §3 (type),
+ * docs/motion-implementation-contract.md §4 (legibility), §8 tokens.
+ */
+
+@import "tailwindcss";
+@import "../../public/fonts/fonts.css";
+
+/* ------------------------------------------------------------------ */
+/* Brand + theme tokens.                                               */
+/* DARK is the default theme (Q-P2-4): defined on :root.               */
+/* LIGHT is a first-class designed theme: [data-theme="light"].        */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* brand constants (sampled from the authoritative logo) */
+  --brand-magenta: #ff189c;
+  --brand-magenta-deep: #d80f7e; /* AA-weighted accent for light ground */
+  --brand-purple: #8d3492;
+
+  /* dark environment (default) */
+  --bg: #0a0a0c;
+  --bg-deep: #060607;
+  --surface: #121215;
+  --surface-2: #1a1a1e;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1; /* ≥ 4.5:1 on --bg (legibility contract §4) */
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: var(--brand-magenta);
+  --accent-ink: #0a0a0c; /* text on accent surfaces */
+  --accent-soft: rgba(255, 24, 156, 0.12);
+  --atmos: rgba(141, 52, 146, 0.12); /* atmosphere ONLY — never a surface fill */
+  --field-line: rgba(255, 255, 255, 0.1);
+  --field-node: #c9c9ce;
+
+  /* type roles (D-014 — Candidate A locked) */
+  --font-display: "Archivo", "Noto Kufi Arabic", system-ui, sans-serif;
+  --font-body: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* motion tokens (motion contract §8) — read by CSS and JS alike */
+  --dur-micro: 150ms;
+  --dur-control: 300ms;
+  --dur-component: 450ms;
+  --dur-section: 700ms;
+  --dur-narrative: 1000ms;
+  --ease-engineered: cubic-bezier(0.2, 0, 0, 1);
+  --ease-cinematic: cubic-bezier(0.65, 0, 0.15, 1);
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #fafaf8;
+  --bg-deep: #f1f1ee;
+  --surface: #ffffff;
+  --surface-2: #f1f1ee;
+  --ink: #141416;
+  --ink-muted: #5c5c5a;
+  --line: rgba(20, 20, 22, 0.12);
+  --accent: var(--brand-magenta-deep);
+  --accent-ink: #fafaf8;
+  --accent-soft: rgba(216, 15, 126, 0.1);
+  --atmos: rgba(141, 52, 146, 0.04);
+  --field-line: rgba(20, 20, 22, 0.1);
+  --field-node: #6e6e6b;
+
+  color-scheme: light;
+}
+
+/* Arabic type-role swap: same tokens, Arabic-first families (Q-P3-5). */
+[dir="rtl"] {
+  --font-display: "Noto Kufi Arabic", "Archivo", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+}
+
+/* Map semantic tokens into Tailwind v4 utilities (bg-surface, text-ink…). */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  /* Legibility contract §4: body ≥16px, lh ≥1.6 (AR ≥1.8 below). */
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur-control) var(--ease-engineered);
+}
+
+[dir="rtl"] body,
+[dir="rtl"] p,
+[dir="rtl"] li {
+  line-height: 1.8;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4 {
+  line-height: 1.35;
+}
+
+/* Visible focus everywhere (§30). */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Mono micro-labels are supporting metadata only (contract §4): 11px floor. */
+.microlabel {
+  font-family: var(--font-mono);
+  font-size: max(0.6875rem, 11px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Theme-aware brand mark: the authoritative dark lockup (white wordmark)
+   is illegible on light ground; light theme shows the self-contained SC
+   mark from the same asset. An official light-background lockup is an
+   open asset gap (O-013) — no lockup is fabricated (D-001). */
+.logo-light-mark { display: none; }
+[data-theme="light"] .logo-dark-lockup { display: none; }
+[data-theme="light"] .logo-light-mark { display: block; }
+
+/* Skip link (§30). */
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: -100%;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  border-radius: 4px;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion foundation (tier attribute set by ThemeAndTierScript).       */
+/* data-motion-tier: "full" | "lite" | "static"                        */
+/* ------------------------------------------------------------------ */
+
+[data-motion-tier="static"] *,
+[data-motion-tier="static"] *::before,
+[data-motion-tier="static"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 200ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* MotionSection reveal primitive — the only P3 animation (Amendment 5). */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--dur-component) var(--ease-engineered),
+    transform var(--dur-component) var(--ease-engineered);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+[data-motion-tier="static"] .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}

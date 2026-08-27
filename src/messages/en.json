@@ -1,0 +1,59 @@
+{
+  "common": {
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "explore": "Explore",
+    "learnMore": "Learn more",
+    "all": "All",
+    "comingInPhase": "This section receives its designed experience in a later build phase."
+  },
+  "nav": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "letsTalk": "Let's Talk",
+    "switchLocale": "العربية",
+    "switchLocaleLabel": "Switch language to Arabic",
+    "theme": "Theme",
+    "themeDark": "Dark theme",
+    "themeLight": "Light theme"
+  },
+  "home": {
+    "title": "Smart Channels — Technology Behind the Experience",
+    "description": "Smart Channels delivers integrated technology, communications, infrastructure and security solutions across the Kingdom and the Gulf."
+  },
+  "sections": {
+    "about": "About Smart Channels",
+    "trackRecord": "Track Record",
+    "solutions": "Solutions",
+    "industries": "Industries",
+    "projects": "Selected Projects",
+    "gallery": "Gallery",
+    "smartAi": "Smart AI",
+    "partners": "Technology Alliances",
+    "clients": "Our Clients",
+    "profile": "Company Profile",
+    "contact": "Contact"
+  },
+  "pages": {
+    "solutions": { "title": "Solutions", "description": "Seven integrated solution families — from infrastructure and networking to security, AV, communications and AI-powered surveillance." },
+    "projects": { "title": "Projects", "description": "Delivered projects across the Kingdom's venues, events and institutions." },
+    "industries": { "title": "Industries", "description": "Sectors Smart Channels serves." },
+    "gallery": { "title": "Gallery", "description": "Moments from the field." },
+    "company": { "title": "Company", "description": "About Smart Channels — mission, capabilities and track record." },
+    "partners": { "title": "Partners", "description": "Certified technology alliances and the clients who trust us." },
+    "contact": { "title": "Contact", "description": "Talk to our team about your next technology project." }
+  },
+  "profileDownload": {
+    "read": "Read the Company Profile",
+    "download": "Download PDF"
+  },
+  "contact": {
+    "phoneLabel": "Telephone",
+    "emailLabel": "Email",
+    "addressLabel": "Address"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}

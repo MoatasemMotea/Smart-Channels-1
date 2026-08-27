@@ -1,0 +1,80 @@
+{
+  "common": {
+    "skipToContent": "تخطَّ إلى المحتوى",
+    "menu": "القائمة",
+    "close": "إغلاق",
+    "explore": "استكشف",
+    "learnMore": "اعرف المزيد",
+    "all": "الكل",
+    "comingInPhase": "سيحصل هذا القسم على تجربته المصمّمة في مرحلة بناء لاحقة."
+  },
+  "nav": {
+    "openMenu": "افتح القائمة",
+    "closeMenu": "أغلق القائمة",
+    "letsTalk": "تواصل معنا",
+    "switchLocale": "English",
+    "switchLocaleLabel": "تغيير اللغة إلى الإنجليزية",
+    "theme": "المظهر",
+    "themeDark": "المظهر الداكن",
+    "themeLight": "المظهر الفاتح"
+  },
+  "home": {
+    "title": "Smart Channels — التقنية التي تصنع التجربة",
+    "description": "تقدّم Smart Channels حلولاً متكاملة للتقنية والاتصالات والبنية التحتية والأمن في المملكة والخليج."
+  },
+  "sections": {
+    "about": "عن Smart Channels",
+    "trackRecord": "سجل الإنجاز",
+    "solutions": "الحلول",
+    "industries": "القطاعات",
+    "projects": "مشاريع مختارة",
+    "gallery": "المعرض",
+    "smartAi": "Smart AI",
+    "partners": "التحالفات التقنية",
+    "clients": "عملاؤنا",
+    "profile": "الملف التعريفي",
+    "contact": "تواصل معنا"
+  },
+  "pages": {
+    "solutions": {
+      "title": "الحلول",
+      "description": "سبع عائلات حلول متكاملة — من البنية التحتية والشبكات إلى الأمن والصوتيات والمرئيات والاتصالات والمراقبة المدعومة بالذكاء الاصطناعي."
+    },
+    "projects": {
+      "title": "المشاريع",
+      "description": "مشاريع منفَّذة في منشآت وفعاليات ومؤسسات المملكة."
+    },
+    "industries": {
+      "title": "القطاعات",
+      "description": "القطاعات التي تخدمها Smart Channels."
+    },
+    "gallery": {
+      "title": "المعرض",
+      "description": "لحظات من الميدان."
+    },
+    "company": {
+      "title": "الشركة",
+      "description": "عن Smart Channels — رسالتنا وقدراتنا وسجل إنجازنا."
+    },
+    "partners": {
+      "title": "الشركاء",
+      "description": "تحالفات تقنية معتمدة وعملاء يثقون بنا."
+    },
+    "contact": {
+      "title": "تواصل معنا",
+      "description": "تحدَّث إلى فريقنا حول مشروعك التقني القادم."
+    }
+  },
+  "profileDownload": {
+    "read": "اقرأ الملف التعريفي",
+    "download": "تحميل PDF"
+  },
+  "contact": {
+    "phoneLabel": "الهاتف",
+    "emailLabel": "البريد الإلكتروني",
+    "addressLabel": "العنوان"
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة."
+  }
+}
