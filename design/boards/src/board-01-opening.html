@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 40px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 700px; text-align: end; }
+  .frames { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+  .frame { background: var(--bg-deep); border: 1px solid rgba(255,255,255,.07); }
+  .frame .viz { position: relative; height: 420px; overflow: hidden; }
+  .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .frame .meta { padding: 20px 22px 24px; border-top: 1px solid rgba(255,255,255,.07); }
+  .frame .meta .t { font: 500 12px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); margin-bottom: 10px; }
+  .frame .meta .n { font: 600 16px/1.3 var(--font-body-a); color: var(--ink); margin-bottom: 8px; }
+  .frame .meta .d { font: 400 13px/1.55 var(--font-body-a); color: var(--ink-muted); }
+  .cap { position: absolute; left: 50%; transform: translateX(-50%); bottom: 26px; font: 500 11px/1 var(--font-mono); letter-spacing: .3em; color: rgba(245,245,244,.55); white-space: nowrap; }
+  .logo-wrap { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .logo-wrap img { width: 46%; }
+  .f2 .logo-wrap img { opacity: .92; filter: blur(.4px); }
+  .f3 .logo-wrap img { opacity: .28; filter: blur(2.5px); transform: scale(1.12); }
+  .heroT { position: absolute; left: 34px; bottom: 60px; }
+  .heroT .ov { font: 500 9.5px/1 var(--font-mono); letter-spacing: .18em; color: var(--ink-muted); margin-bottom: 12px; }
+  .heroT .hl { font: 700 34px/1.02 var(--font-display-a); font-stretch: 118%; letter-spacing: -.01em; color: var(--ink); }
+  .heroT .hl em { font-style: normal; color: var(--accent); }
+  .rules { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Opening Experience — Particle Identity</h1>
+    <div class="sub">Signature sequence, ≤ ~3 s · first meaningful visit, once per session · any meaningful input skips instantly · reduced-motion receives a static brand frame + restrained fade · rendering technique proposed separately after logo-asset assessment (D-001).</div>
+  </div>
+  <div class="frames">
+    <div class="frame f1">
+      <div class="viz"><canvas id="c1"></canvas><div class="cap">SMART&nbsp;&nbsp;CHANNELS</div></div>
+      <div class="meta"><div class="t">0.0 — 0.4 s</div><div class="n">Darkness · particles arrive</div>
+      <div class="d">Scattered brand particles drift in from depth — echoes of the logo's own dots. A single mono caption holds the silence.</div></div>
+    </div>
+    <div class="frame f2">
+      <div class="viz"><canvas id="c2"></canvas><div class="logo-wrap"><img src="assets/logo-dark.png" alt=""></div></div>
+      <div class="meta"><div class="t">0.4 — 1.4 s</div><div class="n">Assembly · the identity beat</div>
+      <div class="d">Particles converge and the SC mark becomes coherent; magenta resolves at the moment of coherence. The mark holds ~0.5 s.</div></div>
+    </div>
+    <div class="frame f3">
+      <div class="viz"><canvas id="c3a"></canvas><div class="logo-wrap"><img src="assets/logo-dark.png" alt=""></div><canvas id="c3b" style="position:absolute;inset:0;width:100%;height:100%;"></canvas></div>
+      <div class="meta"><div class="t">1.4 — 2.2 s</div><div class="n">Controlled dispersion</div>
+      <div class="d">The mark releases. Particles stream outward into topology lines and nodes — the network field forms around the viewer.</div></div>
+    </div>
+    <div class="frame f4">
+      <div class="viz"><canvas id="c4"></canvas>
+        <div class="heroT"><div class="ov">SMART CHANNELS — SYSTEMS INTEGRATION</div>
+          <div class="hl">TECHNOLOGY<br>BEHIND THE<br><em>EXPERIENCE.</em></div></div>
+      </div>
+      <div class="meta"><div class="t">2.2 — 2.8 s</div><div class="n">Hero reveal · no cut</div>
+      <div class="d">Hero typography rises inside the living field. The brand literally becomes the environment — no black frame between scenes.</div></div>
+    </div>
+  </div>
+  <div class="rules">
+    <span class="chip">once per session</span><span class="chip">skippable on input</span>
+    <span class="chip">never traps navigation</span><span class="chip">reduced-motion → static frame</span>
+    <span class="chip">graceful static fallback</span><span class="chip">technique TBD after logo assessment</span>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 01</span><span class="title">Opening / Particle Identity — 4-frame storyboard</span>
+  <span class="note">Concept frames. Particle dispersion continuity: opening particles are the same system that lives behind the Hero.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderParticles(document.getElementById('c1'), { seed: 21, count: 70, gather: 0 });
+  renderParticles(document.getElementById('c2'), { seed: 22, count: 110, gather: 0.86, cy: 0.42 });
+  renderParticles(document.getElementById('c3a'), { seed: 23, count: 60, gather: 0.25, cy: 0.45 });
+  renderField(document.getElementById('c3b'), { seed: 24, density: 0.55, linkDist: 120, signal: false, atmos: 0.3, vignette: 0.35, lineAlpha: 0.07 });
+  renderField(document.getElementById('c4'), { seed: 25, density: 1.0, linkDist: 135, signal: true, atmos: 0.5, vignette: 0.5 });
+</script>
+</body>
+</html>

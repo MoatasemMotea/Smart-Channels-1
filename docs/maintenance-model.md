@@ -38,6 +38,10 @@ The single most important table in this document. Every row edits data only.
 | Hide content without deleting it | `published: false` (gallery) / `display: 'hidden'` (projects) | Metadata preserved; excluded from all public rendering. |
 | Change homepage featured industries | `featured` / `order` in `src/content/industries.ts` | Homepage reads flags; no component logic edits. |
 | Add / update a project | one record in `src/content/projects.ts` | `display` (`'logo'`, `'text-only'`, `'hidden'`) controls public exposure (D-003/A-004). |
+| Add another photo/video to an existing project | file (if new) + one `media` entry on that project's record | D-013: ordered mixes (image → video → image) render automatically; never a new component or layout edit. |
+| Show an existing Gallery item inside a project | add its id to the project's `galleryItemIds` | D-013: relationship by reference — no duplicate physical file. |
+| Add a confirmed service to a project | one `services` entry on the record | D-013: approved source-backed services only. |
+| Change a project's year / period | the record's `years` field (`{from}` or `{from, to}`) | D-013 temporal structure — data only. |
 | Feature a project | `featured: true` on its record | Selection governed by D-004 assessment. |
 | Add / disable a technology alliance | one record / `enabled` flag in `src/content/partners.ts` | Logo file into `public/partners/` if available; missing logo = recorded gap, never an internet substitute (D-005). |
 | Add / disable a client | same pattern in `src/content/clients.ts` | |

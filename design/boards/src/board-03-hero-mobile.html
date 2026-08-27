@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 700px; text-align: end; }
+  .row { display: flex; gap: 60px; align-items: flex-start; justify-content: center; }
+  .phone { width: 430px; }
+  .phone .label { font: 500 12px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); margin-bottom: 16px; text-align: center; }
+  .screen { position: relative; width: 430px; height: 900px; background: var(--bg); border: 1px solid rgba(255,255,255,.14); border-radius: 34px; overflow: hidden; }
+  .screen canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mnav { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 0; }
+  .mnav img { height: 42px; }
+  .burger { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 4px; display: flex; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
+  .burger i { display: block; width: 16px; height: 1.6px; background: var(--ink); }
+  .burger i:last-child { width: 10px; align-self: center; margin-inline-start: 0; background: var(--accent); }
+  .mcontent { position: absolute; left: 26px; right: 26px; bottom: 96px; }
+  .mcontent .ov { font: 500 10px/1.5 var(--font-mono); letter-spacing: .16em; color: var(--ink-muted); margin-bottom: 16px; }
+  .mcontent .ov b { color: var(--accent); }
+  .mcontent .hl { font: 700 47px/1.02 var(--font-display-a); font-stretch: 114%; letter-spacing: -.012em; color: var(--ink); }
+  .mcontent .hl em { font-style: normal; color: var(--accent); }
+  .mcontent .sub2 { margin-top: 16px; font: 400 14.5px/1.6 var(--font-body-a); color: var(--ink-muted); }
+  .mcontent .ctas { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .mcontent .btn { justify-content: center; padding: 15px 0; width: 100%; }
+  .mproof { position: absolute; left: 26px; right: 26px; bottom: 30px; display: flex; align-items: center; gap: 10px; font: 500 9px/1.4 var(--font-mono); letter-spacing: .12em; color: rgba(245,245,244,.5); text-transform: uppercase; }
+  .mproof .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex: none; }
+  .ar .mcontent { text-align: right; }
+  .ar .mcontent .hl-ar { font: 700 40px/1.32 var(--font-display-a-ar); color: var(--ink); }
+  .ar .mcontent .hl-ar em { font-style: normal; color: var(--accent); }
+  .ar .mcontent .sub2 { font: 400 14px/1.85 var(--font-body-ar); direction: rtl; }
+  .ar .btn { font-family: var(--font-body-ar); }
+  .notes { width: 560px; padding-top: 40px; }
+  .notes h3 { font: 600 16px/1 var(--font-body-a); margin-bottom: 20px; color: var(--ink); }
+  .notes ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .notes li { display: flex; gap: 12px; font: 400 13.5px/1.6 var(--font-body-a); color: var(--ink-muted); }
+  .notes li::before { content: "—"; color: var(--accent); flex: none; }
+  .tiers { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 24px; }
+  .tiers .t { display: flex; gap: 12px; margin-bottom: 12px; align-items: baseline; }
+  .tiers .t b { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); width: 64px; flex: none; }
+  .tiers .t span { font: 400 13px/1.55 var(--font-body-a); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Hero — Mobile</h1>
+    <div class="sub">390-class viewport, Candidate A system. A parallel design, not a scaled desktop: reduced field density (lite tier), stacked full-width CTAs, fluid type scale — no truncation. AR string is proposed copy requiring approval.</div>
+  </div>
+  <div class="row">
+    <div class="phone">
+      <div class="label">EN · DARK · LITE FIELD TIER</div>
+      <div class="screen">
+        <canvas id="m1"></canvas>
+        <div class="mnav"><img src="assets/logo-dark.png" alt=""><div class="burger"><i></i><i></i><i></i></div></div>
+        <div class="mcontent">
+          <div class="ov"><b>●</b>&nbsp;&nbsp;SMART CHANNELS — SYSTEMS INTEGRATION</div>
+          <div class="hl">TECHNOLOGY<br>BEHIND THE<br><em>EXPERIENCE.</em></div>
+          <div class="sub2">Intelligent technology behind connected environments across the Kingdom and the Gulf.</div>
+          <div class="ctas"><span class="btn btn-primary">Explore Projects</span><span class="btn btn-ghost">Talk to Smart AI</span></div>
+        </div>
+        <div class="mproof"><span class="dot"></span>F1 SAUDI ARABIAN GP — EVENT TECHNOLOGY</div>
+      </div>
+    </div>
+    <div class="phone ar">
+      <div class="label">AR · RTL MIRROR</div>
+      <div class="screen" dir="rtl">
+        <canvas id="m2"></canvas>
+        <div class="mnav" dir="rtl"><img src="assets/logo-dark.png" alt=""><div class="burger"><i></i><i></i><i></i></div></div>
+        <div class="mcontent">
+          <div class="ov" style="direction:ltr; text-align:right;">SMART CHANNELS — SYSTEMS INTEGRATION&nbsp;&nbsp;<b style="color:var(--accent)">●</b></div>
+          <div class="hl-ar">التقنية التي<br>تصنع <em>التجربة.</em></div>
+          <div class="sub2">التقنية الذكية خلف البيئات المتصلة في المملكة والخليج.</div>
+          <div class="ctas"><span class="btn btn-primary">استكشف المشاريع</span><span class="btn btn-ghost">تحدّث إلى Smart AI</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>Mobile hero rules</h3>
+      <ul>
+        <li>Same narrative and content as desktop — nothing hidden, nothing truncated; the fluid type scale carries the headline at 390px.</li>
+        <li>Field runs the <b style="color:var(--ink)">lite</b> capability tier: reduced particle density, simplified physics, signal preserved.</li>
+        <li>CTAs stack full-width; touch targets ≥ 48px; burger opens the intentionally designed full-screen menu (P4).</li>
+        <li>RTL mirrors composition, motion direction and iconography — not just text alignment.</li>
+      </ul>
+      <div class="tiers">
+        <div class="t"><b>FULL</b><span>Desktop / high capability — full particle physics and depth-of-field.</span></div>
+        <div class="t"><b>LITE</b><span>Typical mobile — reduced density, simplified physics, identical narrative.</span></div>
+        <div class="t"><b>STATIC</b><span>Low capability / save-data / reduced-motion — designed still frame, full content.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 03</span><span class="title">Hero — Mobile · EN + AR</span>
+  <span class="note">Adaptive motion complexity (Q-P2-13): capability decides the tier — mobile is never a punishment version.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('m1'), { seed: 41, density: 0.62, linkDist: 110, signal: true, signalZone: [0.3, 1], atmos: 0.45, vignette: 0.5 });
+  renderField(document.getElementById('m2'), { seed: 42, density: 0.62, linkDist: 110, signal: true, signalZone: [0, 0.7], atmos: 0.45, vignette: 0.5 });
+</script>
+</body>
+</html>

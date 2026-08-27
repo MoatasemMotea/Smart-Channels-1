@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 720px; text-align: end; }
+  .row { display: grid; grid-template-columns: 1fr 470px; gap: 16px; }
+  .scene { position: relative; height: 880px; background: var(--bg); border: 1px solid rgba(255,255,255,.07); overflow: hidden; padding: 70px 72px; }
+  .scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .chapter { position: relative; display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+  .chapter .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--accent); }
+  .chapter .rule { flex: 1; height: 1px; background: var(--line); }
+  .cols { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: 80px; }
+  .index { display: flex; flex-direction: column; }
+  .fam { display: flex; align-items: baseline; gap: 26px; padding: 21px 0; border-bottom: 1px solid var(--line); }
+  .fam .n { font: 500 13px/1 var(--font-mono); color: rgba(245,245,244,.35); width: 34px; }
+  .fam .name { font: 600 31px/1.1 var(--font-display-a); font-stretch: 108%; letter-spacing: -.01em; color: var(--ink-muted); }
+  .fam.active { border-bottom-color: rgba(255,24,156,.5); }
+  .fam.active .n { color: var(--accent); }
+  .fam.active .name { color: var(--ink); }
+  .fam.active .name em { font-style: normal; color: var(--accent); }
+  .fam .go { margin-inline-start: auto; font: 400 20px/1 var(--font-body-a); color: rgba(245,245,244,.25); }
+  .fam.active .go { color: var(--accent); }
+  .preview { border: 1px solid var(--line); background: rgba(6,6,7,.62); padding: 44px 46px; align-self: start; }
+  .preview .k { font: 500 11px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); margin-bottom: 20px; }
+  .preview h3 { font: 700 40px/1.08 var(--font-display-a); font-stretch: 110%; color: var(--ink); margin-bottom: 18px; }
+  .preview p { font: 400 15.5px/1.65 var(--font-body-a); color: var(--ink-muted); margin-bottom: 28px; }
+  .subs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+  .vendors { border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 30px; }
+  .vendors .t { font: 500 10px/1 var(--font-mono); letter-spacing: .14em; color: rgba(245,245,244,.4); margin-bottom: 14px; }
+  .vendors .vs { font: 500 13px/1.9 var(--font-body-a); color: var(--ink-muted); letter-spacing: .04em; }
+  .explore { display: inline-flex; align-items: center; gap: 10px; font: 600 14px/1 var(--font-body-a); color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+
+  .mobile { position: relative; background: var(--bg-deep); border: 1px solid rgba(255,255,255,.07); padding: 34px 30px; }
+  .mobile .label { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); margin-bottom: 24px; }
+  .acc { border-top: 1px solid var(--line); }
+  .acc .it { padding: 19px 4px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 14px; }
+  .acc .it .n { font: 500 11px/1 var(--font-mono); color: rgba(245,245,244,.35); }
+  .acc .it .nm { font: 600 17px/1.2 var(--font-display-a); color: var(--ink-muted); }
+  .acc .it .pm { margin-inline-start: auto; color: rgba(245,245,244,.35); font: 400 17px/1 var(--font-body-a); }
+  .acc .open { display: block; border-bottom: 1px solid rgba(255,24,156,.45); }
+  .acc .open .hd { display: flex; align-items: baseline; gap: 14px; padding: 19px 4px 12px; }
+  .acc .open .hd .n { color: var(--accent); font: 500 11px/1 var(--font-mono); }
+  .acc .open .hd .nm { color: var(--ink); font: 600 17px/1.2 var(--font-display-a); }
+  .acc .open .hd .pm { margin-inline-start: auto; color: var(--accent); font: 400 17px/1 var(--font-body-a); }
+  .acc .open .bd { padding: 0 4px 20px 32px; }
+  .acc .open .bd p { font: 400 13px/1.6 var(--font-body-a); color: var(--ink-muted); margin-bottom: 14px; }
+  .acc .open .bd .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .acc .open .bd .chip { font-size: 10px; padding: 6px 11px; }
+  .acc .open .bd .explore { font-size: 13px; }
+  .mnote { margin-top: 26px; font: 400 12px/1.6 var(--font-body-a); color: rgba(245,245,244,.42); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Solutions Ecosystem — Editorial Index + Live Preview</h1>
+    <div class="sub">Chapter 05 (Q-P2-10c). The index is real navigation — a keyboard-navigable list, understandable without animation. The ambient topology re-links as the active family changes (aria-hidden, never the mechanism). Mobile: intentionally designed progressive disclosure.</div>
+  </div>
+  <div class="row">
+    <div class="scene">
+      <canvas id="amb"></canvas>
+      <div class="chapter"><span class="idx">05 — WHAT WE POWER</span><div class="rule"></div></div>
+      <div class="cols">
+        <div class="index">
+          <div class="fam"><span class="n">01</span><span class="name">Infrastructure &amp; Data Centre</span><span class="go">→</span></div>
+          <div class="fam"><span class="n">02</span><span class="name">Networking &amp; Connectivity</span><span class="go">→</span></div>
+          <div class="fam active"><span class="n">03</span><span class="name">Security <em>Solutions</em></span><span class="go">→</span></div>
+          <div class="fam"><span class="n">04</span><span class="name">Biometrics &amp; Access Control</span><span class="go">→</span></div>
+          <div class="fam"><span class="n">05</span><span class="name">Audio &amp; Visual Solutions</span><span class="go">→</span></div>
+          <div class="fam"><span class="n">06</span><span class="name">Unified Comms &amp; Smart Buildings</span><span class="go">→</span></div>
+          <div class="fam"><span class="n">07</span><span class="name">Video Surveillance &amp; AI</span><span class="go">→</span></div>
+        </div>
+        <div class="preview">
+          <div class="k">03 — SECURITY SOLUTIONS · ACTIVE PREVIEW</div>
+          <h3>Protect what matters — people, property, networks, data.</h3>
+          <p>Integrated security that protects people, property, assets and digital environments — from CCTV and video analytics to access control, biometrics, firewalls and network security.</p>
+          <div class="subs">
+            <span class="chip">CCTV &amp; Video Surveillance</span><span class="chip">Video Analytics</span>
+            <span class="chip">Access Control</span><span class="chip">Next-Gen Firewalls</span>
+            <span class="chip">Network Security</span><span class="chip">Endpoint Protection</span>
+          </div>
+          <div class="vendors">
+            <div class="t">CERTIFIED TECHNOLOGY — FROM APPROVED ALLIANCES</div>
+            <div class="vs">FORTINET · PALO ALTO · HIKVISION · DALLMEIER · AXIS</div>
+          </div>
+          <span class="explore">Explore Security Solutions&nbsp;&nbsp;→</span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile">
+      <div class="label">MOBILE — PROGRESSIVE DISCLOSURE (TAP, NOT HOVER)</div>
+      <div class="acc">
+        <div class="it"><span class="n">01</span><span class="nm">Infrastructure &amp; Data Centre</span><span class="pm">+</span></div>
+        <div class="it"><span class="n">02</span><span class="nm">Networking &amp; Connectivity</span><span class="pm">+</span></div>
+        <div class="open">
+          <div class="hd"><span class="n">03</span><span class="nm">Security Solutions</span><span class="pm">−</span></div>
+          <div class="bd">
+            <p>Integrated protection for people, property, networks and data.</p>
+            <div class="chips"><span class="chip">CCTV</span><span class="chip">Video Analytics</span><span class="chip">Access Control</span><span class="chip">Firewalls</span></div>
+            <span class="explore">Explore&nbsp;&nbsp;→</span>
+          </div>
+        </div>
+        <div class="it"><span class="n">04</span><span class="nm">Biometrics &amp; Access Control</span><span class="pm">+</span></div>
+        <div class="it"><span class="n">05</span><span class="nm">Audio &amp; Visual Solutions</span><span class="pm">+</span></div>
+        <div class="it"><span class="n">06</span><span class="nm">Unified Comms &amp; Smart Buildings</span><span class="pm">+</span></div>
+        <div class="it"><span class="n">07</span><span class="nm">Video Surveillance &amp; AI</span><span class="pm">+</span></div>
+      </div>
+      <div class="mnote">Ambient layer reduces to a static line motif on mobile. Rows are buttons with ≥48px targets; one family open at a time; fully usable with animation off.</div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 06</span><span class="title">Solutions Ecosystem — desktop index + live preview · mobile disclosure inset</span>
+  <span class="note">Seven canonical profile-backed families (Q2). Preview copy from approved profile pp. 11–12; vendor names from approved alliances p. 28.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('amb'), { seed: 61, density: 0.7, linkDist: 170, signal: true, signalZone: [0.03, 0.33], atmos: 0.4, vignette: 0.62, lineAlpha: 0.07, nodeAlpha: 0.5 });
+</script>
+</body>
+</html>

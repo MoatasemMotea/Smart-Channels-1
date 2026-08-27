@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 1840px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 700px; text-align: end; }
+
+  .journey { display: grid; grid-template-columns: 300px 1fr; gap: 0; border: 1px solid rgba(255,255,255,.07); }
+  .ch { display: contents; }
+  .rail { padding: 26px 24px; border-bottom: 1px solid rgba(255,255,255,.08); border-inline-end: 1px solid rgba(255,255,255,.08); background: #08080A; }
+  .rail .n { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; color: var(--accent); margin-bottom: 10px; }
+  .rail .nm { font: 600 15px/1.3 var(--font-body-a); color: var(--ink); margin-bottom: 12px; }
+  .rail .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rail .tag { font: 500 8.5px/1 var(--font-mono); letter-spacing: .1em; padding: 5px 8px; border: 1px solid rgba(255,255,255,.14); border-radius: 3px; color: var(--ink-muted); }
+  .rail .tag.env-d { border-color: rgba(255,24,156,.4); color: var(--accent); }
+  .rail .tag.env-l { background: #FAFAF8; color: #141416; border-color: #FAFAF8; }
+  .sec { position: relative; border-bottom: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+  .sec canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .dark-s { background: #0A0A0C; } .deep-s { background: #060607; } .light-s { background: #FAFAF8; color: #141416; }
+
+  /* 01 opening */
+  .s01 { height: 300px; }
+  .s01 .cap { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font: 500 10px/1 var(--font-mono); letter-spacing: .3em; color: rgba(245,245,244,.55); }
+  .s01 img { position: absolute; left: 50%; top: 42%; height: 96px; transform: translate(-50%,-50%); }
+  /* 02 hero */
+  .s02 { height: 480px; padding: 44px 56px; }
+  .s02 .ov { position: relative; font: 500 10px/1 var(--font-mono); letter-spacing: .16em; color: var(--ink-muted); margin: 60px 0 18px; }
+  .s02 .ov b { color: var(--accent); }
+  .s02 .hl { position: relative; font: 700 64px/1 var(--font-display-a); font-stretch: 118%; letter-spacing: -.014em; color: var(--ink); }
+  .s02 .hl em { font-style: normal; color: var(--accent); }
+  .s02 .ctas { position: relative; margin-top: 30px; display: flex; gap: 12px; }
+  .s02 .btn { font-size: 12.5px; padding: 12px 20px; }
+  /* 03 about */
+  .s03 { height: 420px; padding: 52px 56px; }
+  .s03 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 26px; }
+  .s03 .g { display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; align-items: start; }
+  .s03 h3 { font: 700 44px/1.06 var(--font-display-a); font-stretch: 110%; letter-spacing: -.013em; color: #141416; }
+  .s03 h3 em { font-style: normal; color: var(--l-accent); }
+  .s03 p { margin-top: 18px; font: 400 14px/1.65 var(--font-body-a); color: #5C5C5A; max-width: 560px; }
+  .s03 img { width: 100%; height: 250px; object-fit: cover; }
+  .s03 .pm { margin-top: 10px; font: 500 9px/1 var(--font-mono); letter-spacing: .12em; color: #8A8A87; }
+  /* 04 track */
+  .s04 { height: 470px; padding: 46px 56px; }
+  .s04 .idx { position: relative; font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); margin-bottom: 20px; }
+  .s04 h3 { position: relative; font: 700 40px/1.05 var(--font-display-a); font-stretch: 112%; color: var(--ink); max-width: 480px; }
+  .s04 h3 em { font-style: normal; color: var(--accent); }
+  .s04 .stats { position: absolute; left: 56px; right: 56px; bottom: 40px; display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); }
+  .s04 .st { padding: 20px 6px 0; border-inline-end: 1px solid var(--line); }
+  .s04 .st:last-child { border-inline-end: 0; }
+  .s04 .v { font: 700 44px/1 var(--font-display-a); font-stretch: 110%; color: var(--ink); }
+  .s04 .v sup { font-size: 22px; color: var(--accent); vertical-align: 16px; }
+  .s04 .l { margin-top: 8px; font: 400 11px/1.4 var(--font-body-a); color: var(--ink-muted); }
+  /* 05 solutions */
+  .s05 { height: 440px; padding: 46px 56px; }
+  .s05 .idx { position: relative; font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); margin-bottom: 24px; }
+  .s05 .g { position: relative; display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px; }
+  .s05 .fam { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .s05 .fam .n { font: 500 10px/1 var(--font-mono); color: rgba(245,245,244,.35); }
+  .s05 .fam .nm { font: 600 19px/1.1 var(--font-display-a); color: var(--ink-muted); }
+  .s05 .fam.on .nm { color: var(--ink); } .s05 .fam.on .n { color: var(--accent); }
+  .s05 .prev { border: 1px solid var(--line); background: rgba(6,6,7,.6); padding: 24px 26px; align-self: start; }
+  .s05 .prev .k { font: 500 9px/1 var(--font-mono); letter-spacing: .12em; color: var(--accent); margin-bottom: 12px; }
+  .s05 .prev h4 { font: 700 21px/1.2 var(--font-display-a); color: var(--ink); margin-bottom: 12px; }
+  .s05 .prev .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .s05 .prev .chip { font-size: 8.5px; padding: 5px 9px; }
+  /* 06 industries */
+  .s06 { height: 430px; padding: 50px 56px; }
+  .s06 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 30px; }
+  .s06 .active { font: 700 58px/1 var(--font-display-a); font-stretch: 116%; letter-spacing: -.015em; color: #141416; }
+  .s06 .active em { font-style: normal; color: var(--l-accent); }
+  .s06 .meta { margin-top: 18px; font: 500 10px/1.6 var(--font-mono); letter-spacing: .12em; color: #8A8A87; text-transform: uppercase; }
+  .s06 .others { margin-top: 44px; display: flex; gap: 26px; flex-wrap: wrap; border-top: 1px solid var(--l-line); padding-top: 26px; }
+  .s06 .o { font: 600 17px/1 var(--font-display-a); color: #B9B9B5; }
+  .s06 .o.hot { color: #5C5C5A; }
+  .s06 .note { margin-top: 30px; font: 400 11.5px/1.6 var(--font-body-a); color: #8A8A87; max-width: 700px; }
+  /* 07 projects */
+  .s07 { height: 430px; padding: 46px 56px; }
+  .s07 .idx { position: relative; font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); margin-bottom: 24px; }
+  .s07 .fname { position: relative; font: 700 52px/1 var(--font-display-a); font-stretch: 116%; color: var(--ink); }
+  .s07 .fname em { font-style: normal; color: var(--accent); }
+  .s07 .floc { position: relative; margin-top: 14px; font: 500 10px/1 var(--font-mono); letter-spacing: .13em; color: var(--ink-muted); }
+  .s07 .rows { position: absolute; left: 56px; right: 56px; bottom: 34px; }
+  .s07 .r { display: flex; align-items: baseline; gap: 22px; padding: 13px 0; border-top: 1px solid var(--line); }
+  .s07 .r .nm { font: 700 24px/1 var(--font-display-a); font-stretch: 110%; color: var(--ink-muted); }
+  .s07 .r .m { margin-inline-start: auto; font: 500 9px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.4); }
+  /* 08 gallery */
+  .s08 { height: 400px; padding: 46px 56px; }
+  .s08 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 22px; }
+  .s08 .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; height: 250px; }
+  .s08 .t { position: relative; overflow: hidden; }
+  .s08 .t img { width: 100%; height: 100%; object-fit: cover; }
+  .s08 .t.v::after { content: "▶"; position: absolute; left: 10px; top: 10px; font-size: 9px; color: #fff; background: rgba(10,10,12,.6); padding: 5px 8px; border-radius: 999px; }
+  .s08 .more { margin-top: 16px; font: 600 12.5px/1 var(--font-body-a); color: #141416; border-bottom: 2px solid var(--l-accent); display: inline-block; padding-bottom: 4px; }
+  /* 09 ai */
+  .s09 { height: 380px; padding: 46px 56px; }
+  .s09 .glow { position: absolute; left: 30%; top: 55%; width: 560px; height: 480px; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(255,24,156,.13), rgba(141,52,146,.08) 45%, transparent 72%); }
+  .s09 .idx { position: relative; font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--accent); margin-bottom: 22px; }
+  .s09 h3 { position: relative; font: 700 40px/1.04 var(--font-display-a); font-stretch: 114%; color: var(--ink); max-width: 520px; }
+  .s09 h3 em { font-style: normal; color: var(--accent); }
+  .s09 .badge { position: absolute; right: 56px; top: 48px; font: 600 8.5px/1 var(--font-mono); letter-spacing: .12em; color: #0A0A0C; background: #E8B93B; padding: 6px 9px; border-radius: 3px; }
+  .s09 .mini { position: absolute; right: 56px; bottom: 44px; width: 420px; border: 1px solid var(--line); background: rgba(10,10,12,.8); padding: 18px 20px; }
+  .s09 .mini .u { font: 400 12px/1.5 var(--font-body-a); color: var(--ink); background: var(--surface-2); padding: 10px 13px; border-radius: 10px 10px 3px 10px; margin-bottom: 10px; max-width: 90%; }
+  .s09 .mini .a { font: 400 11.5px/1.5 var(--font-body-a); color: var(--ink-muted); border: 1px solid var(--line); padding: 10px 13px; border-radius: 10px 10px 10px 3px; }
+  /* 10 alliances */
+  .s10 { height: 320px; padding: 48px 56px; }
+  .s10 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 34px; }
+  .s10 .railr { display: flex; flex-wrap: wrap; gap: 14px 34px; align-items: baseline; }
+  .s10 .v { font: 700 21px/1 var(--font-display-a); color: #6E6E6B; letter-spacing: .02em; }
+  .s10 .note { margin-top: 32px; font: 400 11.5px/1.6 var(--font-body-a); color: #8A8A87; }
+  /* 11 clients */
+  .s11 { height: 330px; padding: 48px 56px; }
+  .s11 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 26px; }
+  .s11 h3 { font: 700 38px/1.1 var(--font-display-a); font-stretch: 110%; color: #141416; max-width: 760px; }
+  .s11 h3 em { font-style: normal; color: var(--l-accent); }
+  .s11 .names { margin-top: 30px; font: 500 13px/2 var(--font-mono); letter-spacing: .1em; color: #8A8A87; text-transform: uppercase; max-width: 1100px; }
+  /* 12 profile */
+  .s12 { height: 300px; padding: 48px 56px; background: linear-gradient(180deg, #FAFAF8 0%, #EDEDEA 100%); color: #141416; }
+  .s12 .g { display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: center; }
+  .s12 .idx { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; color: var(--l-accent); margin-bottom: 20px; }
+  .s12 h3 { font: 700 34px/1.1 var(--font-display-a); font-stretch: 110%; }
+  .s12 p { margin-top: 12px; font: 400 13px/1.6 var(--font-body-a); color: #5C5C5A; max-width: 620px; }
+  .s12 .btns { display: flex; gap: 12px; }
+  .s12 .b1 { font: 600 13px/1 var(--font-body-a); background: #141416; color: #FAFAF8; padding: 14px 22px; border-radius: 4px; }
+  .s12 .b2 { font: 600 13px/1 var(--font-body-a); border: 1px solid var(--l-line); color: #141416; padding: 14px 22px; border-radius: 4px; }
+  /* 13 cta */
+  .s13 { height: 400px; padding: 46px 56px; }
+  .s13 .inner { position: relative; text-align: center; margin-top: 60px; }
+  .s13 h3 { font: 700 64px/1.02 var(--font-display-a); font-stretch: 118%; letter-spacing: -.014em; color: var(--ink); }
+  .s13 h3 em { font-style: normal; color: var(--accent); }
+  .s13 p { margin-top: 18px; font: 400 14px/1.6 var(--font-body-a); color: var(--ink-muted); }
+  .s13 .btn { margin-top: 28px; }
+  /* 14 footer */
+  .s14 { height: 300px; padding: 44px 56px; background: #060607; }
+  .s14 .g { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 48px; }
+  .s14 img { height: 64px; margin-bottom: 18px; }
+  .s14 .col .t { font: 500 9.5px/1 var(--font-mono); letter-spacing: .13em; color: rgba(245,245,244,.4); margin-bottom: 14px; }
+  .s14 .col a { display: block; font: 400 12.5px/2 var(--font-body-a); color: var(--ink-muted); text-decoration: none; }
+  .s14 .contact { font: 400 12.5px/1.9 var(--font-body-a); color: var(--ink-muted); }
+  .s14 .contact b { color: var(--ink); font-weight: 500; }
+  .s14 .base { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font: 400 10.5px/1 var(--font-mono); letter-spacing: .08em; color: rgba(245,245,244,.35); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Full Homepage Journey — 14 Chapters</h1>
+    <div class="sub">Lower-fidelity rhythm board (P2-A09): evaluates dark/light pacing, mode diversity, media density and adjacency. Rail shows chapter · composition mode · environment. No two adjacent chapters share a mode; environment changes only at the five designed seams.</div>
+  </div>
+  <div class="journey">
+
+    <div class="ch"><div class="rail"><div class="n">01</div><div class="nm">Opening</div><div class="tags"><span class="tag">IMMERSIVE</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s01 deep-s"><canvas id="j1"></canvas><img src="assets/logo-dark.png" alt=""><div class="cap">SMART&nbsp;&nbsp;CHANNELS</div></div></div>
+
+    <div class="ch"><div class="rail"><div class="n">02</div><div class="nm">Hero</div><div class="tags"><span class="tag">CINEMATIC</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s02 dark-s"><canvas id="j2"></canvas>
+      <div class="ov"><b>●</b>&nbsp;&nbsp;SMART CHANNELS — SYSTEMS INTEGRATION</div>
+      <div class="hl">TECHNOLOGY BEHIND<br>THE <em>EXPERIENCE.</em></div>
+      <div class="ctas"><span class="btn btn-primary">Explore Projects →</span><span class="btn btn-ghost">Talk to Smart AI</span></div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">03</div><div class="nm">About</div><div class="tags"><span class="tag">EDITORIAL</span><span class="tag env-l">LIGHT</span></div></div>
+    <div class="sec s03 light-s"><div class="idx">03 — ABOUT SMART CHANNELS</div>
+      <div class="g"><div><h3>We build the <em>connected environments</em> others experience.</h3>
+      <p>Integrated technology, communications, infrastructure and security solutions for businesses, institutions, facilities and events — across the Kingdom and the Gulf.</p></div>
+      <div><img class="grade-light" src="assets/frame-fiber-splicing.jpg" alt=""><div class="pm">AUTHENTIC SMART CHANNELS FOOTAGE</div></div></div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">04</div><div class="nm">Track Record — National Signal Field</div><div class="tags"><span class="tag">TECHNICAL</span><span class="tag">IMMERSIVE</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s04 dark-s"><canvas id="j4"></canvas>
+      <div class="idx">04 — TRACK RECORD · NATIONAL REACH</div>
+      <h3>Delivery at <em>national scale,</em> year after year.</h3>
+      <div class="stats">
+        <div class="st"><div class="v">200<sup>+</sup></div><div class="l">Projects Delivered</div></div>
+        <div class="st"><div class="v">7</div><div class="l">Years of Continuous Delivery</div></div>
+        <div class="st"><div class="v">16<sup>+</sup></div><div class="l">Sectors Served</div></div>
+        <div class="st"><div class="v">100<sup>+</sup></div><div class="l">National Venues &amp; Events</div></div>
+      </div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">05</div><div class="nm">Solutions Ecosystem</div><div class="tags"><span class="tag">STRUCTURAL</span><span class="tag">TECHNICAL</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s05 dark-s"><canvas id="j5"></canvas>
+      <div class="idx">05 — WHAT WE POWER</div>
+      <div class="g">
+        <div>
+          <div class="fam"><span class="n">01</span><span class="nm">Infrastructure &amp; Data Centre</span></div>
+          <div class="fam"><span class="n">02</span><span class="nm">Networking &amp; Connectivity</span></div>
+          <div class="fam on"><span class="n">03</span><span class="nm">Security Solutions</span></div>
+          <div class="fam"><span class="n">04</span><span class="nm">Biometrics &amp; Access Control</span></div>
+          <div class="fam"><span class="n">05</span><span class="nm">Audio &amp; Visual Solutions</span></div>
+          <div class="fam"><span class="n">06</span><span class="nm">Unified Comms &amp; Smart Buildings</span></div>
+          <div class="fam"><span class="n">07</span><span class="nm">Video Surveillance &amp; AI</span></div>
+        </div>
+        <div class="prev">
+          <div class="k">ACTIVE PREVIEW</div>
+          <h4>Protect what matters.</h4>
+          <div class="chips"><span class="chip">CCTV</span><span class="chip">Analytics</span><span class="chip">Access Control</span><span class="chip">Firewalls</span></div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">06</div><div class="nm">Industries</div><div class="tags"><span class="tag">EVIDENCE</span><span class="tag env-l">LIGHT</span></div></div>
+    <div class="sec s06 light-s"><div class="idx">06 — INDUSTRIES WE SERVE</div>
+      <div class="active">STADIUMS &amp; <em>SPORTS CITIES</em></div>
+      <div class="meta">6 VENUES COMMISSIONED 2022—2025 · FIBER · SWITCHING · CCTV · CONTROL ROOMS</div>
+      <div class="others">
+        <span class="o hot">Major Sporting Events</span><span class="o">Giga-projects</span><span class="o">Government</span>
+        <span class="o">Cultural Seasons</span><span class="o">Motorsport</span><span class="o">Hospitality &amp; F&amp;B</span><span class="o">+ 9 more</span>
+      </div>
+      <div class="note">Featured industries are data-driven (Q3). Desktop: large active scene with adjacent previews; keyboard/tap driven — no hover-only interaction. Typographic-technical treatment until approved industry imagery exists.</div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">07</div><div class="nm">Selected Projects</div><div class="tags"><span class="tag">CINEMATIC</span><span class="tag">EVIDENCE</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s07 dark-s"><canvas id="j7"></canvas>
+      <div class="idx">07 — SELECTED PROJECTS · FEATURED</div>
+      <div class="fname">KING ABDULLAH SPORTS CITY<em>.</em></div>
+      <div class="floc">JEDDAH · 2023—2025 · FIBER · SWITCHING · CCTV · CONTROL ROOM</div>
+      <div class="rows">
+        <div class="r"><span class="nm">F1 SAUDI ARABIAN GRAND PRIX</span><span class="m">MOTORSPORT · JEDDAH</span></div>
+        <div class="r"><span class="nm">DIRIYAH SEASON</span><span class="m">CULTURAL SEASONS · DIRIYAH</span></div>
+        <div class="r"><span class="nm">NEOM SPORTS VILLAGE</span><span class="m">GIGA-PROJECTS · NEOM</span></div>
+      </div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">08</div><div class="nm">Gallery</div><div class="tags"><span class="tag">EDITORIAL</span><span class="tag">MEDIA</span><span class="tag env-l">LIGHT</span></div></div>
+    <div class="sec s08 light-s"><div class="idx">08 — OUR MOMENTS</div>
+      <div class="tiles">
+        <div class="t v"><img class="grade-light" src="assets/frame-event-pylons.jpg" alt=""></div>
+        <div class="t"><img class="grade-light" src="assets/frame-fiber-splicing.jpg" alt=""></div>
+        <div class="t"><img class="grade-light" src="../../../img/Surveillance Cameras.jpg" alt=""></div>
+        <div class="t v"><img class="grade-light" src="assets/frame-heritage-walkway.jpg" alt=""></div>
+      </div>
+      <span class="more">View Full Gallery&nbsp;&nbsp;→</span>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">09</div><div class="nm">Smart AI</div><div class="tags"><span class="tag">IMMERSIVE</span><span class="tag env-d">DEEP DARK</span></div></div>
+    <div class="sec s09 deep-s"><canvas id="j9"></canvas><div class="glow"></div>
+      <div class="idx">09 — SMART AI</div>
+      <h3>Describe the need. We route the <em>signal.</em></h3>
+      <span class="badge">CONCEPT — INTEGRATION-READY UX</span>
+      <div class="mini">
+        <div class="u">I need CCTV and networking for a warehouse in Riyadh.</div>
+        <div class="a">That maps to Video Surveillance &amp; AI and Networking &amp; Connectivity — a few questions and the team takes over…</div>
+      </div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">10</div><div class="nm">Technology Alliances</div><div class="tags"><span class="tag">STRUCTURAL</span><span class="tag env-l">LIGHT</span></div></div>
+    <div class="sec s10 light-s"><div class="idx">10 — TECHNOLOGY ALLIANCES · CERTIFIED PARTNERSHIPS</div>
+      <div class="railr">
+        <span class="v">CISCO</span><span class="v">ARUBA</span><span class="v">HPE</span><span class="v">FORTINET</span><span class="v">PALO ALTO</span>
+        <span class="v">HIKVISION</span><span class="v">DALLMEIER</span><span class="v">AXIS</span><span class="v">CORNING</span><span class="v">COMMSCOPE</span>
+        <span class="v">DELL</span><span class="v">AWS</span><span class="v">SAMSUNG</span><span class="v">+ 29 MORE</span>
+      </div>
+      <div class="note">Controlled rail — approved supplied logo assets only (D-005); wordmarks shown here as placeholders pending logo-quality assessment (O-005). Grayscale at rest, brand color on focus/hover; static grid fallback; no marquee unless accessible.</div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">11</div><div class="nm">Clients</div><div class="tags"><span class="tag">EVIDENCE</span><span class="tag env-l">LIGHT</span></div></div>
+    <div class="sec s11 light-s"><div class="idx">11 — TRUSTED BY THE KINGDOM'S INSTITUTIONS</div>
+      <h3>Government bodies, giga-projects, financial institutions, global brands and event organisers — <em>across the Kingdom and the Gulf.</em></h3>
+      <div class="names">SELA · ROTHSCHILD &amp; CO · VEOLIA · MOTT MACDONALD · TAKAMOL · BALICHWONDERSTUDIO · MOELIS · TIME · PFL MENA · + MORE</div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">12</div><div class="nm">Company Profile</div><div class="tags"><span class="tag">EDITORIAL</span><span class="tag env-l">LIGHT → DIM</span></div></div>
+    <div class="sec s12"><div class="g">
+      <div><div class="idx">12 — COMPANY PROFILE</div>
+      <h3>The full story, in one document.</h3>
+      <p>Read the Smart Channels Company Profile 2026 — capabilities, solutions, track record and selected projects.</p></div>
+      <div class="btns"><span class="b1">Read Online</span><span class="b2">Download English PDF</span></div>
+    </div></div></div>
+
+    <div class="ch"><div class="rail"><div class="n">13</div><div class="nm">Final CTA</div><div class="tags"><span class="tag">CINEMATIC</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s13 dark-s"><canvas id="j13"></canvas>
+      <div class="inner">
+        <h3>Let's build it <em>together.</em></h3>
+        <p>Talk to our team about your next technology project — from infrastructure and connectivity to security, smart buildings and event solutions.</p>
+        <span class="btn btn-primary">Let's Talk&nbsp;&nbsp;→</span>
+      </div>
+    </div></div>
+
+    <div class="ch"><div class="rail"><div class="n">14</div><div class="nm">Footer</div><div class="tags"><span class="tag">STRUCTURAL</span><span class="tag env-d">DARK</span></div></div>
+    <div class="sec s14">
+      <div class="g">
+        <div><img src="assets/logo-dark.png" alt=""></div>
+        <div class="col"><div class="t">SOLUTIONS</div><a>Infrastructure &amp; Data Centre</a><a>Networking &amp; Connectivity</a><a>Security Solutions</a><a>All Solutions →</a></div>
+        <div class="col"><div class="t">COMPANY</div><a>About Us</a><a>Projects</a><a>Gallery</a><a>Partners</a></div>
+        <div class="col"><div class="t">CONTACT</div><div class="contact"><b>King Faisal Road, Al Murabba District</b><br>Riyadh, Kingdom of Saudi Arabia<br><b>+966 11 217 6668</b><br>info@smartchannels.co</div></div>
+      </div>
+      <div class="base"><span>© 2026 SMART CHANNELS. ALL RIGHTS RESERVED.</span><span>EN / AR · DARK / LIGHT</span></div>
+    </div></div>
+
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 11</span><span class="title">Full Homepage Journey — rhythm, pacing, adjacency</span>
+  <span class="note">Mode sequence: IMM · CIN · EDI · TEC · STR · EVI · CIN-EVI · EDI-MED · IMM · STR · EVI · EDI · CIN · STR — no two adjacent chapters repeat a composition; five designed environment seams.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderParticles(document.getElementById('j1'), { seed: 111, count: 60, gather: 0.55, cy: 0.4 });
+  renderField(document.getElementById('j2'), { seed: 112, density: 0.85, linkDist: 130, signal: true, signalZone: [0.5, 0.97], atmos: 0.5, vignette: 0.5 });
+  renderField(document.getElementById('j4'), { seed: 114, density: 0.5, linkDist: 120, signal: true, signalZone: [0.55, 0.95], atmos: 0.4, vignette: 0.5, lineAlpha: 0.07 });
+  renderField(document.getElementById('j5'), { seed: 115, density: 0.45, linkDist: 130, signal: false, atmos: 0.35, vignette: 0.55, lineAlpha: 0.06, nodeAlpha: 0.4 });
+  renderField(document.getElementById('j7'), { seed: 117, density: 0.55, linkDist: 130, signal: true, signalZone: [0.55, 0.95], atmos: 0.45, vignette: 0.55, lineAlpha: 0.07 });
+  renderField(document.getElementById('j9'), { seed: 119, density: 0.4, linkDist: 130, signal: false, atmos: 0.7, vignette: 0.6, lineAlpha: 0.05, nodeAlpha: 0.4 });
+  renderField(document.getElementById('j13'), { seed: 123, density: 0.7, linkDist: 130, signal: true, signalZone: [0.2, 0.8], atmos: 0.5, vignette: 0.55 });
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 40px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 720px; text-align: end; }
+
+  .hero { position: relative; height: 780px; background: var(--bg); border: 1px solid rgba(255,255,255,.07); overflow: hidden; margin-bottom: 16px; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero .tag { position: absolute; top: 118px; right: 64px; font: 500 12px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); background: rgba(6,6,7,.6); padding: 8px 12px; border: 1px solid rgba(255,24,156,.35); }
+  .nav { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; padding: 26px 64px; gap: 42px; }
+  .nav img { height: 62px; }
+  .nav .links { display: flex; gap: 34px; margin-inline-start: auto; align-items: center; }
+  .nav .links span { font: 500 13.5px/1 var(--font-body-a); color: var(--ink-muted); }
+  .nav .links .ai { color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
+  .nav .cta { font: 600 13px/1 var(--font-body-a); color: #0A0A0C; background: var(--accent); padding: 12px 20px; border-radius: 4px; }
+  .hcontent { position: absolute; left: 64px; bottom: 108px; max-width: 1250px; }
+  .hcontent .ov { font: 500 13px/1 var(--font-mono); letter-spacing: .2em; color: var(--ink-muted); margin-bottom: 26px; }
+  .hcontent .ov b { color: var(--accent); font-weight: 500; }
+  .hl { color: var(--ink); }
+  .hero-a .hl { font: 700 118px/0.98 var(--font-display-a); font-stretch: 121%; letter-spacing: -.015em; }
+  .hero-b .hl { font: 700 112px/1.0 var(--font-display-b); letter-spacing: -.03em; }
+  .hl em { font-style: normal; color: var(--accent); }
+  .sub2 { margin-top: 30px; max-width: 760px; font: 400 19px/1.6 var(--font-body-a); color: var(--ink-muted); }
+  .hero-b .sub2 { font-family: var(--font-body-b); }
+  .ctas { margin-top: 38px; display: flex; gap: 16px; }
+  .proof { position: absolute; left: 64px; bottom: 34px; display: flex; align-items: center; gap: 18px; font: 500 11.5px/1 var(--font-mono); letter-spacing: .14em; color: rgba(245,245,244,.5); text-transform: uppercase; }
+  .proof .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .scroll { position: absolute; right: 64px; bottom: 34px; display: flex; align-items: center; gap: 12px; font: 500 11px/1 var(--font-mono); letter-spacing: .2em; color: rgba(245,245,244,.45); }
+  .scroll .lineV { width: 1px; height: 44px; background: linear-gradient(180deg, var(--accent), transparent); }
+
+  .row2 { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; margin-top: 16px; }
+  .panel { position: relative; height: 560px; background: var(--bg); border: 1px solid rgba(255,255,255,.07); overflow: hidden; }
+  .panel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .panel .tag { position: absolute; top: 18px; inset-inline-start: 20px; font: 500 11.5px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); background: rgba(6,6,7,.6); padding: 7px 11px; border: 1px solid rgba(255,24,156,.35); }
+  .ar-content { position: absolute; right: 56px; bottom: 78px; text-align: right; direction: rtl; max-width: 900px; }
+  .ar-content .ov { font: 500 12px/1 var(--font-mono); letter-spacing: .12em; color: var(--ink-muted); margin-bottom: 22px; direction: ltr; }
+  .ar-content .hl-ar { font: 700 76px/1.28 var(--font-display-a-ar); color: var(--ink); }
+  .ar-content .hl-ar em { font-style: normal; color: var(--accent); }
+  .ar-content .sub2 { font: 400 18px/1.9 var(--font-body-ar); color: var(--ink-muted); margin-top: 18px; }
+  .ar-content .ctas { justify-content: flex-start; }
+  .ar-content .btn { font-family: var(--font-body-ar); }
+  .alt-content { position: absolute; left: 56px; bottom: 78px; }
+  .alt-content .ov { font: 500 12px/1 var(--font-mono); letter-spacing: .18em; color: var(--ink-muted); margin-bottom: 24px; }
+  .alt-content .hl { font: 700 84px/1.04 var(--font-display-a); font-stretch: 116%; letter-spacing: -.012em; }
+  .alt-content .hl .w2 { color: var(--ink-muted); }
+  .alt-content .hl em { font-style: normal; color: var(--accent); }
+  .alt-note { position: absolute; left: 56px; bottom: 26px; font: 400 12px/1.5 var(--font-body-a); color: rgba(245,245,244,.4); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Hero — Desktop · Typography Comparison</h1>
+    <div class="sub">Same composition, same copy — judge the type systems (P2-A02). Headline H1 shown as primary; one restrained alternate below (P2-A03). Environment: pure designed network field — no photography (Q-P2-6a). Supporting copy = proposed, requires approval.</div>
+  </div>
+
+  <!-- CANDIDATE A -->
+  <div class="hero hero-a">
+    <canvas id="ca"></canvas>
+    <div class="tag">CANDIDATE A — ARCHIVO (display) · INTER (body) · PLEX MONO</div>
+    <div class="nav">
+      <img src="assets/logo-dark.png" alt="Smart Channels">
+      <div class="links">
+        <span>Solutions</span><span>Projects</span><span>Industries</span><span>Gallery</span><span>Company</span><span>Partners</span>
+        <span class="ai">Smart AI</span><span class="cta">Let's Talk</span>
+      </div>
+    </div>
+    <div class="hcontent">
+      <div class="ov"><b>●</b>&nbsp;&nbsp;SMART CHANNELS — SYSTEMS INTEGRATION</div>
+      <div class="hl">TECHNOLOGY<br>BEHIND THE <em>EXPERIENCE.</em></div>
+      <div class="sub2">We design, build and manage the intelligent technology behind connected environments across the Kingdom and the Gulf — infrastructure, networks, security, communications and smart buildings.</div>
+      <div class="ctas"><span class="btn btn-primary">Explore Projects&nbsp;&nbsp;→</span><span class="btn btn-ghost">Talk to Smart AI</span></div>
+    </div>
+    <div class="proof"><span class="dot"></span>F1 SAUDI ARABIAN GP — EVENT TECHNOLOGY</div>
+    <div class="scroll">SCROLL<span class="lineV"></span></div>
+  </div>
+
+  <!-- CANDIDATE B -->
+  <div class="hero hero-b">
+    <canvas id="cb"></canvas>
+    <div class="tag">CANDIDATE B — GEIST (display + body) · PLEX MONO</div>
+    <div class="nav">
+      <img src="assets/logo-dark.png" alt="Smart Channels">
+      <div class="links" style="font-family: var(--font-body-b);">
+        <span>Solutions</span><span>Projects</span><span>Industries</span><span>Gallery</span><span>Company</span><span>Partners</span>
+        <span class="ai">Smart AI</span><span class="cta" style="font-family: var(--font-body-b);">Let's Talk</span>
+      </div>
+    </div>
+    <div class="hcontent">
+      <div class="ov"><b>●</b>&nbsp;&nbsp;SMART CHANNELS — SYSTEMS INTEGRATION</div>
+      <div class="hl">TECHNOLOGY<br>BEHIND THE <em>EXPERIENCE.</em></div>
+      <div class="sub2">We design, build and manage the intelligent technology behind connected environments across the Kingdom and the Gulf — infrastructure, networks, security, communications and smart buildings.</div>
+      <div class="ctas"><span class="btn btn-primary" style="font-family: var(--font-body-b);">Explore Projects&nbsp;&nbsp;→</span><span class="btn btn-ghost" style="font-family: var(--font-body-b);">Talk to Smart AI</span></div>
+    </div>
+    <div class="proof"><span class="dot"></span>F1 SAUDI ARABIAN GP — EVENT TECHNOLOGY</div>
+    <div class="scroll">SCROLL<span class="lineV"></span></div>
+  </div>
+
+  <div class="row2">
+    <!-- ARABIC MIRROR (Candidate A) -->
+    <div class="panel" dir="ltr">
+      <canvas id="car"></canvas>
+      <div class="tag">ARABIC MIRROR — RTL COMPOSITION (CANDIDATE A: NOTO KUFI ARABIC / PLEX SANS ARABIC)</div>
+      <div class="ar-content">
+        <div class="ov">SMART CHANNELS — SYSTEMS INTEGRATION</div>
+        <div class="hl-ar">التقنية التي<br>تصنع <em>التجربة.</em></div>
+        <div class="sub2">نصمّم ونبني وندير التقنية الذكية خلف البيئات المتصلة في المملكة والخليج — البنية التحتية والشبكات والأمن والاتصالات والمباني الذكية.</div>
+        <div class="ctas"><span class="btn btn-primary">استكشف المشاريع</span><span class="btn btn-ghost">تحدّث إلى Smart AI</span></div>
+      </div>
+    </div>
+    <!-- ALTERNATE HEADLINE -->
+    <div class="panel">
+      <canvas id="calt"></canvas>
+      <div class="tag">ALTERNATE HEADLINE TREATMENT (RESTRAINED) — P2-A03</div>
+      <div class="alt-content">
+        <div class="ov">SMART CHANNELS — SYSTEMS INTEGRATION</div>
+        <div class="hl">CONNECT.<br><span class="w2">PROTECT.</span><br><em>EMPOWER.</em></div>
+      </div>
+      <div class="alt-note">Derived from approved profile copy (p. 6: “connect, protect and empower”). AR: «نصل. نحمي. نمكّن.»</div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 02</span><span class="title">Hero — Desktop · Candidate A vs Candidate B · AR mirror · alternate headline</span>
+  <span class="note">One magenta signal at a time; accent &lt; 5% of viewport. Arabic strings are proposed copy requiring approval (D-006).</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('ca'),  { seed: 31, density: 1.05, linkDist: 150, signal: true, signalZone: [0.55, 0.98], atmos: 0.55, vignette: 0.55 });
+  renderField(document.getElementById('cb'),  { seed: 31, density: 1.05, linkDist: 150, signal: true, signalZone: [0.55, 0.98], atmos: 0.55, vignette: 0.55 });
+  renderField(document.getElementById('car'), { seed: 33, density: 0.9,  linkDist: 140, signal: true, signalZone: [0.02, 0.42], atmos: 0.45, vignette: 0.5 });
+  renderField(document.getElementById('calt'),{ seed: 34, density: 0.8,  linkDist: 140, signal: false, atmos: 0.4,  vignette: 0.5 });
+</script>
+</body>
+</html>

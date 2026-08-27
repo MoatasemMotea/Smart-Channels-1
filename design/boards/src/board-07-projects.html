@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 740px; text-align: end; }
+
+  .feat { position: relative; height: 620px; background: var(--bg); border: 1px solid rgba(255,255,255,.07); overflow: hidden; margin-bottom: 16px; padding: 64px 72px; }
+  .feat canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .feat .chapter { position: relative; display: flex; align-items: center; gap: 16px; margin-bottom: 60px; }
+  .feat .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--accent); }
+  .feat .rule { flex: 1; height: 1px; background: var(--line); }
+  .fgrid { position: relative; display: grid; grid-template-columns: 1.2fr 1fr; gap: 90px; align-items: end; }
+  .fmeta .k { font: 500 11.5px/1 var(--font-mono); letter-spacing: .16em; color: var(--ink-muted); margin-bottom: 24px; }
+  .fmeta h2 { font: 700 92px/0.99 var(--font-display-a); font-stretch: 118%; letter-spacing: -.015em; color: var(--ink); }
+  .fmeta h2 em { font-style: normal; color: var(--accent); }
+  .fmeta .loc { margin-top: 26px; font: 500 13px/1 var(--font-mono); letter-spacing: .14em; color: var(--ink-muted); }
+  .scopebox { border: 1px solid var(--line); background: rgba(6,6,7,.6); padding: 36px 40px; }
+  .scopebox .t { font: 500 11px/1 var(--font-mono); letter-spacing: .13em; color: var(--accent); margin-bottom: 20px; }
+  .scopebox ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .scopebox li { display: flex; gap: 12px; font: 400 14.5px/1.5 var(--font-body-a); color: var(--ink-muted); }
+  .scopebox li::before { content: "—"; color: var(--accent); flex: none; }
+  .scopebox .years { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); font: 500 12px/1 var(--font-mono); letter-spacing: .12em; color: var(--ink); }
+  .scopebox .years b { color: var(--accent); font-weight: 500; }
+  .fnote { position: absolute; bottom: 26px; left: 72px; font: 400 12px/1.5 var(--font-body-a); color: rgba(245,245,244,.4); max-width: 900px; }
+
+  .wall { background: var(--bg-deep); border: 1px solid rgba(255,255,255,.07); padding: 56px 72px 40px; }
+  .wall .wt { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--ink-muted); margin-bottom: 28px; }
+  .prow { display: flex; align-items: baseline; gap: 34px; padding: 25px 0; border-bottom: 1px solid var(--line); }
+  .prow .nm { font: 700 52px/1 var(--font-display-a); font-stretch: 113%; letter-spacing: -.014em; color: var(--ink); white-space: nowrap; }
+  .prow.dim .nm { color: var(--ink-muted); font-size: 40px; }
+  .prow .meta { margin-inline-start: auto; display: flex; gap: 34px; font: 500 11.5px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.45); text-transform: uppercase; flex: none; }
+  .prow .meta b { color: var(--ink-muted); font-weight: 500; }
+  .prow .go { font: 400 24px/1 var(--font-body-a); color: rgba(245,245,244,.3); }
+  .prow:hover .go { color: var(--accent); }
+  .prow.enriched { display: block; border-bottom: 1px solid rgba(255,24,156,.4); }
+  .prow.enriched .top { display: flex; align-items: baseline; gap: 34px; }
+  .prow.enriched .chips { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0 6px; }
+  .prow.enriched .chip { font-size: 10.5px; }
+  .textonly { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.3); border: 1px solid var(--line); padding: 5px 9px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Selected Projects — Featured Band + Evidence Wall</h1>
+    <div class="sub">Chapter 07. Featured slot designed now, populated after the D-004 Project × Media × Evidence assessment — shown here with King Abdullah Sports City, whose scope and years are source-backed (profile p. 26). The wall makes typography the imagery; logos appear only where quality and permission allow.</div>
+  </div>
+
+  <div class="feat">
+    <canvas id="fc"></canvas>
+    <div class="chapter"><span class="idx">07 — SELECTED PROJECTS · FEATURED</span><div class="rule"></div></div>
+    <div class="fgrid">
+      <div class="fmeta">
+        <div class="k">STADIUMS &amp; SPORTS CITIES — SOURCE-BACKED SCOPE</div>
+        <h2>KING ABDULLAH<br>SPORTS CITY<em>.</em></h2>
+        <div class="loc">JEDDAH, KINGDOM OF SAUDI ARABIA</div>
+      </div>
+      <div class="scopebox">
+        <div class="t">DELIVERED AT THE VENUE — FROM APPROVED PROFILE</div>
+        <ul>
+          <li>Fiber and internet cabling</li>
+          <li>Network components &amp; switching</li>
+          <li>Server and equipment rooms</li>
+          <li>Ticket booths &amp; workstations</li>
+          <li>CCTV design and installation</li>
+          <li>Operations and control room</li>
+        </ul>
+        <div class="years">PERIOD — <b>2023 — 2025</b></div>
+      </div>
+    </div>
+    <div class="fnote">Featured selection pending D-004 assessment. Cinematic media enters this band only when authentic, approved project imagery exists — the composition never fakes it (environment field until then).</div>
+  </div>
+
+  <div class="wall">
+    <div class="wt">THE EVIDENCE WALL — TYPOGRAPHIC INDEX (EXTRACT)</div>
+    <div class="prow">
+      <span class="nm">F1 SAUDI ARABIAN GRAND PRIX</span>
+      <span class="meta"><span><b>SECTOR</b>&nbsp;&nbsp;MOTORSPORT</span><span><b>LOCATION</b>&nbsp;&nbsp;JEDDAH</span></span>
+      <span class="go">→</span>
+    </div>
+    <div class="prow dim">
+      <span class="nm">GRAND MOSQUE — MAKKAH</span>
+      <span class="meta"><span><b>SECTOR</b>&nbsp;&nbsp;RELIGIOUS &amp; HOLY SITES</span><span class="textonly">TEXT-ONLY RECORD</span></span>
+      <span class="go">→</span>
+    </div>
+    <div class="prow">
+      <span class="nm">DIRIYAH SEASON</span>
+      <span class="meta"><span><b>SECTOR</b>&nbsp;&nbsp;CULTURAL SEASONS</span><span><b>LOCATION</b>&nbsp;&nbsp;DIRIYAH</span></span>
+      <span class="go">→</span>
+    </div>
+    <div class="prow enriched">
+      <div class="top">
+        <span class="nm" style="font-size:40px; color:var(--ink-muted);">PRINCE SULTAN SPORTS CITY</span>
+        <span class="meta"><span><b>LOCATION</b>&nbsp;&nbsp;ABHA</span><span><b>PERIOD</b>&nbsp;&nbsp;2023—2025</span></span>
+        <span class="go">→</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Fiber &amp; Internet Cabling</span><span class="chip">Switching</span><span class="chip">Server Rooms</span>
+        <span class="chip">Ticket Booths</span><span class="chip">CCTV</span><span class="chip">Control Room</span>
+      </div>
+    </div>
+    <div class="prow dim">
+      <span class="nm">NEOM SPORTS VILLAGE</span>
+      <span class="meta"><span><b>SECTOR</b>&nbsp;&nbsp;GIGA-PROJECTS</span><span><b>LOCATION</b>&nbsp;&nbsp;NEOM</span></span>
+      <span class="go">→</span>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 07</span><span class="title">Featured Project + Typographic Evidence Wall</span>
+  <span class="note">Rows render from Project records: display flag ('logo' / 'text-only' / 'hidden'), meta only where source-backed; enriched rows for records with approved scope. Rows are links prepared for future case-study pages (D-013).</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('fc'), { seed: 71, density: 0.75, linkDist: 160, signal: true, signalZone: [0.45, 0.95], atmos: 0.5, vignette: 0.6, lineAlpha: 0.08 });
+</script>
+</body>
+</html>

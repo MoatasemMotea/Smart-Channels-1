@@ -202,20 +202,41 @@ Q3: major-sporting-events, stadiums-sports-cities, giga-projects,
 government-public-sector, cultural-seasons-festivals, motorsport-racing,
 hospitality-fb.
 
-### 3.5 Projects (D-003, D-004, A-003, A-004)
+### 3.5 Projects (D-003, D-004, A-003, A-004, D-013)
+
+Per D-013, a project is architecturally a **rich record**: it can carry
+multiple ordered media items, multiple approved services, and temporal
+structures (`2025` or `2023–2025`), and it relates to Gallery items by
+reference — never by duplicating physical media files.
 
 ```ts
+// D-013: a confirmed, approved service delivered on a project.
+// Populated ONLY from approved Smart Channels source material —
+// never inferred or invented.
+type ProjectService = {
+  id: string;
+  title: LocalizedText;
+  description?: LocalizedText;
+};
+
+// D-013: one item in a project's own media collection. Arbitrary ordered
+// mixes (image → image → video → image …) render through one presentation
+// layer — adding items never requires React changes.
+type ProjectMedia = {
+  id: string;
+  type: 'image' | 'video';
+  src: string;
+  poster?: string;                // videos; auto-generated, manual wins (A-005)
+  alt: LocalizedText;
+  caption?: LocalizedText;
+  order: number;
+};
+
 type ProjectCaseStudy = {
   // Structural capability only (A-003). Populated ONLY with approved,
   // source-backed content — never invented. No detail pages at launch.
   overview?: LocalizedText;
-  heroMedia?: MediaRef;
-  media?: MediaRef[];
-  scope?: LocalizedText[];        // confirmed scope only
-  location?: LocalizedText;
-  timeline?: { from: number; to?: number };
-  solutionIds?: string[];         // relationships to solution families
-  galleryItemIds?: string[];      // relationships to gallery items
+  heroMedia?: ProjectMedia;       // lead media for future /projects/[slug]
   outcomes?: LocalizedText[];     // only where explicitly source-backed
 };
 
@@ -224,9 +245,18 @@ type Project = {
   slug: string;                   // reserved for future /projects/[slug]
   name: LocalizedText;            // Q5 proper-noun policy applies
   location?: LocalizedText;       // only where source-backed (e.g. "— Jeddah")
-  years?: { from: number; to?: number }; // only where source-backed (stadiums p.26)
+  years?: { from: number; to?: number }; // D-013 temporal structure:
+                                         // {from: 2025} → "2025";
+                                         // {from: 2023, to: 2025} → "2023–2025".
+                                         // Only where source-backed.
   sectorIds: string[];
-  scope?: LocalizedText[];        // ONLY profile-backed scope; otherwise absent
+  services?: ProjectService[];    // D-013: confirmed services delivered
+  scope?: LocalizedText[];        // profile-backed scope bullets (e.g. p.26)
+  media?: ProjectMedia[];         // D-013: project's own ordered media gallery
+  galleryItemIds?: string[];      // D-013: related main-Gallery items BY
+                                  //   REFERENCE — same physical file appears
+                                  //   in both places, no duplicate uploads
+  solutionIds?: string[];         // related solution families
   logo?: {
     src: string;
     quality: 'approved' | 'pdf-extract';  // unacceptable quality → Asset Gap, no logo
@@ -238,6 +268,15 @@ type Project = {
   order: number;
 };
 ```
+
+**Future `/projects/[slug]` contract (D-013):** the route, when authorized,
+renders hero/lead media, name, year/period, location, sector, overview,
+services delivered, related solutions, the ordered `media` collection, and
+related Gallery media — entirely from the fields above. Adding the route
+must require no changes to this schema. Adding a photo or service to an
+existing project, or changing its year, is a data edit in `projects.ts`
+only — never a new component, layout change, project duplication, or
+Gallery rework.
 
 ### 3.6 Gallery (D-008, Q7, Q8, A-004, A-005)
 

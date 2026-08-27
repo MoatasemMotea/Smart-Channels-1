@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 760px; text-align: end; }
+  .scene { position: relative; height: 1160px; background: var(--bg); border: 1px solid rgba(255,255,255,.07); overflow: hidden; }
+  .scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .chapter { position: absolute; top: 54px; left: 64px; display: flex; align-items: center; gap: 16px; }
+  .chapter .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--accent); }
+  .titleblock { position: absolute; top: 96px; left: 64px; max-width: 760px; }
+  .titleblock h2 { font: 700 66px/1.04 var(--font-display-a); font-stretch: 114%; letter-spacing: -.015em; color: var(--ink); }
+  .titleblock h2 em { font-style: normal; color: var(--accent); }
+  .titleblock p { margin-top: 22px; font: 400 17px/1.65 var(--font-body-a); color: var(--ink-muted); max-width: 620px; }
+  .legend { position: absolute; left: 64px; bottom: 300px; display: flex; flex-direction: column; gap: 12px; }
+  .legend .li { display: flex; align-items: center; gap: 12px; font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--ink-muted); text-transform: uppercase; }
+  .legend .sw { width: 22px; display: flex; justify-content: center; }
+  .legend .venue { width: 8px; height: 8px; border-radius: 50%; background: #E9E9EC; }
+  .legend .hq { width: 12px; height: 12px; border-radius: 50%; border: 1.6px solid var(--accent); position: relative; }
+  .legend .hq::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); }
+  .legend .lk { width: 22px; height: 1.4px; background: rgba(255,24,156,.5); }
+  .stats { position: absolute; left: 64px; right: 64px; bottom: 64px; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+  .stat { padding: 34px 8px 0; border-inline-end: 1px solid var(--line); }
+  .stat:last-child { border-inline-end: none; }
+  .stat .v { font: 700 92px/1 var(--font-display-a); font-stretch: 110%; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .stat .v sup { font-size: 46px; color: var(--accent); font-weight: 700; vertical-align: 34px; }
+  .stat .l { margin-top: 14px; font: 500 13px/1.5 var(--font-body-a); color: var(--ink-muted); }
+  .stat .a { margin-top: 8px; font: 400 10px/1 var(--font-mono); letter-spacing: .12em; color: rgba(245,245,244,.35); }
+  .behav { position: absolute; right: 64px; top: 108px; width: 360px; border: 1px solid var(--line); background: rgba(6,6,7,.55); padding: 24px 26px; }
+  .behav .t { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; color: var(--accent); margin-bottom: 16px; }
+  .behav ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .behav li { display: flex; gap: 10px; font: 400 12.5px/1.55 var(--font-body-a); color: var(--ink-muted); }
+  .behav li::before { content: "—"; color: var(--accent); flex: none; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Track Record — The National Signal Field</h1>
+    <div class="sub">Chapter 04. Connected-evidence semantics (P2-A05): venue/project nodes form a peer constellation of source-backed locations; Riyadh is marked separately as HQ — the network does NOT route operationally from headquarters. Counters (P2-A06) live inside the scene and count up 0 → value on viewport entry at implementation.</div>
+  </div>
+  <div class="scene">
+    <canvas id="map"></canvas>
+    <div class="chapter"><span class="idx">04 — TRACK RECORD · NATIONAL REACH</span></div>
+    <div class="titleblock">
+      <h2>Delivery at <em>national scale,</em> year after year.</h2>
+      <p>Planned, installed and commissioned across the Kingdom's major venues, events and institutions — an evidence network drawn only from delivered, approved projects.</p>
+    </div>
+    <div class="legend">
+      <div class="li"><span class="sw"><span class="venue"></span></span>VENUE / PROJECT — SOURCE-BACKED</div>
+      <div class="li"><span class="sw"><span class="hq"></span></span>RIYADH — HQ (IDENTIFIED SEPARATELY)</div>
+      <div class="li"><span class="sw"><span class="lk"></span></span>EVIDENCE CONSTELLATION LINK</div>
+    </div>
+    <div class="behav">
+      <div class="t">SCENE BEHAVIOUR — IMPLEMENTED AT P6</div>
+      <ul>
+        <li>Counters animate 0 → 200+, 0 → 7, 0 → 16+, 0 → 100+ on viewport entry; once; suffixes preserved; tabular figures.</li>
+        <li>Signals travel between venue nodes as the count runs — number and map make one claim.</li>
+        <li>Reduced-motion: all nodes lit, final values shown immediately.</li>
+        <li>2D SVG/Canvas cartography — no WebGL globe.</li>
+      </ul>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">200<sup>+</sup></div><div class="l">Projects Delivered</div><div class="a">AS OF 2026 — APPROVED FIGURE</div></div>
+      <div class="stat"><div class="v">7</div><div class="l">Years of Continuous Delivery</div><div class="a">AS OF 2026 — APPROVED FIGURE</div></div>
+      <div class="stat"><div class="v">16<sup>+</sup></div><div class="l">Sectors Served</div><div class="a">AS OF 2026 — APPROVED FIGURE</div></div>
+      <div class="stat"><div class="v">100<sup>+</sup></div><div class="l">National Venues &amp; Events</div><div class="a">AS OF 2026 — APPROVED FIGURE</div></div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 05</span><span class="title">Track Record + National Signal Field — counter placement shown in-scene</span>
+  <span class="note">Every labeled node is backed by an approved project record; labels name venues/projects, never offices (P2-A05).</span>
+</div>
+<script src="field.js"></script>
+<script>
+(function () {
+  const canvas = document.getElementById('map');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+
+  // Stylized Saudi Arabia outline (lon, lat) — deliberately abstracted.
+  const poly = [
+    [34.9,29.3],[36.5,29.2],[37.6,30.4],[39.0,32.1],[40.4,31.9],[42.0,31.1],
+    [44.7,29.2],[46.5,29.1],[47.5,28.9],[47.7,28.5],[48.4,28.1],[49.0,27.6],
+    [49.3,27.0],[50.2,26.6],[50.1,25.9],[50.8,25.0],[51.2,24.6],[52.0,23.0],
+    [55.0,22.7],[55.7,22.0],[52.0,19.0],[49.1,18.6],[47.0,17.4],[45.4,17.3],
+    [43.9,17.4],[43.2,16.7],[42.8,16.4],[42.5,17.1],[41.5,18.0],[41.0,19.5],
+    [39.7,20.8],[39.1,22.0],[38.5,23.4],[37.5,24.6],[36.8,25.7],[36.0,26.6],
+    [35.4,27.6],[34.9,28.2]
+  ];
+  const lons = poly.map(p => p[0]), lats = poly.map(p => p[1]);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+  // map area: right-of-title region
+  const mx = w * 0.28, my = h * 0.05, mw = w * 0.66, mh = h * 0.68;
+  function proj(lon, lat) {
+    const x = mx + ((lon - minLon) / (maxLon - minLon)) * mw;
+    const y = my + ((maxLat - lat) / (maxLat - minLat)) * mh * 1.0;
+    return [x, y];
+  }
+  function inPoly(lon, lat) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  // dot-matrix land
+  const step = 0.42;
+  for (let lon = minLon; lon <= maxLon; lon += step) {
+    for (let lat = minLat; lat <= maxLat; lat += step) {
+      if (!inPoly(lon, lat)) continue;
+      const [x, y] = proj(lon, lat);
+      ctx.fillStyle = 'rgba(255,255,255,0.17)';
+      ctx.beginPath(); ctx.arc(x, y, 1.9, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  // source-backed venues (name label, lon, lat)
+  const venues = [
+    ['MAKKAH — GRAND MOSQUE', 39.83, 21.42, 't'],
+    ['JEDDAH — KASC · F1 · FIFA CWC', 39.17, 21.54, 'l'],
+    ['TAIF — KING FAHD SPORTS CITY', 40.42, 21.27, 'b'],
+    ['ABHA — PRINCE SULTAN SPORTS CITY', 42.51, 18.22, 'r'],
+    ['ALULA — RCU · ALULA TOUR', 37.93, 26.61, 'r'],
+    ['DIRIYAH — DIRIYAH SEASON', 46.15, 25.05, 't'],
+    ['NEOM — SPORTS VILLAGE', 35.3, 28.0, 'r'],
+    ['TABUK — CAMEL FESTIVAL', 36.57, 28.38, 'r'],
+  ];
+  const riyadh = ['RIYADH — HQ · MARATHON · WTA FINALS', 46.68, 24.62];
+  const pts = venues.map(v => proj(v[1], v[2]));
+  // constellation links: nearest-neighbour chain + a few cross links (peer mesh, no hub)
+  const links = [[0,1],[0,2],[1,4],[4,6],[6,7],[2,3],[3,5],[4,5],[5,0]];
+  ctx.lineWidth = 1.2;
+  for (const [a, b] of links) {
+    const g = ctx.createLinearGradient(pts[a][0], pts[a][1], pts[b][0], pts[b][1]);
+    g.addColorStop(0, 'rgba(255,24,156,0.34)');
+    g.addColorStop(0.5, 'rgba(255,24,156,0.14)');
+    g.addColorStop(1, 'rgba(255,24,156,0.34)');
+    ctx.strokeStyle = g;
+    ctx.beginPath(); ctx.moveTo(pts[a][0], pts[a][1]); ctx.lineTo(pts[b][0], pts[b][1]); ctx.stroke();
+  }
+  // venue nodes + labels
+  ctx.textBaseline = 'middle';
+  venues.forEach((v, i) => {
+    const [x, y] = pts[i];
+    const g = ctx.createRadialGradient(x, y, 0, x, y, 16);
+    g.addColorStop(0, 'rgba(233,233,236,0.5)'); g.addColorStop(1, 'rgba(233,233,236,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#E9E9EC'; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(245,245,244,0.62)';
+    const tw = ctx.measureText(v[0]).width;
+    if (v[3] === 'r') ctx.fillText(v[0], x + 14, y);
+    else if (v[3] === 'l') ctx.fillText(v[0], x - tw - 14, y);
+    else if (v[3] === 't') ctx.fillText(v[0], x - tw / 2, y - 20);
+    else ctx.fillText(v[0], x - tw / 2, y + 22);
+  });
+  // Riyadh HQ — separate identity, no spokes
+  const [rx, ry] = proj(riyadh[1], riyadh[2]);
+  const rg = ctx.createRadialGradient(rx, ry, 0, rx, ry, 34);
+  rg.addColorStop(0, 'rgba(255,24,156,0.4)'); rg.addColorStop(1, 'rgba(255,24,156,0)');
+  ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(rx, ry, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,24,156,0.85)'; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.arc(rx, ry, 11, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,24,156,0.3)';
+  ctx.beginPath(); ctx.arc(rx, ry, 19, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = '#FF189C'; ctx.beginPath(); ctx.arc(rx, ry, 4.5, 0, Math.PI * 2); ctx.fill();
+  ctx.font = '600 11.5px "IBM Plex Mono", monospace';
+  ctx.fillStyle = 'rgba(255,24,156,0.95)';
+  ctx.fillText('RIYADH — HQ', rx + 26, ry - 8);
+  ctx.font = '500 10.5px "IBM Plex Mono", monospace';
+  ctx.fillStyle = 'rgba(245,245,244,0.6)';
+  ctx.fillText('RIYADH MARATHON · WTA FINALS · BOULEVARD', rx + 26, ry + 10);
+})();
+</script>
+</body>
+</html>

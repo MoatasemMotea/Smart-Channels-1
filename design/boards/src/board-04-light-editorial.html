@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; color: var(--ink); }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 700px; text-align: end; }
+
+  .scene { position: relative; background: var(--l-bg); border: 1px solid rgba(255,255,255,.07); padding: 110px 96px 96px; color: var(--l-ink); overflow: hidden; }
+  .chapter { display: flex; align-items: center; gap: 16px; margin-bottom: 56px; }
+  .chapter .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--l-accent); }
+  .chapter .rule { flex: 1; height: 1px; background: var(--l-line); }
+  .grid { display: grid; grid-template-columns: 7fr 5fr; gap: 96px; align-items: start; }
+  .ed .k { font: 500 12px/1 var(--font-mono); letter-spacing: .18em; color: var(--l-ink-muted, #5C5C5A); text-transform: uppercase; margin-bottom: 28px; }
+  .ed h2 { font: 700 76px/1.04 var(--font-display-a); font-stretch: 112%; letter-spacing: -.015em; max-width: 900px; }
+  .ed h2 em { font-style: normal; color: var(--l-accent); }
+  .ed p { margin-top: 34px; max-width: 720px; font: 400 19px/1.7 var(--font-body-a); color: var(--l-ink-muted, #5C5C5A); }
+  .caps { margin-top: 44px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--l-line); max-width: 720px; }
+  .cap { padding: 22px 4px; border-bottom: 1px solid var(--l-line); display: flex; gap: 14px; align-items: baseline; }
+  .cap b { font: 500 11px/1 var(--font-mono); color: var(--l-accent); letter-spacing: .08em; }
+  .cap span { font: 500 15px/1.3 var(--font-body-a); color: var(--l-ink); }
+  .photo { position: relative; }
+  .photo .imgw { position: relative; overflow: hidden; }
+  .photo img { display: block; width: 100%; height: 620px; object-fit: cover; }
+  .photo .meta { display: flex; justify-content: space-between; margin-top: 14px; font: 500 10.5px/1.5 var(--font-mono); letter-spacing: .1em; color: #8A8A87; text-transform: uppercase; }
+  .photo .frame-accent { position: absolute; top: -14px; inset-inline-end: -14px; width: 120px; height: 120px; border-top: 1px solid var(--l-accent); border-inline-end: 1px solid var(--l-accent); opacity: .7; }
+  .sweep { position: absolute; top: 0; left: 0; right: 0; height: 10px; background: linear-gradient(90deg, transparent, rgba(216,15,126,.5), transparent); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Light Editorial Environment — About</h1>
+    <div class="sub">Chapter 03. Editorial mode after the cinematic dark opening: asymmetric composition, whitespace, warm-neutral paper — premium through typography and restraint, not effects. Photography with the gentle light-chapter grade (P2-A08). Copy from approved profile pp. 3–5.</div>
+  </div>
+  <div class="scene">
+    <div class="sweep"></div>
+    <div class="chapter"><span class="idx">03 — ABOUT SMART CHANNELS</span><div class="rule"></div></div>
+    <div class="grid">
+      <div class="ed">
+        <div class="k">A trusted technology solutions partner in Saudi Arabia</div>
+        <h2>We build the <em>connected environments</em> others experience.</h2>
+        <p>Smart Channels delivers integrated technology, communications, infrastructure and security solutions for businesses, institutions, facilities and events. Our capabilities span advisory and technical services, systems integration, managed services, project delivery and ongoing support — helping customers build reliable, secure and scalable environments.</p>
+        <div class="caps">
+          <div class="cap"><b>01</b><span>Advisory &amp; Technical</span></div>
+          <div class="cap"><b>02</b><span>Engineering Team</span></div>
+          <div class="cap"><b>03</b><span>Systems Integration</span></div>
+          <div class="cap"><b>04</b><span>Managed Services</span></div>
+        </div>
+      </div>
+      <div class="photo">
+        <div class="frame-accent"></div>
+        <div class="imgw grade-wrap subtle"><img class="grade-light" src="assets/frame-fiber-splicing.jpg" alt=""></div>
+        <div class="meta"><span>FIBER SPLICING — FIELD OPERATIONS</span><span>AUTHENTIC SMART CHANNELS FOOTAGE — 2025</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 04</span><span class="title">Light Editorial Environment / About</span>
+  <span class="note">Section headline here is layout copy derived from approved About content — final section copy approved at P6. Accent re-weighted (#D80F7E) for AA contrast on light ground.</span>
+</div>
+</body>
+</html>

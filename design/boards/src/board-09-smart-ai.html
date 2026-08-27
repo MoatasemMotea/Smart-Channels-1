@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 740px; text-align: end; }
+  .scene { position: relative; height: 900px; background: var(--bg-deep); border: 1px solid rgba(255,255,255,.07); overflow: hidden; padding: 70px 84px; }
+  .scene canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .glow { position: absolute; left: 26%; top: 52%; width: 900px; height: 900px; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(255,24,156,.14), rgba(141,52,146,.08) 40%, transparent 70%); }
+  .chapter { position: relative; display: flex; align-items: center; gap: 16px; margin-bottom: 54px; }
+  .chapter .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--accent); }
+  .chapter .rule { flex: 1; height: 1px; background: var(--line); }
+  .grid { position: relative; display: grid; grid-template-columns: 1fr 1.05fr; gap: 100px; align-items: center; }
+  .left .k { font: 500 11.5px/1 var(--font-mono); letter-spacing: .18em; color: var(--ink-muted); margin-bottom: 26px; }
+  .left h2 { font: 700 78px/1.02 var(--font-display-a); font-stretch: 116%; letter-spacing: -.015em; color: var(--ink); }
+  .left h2 em { font-style: normal; color: var(--accent); }
+  .left p { margin-top: 28px; font: 400 18px/1.65 var(--font-body-a); color: var(--ink-muted); max-width: 620px; }
+  .left .ctas { margin-top: 40px; display: flex; gap: 16px; align-items: center; }
+  .core { position: relative; margin-top: 74px; width: 240px; height: 150px; }
+  .core img { position: absolute; left: 0; top: 0; height: 140px; }
+  .maps { margin-top: 40px; display: flex; flex-direction: column; gap: 10px; }
+  .maps .m { display: flex; align-items: center; gap: 14px; font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.5); }
+  .maps .m b { color: var(--accent); font-weight: 500; }
+  .maps .m .ln { width: 44px; height: 1px; background: linear-gradient(90deg, var(--accent), transparent); }
+
+  .panel { position: relative; border: 1px solid var(--line); background: rgba(10,10,12,.82); }
+  .panel .status { display: flex; align-items: center; gap: 12px; padding: 18px 26px; border-bottom: 1px solid var(--line); }
+  .panel .status .b { font: 600 10.5px/1 var(--font-mono); letter-spacing: .12em; color: #0A0A0C; background: #E8B93B; padding: 7px 10px; border-radius: 3px; white-space: nowrap; flex: none; }
+  .panel .status .s { font: 400 12px/1.4 var(--font-body-a); color: var(--ink-muted); }
+  .chat { padding: 34px 30px 26px; display: flex; flex-direction: column; gap: 18px; }
+  .msg { max-width: 82%; padding: 16px 20px; font: 400 15px/1.6 var(--font-body-a); }
+  .msg.user { align-self: flex-end; background: var(--surface-2); color: var(--ink); border-radius: 14px 14px 4px 14px; }
+  .msg.ai { align-self: flex-start; background: transparent; border: 1px solid var(--line); color: var(--ink-muted); border-radius: 14px 14px 14px 4px; }
+  .msg.ai .who { display: flex; align-items: center; gap: 8px; font: 500 10px/1 var(--font-mono); letter-spacing: .12em; color: var(--accent); margin-bottom: 10px; }
+  .msg.ai .who .d { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .demo-tag { align-self: center; font: 500 9.5px/1 var(--font-mono); letter-spacing: .14em; color: rgba(245,245,244,.38); border: 1px dashed rgba(255,255,255,.18); padding: 7px 12px; border-radius: 999px; }
+  .inbar { margin: 4px 30px 30px; display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); padding: 17px 22px; border-radius: 6px; }
+  .inbar .ph { font: 400 14.5px/1 var(--font-body-a); color: rgba(245,245,244,.35); }
+  .inbar .send { margin-inline-start: auto; width: 38px; height: 38px; border-radius: 4px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #0A0A0C; font: 600 15px/1 var(--font-body-a); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Smart AI — Conceptual / Integration-Ready Environment</h1>
+    <div class="sub">Chapter 09 (D-009, P2-A07). The one radial-glow pocket of the journey. The exchange below is a scripted demonstration of the intended consultation experience — visibly labeled; no live model, no streaming, no fake status or response times. Treatment evolves only when an approved backend exists.</div>
+  </div>
+  <div class="scene">
+    <canvas id="ai"></canvas>
+    <div class="glow"></div>
+    <div class="chapter"><span class="idx">09 — SMART AI</span><div class="rule"></div></div>
+    <div class="grid">
+      <div class="left">
+        <div class="k">YOUR AI TECHNOLOGY CONSULTANT — CONCEPT</div>
+        <h2>Describe the need. We route the <em>signal.</em></h2>
+        <p>Tell Smart AI what you are building — it maps your requirement to the right Smart Channels solution families and starts the conversation with our engineering team.</p>
+        <div class="ctas"><span class="btn btn-primary">Start a Conversation</span></div>
+        <div class="maps">
+          <div class="m"><span class="ln"></span><b>CCTV</b>&nbsp;→&nbsp;VIDEO SURVEILLANCE &amp; AI SOLUTIONS</div>
+          <div class="m"><span class="ln"></span><b>NETWORKING</b>&nbsp;→&nbsp;NETWORKING &amp; CONNECTIVITY</div>
+          <div class="m"><span class="ln"></span><b>WAREHOUSE</b>&nbsp;→&nbsp;INDUSTRIAL &amp; ENERGY SECTOR</div>
+        </div>
+        <div class="core"><img src="assets/logo-dark.png" alt=""></div>
+      </div>
+      <div class="panel">
+        <div class="status">
+          <span class="b">CONCEPT — INTEGRATION-READY UX</span>
+          <span class="s">No live AI service is connected. This panel demonstrates the intended experience; enquiries route to the team when integration is approved.</span>
+        </div>
+        <div class="chat">
+          <span class="demo-tag">SCRIPTED DEMONSTRATION — NOT A LIVE RESPONSE</span>
+          <div class="msg user">I need CCTV and networking for a warehouse in Riyadh.</div>
+          <div class="msg ai">
+            <div class="who"><span class="d"></span>SMART AI — CONCEPT</div>
+            That maps to two of our solution families: Video Surveillance &amp; AI Solutions and Networking &amp; Connectivity. May I ask a few questions about the site — area, number of zones, and whether you need recording on-site or in the cloud — so the team can prepare the right recommendation?
+          </div>
+          <div class="msg user">Around 4,000 m², two zones, cloud recording preferred.</div>
+          <div class="msg ai">
+            <div class="who"><span class="d"></span>SMART AI — CONCEPT</div>
+            Understood. I'll package this for our engineers — you can attach drawings or continue to a direct enquiry.
+          </div>
+        </div>
+        <div class="inbar"><span class="ph">Describe your project…</span><span class="send">→</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 09</span><span class="title">Smart AI — conceptual consultation environment, prototype state explicit</span>
+  <span class="note">Amber CONCEPT badge + dashed “scripted demonstration” tag are part of the design until a real backend is approved (P2-A07). Orbiting-core echo of the opening mark.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('ai'), { seed: 91, density: 0.55, linkDist: 150, signal: false, atmos: 0.75, vignette: 0.66, lineAlpha: 0.06, nodeAlpha: 0.45 });
+</script>
+</body>
+</html>

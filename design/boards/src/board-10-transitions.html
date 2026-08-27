@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 720px; text-align: end; }
+  .seams { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .seam { border: 1px solid rgba(255,255,255,.07); }
+  .seam .viz { position: relative; height: 430px; overflow: hidden; }
+  .seam .meta { padding: 22px 26px 26px; background: #0A0A0C; border-top: 1px solid rgba(255,255,255,.07); }
+  .seam .meta .t { font: 500 11px/1 var(--font-mono); letter-spacing: .12em; color: var(--accent); margin-bottom: 10px; }
+  .seam .meta .n { font: 600 17px/1.3 var(--font-body-a); color: var(--ink); margin-bottom: 8px; }
+  .seam .meta .d { font: 400 13px/1.6 var(--font-body-a); color: var(--ink-muted); }
+
+  /* 1 — light sweep horizon: dark hero settling into light editorial */
+  .s1 .dark { position: absolute; inset: 0 0 46% 0; background: #0A0A0C; }
+  .s1 .dark canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .s1 .light { position: absolute; inset: 54% 0 0 0; background: var(--l-bg); }
+  .s1 .horizon { position: absolute; left: 0; right: 0; top: 46%; height: 8%;
+    background: linear-gradient(180deg, #0A0A0C 0%, #3A2233 35%, #E9D8E2 75%, #FAFAF8 100%); }
+  .s1 .sweep { position: absolute; left: 10%; right: 10%; top: 49.5%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,24,156,.85), transparent); filter: blur(.4px); }
+  .s1 .htext { position: absolute; left: 44px; top: 12%; font: 700 40px/1.05 var(--font-display-a); font-stretch: 114%; color: var(--ink); }
+  .s1 .ltext { position: absolute; left: 44px; bottom: 10%; font: 700 34px/1.05 var(--font-display-a); font-stretch: 110%; color: var(--l-ink); }
+
+  /* 2 — signal trail carry-over */
+  .s2 .light { position: absolute; inset: 0 0 50% 0; background: var(--l-bg); }
+  .s2 .dark { position: absolute; inset: 50% 0 0 0; background: #0A0A0C; }
+  .s2 svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .s2 .ltext { position: absolute; left: 44px; top: 14%; font: 700 34px/1.05 var(--font-display-a); font-stretch: 110%; color: var(--l-ink); }
+  .s2 .dtext { position: absolute; left: 44px; bottom: 12%; font: 700 34px/1.05 var(--font-display-a); font-stretch: 110%; color: var(--ink); }
+
+  /* 3 — masked media reveal */
+  .s3 .dark { position: absolute; inset: 0; background: #0A0A0C; }
+  .s3 .win { position: absolute; left: 18%; right: 18%; top: 14%; bottom: 30%; overflow: hidden; }
+  .s3 .win img { width: 100%; height: 100%; object-fit: cover; }
+  .s3 .win::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); }
+  .s3 .expand { position: absolute; left: 8%; right: 8%; top: 76%; height: 90px; background: var(--l-bg); }
+  .s3 .lbl { position: absolute; left: 20%; top: 17%; font: 500 10px/1 var(--font-mono); letter-spacing: .14em; color: rgba(250,250,248,.85); }
+  .s3 .arrow { position: absolute; left: 50%; top: 66.5%; transform: translateX(-50%); font: 400 20px/1 var(--font-body-a); color: rgba(245,245,244,.5); }
+
+  /* 4 — atmospheric dim */
+  .s4 .light { position: absolute; inset: 0 0 42% 0; background: var(--l-bg); }
+  .s4 .mid { position: absolute; left: 0; right: 0; top: 40%; height: 32%;
+    background: linear-gradient(180deg, var(--l-bg) 0%, #C9C2C6 30%, #4A3644 62%, #0A0A0C 100%); }
+  .s4 .dark { position: absolute; inset: 68% 0 0 0; background: #0A0A0C; }
+  .s4 .glow { position: absolute; left: 50%; top: 74%; width: 620px; height: 340px; transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(141,52,146,.22), transparent 70%); }
+  .s4 .core { position: absolute; left: 50%; top: 80%; transform: translateX(-50%); height: 90px; }
+  .s4 .ltext { position: absolute; left: 44px; top: 12%; font: 700 34px/1.05 var(--font-display-a); font-stretch: 110%; color: var(--l-ink); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Dark ↔ Light — Transition Language</h1>
+    <div class="sub">The five environment seams each get a designed device — never a bare background-color swap (§11). Devices reuse the network-field vocabulary so transitions belong to the same system as the scenes they join.</div>
+  </div>
+  <div class="seams">
+    <div class="seam s1">
+      <div class="viz">
+        <div class="dark"><canvas id="t1"></canvas></div>
+        <div class="horizon"></div><div class="light"></div><div class="sweep"></div>
+        <div class="htext">HERO — DARK<br>ENVIRONMENT</div>
+        <div class="ltext" style="color:#141416;">ABOUT — LIGHT EDITORIAL</div>
+      </div>
+      <div class="meta"><div class="t">SEAM 02 → 03</div><div class="n">Light-sweep horizon</div>
+      <div class="d">The dark field settles to a horizon line; a single magenta sweep crosses it and daylight paper rises beneath. Cinematic register, 900–1200 ms.</div></div>
+    </div>
+    <div class="seam s2">
+      <div class="viz">
+        <div class="light"></div><div class="dark"></div>
+        <svg viewBox="0 0 1100 430" preserveAspectRatio="none">
+          <path d="M 80 90 L 340 90 L 460 215 L 640 215 L 760 330 L 1020 330"
+                fill="none" stroke="#FF189C" stroke-width="2" opacity="0.85"/>
+          <circle cx="640" cy="215" r="5" fill="#FF189C"/>
+          <circle cx="640" cy="215" r="14" fill="none" stroke="#FF189C" opacity=".35"/>
+        </svg>
+        <div class="ltext">ABOUT — LIGHT</div>
+        <div class="dtext">TRACK RECORD — DARK FIELD</div>
+      </div>
+      <div class="meta"><div class="t">SEAMS 03 → 04 · 12 → 13</div><div class="n">Signal-trail carry-over</div>
+      <div class="d">One magenta line leaves the light scene, crosses the seam and becomes the first drawn element of the dark scene — the same signal, routed onward. Transmission made literal.</div></div>
+    </div>
+    <div class="seam s3">
+      <div class="viz">
+        <div class="dark"></div>
+        <div class="win grade-wrap subtle"><img class="grade-dark" src="assets/frame-event-pylons.jpg" alt=""></div>
+        <div class="lbl">PROJECTS — DARK EVIDENCE</div>
+        <div class="arrow">↓</div>
+        <div class="expand"></div>
+      </div>
+      <div class="meta"><div class="t">SEAM 07 → 08</div><div class="n">Masked media reveal</div>
+      <div class="d">A media window inside the dark projects chapter expands on scroll until its light surround becomes the Gallery's paper environment — the photograph itself carries the theme change.</div></div>
+    </div>
+    <div class="seam s4">
+      <div class="viz">
+        <div class="light"></div><div class="mid"></div><div class="dark"></div>
+        <div class="glow"></div>
+        <img class="core" src="assets/logo-dark.png" alt="">
+        <div class="ltext" style="color:#141416;">GALLERY — LIGHT MEDIA</div>
+      </div>
+      <div class="meta"><div class="t">SEAM 08 → 09</div><div class="n">Atmospheric dim</div>
+      <div class="d">Daylight dims through a controlled atmospheric gradient into the deepest dark of the journey — the Smart AI pocket — with the purple atmosphere at its permitted maximum and the core waiting below.</div></div>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 10</span><span class="title">Dark ↔ Light transition language — the seam devices</span>
+  <span class="note">Devices: light-sweep horizon · signal-trail carry-over · masked media reveal · atmospheric dim. Reduced-motion: seams render as designed static gradients, opacity-only.</span>
+</div>
+<script src="field.js"></script>
+<script>
+  renderField(document.getElementById('t1'), { seed: 101, density: 0.7, linkDist: 120, signal: false, atmos: 0.4, vignette: 0.3, lineAlpha: 0.08 });
+</script>
+</body>
+</html>

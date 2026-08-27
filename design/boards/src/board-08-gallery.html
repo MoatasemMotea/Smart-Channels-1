@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="base.css">
+<style>
+  body { width: 2360px; background: #050506; }
+  .stage { padding: 56px 40px 48px; }
+  .head { display: flex; align-items: baseline; gap: 24px; margin-bottom: 40px; }
+  .head h1 { font: 700 34px/1 var(--font-display-a); letter-spacing: -.01em; }
+  .head .sub { font: 400 14px/1.5 var(--font-body-a); color: var(--ink-muted); margin-inline-start: auto; max-width: 720px; text-align: end; }
+  .row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; }
+
+  .scene { background: var(--l-bg); border: 1px solid rgba(255,255,255,.07); padding: 76px 72px; color: var(--l-ink); }
+  .chapter { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+  .chapter .idx { font: 500 12px/1 var(--font-mono); letter-spacing: .16em; color: var(--l-accent); }
+  .chapter .rule { flex: 1; height: 1px; background: var(--l-line); }
+  .gtitle { display: flex; align-items: baseline; margin-bottom: 34px; }
+  .gtitle h2 { font: 700 58px/1 var(--font-display-a); font-stretch: 112%; letter-spacing: -.015em; }
+  .gtitle .cnt { margin-inline-start: auto; font: 500 12px/1 var(--font-mono); letter-spacing: .12em; color: #8A8A87; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
+  .pill { padding: 10px 18px; border: 1px solid var(--l-line); border-radius: 999px; font: 500 12px/1 var(--font-body-a); letter-spacing: .03em; color: #5C5C5A; }
+  .pill.on { background: #141416; border-color: #141416; color: #FAFAF8; }
+  .masonry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; grid-auto-rows: 210px; }
+  .tile { position: relative; overflow: hidden; background: #E8E8E5; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile.tall { grid-row: span 2; }
+  .tile .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 12px; background: linear-gradient(180deg, transparent, rgba(10,10,12,.72)); font: 500 10px/1.4 var(--font-mono); letter-spacing: .1em; color: rgba(250,250,248,.9); text-transform: uppercase; }
+  .tile .vid { position: absolute; top: 12px; inset-inline-start: 12px; display: flex; align-items: center; gap: 8px; background: rgba(10,10,12,.62); padding: 7px 11px; border-radius: 999px; font: 500 10px/1 var(--font-mono); color: #FAFAF8; letter-spacing: .08em; }
+  .tile .vid .tri { width: 0; height: 0; border-style: solid; border-width: 4.5px 0 4.5px 7.5px; border-color: transparent transparent transparent #FF189C; }
+
+  .lightbox { position: relative; background: rgba(6,6,7,.97); border: 1px solid rgba(255,255,255,.07); padding: 40px; display: flex; flex-direction: column; }
+  .lightbox .label { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); margin-bottom: 26px; }
+  .lb-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .lb-top .c { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.5); }
+  .lb-top .x { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--ink); font: 400 16px/1 var(--font-body-a); }
+  .lb-img { position: relative; }
+  .lb-img img { width: 100%; height: 560px; object-fit: cover; display: block; }
+  .lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.25); background: rgba(6,6,7,.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #F5F5F4; font-size: 18px; }
+  .lb-arrow.l { left: 18px; } .lb-arrow.r { right: 18px; }
+  .lb-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; }
+  .lb-meta .t { font: 600 17px/1.4 var(--font-body-a); color: var(--ink); }
+  .lb-meta .m { font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; color: rgba(245,245,244,.45); text-transform: uppercase; }
+  .lb-notes { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .lb-notes li { display: flex; gap: 10px; font: 400 12.5px/1.55 var(--font-body-a); color: var(--ink-muted); list-style: none; }
+  .lb-notes li::before { content: "—"; color: var(--accent); flex: none; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Gallery — Editorial Masonry + Accessible Lightbox</h1>
+    <div class="sub">Chapter 08 (Q-P2-12). Mixed aspect ratios absorb portrait phone video naturally; filters from the central taxonomy; “All” is UI state. Tiles shown with candidate media (approval pending, D-008/O-008/O-012). Content videos: poster-first, sound only after explicit Play.</div>
+  </div>
+  <div class="row">
+    <div class="scene">
+      <div class="chapter"><span class="idx">08 — OUR MOMENTS</span><div class="rule"></div></div>
+      <div class="gtitle"><h2>From the field.</h2><span class="cnt">SHOWING 24 OF 128 — PROGRESSIVE LOADING</span></div>
+      <div class="filters">
+        <span class="pill on">All</span><span class="pill">Events &amp; Venues</span><span class="pill">Infrastructure &amp; Networks</span>
+        <span class="pill">Security &amp; Surveillance</span><span class="pill">Audio Visual</span><span class="pill">Field Operations</span>
+      </div>
+      <div class="masonry">
+        <div class="tile tall"><img class="grade-light" src="assets/frame-event-pylons.jpg" alt=""><span class="vid"><span class="tri"></span>0:25</span><div class="cap">EVENT ENVIRONMENT — NIGHT BUILD</div></div>
+        <div class="tile"><img class="grade-light" src="assets/frame-fiber-splicing.jpg" alt=""><span class="vid"><span class="tri"></span>1:19</span><div class="cap">FIBER SPLICING — FIELD OPERATIONS</div></div>
+        <div class="tile"><img class="grade-light" src="../../../img/Surveillance Cameras.jpg" alt=""><div class="cap">CCTV DEPLOYMENT</div></div>
+        <div class="tile"><img class="grade-light" src="../../../img/Network closet.jpg" alt=""><div class="cap">STRUCTURED CABLING</div></div>
+        <div class="tile tall"><img class="grade-light" src="assets/frame-heritage-walkway.jpg" alt=""><span class="vid"><span class="tri"></span>0:31</span><div class="cap">HOSPITALITY ENVIRONMENT — NIGHT</div></div>
+        <div class="tile"><img class="grade-light" src="../../../img/Servers.jpg" alt=""><div class="cap">EQUIPMENT ROOMS</div></div>
+        <div class="tile"><img class="grade-light" src="../../../img/cwe audio and video solution in eevents.jpg" alt=""><div class="cap">EVENT AV</div></div>
+      </div>
+    </div>
+    <div class="lightbox">
+      <div class="label">FULLSCREEN VIEWER — ACCESSIBLE LIGHTBOX</div>
+      <div class="lb-top"><span class="c">07 / 24 — INFRASTRUCTURE &amp; NETWORKS</span><span class="x">✕</span></div>
+      <div class="lb-img">
+        <img class="grade-dark" src="assets/frame-fiber-splicing.jpg" alt="">
+        <span class="lb-arrow l">←</span><span class="lb-arrow r">→</span>
+      </div>
+      <div class="lb-meta">
+        <span class="t">Fiber splicing on site — event network build</span>
+        <span class="m">RIYADH · 2025</span>
+      </div>
+      <ul class="lb-notes">
+        <li>Keyboard: ← → navigate, ESC always closes; focus is trapped while open and returned on close.</li>
+        <li>Swipe navigation on touch; captions/meta render only where present in metadata.</li>
+        <li>Video items open poster-first; audio plays normally only after the user's explicit Play.</li>
+        <li>Media grade adapts per photograph — documentary authenticity preserved (P2-A08).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="board-caption">
+  <span class="num">BOARD 08</span><span class="title">Gallery — masonry grid, category filters, lightbox behaviour inset</span>
+  <span class="note">Data-driven (D-008): adding media = file + metadata entry; published:false stages content privately (A-004); posters auto-generated (A-005).</span>
+</div>
+</body>
+</html>
