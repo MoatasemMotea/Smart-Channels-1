@@ -2,10 +2,15 @@
 
 > P2 deliverable, produced 2026-08-27 under the P2 approval with amendments
 > P2-A01…P2-A11. Companion artifacts: the 11 static visual boards in
-> `design/boards/`. This specification plus the boards form the visual
-> contract for P3+ implementation. Typography and the Hero headline remain
-> **visually selectable** until board review (P2-A02, P2-A03) — both
-> candidates are fully specified here.
+> `design/boards/` and — since P2 Revision Round 1 —
+> `docs/motion-implementation-contract.md`, which is binding on all motion,
+> choreography, capability-tier, and legibility decisions from P4 onward.
+>
+> **LOCKED at P2 Revision Round 1 (D-014/D-015):** Typography =
+> **Candidate A (Archivo-led)** with the Arabic companions below;
+> Hero headline = **`TECHNOLOGY BEHIND THE EXPERIENCE.`** (the alternate is
+> not the primary Hero). Candidate B remains documented for the record
+> only.
 
 ---
 
