@@ -1,0 +1,190 @@
+# Smart Channels 2026 Website — Decision Log
+
+> Authoritative record of approved project decisions, per Master Directive §43.
+> Before proposing or asking anything, check this log first. Decisions here are
+> settled unless the owner explicitly reopens them.
+>
+> Status values: **Approved** · **Open** · **Superseded**
+
+---
+
+## Governance decisions
+
+### D-001 — Logo
+- **Date:** 2026-08-27
+- **Decision:** Use only the authoritative Smart Channels logo supplied in Sources. No redesign or reinterpretation. The orange/red mark visible on field clothing is NOT an official brand variant unless explicitly approved later. If a vector logo is unavailable and a vector representation becomes technically necessary (e.g., for the opening animation), do not trace or recreate it automatically — first explain the proposed method, expected fidelity, and necessity, then request approval.
+- **Reason:** Brand integrity; the supplied logo is authoritative (§4).
+- **Scope:** All brand usage, opening experience, navigation, favicons, OG images.
+- **Status:** Approved
+
+### D-002 — Track Record
+- **Date:** 2026-08-27
+- **Decision:** Approved headline statistics (confirmed correct by owner):
+  - **200+** Projects Delivered
+  - **7** Years of Continuous Delivery
+  - **16+** Sectors Served
+  - **100+** National Venues & Events
+
+  These exist in ONE centralized structured data source. Never duplicated across components or localization files. Track Record UI must later support viewport-triggered count-up animation (0 → value), smooth and premium, triggered on viewport entry, not restarting unnecessarily, preserving suffixes (`+`), respecting `prefers-reduced-motion`. Future number changes require changing data only. See amendment A-001 for the `asOf` contract.
+- **Reason:** Credibility requires consistency; maintainability requires a single source (§16).
+- **Scope:** `src/content/stats.ts` (P3+), Track Record UI (P6), company page.
+- **Status:** Approved
+
+### D-003 — Projects
+- **Date:** 2026-08-27
+- **Decision:** Project names from the approved Company Profile may be modeled as source-backed project records. Do NOT: download replacement logos from the internet; invent project scope; infer deliverables; create unsupported case-study narratives. Where the profile explicitly provides scope (sports cities/stadiums section, PDF p. 26), that information may be modeled. Project logo/public-usage status is explicit per record so records can be enabled, disabled, or displayed text-only via data alone.
+- **Reason:** §3 source-of-truth rule; legal/brand safety on client identities.
+- **Scope:** Project content schema, projects index page, homepage Selected Projects.
+- **Status:** Approved
+
+### D-004 — Featured Projects
+- **Date:** 2026-08-27
+- **Decision:** Featured Projects are NOT selected purely by prestige. Before P9, perform a **Project × Media × Evidence assessment** scoring: (1) approved project identity, (2) confirmed Smart Channels scope, (3) available authentic imagery/video, (4) visual storytelling potential, (5) strategic importance. The final 3–5 Featured Projects remain undecided.
+- **Reason:** Credibility must outrank spectacle (§45); avoids implying unsupported claims.
+- **Scope:** P9 planning; `featured` flags in project data.
+- **Status:** Approved (assessment pending — see Open Items)
+
+### D-005 — Technology Alliances & Clients
+- **Date:** 2026-08-27
+- **Decision:** Use only approved supplied assets. Never source replacement logos from Google/other websites. If PDF extraction quality is unacceptable, record the logo as an **Asset Gap** instead of silently substituting. Data architecture allows individual alliance/client records to be enabled, disabled, or replaced later without redesigning the UI.
+- **Reason:** §22–§23; brand/legal safety.
+- **Scope:** Partners page, homepage alliances/clients sections, asset pipeline.
+- **Status:** Approved
+
+### D-006 — Arabic
+- **Date:** 2026-08-27
+- **Decision:** Arabic is part of the product from the beginning. `/en` and `/ar` architecture from the foundation — no English-first retrofit. Arabic corporate copy: prepared professionally, based strictly on approved English source content, treated as requiring owner review/approval before publication. No new business claims may be introduced during translation. P14 is a final RTL **audit**, not first implementation.
+- **Reason:** RTL retrofits are rework by definition; Saudi market requires first-class Arabic.
+- **Scope:** All phases P3–P18. See amendment A-002 for completeness enforcement.
+- **Status:** Approved
+
+### D-007 — Hero Direction
+- **Date:** 2026-08-27
+- **Decision:** Hybrid direction: proprietary technical cinematic environment (network topology, signals, nodes, connectivity, infrastructure, controlled particles, depth, transmission, systems integration) + selectively integrated approved authentic media. Do NOT upscale the supplied low-resolution phone videos into full-screen hero backgrounds. Final visual direction requires P2 approval; no hero implementation yet.
+- **Reason:** No hero-grade footage exists; a designed technical environment is ownable and performant.
+- **Scope:** P2 creative direction, P5 hero build.
+- **Status:** Approved (visual direction pending P2)
+
+### D-008 — Gallery
+- **Date:** 2026-08-27
+- **Decision:** Supplied photos/videos are **candidate** initial Gallery assets. Not every legacy `img/` file is automatically used. Gallery architecture is data-driven, designed for continuous expansion of JPG/JPEG/PNG/WebP/AVIF/MP4/WebM without component redesign. Clear separation of MEDIA FILES from MEDIA METADATA. Must support future CMS migration without rewriting the presentation layer.
+- **Reason:** §19 CMS-like requirement; owner's ongoing workflow priority.
+- **Scope:** Gallery schema, `public/media/gallery/`, P10 build.
+- **Status:** Approved
+
+### D-009 — Smart AI
+- **Date:** 2026-08-27
+- **Decision:** Initial build = premium front-end experience and integration-ready UX. Do NOT fabricate a working AI backend. Do NOT hard-code fake model responses in a way that could mislead users into believing they are communicating with a live AI service. Interface/interaction architecture designed so a real provider/API connects later. Provider, privacy architecture, lead routing, and API integration are future decisions.
+- **Reason:** §21; honesty requirement.
+- **Scope:** P11.
+- **Status:** Approved
+
+### D-010 — Deployment
+- **Date:** 2026-08-27
+- **Decision:** No production domain configured or assumed. No production deployment during build phases. Website is completed, exported, and tested locally first. Production deployment authorized separately after final review.
+- **Reason:** Owner controls go-live.
+- **Scope:** All phases; P19 handoff.
+- **Status:** Approved
+
+### D-011 — Contact
+- **Date:** 2026-08-27
+- **Decision:** Use only currently approved Company Profile contact information (PDF p. 31): King Faisal Road, Al Murabba District, Riyadh, Kingdom of Saudi Arabia · +966 11 217 6668 · info@smartchannels.co. Do NOT invent WhatsApp numbers, social accounts, LinkedIn URLs, map coordinates, additional offices, or careers information. These can be added later through the structured content system.
+- **Reason:** §3 no-invention rule.
+- **Scope:** Contact page, footer, structured data.
+- **Status:** Approved
+
+### D-012 — Legacy Website
+- **Date:** 2026-08-27
+- **Decision:** When P3 is explicitly authorized, the legacy static website (root `index.html`, `style.css`, `index.js`, legacy background art) may be replaced by the new application. Git history preserves the previous implementation. Not deleted or replaced during P1.
+- **Reason:** Clean rebuild from zero (§1) with recoverable history.
+- **Scope:** P3.
+- **Status:** Approved
+
+---
+
+## Content clarification items
+
+### C-001 — "87 contracted engagements between 2020 and 2026"
+- **Date:** 2026-08-27
+- **Decision:** This statement exists in the source profile (p. 21) but is **excluded from all public website content** until its relationship to the "200+ Projects Delivered" figure is explicitly resolved by the owner. Do not surface it anywhere in public-facing content. Do not invent an explanation reconciling the figures.
+- **Status:** Open (excluded until resolved)
+
+---
+
+## P1 rulings (Q1–Q12, 2026-08-27, all Approved)
+
+| ID | Topic | Ruling |
+|----|-------|--------|
+| Q1 | Page architecture | Multi-page. Homepage = primary immersive journey. Localized routes: `/[locale]/solutions`, `/[locale]/solutions/[slug]`, `/projects`, `/industries`, `/gallery`, `/company`, `/partners`, `/contact`. NO public project detail pages at launch; schema reserves `/projects/[slug]` for later (see A-003). |
+| Q2 | Solutions taxonomy | The 7 source-backed families from the Company Profile are canonical (Infrastructure & Data Centre; Networking & Connectivity; Security Solutions; Biometrics & Access Control; Audio & Visual Solutions; Unified Communications & Smart Buildings; Video Surveillance & AI Solutions). Sub-solutions modeled within each family. Reorganization must be possible via data changes. |
+| Q3 | Industries | Model all 16 approved sectors with `featured` + `order`. Initial homepage featured candidates: Major Sporting Events; Stadiums & Sports Cities; Giga-projects; Government & Public Sector; Cultural Seasons & Festivals; Motorsport & Racing; Hospitality & F&B. Featured selection is configurable data. No invented industry claims/imagery. |
+| Q4 | Default locale | `/` → explicit preference cookie (set by manual switch) → else Arabic-preferred browser → `/ar`, otherwise `/en`. Manual choice persists and overrides detection on future visits. Clean explicit `/en` `/ar` canonical routes for SEO. |
+| Q5 | Proper nouns in Arabic | Mixed policy with per-record override (`name.en` / `name.ar`). Vendors may remain Latin. Official Arabic names used where established. No automatic transliteration; no invented Arabic names. |
+| Q6 | Owner editing workflow | Typed TypeScript structured content modules, strict types, compile-time validation, loud failures. Content files deliberately simple; routine editing must not require understanding React components. Presentation separate from business content. |
+| Q7 | Gallery metadata | Practical model: `id`, `type`, `src`, localized `alt`, localized `caption` (optional), `year`, `location`, `category`, `projectId`, `featured`, `order`, `poster` (video). Optional fields not mandatory; incomplete metadata must not break rendering. Automatic poster-generation script with manual override (implemented/documented by P10). |
+| Q8 | Gallery categories | Filtering approved. Taxonomy: Events & Venues; Infrastructure & Networks; Security & Surveillance; Audio Visual; Field Operations. "All" is a UI state, not a stored category. Labels EN/AR. Centrally configurable. |
+| Q9 | Contact experience | Professional enquiry form modeled in architecture. NO fabricated submission backend; no email/API service yet. `tel:` / `mailto:` links approved. Form must make its integration state explicit and never falsely claim submission succeeded. |
+| Q10 | Navigation | Top level: Solutions · Projects · Industries · Gallery · Company · Partners. Primary CTA: "Let's Talk". Smart AI gets a visually highlighted presence but no dedicated route at launch. Locale/theme are utility controls. Mobile navigation gets its own intentional design. |
+| Q11 | Profile downloads | English profile only while it is the only document. No "Arabic — Coming Soon" placeholder. Content model carries an AR slot fillable by data only. |
+| Q12 | P1 documentation | `docs/decision-log.md`, `docs/ia-sitemap.md`, `docs/content-model.md`, `docs/asset-inventory.md`, `docs/maintenance-model.md`. Maintenance doc = architecture intent at P1, not the final README. |
+
+---
+
+## P1 amendments (A-001–A-006, 2026-08-27, all Approved)
+
+### A-001 — Track Record `asOf` required numeric
+`Stat.asOf` is a **required `number`** (not optional string). Current approved value: `asOf: 2026`. Conceptual contract:
+
+```ts
+type Stat = {
+  id: string;
+  value: number;
+  suffix?: string;
+  label: LocalizedText;
+  asOf: number;      // required
+  source?: string;
+};
+```
+
+### A-002 — Arabic completeness / no silent production fallback
+English fallback for incomplete Arabic **business content** is permitted during development only, and every fallback must produce a visible validation/reporting warning. For production release, Arabic completeness validation must pass; missing required Arabic business copy is a **release-blocking content issue**. Exception: proper nouns intentionally configured to remain in their official Latin form are valid and are NOT missing translations. The content model documents how intentional-Latin is distinguished from missing (see `docs/content-model.md` §"Localization").
+
+### A-003 — Future project case-study contract
+The future slot is `caseStudy?: ProjectCaseStudy` (not `caseStudy?: null`). `ProjectCaseStudy` defines structural capability only — potential fields: overview, approved hero media, project media, confirmed scope, location, timeline, solution relationships, gallery relationships, source-backed outcomes. No invented case-study content is ever populated; no project detail pages at launch. Purpose: `/projects/[slug]` can be added later without redesigning the base `Project` schema.
+
+### A-004 — Publish control
+Owner-managed content carries explicit publish state. Gallery items: required `published: boolean`; `published: false` excludes the item from public rendering while preserving metadata. Projects: public display controlled through the existing `display` architecture (`'logo' | 'text-only' | 'hidden'`, where `'hidden'` = not publicly rendered). All data-driven — content can be prepared in the repository without automatic public exposure.
+
+### A-005 — Media dimensions & owner workflow
+The owner is never required to manually inspect/type image dimensions when adding media. Width/height may be stored where technically useful, but by P10 the project provides a documented utility/validation workflow that reads or generates necessary media metadata automatically where practical. Adding gallery media = ① add file ② add/edit understandable metadata ③ run documented validation/media utility if required ④ build. Never React component modification.
+
+### A-006 — CMS position
+No CMS now. Repository-based typed content architecture. The accessor boundary (`src/lib/content/`) is preserved so a future CMS can replace the data source without rewriting presentation components. Priorities: reliability, ownership, simplicity, strict validation, easy local editing, no vendor lock-in.
+
+---
+
+## Project-wide requirements (recorded 2026-08-27)
+
+- **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
+- **Documentation:** Final project includes complete install/run/build/content-editing documentation (full checklist in Master Directive; delivered as final README at P19).
+- **P19 — Final Handoff & Export:** occurs only after approved P18. Deliverables: complete runnable project for download; all source; all approved required assets; dependency manifests + lockfile; final README/documentation; verified clean install, clean production build, and local startup from clean state; final structure map; final maintenance guide. Excludes `node_modules`, `.next`, caches, unneeded test artifacts, local machine files, secrets, `.env` credentials. Provide `.env.example` if env vars become necessary.
+- **Approval-gate workflow remains mandatory for every phase:** INSPECT → ASK → WAIT → PROPOSE → APPROVAL → IMPLEMENT → VERIFY → REPORT → STOP. No automatic phase progression.
+
+---
+
+## Open items register
+
+| ID | Item | Blocks | Notes |
+|----|------|--------|-------|
+| O-001 | Vector logo files (SVG/AI/EPS) not supplied | P2 brand system; P4 opening animation | Per D-001: no automatic tracing. If vectorization becomes necessary, method + fidelity proposal goes to owner first. |
+| O-002 | C-001 "87 engagements" reconciliation | Nothing at launch (excluded) | Owner to resolve relationship to 200+ figure if it should ever appear. |
+| O-003 | Featured Projects selection | P9 | Requires D-004 Project × Media × Evidence assessment. |
+| O-004 | Arabic numerals style in AR locale (Western 0-9 vs Eastern ٠-٩) | P2 typography decision | To be decided at P2; recorded, not silently chosen. |
+| O-005 | Partner/client logo source files | P12 | Only PDF-embedded logos exist. Extraction quality to be assessed; failures become Asset Gaps per D-005. |
+| O-006 | Hero-grade media | P2/P5 | No 1080p+ cinematic media exists; D-007 hybrid direction compensates. |
+| O-007 | Arabic Company Profile PDF | None (Q11: EN-only shown) | AR slot exists in data; add when supplied. |
+| O-008 | Which legacy `img/` photos are genuine Smart Channels photography vs. stock | P10 gallery population | Owner confirmation needed per image before Gallery use (D-008: candidates only). |
+| O-009 | Contact form backend (service, routing, privacy) | Deployment/integration planning | Q9/D-010: UI modeled, backend deferred. |
+| O-010 | Smart AI provider, privacy architecture, lead routing | Post-P11 integration | D-009. |
+| O-011 | Production domain & hosting | P19+/deployment | D-010. |
+| O-012 | Client-identifying imagery permissions (e.g., "SMC vibes" office photo, Al Nassr room) | P10 gallery population | Owner to confirm usage rights per photo. |
