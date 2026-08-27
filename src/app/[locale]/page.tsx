@@ -42,9 +42,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Hero />
 
       {/* 03 About */}
-      <MotionSection className={chapter} aria-label={t("about")} data-scene="about">
+      <MotionSection reveal="mask" className={chapter} aria-label={t("about")} data-scene="about">
         <div className={inner}>
-          <SectionHeading index={`03 — ${t("about")}`}>
+          <SectionHeading index={t("about")}>
             {localize(company.positioning, locale)}
           </SectionHeading>
           <ul className="grid gap-4 md:grid-cols-4">
@@ -63,9 +63,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <NetworkScene />
 
       {/* 05 Solutions — ecosystem experience at P7 */}
-      <MotionSection className={chapter} aria-label={t("solutions")} data-scene="solutions">
+      <MotionSection reveal="trace" className={chapter} aria-label={t("solutions")} data-scene="solutions">
         <div className={inner}>
-          <SectionHeading index={`05 — ${t("solutions")}`}>{t("solutions")}</SectionHeading>
+          <SectionHeading>{t("solutions")}</SectionHeading>
           <ol className="grid gap-3 md:grid-cols-2">
             {getSolutionFamilies().map((f, i) => (
               <li key={f.id}>
@@ -87,7 +87,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* 06 Industries — showcase at P8 */}
       <MotionSection className={chapter} aria-label={t("industries")} data-scene="industries">
         <div className={inner}>
-          <SectionHeading index={`06 — ${t("industries")}`}>{t("industries")}</SectionHeading>
+          <SectionHeading>{t("industries")}</SectionHeading>
           <ul className="flex flex-wrap gap-3">
             {getFeaturedIndustries().map((i) => (
               <li key={i.id} className="rounded-full border border-line px-4 py-2 text-sm">
@@ -99,18 +99,34 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </MotionSection>
 
       {/* 07 Projects — cinematic featured + evidence wall at P9 */}
-      <MotionSection className={chapter} aria-label={t("projects")} data-scene="projects">
+      <MotionSection reveal="converge" className={chapter} aria-label={t("projects")} data-scene="projects">
         <div className={inner}>
-          <SectionHeading index={`07 — ${t("projects")}`}>{t("projects")}</SectionHeading>
-          <ul className="grid gap-2 md:grid-cols-2">
+          <SectionHeading>{t("projects")}</SectionHeading>
+          {/* §18: the numeric identifier anchors the block's INLINE-START —
+              upper-LEFT in English, upper-RIGHT in Arabic — via logical
+              flow, never a mirrored afterthought. Numerals stay 0–9. */}
+          <ul className="grid gap-x-10 md:grid-cols-2">
             {getPublicProjects()
               .slice(0, 8)
-              .map((p) => (
-                <li key={p.id} className="border-b border-line py-3 font-medium">
-                  {localize(p.name, locale)}
-                  {p.location ? (
-                    <span className="ms-3 text-sm text-ink-muted">{localize(p.location, locale)}</span>
-                  ) : null}
+              .map((p, i) => (
+                <li key={p.id} className="project-entry border-b border-line">
+                  <span aria-hidden="true" className="project-entry-no microlabel" dir="ltr">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="project-entry-body">
+                    <p className="project-entry-title tx-link font-display font-semibold">
+                      {localize(p.name, locale)}
+                    </p>
+                    <p className="project-entry-meta text-sm text-ink-muted">
+                      {p.location ? localize(p.location, locale) : null}
+                      {p.location && p.years ? " · " : null}
+                      {p.years ? (
+                        <span dir="ltr">
+                          {p.years.to ? `${p.years.from}–${p.years.to}` : p.years.from}
+                        </span>
+                      ) : null}
+                    </p>
+                  </div>
                 </li>
               ))}
           </ul>
@@ -125,21 +141,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* 08 Gallery (P10) · 09 Smart AI (P11) — mount points only */}
       <MotionSection className={chapter} aria-label={t("gallery")} data-scene="gallery">
         <div className={inner}>
-          <SectionHeading index={`08 — ${t("gallery")}`}>{t("gallery")}</SectionHeading>
+          <SectionHeading>{t("gallery")}</SectionHeading>
           <p className="text-ink-muted">{tc("comingInPhase")}</p>
         </div>
       </MotionSection>
-      <MotionSection className={chapter} aria-label={t("smartAi")} data-scene="smart-ai" id="smart-ai">
+      <MotionSection reveal="trace" className={chapter} aria-label={t("smartAi")} data-scene="smart-ai" id="smart-ai">
         <div className={inner}>
-          <SectionHeading index={`09 — ${t("smartAi")}`}>{t("smartAi")}</SectionHeading>
+          <SectionHeading>{t("smartAi")}</SectionHeading>
           <p className="text-ink-muted">{tc("comingInPhase")}</p>
         </div>
       </MotionSection>
 
       {/* 10 Alliances + 11 Clients — designed treatments at P12 */}
-      <MotionSection className={chapter} aria-label={t("partners")} data-scene="partners">
+      <MotionSection reveal="sweep" className={chapter} aria-label={t("partners")} data-scene="partners">
         <div className={inner}>
-          <SectionHeading index={`10 — ${t("partners")}`}>{t("partners")}</SectionHeading>
+          <SectionHeading>{t("partners")}</SectionHeading>
           <p className="text-sm leading-8 text-ink-muted">
             {getPartners()
               .map((p) => p.name.en)
@@ -147,9 +163,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </p>
         </div>
       </MotionSection>
-      <MotionSection className={chapter} aria-label={t("clients")} data-scene="clients">
+      <MotionSection reveal="mask" className={chapter} aria-label={t("clients")} data-scene="clients">
         <div className={inner}>
-          <SectionHeading index={`11 — ${t("clients")}`}>{t("clients")}</SectionHeading>
+          <SectionHeading>{t("clients")}</SectionHeading>
           <p className="max-w-3xl text-lg">{localize(company.reach, locale)}</p>
           <p className="mt-4 text-sm leading-8 text-ink-muted">
             {getClients()
@@ -163,7 +179,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           owner ruling — the journey closes Alliances → Clients → Final CTA. */}
 
       {/* 12 Final CTA — cinematic close at P13 */}
-      <MotionSection aria-label={t("contact")} data-scene="cta">
+      <MotionSection reveal="converge" aria-label={t("contact")} data-scene="cta">
         <div className={`${inner} text-center`}>
           <h2 className="font-display text-4xl font-bold md:text-5xl">
             {locale === "ar" ? (

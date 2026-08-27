@@ -3,21 +3,29 @@
 import { useEffect, useRef, type ReactNode } from "react";
 
 /**
- * The single P3 motion primitive (motion contract; Amendment 5): an
+ * Scene-reveal primitive (motion contract; Amendment 5 + Rev3 §14): an
  * IntersectionObserver-driven reveal honoring the capability tier via the
  * `.reveal` CSS in globals.css. STATIC tier renders instantly; without JS
  * content is fully visible (server markup carries no hidden state — the
  * class is added client-side only when animation is possible).
+ *
+ * Rev3 §14 — a controlled transition family instead of one generic fade:
+ *   rise (default) · mask (editorial wipe) · converge (depth settle) ·
+ *   trace (signal line draws across the section seam) · sweep (one light
+ *   pass). Each section picks the device that fits its content; native
+ *   scrolling stays untouched (no pinning, no scroll-jacking).
  */
 export function MotionSection({
   children,
   className,
   as: Tag = "section",
+  reveal = "rise",
   ...rest
 }: {
   children: ReactNode;
   className?: string;
   as?: "section" | "div" | "li";
+  reveal?: "rise" | "mask" | "converge" | "trace" | "sweep";
 } & Record<string, unknown>) {
   const ref = useRef<HTMLElement | null>(null);
 
@@ -44,7 +52,7 @@ export function MotionSection({
 
   return (
     // @ts-expect-error -- polymorphic ref typing kept simple at P3
-    <Tag ref={ref} className={className} {...rest}>
+    <Tag ref={ref} className={className} data-reveal={reveal === "rise" ? undefined : reveal} {...rest}>
       {children}
     </Tag>
   );

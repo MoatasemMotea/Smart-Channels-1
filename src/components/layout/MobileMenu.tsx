@@ -116,11 +116,8 @@ export function MobileMenu({ label, closeLabel }: { label: string; closeLabel: s
                     <Link
                       href={item.href}
                       onClick={close}
-                      className="flex items-baseline gap-4 py-4 font-display text-2xl font-semibold text-ink"
+                      className="tx-link block py-4 font-display text-2xl font-semibold text-ink"
                     >
-                      <span aria-hidden="true" className="microlabel">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
                       <span className={item.highlight === "smart-ai" ? "text-accent" : undefined}>
                         {label_(item.label)}
                       </span>
