@@ -100,6 +100,45 @@
 - **Scope:** P3.
 - **Status:** Approved
 
+### D-013 — Rich Project / Case Study Content
+- **Date:** 2026-08-27
+- **Decision:** A single project must be architecturally capable of containing more than one image. Each project may eventually support: multiple images; multiple videos where available; project year; project period/range where applicable (`2025` or `2023–2025` per approved source data); location; sector; short approved overview; confirmed services delivered; related solution families; a project-specific media gallery; optional featured status; public/published state; media ordering.
+
+  **Services delivered** — conceptual contract (only services explicitly supported by approved Smart Channels source material may be populated; never inferred or invented):
+
+  ```ts
+  type ProjectService = {
+    id: string;
+    title: LocalizedText;
+    description?: LocalizedText;
+  };
+  // on Project: services?: ProjectService[];
+  ```
+
+  **Project media** — a collection, not a single image; arbitrary ordered mixes (image → image → video → image …) must never require React component changes:
+
+  ```ts
+  type ProjectMedia = {
+    id: string;
+    type: 'image' | 'video';
+    src: string;
+    poster?: string;
+    alt: LocalizedText;
+    caption?: LocalizedText;
+    order: number;
+  };
+  // on Project: media?: ProjectMedia[];
+  ```
+
+  **Gallery relationship:** no unnecessary duplicate physical media files. The same approved asset must be able to appear inside its related project/case study AND in the main public Gallery through metadata relationships (IDs/references), not duplicate uploads.
+
+  **Future project detail pages:** individual pages remain deferred at launch unless sufficient approved case-study content exists, but `/[locale]/projects/[slug]` must later be able to display hero/lead media, name, year/period, location, sector, overview, services delivered, related solutions, multiple images/videos, and related Gallery media — without redesigning the base Project content model.
+
+  **Owner editability:** adding a photo to an existing project, adding a service, or changing a project year must be a structured-content edit only — never a new React component, page-layout modification, project duplication, or Gallery-architecture rebuild.
+- **Reason:** Projects are the strongest proof point; the model must grow into full case studies without schema redesign. Extends A-003/D-003 — all provenance rules (no invented scope/content) remain fully in force.
+- **Scope:** Project + Gallery schemas; future `/projects/[slug]`; P9/P10 builds. To be reflected in `docs/content-model.md` and `docs/maintenance-model.md` at the next authorized documentation update.
+- **Status:** Approved
+
 ---
 
 ## Content clarification items
