@@ -163,8 +163,8 @@ export function NetworkScene() {
             <svg viewBox={`0 0 ${W} ${H}`} role="presentation" focusable="false">
               <polygon
                 points={outlinePts}
-                fill="rgba(226,226,229,0.03)"
-                stroke="rgba(226,226,229,0.35)"
+                fill="rgba(226,226,229,0.05)"
+                stroke="rgba(226,226,229,0.55)"
                 strokeWidth="1.4"
                 strokeDasharray="5 7"
                 strokeLinejoin="round"
@@ -179,7 +179,7 @@ export function NetworkScene() {
                         y1={hqNode.y}
                         x2={n.x}
                         y2={n.y}
-                        stroke="rgba(255,24,156,0.16)"
+                        stroke="rgba(255,24,156,0.24)"
                         strokeWidth="1"
                       />
                     ))
@@ -192,7 +192,7 @@ export function NetworkScene() {
                     <circle cx={n.x} cy={n.y} r="22" fill="none" stroke="rgba(255,24,156,0.2)" strokeWidth="1" />
                   </g>
                 ) : (
-                  <circle key={n.id} cx={n.x} cy={n.y} r="3" fill="rgba(233,233,236,0.85)" />
+                  <circle key={n.id} cx={n.x} cy={n.y} r="3.4" fill="rgba(233,233,236,0.95)" />
                 ),
               )}
             </svg>
