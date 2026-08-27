@@ -25,6 +25,8 @@ import { partners } from "../src/content/partners";
 import { clients } from "../src/content/clients";
 import { documents } from "../src/content/documents";
 import { navigation } from "../src/content/navigation";
+import { locations } from "../src/content/locations";
+import { pointInSaudi } from "../src/lib/map/geo";
 
 const release = process.argv.includes("--release");
 const root = join(import.meta.dirname, "..");
@@ -122,6 +124,21 @@ for (const p of projects) {
 for (const g of galleryItems) if (g.published) checkAr(g.alt, `gallery ${g.id} alt`);
 for (const n of navigation) checkAr(n.label, `nav ${n.id}`);
 for (const c of galleryCategories) checkAr(c.label, `gallery category ${c.id}`);
+
+/* ---- geographic evidence locations (K-13 / D-5 / Amendment 2) ---- */
+checkUnique(locations.map((l) => l.id), "locations");
+const hqCount = locations.filter((l) => l.kind === "hq").length;
+if (hqCount !== 1) errors.push(`locations: expected exactly 1 HQ record, found ${hqCount}`);
+for (const l of locations) {
+  checkAr(l.name, `location ${l.id} name`);
+  if (l.kind !== "hq" && l.projectIds.length === 0)
+    errors.push(`location ${l.id}: non-HQ evidence location must reference approved projects`);
+  for (const pid of l.projectIds) {
+    if (!projectIds.has(pid)) errors.push(`location ${l.id}: unknown projectId "${pid}"`);
+  }
+  if (!pointInSaudi(l.longitude, l.latitude))
+    errors.push(`location ${l.id}: coordinates fall outside the stylized Saudi outline`);
+}
 
 /* ---- messages parity ---- */
 function flatten(obj: Record<string, unknown>, prefix = ""): string[] {
