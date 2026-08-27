@@ -118,7 +118,24 @@ export function OpeningExperience() {
       if (document.visibilityState === "hidden") skip();
     }
 
-    const onVisibility = () => engine.setVisible(document.visibilityState === "visible");
+    // §19: one major active canvas at a time — the hero field steps only
+    // while the tab is visible AND the hero itself is on screen (the
+    // network scene owns the stage further down the page).
+    let docVisible = document.visibilityState === "visible";
+    let heroInView = true;
+    const applyVisible = () => engine.setVisible(docVisible && heroInView);
+    const onVisibility = () => {
+      docVisible = document.visibilityState === "visible";
+      applyVisible();
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) heroInView = e.isIntersecting;
+        applyVisible();
+      },
+      { threshold: 0.02 },
+    );
+    io.observe(canvas);
     const onResize = () => engine.resize();
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("resize", onResize);
@@ -132,6 +149,7 @@ export function OpeningExperience() {
     return () => {
       engine.destroy();
       removeSkipListeners();
+      io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
       unlockScroll();

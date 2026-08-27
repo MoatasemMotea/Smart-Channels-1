@@ -23,7 +23,7 @@ export async function Hero() {
   const t = await getTranslations("hero");
 
   return (
-    <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero">
+    <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero" data-env="dark">
       <HeroBackdropStatic />
       <OpeningExperience />
       {/* flex-1 against the flex-column scene: content bottom-anchors to the

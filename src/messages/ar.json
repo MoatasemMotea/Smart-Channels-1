@@ -32,7 +32,6 @@
     "smartAi": "Smart AI",
     "partners": "التحالفات التقنية",
     "clients": "عملاؤنا",
-    "profile": "الملف التعريفي",
     "contact": "تواصل معنا"
   },
   "pages": {
@@ -65,29 +64,33 @@
       "description": "تحدَّث إلى فريقنا حول مشروعك التقني القادم."
     }
   },
-  "profileDownload": {
-    "read": "اقرأ الملف التعريفي",
-    "download": "تحميل PDF"
-  },
   "contact": {
     "phoneLabel": "الهاتف",
     "emailLabel": "البريد الإلكتروني",
     "addressLabel": "العنوان"
   },
   "footer": {
-    "rights": "جميع الحقوق محفوظة."
+    "rights": "جميع الحقوق محفوظة.",
+    "brandName": "القنوات الذكية",
+    "brandTagline": "نأخذك إلى المستقبل"
   },
   "opening": {
-    "caption": "SMART CHANNELS",
+    "caption": "القنوات الذكية",
     "hqLabel": "الرياض — المقر الرئيسي"
   },
   "hero": {
     "ariaLabel": "Smart Channels — التقنية التي تصنع التجربة",
-    "overline": "SMART CHANNELS — SYSTEMS INTEGRATION",
+    "overline": "القنوات الذكية — نأخذك إلى المستقبل",
     "sub": "نصمّم ونبني وندير التقنية الذكية خلف البيئات المتصلة في المملكة والخليج — البنية التحتية والشبكات والأمن والاتصالات والمباني الذكية.",
     "ctaProjects": "استكشف المشاريع",
     "ctaSmartAi": "تحدّث إلى Smart AI",
     "proof": "فورمولا 1 — سباق جائزة السعودية الكبرى · تقنيات الفعاليات",
     "scroll": "مرّر"
+  },
+  "network": {
+    "title": "من الرياض إلى المملكة والخليج",
+    "city": "الرياض",
+    "role": "المقر الرئيسي",
+    "asOf": "اعتبارًا من 2026"
   }
 }

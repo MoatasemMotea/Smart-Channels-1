@@ -32,7 +32,6 @@
     "smartAi": "Smart AI",
     "partners": "Technology Alliances",
     "clients": "Our Clients",
-    "profile": "Company Profile",
     "contact": "Contact"
   },
   "pages": {
@@ -65,17 +64,15 @@
       "description": "Talk to our team about your next technology project."
     }
   },
-  "profileDownload": {
-    "read": "Read the Company Profile",
-    "download": "Download PDF"
-  },
   "contact": {
     "phoneLabel": "Telephone",
     "emailLabel": "Email",
     "addressLabel": "Address"
   },
   "footer": {
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "brandName": "Smart Channels",
+    "brandTagline": "We Take You To The Future"
   },
   "opening": {
     "caption": "SMART CHANNELS",
@@ -89,5 +86,11 @@
     "ctaSmartAi": "Talk to Smart AI",
     "proof": "F1 SAUDI ARABIAN GP — EVENT TECHNOLOGY",
     "scroll": "SCROLL"
+  },
+  "network": {
+    "title": "From Riyadh, across the Kingdom and the Gulf",
+    "city": "RIYADH",
+    "role": "HEADQUARTERS",
+    "asOf": "As of 2026"
   }
 }

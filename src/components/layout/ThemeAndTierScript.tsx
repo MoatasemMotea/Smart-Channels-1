@@ -21,6 +21,7 @@ var tier=rm||sd?"static":(window.matchMedia("(max-width: 767px)").matches?"lite"
 d.setAttribute("data-motion-tier",tier);
 var path=location.pathname.replace(/\\/$/,"");
 var isHome=/^\\/(en|ar)?$/.test(path)||path==="";
+d.setAttribute("data-header-env",isHome?"dark":"surface");
 var seen=false;try{seen=sessionStorage.getItem("sc-opening")==="done";}catch(e){}
 if(isHome&&!seen&&tier!=="static"){
   d.setAttribute("data-opening","pending");

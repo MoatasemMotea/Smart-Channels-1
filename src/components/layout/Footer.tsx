@@ -29,6 +29,10 @@ export async function Footer() {
             height={66}
             className="logo-light-mark h-14 w-auto"
           />
+          {/* Approved textual brand treatment (D-001 stays intact: the logo
+              artwork is never altered — the Arabic wording is set as type). */}
+          <p className="mt-4 font-display text-lg font-semibold">{t("footer.brandName")}</p>
+          <p className="mt-1 text-sm text-ink-muted">{t("footer.brandTagline")}</p>
         </div>
         <nav aria-label="Footer">
           <ul className="flex flex-col gap-2">

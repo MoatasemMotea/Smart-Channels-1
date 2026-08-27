@@ -164,6 +164,11 @@ h4 {
 .logo-light-mark { display: none; }
 [data-theme="light"] .logo-dark-lockup { display: none; }
 [data-theme="light"] .logo-light-mark { display: block; }
+/* In the header the swap keys off the environment BENEATH the bar, not the
+   global theme: over a dark-committed scene the dark lockup always shows
+   (Revision 2 defect B). */
+html[data-header-env="dark"] .site-header .logo-dark-lockup { display: block; }
+html[data-header-env="dark"] .site-header .logo-light-mark { display: none; }
 
 /* Skip link (§30). */
 .skip-link {
@@ -253,8 +258,11 @@ h4 {
   height: 100%;
 }
 /* live canvas replaces the static backdrop's linework (keep base black) */
-html[data-opening] .hero-backdrop circle,
-html[data-opening] .hero-backdrop polyline {
+/* The designed backdrop artwork is the STATIC/no-JS experience only: any
+   animating tier owns the field with the live canvas (Revision 2 defect C —
+   the double-field made non-first loads read magenta-heavy). */
+html:not([data-motion-tier="static"]) .hero-backdrop circle,
+html:not([data-motion-tier="static"]) .hero-backdrop polyline {
   display: none;
 }
 .opening-logo {
@@ -343,6 +351,31 @@ html[data-opening="revealing"] [data-stage="5"] { transition-delay: 520ms; }
 html[data-opening="revealing"] [data-stage="6"] { transition-delay: 660ms; }
 html[data-opening="revealing"] [data-stage="7"] { transition-delay: 820ms; }
 
+/* Cinematic parity on every arrival (Revision 2 defect C): loads where the
+   full opening does not run — return visits, locale switches, auto-skip —
+   still receive a staged hero entrance instead of a static pop-in. The
+   STATIC tier neutralizes this via the global animation override. */
+html[data-opening="skipped"] .hero-stage,
+html:not([data-opening]) .hero-stage {
+  animation: hero-stage-enter 720ms var(--ease-cinematic) both;
+}
+html[data-opening="skipped"] [data-stage="1"], html:not([data-opening]) [data-stage="1"] { animation-delay: 60ms; }
+html[data-opening="skipped"] [data-stage="2"], html:not([data-opening]) [data-stage="2"] { animation-delay: 150ms; }
+html[data-opening="skipped"] [data-stage="3"], html:not([data-opening]) [data-stage="3"] { animation-delay: 250ms; }
+html[data-opening="skipped"] [data-stage="4"], html:not([data-opening]) [data-stage="4"] { animation-delay: 360ms; }
+html[data-opening="skipped"] [data-stage="5"], html:not([data-opening]) [data-stage="5"] { animation-delay: 540ms; }
+html[data-opening="skipped"] [data-stage="6"], html:not([data-opening]) [data-stage="6"] { animation-delay: 670ms; }
+html[data-opening="skipped"] [data-stage="7"], html:not([data-opening]) [data-stage="7"] { animation-delay: 820ms; }
+@keyframes hero-stage-enter {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+/* the earned accent sweeps on these arrivals too */
+html[data-opening="skipped"] .hero-accent-word,
+html:not([data-opening]) .hero-accent-word {
+  animation: hero-accent-sweep 620ms var(--ease-cinematic) 980ms both;
+}
+
 /* Hero typography (D-014/D-015 + legibility contract). */
 .hero-headline {
   display: flex;
@@ -353,10 +386,36 @@ html[data-opening="revealing"] [data-stage="7"] { transition-delay: 820ms; }
   font-stretch: 118%;
   text-wrap: initial;
 }
+/* Arabic hero art direction (Revision 2 §13): dedicated composition, not
+   the Latin metrics. Kufi display carries more visual mass per glyph, so
+   the Arabic headline runs smaller than the Latin clamp, with taller
+   leading and a bounded measure — dramatic without dominating the field. */
 [dir="rtl"] .hero-headline {
-  line-height: 1.28;
+  font-size: clamp(2.25rem, 6vw, 5.25rem);
+  line-height: 1.32;
   letter-spacing: 0;
   font-stretch: normal;
+  max-width: 14em;
+}
+[dir="rtl"] .hero-sub {
+  font-size: 1.1875rem;
+  line-height: 2.05;
+  max-width: 36rem;
+}
+/* Arabic microlabels leave the Latin mono voice: Plex Sans Arabic with no
+   letterspacing (tracking Arabic script is a typographic error). */
+[dir="rtl"] .microlabel {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+/* Arabic nav + CTAs: slightly larger UI type for equivalent legibility. */
+[dir="rtl"] .site-header nav a {
+  font-size: 0.9375rem;
+}
+[dir="rtl"] .mobile-menu-item a,
+[dir="rtl"] .mobile-menu-item {
+  line-height: 1.7;
 }
 .hero-line { display: block; }
 .hero-accent-word {
@@ -404,6 +463,27 @@ html[data-opening="revealing"] .hero-accent-word {
     background-color var(--dur-control) var(--ease-engineered),
     border-color var(--dur-control) var(--ease-engineered),
     opacity var(--dur-section) var(--ease-cinematic);
+}
+/* Environment-aware header (Revision 2 defect B): while the bar overlaps a
+   dark-committed cinematic scene (data-env="dark", D-019) it adopts the
+   dark-scene tokens whatever the global theme — text, controls and the
+   scrolled blur surface all stay legible over the dark ground. Over
+   editorial surfaces the theme tokens apply as before. */
+html[data-header-env="dark"] .site-header {
+  --bg: #0a0a0c;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1;
+  --line: rgba(255, 255, 255, 0.14);
+  --accent: var(--brand-magenta);
+  --accent-ink: #0a0a0c;
+}
+/* the state change itself is polished — colors glide, never snap */
+.site-header a,
+.site-header button {
+  transition:
+    color var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered),
+    background-color var(--dur-control) var(--ease-engineered);
 }
 html[data-scrolled="true"] .site-header {
   background: color-mix(in srgb, var(--bg) 86%, transparent);
@@ -471,3 +551,97 @@ main > *:not(.hero-scene):first-child {
   opacity: 1;
   transform: none;
 }
+
+/* ------------------------------------------------------------------ */
+/* National network scene (Revision 2 §§3–9): the Saudi/Gulf cinematic */
+/* moment. Dark-committed in BOTH themes (D-019) with local tokens.    */
+/* ------------------------------------------------------------------ */
+.network-scene {
+  position: relative;
+  background:
+    radial-gradient(70% 55% at 62% 38%, rgba(141, 52, 146, 0.1), transparent 72%),
+    #0a0a0c;
+  color: #f5f5f4;
+  --bg: #0a0a0c;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #ff189c;
+  --accent-ink: #0a0a0c;
+  overflow: hidden;
+}
+.network-stage {
+  position: relative;
+  height: clamp(340px, 58vh, 620px);
+  margin-block: 2.5rem;
+}
+@media (max-width: 767px) {
+  /* dedicated mobile composition (§17): tighter stage, same narrative */
+  .network-stage {
+    height: clamp(300px, 46vh, 420px);
+    margin-block: 1.75rem;
+  }
+}
+.network-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Riyadh label — DOM text, never canvas (Arabic shaping + a11y). */
+.network-hq-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-left: 18px;
+  margin-top: -10px;
+  opacity: 0;
+  transition: opacity 480ms var(--ease-cinematic);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.network-hq-city {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+  color: #f5f5f4;
+}
+[dir="rtl"] .network-hq-city { letter-spacing: 0; }
+.network-hq-role {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+[dir="rtl"] .network-hq-role {
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+}
+/* Designed static frame (§18): server-rendered SVG — the STATIC-tier and
+   no-JS experience. The tier attribute decides pre-paint; the geography
+   never mirrors (dir="ltr" isolation on the container). */
+.network-static {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+.network-static svg {
+  /* viewBox aspect is preserved (meet): the map letterboxes centered */
+  position: absolute;
+  inset: 7%;
+  width: 86%;
+  height: 86%;
+}
+.network-static-caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  text-align: center;
+}
+html[data-motion-tier="static"] .network-canvas { display: none; }
+html[data-motion-tier="static"] .network-static { display: block; }

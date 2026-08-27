@@ -318,12 +318,17 @@ export class OpeningEngine {
 
   private seedAmbient(fromSkip = false): void {
     this.assignHeroTargets();
+    // The settled hero field is ALWAYS the cooled, selective-accent state
+    // (visual diversity rule): return visits and locale switches must match
+    // the field the full opening resolves into — magenta never dominates.
+    this.particles.forEach((pt) => {
+      if (pt.color === 1) pt.cool = Math.max(pt.cool, 1);
+    });
     if (fromSkip) {
       // Land instantly but keep residual motion so the field feels alive.
       this.particles.forEach((pt) => {
         pt.x = pt.tx + (this.rnd() - 0.5) * 24;
         pt.y = pt.ty + (this.rnd() - 0.5) * 24;
-        pt.cool = pt.color === 1 ? 1 : pt.cool;
       });
     }
   }
