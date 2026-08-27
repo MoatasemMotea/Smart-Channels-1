@@ -4,8 +4,10 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing, isRtl } from "@/i18n/routing";
 import { ThemeAndTierScript } from "@/components/layout/ThemeAndTierScript";
+import { HtmlStateGuard } from "@/components/layout/HtmlStateGuard";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { indexingAllowed, SITE_NAME } from "@/lib/seo";
 import "@/styles/globals.css";
 
@@ -47,12 +49,14 @@ export default async function LocaleLayout({
       </head>
       <body className="bg-bg text-ink">
         <NextIntlClientProvider>
+          <HtmlStateGuard />
           <a href="#main" className="skip-link">
             {t("skipToContent")}
           </a>
           <Header />
           <main id="main">{children}</main>
           <Footer />
+          <FloatingWhatsApp />
         </NextIntlClientProvider>
       </body>
     </html>

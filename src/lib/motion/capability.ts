@@ -28,6 +28,7 @@ export function resolveMotionTier(): MotionTier {
 }
 
 export function applyMotionTier(tier: MotionTier): void {
+  resolved = tier;
   document.documentElement.setAttribute("data-motion-tier", tier);
 }
 
@@ -36,4 +37,18 @@ export function requestTierDowngrade(): void {
   const current = document.documentElement.getAttribute("data-motion-tier");
   if (current === "full") applyMotionTier("lite");
   else if (current === "lite") applyMotionTier("static");
+}
+
+/* The tier decided pre-paint by the bootstrap is authoritative for this
+ * document's lifetime (Rev3 §4): the mirror adopts it on first client
+ * read and HtmlStateGuard restores it after React re-renders the <html>
+ * element (locale switches reset its attributes to the SSR defaults). */
+let resolved: MotionTier | undefined;
+
+export function currentMotionTier(): MotionTier {
+  if (resolved) return resolved;
+  const attr =
+    typeof document === "undefined" ? null : document.documentElement.getAttribute("data-motion-tier");
+  resolved = attr === "full" || attr === "lite" || attr === "static" ? attr : resolveMotionTier();
+  return resolved;
 }

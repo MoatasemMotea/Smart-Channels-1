@@ -3,6 +3,7 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { locations } from "@/content/locations";
+import { getOpeningState, setOpeningState } from "@/lib/opening-state";
 import { OpeningEngine, type EngineTier } from "./engine";
 
 /**
@@ -43,15 +44,14 @@ export function OpeningExperience() {
     // this effect must re-run once the real tier resolves and the canvas
     // exists — hence the [tier] dependency below.
     if (tier === "static") return; // never animate for STATIC (I-11)
-    const html = document.documentElement;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const engineTier: EngineTier = tier === "lite" ? "lite" : "full";
-    const state = html.getAttribute("data-opening");
-    const runSequence = state === "pending";
+    // mirror, not DOM: survives the html-attribute reset on locale switch
+    const runSequence = getOpeningState() === "pending";
 
-    const setState = (s: string) => html.setAttribute("data-opening", s);
+    const setState = (s: string) => setOpeningState(s); // mirrored (§4 guard)
 
     const engine = new OpeningEngine(canvas, locations, {
       tier: engineTier,
@@ -107,11 +107,9 @@ export function OpeningExperience() {
       skipEvents.forEach(([e, fn]) => window.removeEventListener(e, fn));
 
     if (runSequence) {
-      try {
-        sessionStorage.setItem("sc-opening", "done"); // once per session
-      } catch {
-        /* private mode — sequence may replay, acceptable */
-      }
+      // Revision 3 §1: no session gating — the opening belongs to every
+      // full document load; soft navigations never reach this branch with
+      // "pending" because the bootstrap does not re-run.
       setState("running");
       lockScroll();
       skipEvents.forEach(([e, fn]) => window.addEventListener(e, fn, { passive: true }));

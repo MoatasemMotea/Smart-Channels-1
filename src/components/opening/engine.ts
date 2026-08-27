@@ -34,28 +34,30 @@ export interface EngineOptions {
   callbacks?: EngineCallbacks;
 }
 
-/* Timeline (ms) — D-017 target ≈4.6s desktop, ≈4.0s LITE (G-9). */
+/* Timeline (ms) — Revision 3 §2 lengthens the readable-identity hold
+   (≈1.4s of fully readable logo) so the visitor recognizes the company
+   before the transformation continues. FULL ≈5.35s, LITE ≈4.6s. */
 const TIMELINE_FULL = {
   driftEnd: 820,
   assembleEnd: 1650,
   logoIn: 1380,
-  holdEnd: 2200,
-  logoOut: 2420,
-  mapEnd: 3250, // geography settled + Riyadh ignition
-  networkEnd: 4050, // evidence network at national scale
-  reveal: 4150,
-  end: 4850,
+  holdEnd: 2750,
+  logoOut: 2950,
+  mapEnd: 3750, // geography settled + Riyadh ignition
+  networkEnd: 4550, // evidence network at national scale
+  reveal: 4650,
+  end: 5350,
 };
 const TIMELINE_LITE = {
   driftEnd: 700,
   assembleEnd: 1420,
   logoIn: 1180,
-  holdEnd: 1900,
-  logoOut: 2100,
-  mapEnd: 2820,
-  networkEnd: 3480,
-  reveal: 3560,
-  end: 4150,
+  holdEnd: 2350,
+  logoOut: 2550,
+  mapEnd: 3270,
+  networkEnd: 3930,
+  reveal: 4010,
+  end: 4600,
 };
 
 const easeCinematic = (t: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3.2);
