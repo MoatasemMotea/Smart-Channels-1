@@ -212,3 +212,262 @@ h4 {
   transform: none;
   transition: none;
 }
+
+/* ------------------------------------------------------------------ */
+/* P4 — Opening experience, Hero scene, navigation choreography.       */
+/* Contract: docs/motion-implementation-contract.md + D-017…D-019.     */
+/* ------------------------------------------------------------------ */
+
+/* Hero scene: dark cinematic environment in BOTH themes (D-019). */
+.hero-scene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: #0a0a0c;
+  color: #f5f5f4;
+  overflow: hidden;
+  /* dark-scene locals so children keep dark tokens under Light theme */
+  --bg: #0a0a0c;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #ff189c;
+  --accent-ink: #0a0a0c;
+}
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.opening-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.opening-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* live canvas replaces the static backdrop's linework (keep base black) */
+html[data-opening] .hero-backdrop circle,
+html[data-opening] .hero-backdrop polyline {
+  display: none;
+}
+.opening-logo {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(34vw, 52svh, 460px);
+  transform: translate(-50%, -46%);
+  opacity: 0;
+  transition: opacity 420ms var(--ease-cinematic);
+}
+.opening-caption {
+  position: absolute;
+  left: 50%;
+  top: 72%;
+  transform: translateX(-50%);
+  letter-spacing: 0.34em;
+  color: rgba(245, 245, 244, 0.6);
+  opacity: 1;
+  transition: opacity 300ms var(--ease-engineered);
+}
+.opening-hq-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding-inline-start: 16px;
+  padding-top: 2px;
+  color: #ff189c;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 350ms var(--ease-engineered);
+  will-change: transform;
+}
+[dir="rtl"] .opening-hq-label {
+  padding-inline-start: 0;
+  padding-inline-end: 16px;
+  transform-origin: top right;
+}
+
+/* Page hold-back while the cinematic runs: everything after the hero is
+   covered; header hidden; hero content staged (F-7). */
+html[data-opening="pending"] main > *:not(.hero-scene),
+html[data-opening="running"] main > *:not(.hero-scene) {
+  visibility: hidden;
+}
+html[data-opening="pending"] .site-header,
+html[data-opening="running"] .site-header {
+  opacity: 0;
+  pointer-events: none;
+}
+html[data-opening="pending"] .site-footer,
+html[data-opening="running"] .site-footer {
+  visibility: hidden;
+}
+html[data-opening="pending"] .hero-stage,
+html[data-opening="running"] .hero-stage {
+  opacity: 0;
+  transform: translateY(26px);
+}
+/* opening decor only exists during the sequence */
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-logo,
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-caption,
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-hq-label {
+  display: none;
+}
+
+/* Staged hero reveal (revealing → done). Engineered/cinematic tokens;
+   delays per data-stage; STATIC tier renders instantly via the global
+   static override. */
+html[data-opening="revealing"] .hero-stage,
+html[data-opening="done"] .hero-stage,
+html[data-opening="skipped"] .hero-stage {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-section) var(--ease-cinematic),
+    transform var(--dur-section) var(--ease-cinematic);
+}
+html[data-opening="revealing"] [data-stage="1"] { transition-delay: 0ms; }
+html[data-opening="revealing"] [data-stage="2"] { transition-delay: 90ms; }
+html[data-opening="revealing"] [data-stage="3"] { transition-delay: 200ms; }
+html[data-opening="revealing"] [data-stage="4"] { transition-delay: 320ms; }
+html[data-opening="revealing"] [data-stage="5"] { transition-delay: 520ms; }
+html[data-opening="revealing"] [data-stage="6"] { transition-delay: 660ms; }
+html[data-opening="revealing"] [data-stage="7"] { transition-delay: 820ms; }
+
+/* Hero typography (D-014/D-015 + legibility contract). */
+.hero-headline {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(2.6rem, 8.2vw, 7rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  font-stretch: 118%;
+  text-wrap: initial;
+}
+[dir="rtl"] .hero-headline {
+  line-height: 1.28;
+  letter-spacing: 0;
+  font-stretch: normal;
+}
+.hero-line { display: block; }
+.hero-accent-word {
+  font-style: normal;
+  color: var(--accent);
+}
+/* the accent is earned: EXPERIENCE arrives muted, magenta sweeps once */
+html[data-opening="revealing"] .hero-accent-word {
+  animation: hero-accent-sweep 620ms var(--ease-cinematic) 700ms both;
+}
+@keyframes hero-accent-sweep {
+  from { color: var(--ink-muted); }
+  to { color: var(--accent); }
+}
+/* field calm behind the headline: soft ground scrim (legibility rule) */
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+.hero-scene::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.55) 58%, rgba(10, 10, 12, 0.78) 100%);
+}
+.hero-scroll-line {
+  display: inline-block;
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(180deg, var(--accent), transparent);
+}
+
+/* Header chrome (F-7): transparent over the hero, blur/solid after scroll. */
+.site-header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  transition:
+    background-color var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered),
+    opacity var(--dur-section) var(--ease-cinematic);
+}
+html[data-scrolled="true"] .site-header {
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  border-color: var(--line);
+}
+@supports (backdrop-filter: blur(8px)) {
+  html[data-scrolled="true"] .site-header {
+    backdrop-filter: blur(10px);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html[data-scrolled="true"] .site-header {
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+}
+html[data-opening="revealing"] .site-header {
+  opacity: 0;
+  animation: header-in var(--dur-section) var(--ease-cinematic) 900ms forwards;
+}
+@keyframes header-in {
+  to { opacity: 1; }
+}
+/* page content starts under the fixed header except the full-bleed hero */
+main > *:not(.hero-scene):first-child {
+  padding-top: 5rem;
+}
+
+/* Full-screen mobile navigation (F-8): same visual universe, usability first. */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: #060607;
+  color: #f5f5f4;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #ff189c;
+  --accent-ink: #0a0a0c;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem 2.5rem;
+}
+.mobile-menu-overlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 78% 18%, rgba(141, 52, 146, 0.12), transparent 70%),
+    radial-gradient(40% 30% at 15% 85%, rgba(255, 24, 156, 0.06), transparent 70%);
+}
+.mobile-menu-item {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: menu-item-in 360ms var(--ease-engineered) forwards;
+}
+@keyframes menu-item-in {
+  to { opacity: 1; transform: none; }
+}
+[data-motion-tier="static"] .mobile-menu-item {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}

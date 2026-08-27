@@ -11,18 +11,18 @@ import {
   getStats,
   localize,
 } from "@/lib/content";
+import { Hero } from "@/components/hero/Hero";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Link } from "@/i18n/navigation";
 
 /**
- * HOMEPAGE — P3 foundation shell (Amendment 5).
+ * HOMEPAGE.
  *
- * Deliberately minimal chapter placeholders proving the content layer,
- * localization, themes and accessibility. Each chapter is a clean mount
- * point that its authorized phase (P4–P13) replaces with the approved
- * cinematic experience — this page must NOT attempt to reproduce the P2
- * boards.
+ * Chapter 01/02 (opening + hero) are implemented (P4). Chapters 03–14
+ * remain deliberately minimal foundation placeholders; each is a clean
+ * mount point its authorized phase (P6–P13) replaces with the approved
+ * designed experience.
  */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -37,19 +37,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      {/* 01 Opening + 02 Hero — implemented at P4/P5. Static foundation statement. */}
-      <section className={chapter} aria-label="Hero" data-scene="hero">
-        <div className={inner}>
-          <p className="microlabel mb-4 text-accent">Smart Channels — Systems Integration</p>
-          <h1 className="max-w-4xl font-display text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-            {locale === "ar" ? "التقنية التي تصنع التجربة." : "Technology behind the experience."}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg text-ink-muted">
-            {localize(company.about, locale)}
-          </p>
-          <p className="microlabel mt-8">{tc("comingInPhase")}</p>
-        </div>
-      </section>
+      {/* 01 Opening + 02 Hero — cinematic sequence + hero (P4/D-017). */}
+      <Hero />
 
       {/* 03 About */}
       <MotionSection className={chapter} aria-label={t("about")} data-scene="about">
