@@ -67,7 +67,8 @@
   "contact": {
     "phoneLabel": "الهاتف",
     "emailLabel": "البريد الإلكتروني",
-    "addressLabel": "العنوان"
+    "addressLabel": "العنوان",
+    "whatsappLabel": "تواصل مع Smart Channels عبر واتساب"
   },
   "footer": {
     "rights": "جميع الحقوق محفوظة.",
@@ -91,6 +92,7 @@
     "title": "من الرياض إلى المملكة والخليج",
     "city": "الرياض",
     "role": "المقر الرئيسي",
-    "asOf": "اعتبارًا من 2026"
+    "asOf": "اعتبارًا من 2026",
+    "regional": "امتداد إقليمي"
   }
 }

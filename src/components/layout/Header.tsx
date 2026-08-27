@@ -50,8 +50,8 @@ export async function Header() {
               href={item.href}
               className={
                 item.highlight === "smart-ai"
-                  ? "border-b-2 border-accent pb-1 text-sm font-medium text-ink"
-                  : "text-sm font-medium text-ink-muted transition-colors hover:text-ink"
+                  ? "tx-link border-b-2 border-accent pb-1 text-sm font-medium text-ink"
+                  : "tx-link text-sm font-medium text-ink-muted"
               }
             >
               {localize(item.label, locale)}

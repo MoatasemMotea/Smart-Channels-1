@@ -16,5 +16,7 @@ export const contact: ContactInfo = {
   },
   phone: "+966 11 217 6668",
   email: "info@smartchannels.co",
+  /* Owner-approved P4 Revision 3 §12 (floating WhatsApp action). */
+  whatsapp: "+966 53 979 5999",
   links: [],
 };

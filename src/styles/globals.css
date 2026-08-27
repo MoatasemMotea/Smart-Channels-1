@@ -645,3 +645,216 @@ main > *:not(.hero-scene):first-child {
 }
 html[data-motion-tier="static"] .network-canvas { display: none; }
 html[data-motion-tier="static"] .network-static { display: block; }
+
+/* ------------------------------------------------------------------ */
+/* P4 Revision 3.                                                      */
+/* ------------------------------------------------------------------ */
+
+/* §16 — interaction color system: neutral text glides to the brand
+   accent on hover AND keyboard focus (never the only affordance; links
+   remain semantic elements with visible focus outlines). The Light theme
+   inherits the AA-weighted accent token automatically. */
+.tx-link {
+  transition: color var(--dur-control) var(--ease-engineered);
+}
+a.tx-link:hover,
+a.tx-link:focus-visible,
+button.tx-link:hover,
+button.tx-link:focus-visible,
+a:hover > .tx-link,
+a:focus-visible > .tx-link,
+.tx-link:hover {
+  color: var(--accent);
+}
+
+/* §18/§19 — Selected Projects entries: identifier anchors inline-start
+   (upper-right in Arabic), title carries the interaction color, Arabic
+   titles get more width and taller leading. */
+.project-entry {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  padding-block: 1.05rem;
+}
+.project-entry-no {
+  padding-top: 0.3rem;
+  min-width: 2.2ch;
+}
+.project-entry-title {
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+.project-entry-meta {
+  margin-top: 0.3rem;
+}
+[dir="rtl"] .project-entry {
+  padding-block: 1.2rem;
+}
+[dir="rtl"] .project-entry-title {
+  font-size: 1.1875rem;
+  line-height: 1.85;
+}
+
+/* §12 — floating WhatsApp action: accessible, safe-area aware, never
+   competing with the opening (hidden while the cinematic runs). */
+.floating-whatsapp {
+  position: fixed;
+  inset-inline-end: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  background: #25d366;
+  color: #ffffff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--dur-control) var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered),
+    opacity var(--dur-section) var(--ease-cinematic);
+}
+[dir="rtl"] .floating-whatsapp {
+  inset-inline-end: max(1.25rem, env(safe-area-inset-left));
+}
+.floating-whatsapp:hover,
+.floating-whatsapp:focus-visible {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+html[data-opening="pending"] .floating-whatsapp,
+html[data-opening="running"] .floating-whatsapp {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* §10 — regional-reach voice: muted labels + delayed legend, clearly
+   separated from evidence nodes. */
+.network-region-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-left: 12px;
+  margin-top: -18px;
+  opacity: 0;
+  transition: opacity 420ms var(--ease-cinematic);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  pointer-events: none;
+  white-space: nowrap;
+}
+[dir="rtl"] .network-region-label { letter-spacing: 0; }
+.network-regional-legend {
+  position: absolute;
+  inset-inline-end: 2%;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-cinematic);
+  color: var(--accent);
+  pointer-events: none;
+}
+
+/* §11 — map environment depth: a very low perspective grid + vignette
+   behind the canvas. MAP = PRIMARY, BACKGROUND = SUPPORTING. */
+.network-stage::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -2% 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(226, 226, 229, 0.024) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(90deg, rgba(226, 226, 229, 0.02) 0 1px, transparent 1px 92px);
+  mask-image: radial-gradient(75% 70% at 50% 46%, black 30%, transparent 78%);
+}
+.network-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(90% 85% at 50% 50%, transparent 55%, rgba(6, 6, 7, 0.5) 100%);
+}
+
+/* §§7–9 — hero cinematic media slot: full-bleed under the living field,
+   over the base ground; the scrim above it protects the headline (§22). */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55; /* media grade: enriches, never competes (§22) */
+}
+
+/* §14 — scene-transition family (variants on the reveal primitive).
+   Native scroll only; each section picks the device that fits. STATIC
+   neutralizes everything via the global override. */
+.reveal[data-reveal="mask"] {
+  transform: none;
+  opacity: 1;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path calc(var(--dur-section) + 150ms) var(--ease-cinematic);
+}
+.reveal.is-visible[data-reveal="mask"] {
+  clip-path: inset(0 0 -2% 0);
+}
+.reveal[data-reveal="converge"] {
+  transform: scale(0.988) translateY(10px);
+  filter: blur(6px);
+  transition:
+    opacity var(--dur-section) var(--ease-cinematic),
+    transform var(--dur-section) var(--ease-cinematic),
+    filter var(--dur-section) var(--ease-cinematic);
+}
+.reveal.is-visible[data-reveal="converge"] {
+  filter: none;
+}
+.reveal[data-reveal="trace"] {
+  position: relative;
+  transform: none;
+}
+.reveal[data-reveal="trace"]::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), rgba(255, 24, 156, 0));
+  transform: scaleX(0);
+  transform-origin: 0 0;
+  transition: transform calc(var(--dur-section) + 250ms) var(--ease-cinematic);
+}
+[dir="rtl"] .reveal[data-reveal="trace"]::before {
+  background: linear-gradient(-90deg, var(--accent), rgba(255, 24, 156, 0));
+  transform-origin: 100% 0;
+}
+.reveal.is-visible[data-reveal="trace"]::before {
+  transform: scaleX(1);
+}
+.reveal[data-reveal="sweep"] {
+  position: relative;
+  overflow: hidden;
+}
+.reveal[data-reveal="sweep"]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: 34%;
+  inset-inline-start: -40%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(226, 226, 229, 0.05), transparent);
+  transition: inset-inline-start 900ms var(--ease-cinematic);
+}
+.reveal.is-visible[data-reveal="sweep"]::after {
+  inset-inline-start: 110%;
+}
+[data-motion-tier="static"] .reveal[data-reveal] {
+  clip-path: none;
+  filter: none;
+  transform: none;
+  opacity: 1;
+}

@@ -67,7 +67,8 @@
   "contact": {
     "phoneLabel": "Telephone",
     "emailLabel": "Email",
-    "addressLabel": "Address"
+    "addressLabel": "Address",
+    "whatsappLabel": "Chat with Smart Channels on WhatsApp"
   },
   "footer": {
     "rights": "All rights reserved.",
@@ -91,6 +92,7 @@
     "title": "From Riyadh, across the Kingdom and the Gulf",
     "city": "RIYADH",
     "role": "HEADQUARTERS",
-    "asOf": "As of 2026"
+    "asOf": "As of 2026",
+    "regional": "Regional reach"
   }
 }

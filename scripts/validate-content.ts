@@ -114,6 +114,15 @@ for (const pdf of findPdfs(join(root, "public")))
 for (const d of documents)
   if (/profile/i.test(d.src) || /profile/i.test(d.label.en))
     errors.push(`D-020: Company Profile record "${d.src}" must never be publicly enabled`);
+
+/* ---- Rev3 §13: social records — no dead links, no invented URLs ---- */
+import { socialLinks } from "../src/content/social";
+for (const l of socialLinks) {
+  if (l.enabled && !l.url)
+    errors.push(`social ${l.platform}: enabled without a URL (would render a dead link)`);
+  if (l.url && !/^https:\/\//.test(l.url))
+    errors.push(`social ${l.platform}: URL must be absolute https`);
+}
 for (const p of projects) {
   for (const m of p.media ?? []) checkPath(m.src, `project ${p.id} media ${m.id}`, p.display !== "hidden");
   if (p.logo) checkPath(p.logo.src, `project ${p.id} logo`, p.display === "logo");

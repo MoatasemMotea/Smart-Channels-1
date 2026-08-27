@@ -31,6 +31,9 @@ import { partners } from "@/content/partners";
 import { clients } from "@/content/clients";
 import { contact } from "@/content/contact";
 import { documents } from "@/content/documents";
+import { socialLinks } from "@/content/social";
+import { gulfRegions } from "@/content/regions";
+import { heroMedia } from "@/content/hero-media";
 import { navigation } from "@/content/navigation";
 import { company } from "@/content/company";
 
@@ -101,6 +104,21 @@ export function getDocuments(): ProfileDocument[] {
 
 export function getNavigation(): NavItem[] {
   return [...navigation].sort(byOrder);
+}
+
+export function getSocialLinks() {
+  // public boundary: only enabled records WITH a real URL ever render
+  return socialLinks
+    .filter((l) => l.enabled && l.url)
+    .sort((a, b) => a.order - b.order);
+}
+
+export function getGulfRegions() {
+  return gulfRegions.filter((r) => r.enabled);
+}
+
+export function getHeroMedia() {
+  return heroMedia;
 }
 
 export function getCompany() {

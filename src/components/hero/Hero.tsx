@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Link } from "@/i18n/navigation";
 import { HeroBackdropStatic } from "./HeroBackdropStatic";
+import { HeroMedia } from "./HeroMedia";
 
 // Opening engine loads as its own chunk, never blocking first paint (J-12).
 const OpeningExperience = dynamic(
@@ -25,6 +26,9 @@ export async function Hero() {
   return (
     <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero" data-env="dark">
       <HeroBackdropStatic />
+      {/* D-024 media slot: cinematic film under the living field; renders
+          nothing until an owner-approved asset is configured. */}
+      <HeroMedia />
       <OpeningExperience />
       {/* flex-1 against the flex-column scene: content bottom-anchors to the
           real viewport height; pt-28 keeps tall headlines clear of the nav */}
