@@ -1,9 +1,10 @@
 # Smart Channels 2026 Website — Maintenance & Owner-Editability Model
 
-> **Architecture intent, recorded at P1 (2026-08-27). This is NOT the final
-> README** — the operational README with exact commands lands at P19 (Final
-> Handoff & Export), after the implementation exists. This document defines
-> the contract the implementation must honor.
+> **Architecture intent, recorded at P1 (2026-08-27); implemented at P3.**
+> The structures below now exist in the repository (`src/content/`,
+> `src/messages/`, `media-source/`, `scripts/`, `npm run validate|media|check`)
+> — see the repo README for the working commands. This is still NOT the
+> final owner guide; that lands at P19 (Final Handoff & Export).
 
 ---
 

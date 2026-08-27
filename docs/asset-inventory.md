@@ -136,6 +136,21 @@ public/
 P3 ingestion; originals preserved in git history. Optimized derivatives are
 produced by documented, reproducible scripts — never by untracked hand edits.
 
+## 7b. P3 ingestion status (2026-08-27)
+
+Executed under Q-P3-7 / Amendment 3 — committing ≠ publishing:
+
+| Asset | Now lives at | Status |
+|---|---|---|
+| Company Profile 2026 EN PDF | `media-source/documents/` + public download copy `public/docs/company-profile-2026-en.pdf` | **approved & published** (Q11) |
+| Video 1 (event/network build, 79s) | `media-source/video/event-network-build-2025.mp4` | archived; gallery **candidate, published: false** (O-008/O-012) |
+| Video 2 (night event environment, 25s) | `media-source/video/event-environment-night.mp4` | archived; candidate, published: false |
+| Video 3 (hospitality walkway, 31s) | `media-source/video/hospitality-walkway-night.mp4` | archived; candidate, published: false |
+| Master logo extraction (1147×939, alpha) | `media-source/brand/logo-master-extracted.png` + web copies `public/brand/logo-dark.png`, mark crop `logo-mark.png`, favicon | **approved** (D-001 authoritative asset) |
+| Legacy `img/` (22 files after gradient deletion) | unchanged in `img/` | pending O-008 review; not referenced by the application |
+
+New gaps recorded: **O-013** (official light-background logo lockup), **O-014** (two illegible p.30 client names — omitted from clients data pending owner confirmation).
+
 ## 8. Asset Gap Register (live summary)
 
 | Gap | Open item | Blocks |
