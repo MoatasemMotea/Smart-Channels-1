@@ -259,6 +259,21 @@ export interface HeroMediaConfig {
   poster: string | null;
 }
 
+/** Hero photographic scene (owner-approved still; Riyadh media round).
+ *  Swapping the photograph is a data edit, never a component change. */
+export interface HeroSceneConfig {
+  /** Fallback src (broadest-support format, largest size). */
+  src: string;
+  /** Modern-format responsive candidates, standard srcset syntax. */
+  srcSet: string;
+  /** Rendered-width hint for the browser's candidate selection. */
+  sizes: string;
+  /** Intrinsic pixel size of the master (drives the art-direction frame
+   *  aspect ratio and the overlay coordinate space). */
+  width: number;
+  height: number;
+}
+
 export interface ProfileDocument {
   locale: Locale;
   /** Path under /public. */

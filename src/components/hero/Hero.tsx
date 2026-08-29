@@ -2,8 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Link } from "@/i18n/navigation";
 import { HeroBackdropStatic } from "./HeroBackdropStatic";
-import { HeroCityscape } from "./HeroCityscape";
-import { HeroMedia } from "./HeroMedia";
+import { HeroRiyadh } from "./HeroRiyadh";
 
 // Statically imported: the opening must hydrate WITH the page — a lazy
 // chunk raced the auto-skip window and cancelled the sequence on
@@ -26,12 +25,11 @@ export async function Hero() {
   return (
     <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero" data-env="dark">
       <HeroBackdropStatic />
-      {/* D-024 media slot: cinematic film under the living field; renders
-          nothing until an owner-approved asset is configured. */}
-      <HeroMedia />
-      {/* §1 Riyadh cityscape horizon: Saudi urban identity from the first
-          frame — the live topology canvas paints above it. */}
-      <HeroCityscape />
+      {/* D-041: the owner-approved Riyadh photographic scene — the
+          photograph, the registered technology-network overlay, and the
+          D-024 video slot all live inside its art-direction frame. The
+          live particle canvas paints above it. */}
+      <HeroRiyadh />
       {/* CSS-only pre-stage: guarantees darkness → readable authoritative
           logo from the FIRST paint of a pending opening, before any JS —
           the engine's fixed stage (z-60) takes over above it. Hidden for

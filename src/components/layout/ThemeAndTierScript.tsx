@@ -35,6 +35,17 @@ if(isHome&&tier!=="static"){
      so a mid-page refresh still SHOWS the sequence (root cause #1) */
   try{history.scrollRestoration="manual";}catch(e){}
   try{window.scrollTo({top:0,left:0,behavior:"instant"});}catch(e){window.scrollTo(0,0);}
+  /* the browser may re-apply a restored scroll asynchronously AFTER the
+     line above (before hydration hands control to the engine): while the
+     opening owns the viewport, browser-generated scrolls snap back to the
+     stage. User input can't race this — the engine locks scroll while
+     running, and intentional input skips first. Self-removing. */
+  var g=function(){var s=d.getAttribute("data-opening");
+    if(s==="pending"||s==="running"||s==="revealing"){
+      /* instant, never smooth — html carries scroll-behavior:smooth */
+      if(window.scrollY>0){try{window.scrollTo({top:0,left:0,behavior:"instant"});}catch(e){window.scrollTo(0,0);}}
+    }else{removeEventListener("scroll",g);}};
+  addEventListener("scroll",g,{passive:true});
   /* deterministic fallback: the CSS pre-stage shows the brand while JS
      loads; only after 4s of no engine does the hero reveal silently
      (was 1.5s — it raced hydration and cancelled the opening, root

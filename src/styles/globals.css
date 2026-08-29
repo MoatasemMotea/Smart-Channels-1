@@ -493,6 +493,20 @@ html[data-opening="revealing"] .hero-accent-word {
   pointer-events: none;
   background: linear-gradient(180deg, rgba(10, 10, 12, 0) 0%, rgba(10, 10, 12, 0.55) 58%, rgba(10, 10, 12, 0.78) 100%);
 }
+/* D-041: directional editorial scrim over the photographic scene — the
+   text-side column darkens for contrast while the skyline side stays
+   photographic. Flips with the writing direction. */
+.hero-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(7, 8, 12, 0.6) 0%, rgba(7, 8, 12, 0.3) 30%, rgba(7, 8, 12, 0) 58%);
+}
+[dir="rtl"] .hero-scene::before {
+  background: linear-gradient(270deg, rgba(7, 8, 12, 0.6) 0%, rgba(7, 8, 12, 0.3) 30%, rgba(7, 8, 12, 0) 58%);
+}
 .hero-scroll-line {
   display: inline-block;
   width: 1px;
@@ -501,48 +515,125 @@ html[data-opening="revealing"] .hero-accent-word {
 }
 
 /* ------------------------------------------------------------------ */
-/* P5 Visual Correction §1 — Riyadh cityscape hero composition.        */
-/* Layered original vector skyline on the hero horizon: foreground /   */
-/* background separation, cool-blue atmosphere with the magenta brand  */
-/* light, and scroll parallax where view-timelines are supported. The  */
-/* live particle canvas paints ABOVE it (topology over the city); the  */
-/* legibility scrim (.hero-scene::after, z-1) grounds the headline.    */
+/* D-041 — Riyadh photographic hero scene (owner-approved media).      */
+/* The approved photograph presents through a MANUAL COVER FRAME       */
+/* (bottom-anchored, aspect-locked) so the composition is art-directed */
+/* per orientation, and the technology-network SVG overlay shares the  */
+/* frame — the origin stays registered on the Kingdom Centre crown at  */
+/* every viewport. The live particle canvas paints ABOVE this stage.   */
 /* ------------------------------------------------------------------ */
-.hero-cityscape {
+.hero-photo-stage {
   position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: clamp(260px, 46svh, 560px);
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  /* the city paints ABOVE the legibility scrim (its silhouettes are darker
-     than the scrim anyway) and above the particle canvas — stars sit
-     BEHIND the skyline, reading as depth; hero-content (z-2) stays on top */
-  z-index: 2;
 }
-.hero-cityscape svg {
-  display: block;
+/* cover math: at least the viewport width, and at least wide enough
+   that the aspect-locked height fills 100svh; bottom-anchored so the
+   city street level stays grounded and sky crops first */
+.hero-photo-frame {
+  position: absolute;
+  bottom: 0;
+  right: 0; /* landscape: keep the skyline center-right, open sky left */
+  width: max(100%, calc(100svh * 1.7768));
+  aspect-ratio: 1672 / 941;
+}
+@media (orientation: portrait) {
+  /* mobile/tablet portrait: center the composition on the tower */
+  .hero-photo-frame {
+    right: auto;
+    left: 50%;
+    transform: translateX(-70.4%);
+  }
+}
+.hero-photo-drift {
+  position: absolute;
+  inset: 0;
+  /* camera drift breathes around the tower crown */
+  transform-origin: 70.4% 15%;
+}
+html[data-motion-tier="full"] .hero-photo-drift {
+  animation: riyadh-drift 46s ease-in-out infinite alternate;
+}
+html[data-motion-tier="lite"] .hero-photo-drift {
+  animation: riyadh-drift 64s ease-in-out infinite alternate;
+}
+@keyframes riyadh-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.045); }
+}
+.hero-photo-drift img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+/* network overlay: same coordinate space as the photograph; FULL adds
+   a gentle pointer depth shift against the city */
+.riyadh-overlay {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
-/* callout: HQ annotation over the tower district (desktop composition
-   only — on small screens the headline owns this zone) */
-.hero-city-label {
+html[data-motion-tier="full"] .riyadh-overlay {
+  translate: calc(var(--hx, 0) * 8px) calc(var(--hy, 0) * 5px);
+  transition: translate 700ms var(--ease-engineered);
+}
+.riyadh-origin-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: origin-ring 3.8s var(--ease-cinematic) infinite;
+}
+@keyframes origin-ring {
+  0% { transform: scale(0.55); opacity: 0.9; }
+  70% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.riyadh-origin-core {
+  animation: origin-core 3.8s ease-in-out infinite;
+}
+@keyframes origin-core {
+  0%, 100% { opacity: 0.7; }
+  35% { opacity: 1; }
+}
+/* occasional node activation — staggered, restrained */
+.riyadh-node { animation: node-blink 7s ease-in-out infinite; }
+.riyadh-node:nth-of-type(2n) { animation-delay: -2.3s; }
+.riyadh-node:nth-of-type(3n) { animation-delay: -4.7s; }
+@keyframes node-blink {
+  0%, 100% { opacity: 0.35; }
+  12% { opacity: 0.9; }
+  24% { opacity: 0.45; }
+}
+/* tier discipline: STATIC removes the SMIL pulses entirely (CSS cannot
+   pause SMIL); LITE keeps a single pulse and drops the far route */
+html[data-motion-tier="static"] .riyadh-pulse { display: none; }
+html[data-motion-tier="lite"] .riyadh-pulse-b,
+html[data-motion-tier="lite"] .riyadh-pulse-c,
+html[data-motion-tier="lite"] .riyadh-route-far { display: none; }
+/* HQ annotation near the crown (desktop composition only) */
+.riyadh-hq-label {
   display: none;
 }
-@media (min-width: 64rem) {
-  .hero-city-label {
+@media (min-width: 64rem) and (orientation: landscape) {
+  .riyadh-hq-label {
     display: flex;
     align-items: center;
     gap: 10px;
     position: absolute;
-    top: 16%;
-    inset-inline-start: 66%;
+    /* frame coordinates: beside the origin node, in open sky */
+    top: 14.2%;
+    left: 73%;
     margin: 0;
-    color: rgba(245, 245, 244, 0.62);
+    color: rgba(245, 245, 244, 0.66);
     letter-spacing: 0.3em;
     white-space: nowrap;
+    direction: ltr;
   }
-  .hero-city-label::before {
+  .riyadh-hq-label::before {
     content: "";
     width: 6px;
     height: 6px;
@@ -551,46 +642,37 @@ html[data-opening="revealing"] .hero-accent-word {
     box-shadow: 0 0 12px 2px rgba(255, 24, 156, 0.55);
   }
 }
-/* living light: the beacon breathes, signal routes carry flow (FULL) */
-html:not([data-motion-tier="static"]) .tower-beacon {
-  animation: beacon-pulse 3.4s var(--ease-cinematic) infinite;
+/* §9 — the opening disperses INTO the Riyadh scene: hidden under the
+   opaque stage, then a slow cinematic materialization at reveal; calm
+   quick entrance on skipped/return loads; instant on STATIC (global
+   override). The photograph is preloaded, so this never reveals into
+   an empty hero. */
+html[data-opening="pending"] .hero-photo-stage,
+html[data-opening="running"] .hero-photo-stage {
+  opacity: 0;
 }
-@keyframes beacon-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+/* the same declaration spans revealing → done, so the fade completes
+   without restarting or snapping when the state flips mid-animation */
+html[data-opening="revealing"] .hero-photo-stage,
+html[data-opening="done"] .hero-photo-stage {
+  animation: riyadh-arrive 1600ms var(--ease-cinematic) both;
 }
-html[data-motion-tier="full"] .city-signal {
-  stroke-dasharray: 3 9;
-  animation: signal-flow 7s linear infinite;
+html[data-opening="skipped"] .hero-photo-stage,
+html:not([data-opening]) .hero-photo-stage {
+  animation: riyadh-arrive 800ms var(--ease-cinematic) both;
 }
-html[data-motion-tier="full"] .city-signal-b {
-  animation-duration: 9.5s;
-  animation-direction: reverse;
+@keyframes riyadh-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-@keyframes signal-flow {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -120; }
-}
-/* scroll parallax: layers separate as the hero leaves the viewport —
-   the far ridge lags, the near plane travels with the page */
-@supports (animation-timeline: view()) {
-  html:not([data-motion-tier="static"]) .hero-cityscape .city-far,
-  html:not([data-motion-tier="static"]) .hero-cityscape .city-mid {
-    animation: city-parallax linear both;
-    animation-timeline: view(block 0% 130%);
-  }
-  html:not([data-motion-tier="static"]) .hero-cityscape .city-far {
-    --city-lag: 52px;
-  }
-  html:not([data-motion-tier="static"]) .hero-cityscape .city-mid {
-    --city-lag: 24px;
-  }
-}
-@keyframes city-parallax {
-  /* progress runs as the hero scrolls OUT: distant layers sink behind the
-     near plane, so the far city reads as travelling slower than the page */
-  from { transform: translateY(0px); }
-  to { transform: translateY(var(--city-lag, 0px)); }
+/* §6 — the particle field re-reads as telemetry over the photograph:
+   reduced presence once the opening resolves (full density belongs to
+   the opening choreography itself) */
+html[data-opening="done"] .opening-canvas,
+html[data-opening="skipped"] .opening-canvas,
+html:not([data-opening]) .opening-canvas {
+  opacity: 0.5;
+  transition: opacity 1400ms var(--ease-cinematic);
 }
 
 /* §8 — Hero → About handoff: as the editorial scene reveals, a single

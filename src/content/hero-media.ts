@@ -1,4 +1,31 @@
-import type { HeroMediaConfig } from "@/types/content";
+import type { HeroMediaConfig, HeroSceneConfig } from "@/types/content";
+
+/**
+ * HERO PHOTOGRAPHIC SCENE (Riyadh media round · D-041).
+ *
+ * The owner-approved Riyadh skyline photograph is the Hero's primary
+ * media layer. The untouched master is archived at
+ * media-source/images/riyadh-skyline-hero-approved-2026-08-29.webp;
+ * the entries below are its production web derivatives (never served
+ * from media-source/). Replacing the photograph later = regenerate
+ * derivatives + edit these paths. The programmatic technology layers
+ * (origin, signal routes, particles) are drawn ABOVE whatever this
+ * config points to.
+ */
+export const heroScene: HeroSceneConfig = {
+  src: "/media/hero/riyadh-1672.jpg",
+  srcSet: [
+    "/media/hero/riyadh-640.webp 640w",
+    "/media/hero/riyadh-960.webp 960w",
+    "/media/hero/riyadh-1280.webp 1280w",
+    "/media/hero/riyadh-1672.webp 1672w",
+  ].join(", "),
+  // portrait viewports render the art-direction frame at ≈178% of the
+  // viewport height (cover math), landscape at the viewport width
+  sizes: "(orientation: portrait) 178vh, 100vw",
+  width: 1672,
+  height: 941,
+};
 
 /**
  * HERO CINEMATIC MEDIA SLOT (P4 Rev3 §§7–9 · D-024).
@@ -8,8 +35,10 @@ import type { HeroMediaConfig } from "@/types/content";
  * presented as project evidence, and never arbitrary stock footage).
  *
  * STATUS: the approved AI asset does not exist yet, so `enabled` is false
- * and the Hero renders the approved particle-field treatment. When the
- * owner approves the generated media:
+ * and the Hero renders the approved Riyadh photographic scene
+ * (`heroScene` above). When the owner approves the generated media it
+ * plays inside the same art-direction frame, above the photograph
+ * (which remains the poster/fallback). To enable:
  *   1. place files under /public/media/hero/  (see the spec below)
  *   2. fill the paths and set enabled: true
  * No component changes are required.

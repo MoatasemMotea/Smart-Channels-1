@@ -673,6 +673,69 @@ regression); unit 7/7. Light theme keeps the dark-committed hero
 
 ---
 
+## Riyadh photographic hero integration (recorded 2026-08-29)
+
+**D-041 — Owner-approved Riyadh photograph is the Hero's primary media
+layer (supersedes D-037's vector skyline).** The supplied photorealistic
+Riyadh skyline image (Kingdom Centre center-right, open dark sky left)
+replaces the code-drawn cityscape. The untouched master is archived at
+`media-source/images/riyadh-skyline-hero-approved-2026-08-29.webp`
+(never served); production derivatives live at `public/media/hero/`
+(riyadh-{640,960,1280,1672}.webp + riyadh-1672.jpg fallback, 32–188 KB).
+The photograph is never traced, redrawn, recolored, mirrored, blurred to
+loss, or silhouetted — architecture untouched.
+
+Layer architecture (bottom→top): HeroBackdropStatic (pre-load ground) →
+`HeroRiyadh` photo stage [art-direction frame → drift wrapper → photo +
+D-024 video slot (`HeroMedia`, still empty by design) + registered
+network overlay SVG + HQ label] → opening pre-stage/canvas (particles
+above the city) → directional + bottom scrims (z-1) → hero content
+(z-2). The frame implements MANUAL COVER math (bottom-anchored,
+aspect-locked, `width:max(100%, 177.68svh)`): landscape anchors right
+(skyline center-right, headline zone open); portrait centers the
+Kingdom Centre (`translateX(-70.4%)`). Because the overlay SVG shares
+the photograph's 1672×941 coordinate space inside the same frame, the
+luminous origin (pulsing ring + core above the crown), four signal
+routes, six activation nodes and three SMIL traveling pulses stay
+REGISTERED to the tower at every viewport. Gulf reach remains the
+approved network-scene geography — nothing pretends Bahrain/Qatar/UAE
+exist inside the photograph.
+
+Motion: FULL = 46 s scale-1.045 camera drift (origin at the crown),
+pointer depth on the overlay (±8 px), 3 pulses, origin/node activation,
+particle canvas re-tuned to 0.5 opacity telemetry presence once the
+opening resolves; LITE = slower drift, single pulse, far route dropped;
+STATIC/reduced-motion = the full photographic composition renders
+immediately, SMIL pulses removed via display:none, no drift. Opening
+(LOCKED) unchanged; the reveal now materializes the photo under the
+dispersing logo field via a 1600 ms fade whose declaration spans
+revealing→done (verified frame-by-frame monotonic — no hard cut), and
+`react-dom` preload()s the image with high priority so the opening
+never reveals into an empty hero. Hardening found during verification:
+the bootstrap now carries a self-removing scroll guard that snaps
+browser-generated scroll restoration back to the stage (instant, never
+smooth) while the opening owns the viewport — Chromium could re-apply a
+restored scroll position after the bootstrap's pre-paint scrollTo.
+
+Editability: swapping the photograph or enabling the future film is a
+data edit in `src/content/hero-media.ts` (`heroScene` / `heroMedia`);
+the video plays inside the same frame above the photo. `HeroCityscape`
+(D-037 vector art) was removed from production code entirely — its
+record remains in this log.
+
+**Verification (2026-08-29):** new Riyadh suite 33/33 (photo cover +
+bottom anchor, tower position desktop 67 vw / mobile centered, overlay
+registration, approved label EN/AR, drift, pointer depth, canvas
+re-tune, theme switch keeps the scene with no replay, locale switch no
+replay, LITE/STATIC discipline, LCP 368 ms, D-020 404s, zero console
+errors, no overflow); repo Playwright 50/50 ×5 consecutive (opening
+replay + mid-page-refresh deterministic after the scroll guard);
+correction suite 36/36; P5 29/29 + 6/6; RTL 15/15; R3 30/30; behavior
+20/20 (smooth-scroll harness window corrected — product behavior was
+right); matrix 64/64 + extra 11/11; unit 7/7.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
