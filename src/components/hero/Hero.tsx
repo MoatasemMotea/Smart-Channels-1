@@ -1,14 +1,13 @@
-import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Link } from "@/i18n/navigation";
 import { HeroBackdropStatic } from "./HeroBackdropStatic";
 import { HeroMedia } from "./HeroMedia";
 
-// Opening engine loads as its own chunk, never blocking first paint (J-12).
-const OpeningExperience = dynamic(
-  () => import("@/components/opening/OpeningExperience").then((m) => m.OpeningExperience),
-);
+// Statically imported: the opening must hydrate WITH the page — a lazy
+// chunk raced the auto-skip window and cancelled the sequence on
+// real-world loads (opening-visibility root cause #2).
+import { OpeningExperience } from "@/components/opening/OpeningExperience";
 
 /**
  * HERO — P4/P5 shared composition (D-014 typography · D-015 headline ·
@@ -29,6 +28,14 @@ export async function Hero() {
       {/* D-024 media slot: cinematic film under the living field; renders
           nothing until an owner-approved asset is configured. */}
       <HeroMedia />
+      {/* CSS-only pre-stage: guarantees darkness → readable authoritative
+          logo from the FIRST paint of a pending opening, before any JS —
+          the engine's fixed stage (z-60) takes over above it. Hidden for
+          STATIC (reduced-motion exempt) and once the opening resolves. */}
+      <div className="opening-prestage" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element -- preloaded authoritative asset; CSS choreographs it pre-hydration */}
+        <img src="/brand/logo-dark.png" alt="" width={264} height={216} />
+      </div>
       <OpeningExperience />
       {/* flex-1 against the flex-column scene: content bottom-anchors to the
           real viewport height; pt-28 keeps tall headlines clear of the nav */}

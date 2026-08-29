@@ -65,10 +65,22 @@ export function OpeningExperience() {
             if (captionRef.current) captionRef.current.style.opacity = "0";
           }
           if (name === "riyadh" && labelRef.current) labelRef.current.style.opacity = "1";
-          if (name === "reveal") setState("revealing");
+          if (name === "reveal") {
+            try {
+              window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            } catch {
+              window.scrollTo(0, 0);
+            }
+            setState("revealing");
+          }
           if (name === "done") {
             setState("done");
             unlockScroll();
+            try {
+              history.scrollRestoration = "auto"; // normal UX resumes
+            } catch {
+              /* unsupported */
+            }
           }
         },
         onLabel: (pos) => {
@@ -91,11 +103,20 @@ export function OpeningExperience() {
       document.body.style.overflow = "";
     };
 
+    // Skip requires INTENTIONAL input only (click/tap, wheel, touch,
+    // keyboard) — never pointer movement, focus restoration, hydration,
+    // resize, or browser-generated scrolls (none of those fire these
+    // events; the bootstrap's own scrollTo fires "scroll", not "wheel").
     const skip = () => {
       engine.skip();
       setState("done");
       unlockScroll();
       removeSkipListeners();
+      try {
+        history.scrollRestoration = "auto";
+      } catch {
+        /* unsupported */
+      }
     };
     const skipEvents: Array<[string, EventListener]> = [
       ["pointerdown", skip],
@@ -110,6 +131,15 @@ export function OpeningExperience() {
       // Revision 3 §1: no session gating — the opening belongs to every
       // full document load; soft navigations never reach this branch with
       // "pending" because the bootstrap does not re-run.
+      // Guarantee the readable-identity beat: the asset is <link rel=preload>ed
+      // in the head; decode() makes the raster paint-ready before logo-in.
+      logoRef.current?.decode?.().catch(() => {});
+      // instant, never smooth — a restored scroll must snap to the stage
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      } catch {
+        window.scrollTo(0, 0);
+      }
       setState("running");
       lockScroll();
       skipEvents.forEach(([e, fn]) => window.addEventListener(e, fn, { passive: true }));

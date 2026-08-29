@@ -45,6 +45,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static">
       <head>
+        {/* the authoritative logo must be decoded before the opening's
+            readable-identity beat — never fetched ad hoc mid-sequence */}
+        <link rel="preload" as="image" href="/brand/logo-dark.png" fetchPriority="high" />
         <ThemeAndTierScript />
       </head>
       <body className="bg-bg text-ink">

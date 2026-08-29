@@ -29,9 +29,17 @@ d.setAttribute("data-header-env",isHome?"dark":"surface");
    client routing) never re-run this script, so they never replay it. */
 if(isHome&&tier!=="static"){
   d.setAttribute("data-opening","pending");
+  /* the opening owns the viewport: neutralize browser scroll restoration
+     so a mid-page refresh still SHOWS the sequence (root cause #1) */
+  try{history.scrollRestoration="manual";}catch(e){}
+  try{window.scrollTo({top:0,left:0,behavior:"instant"});}catch(e){window.scrollTo(0,0);}
+  /* deterministic fallback: the CSS pre-stage shows the brand while JS
+     loads; only after 4s of no engine does the hero reveal silently
+     (was 1.5s — it raced hydration and cancelled the opening, root
+     cause #2) */
   setTimeout(function(){
     if(d.getAttribute("data-opening")==="pending"){d.setAttribute("data-opening","skipped");}
-  },1500);
+  },4000);
 }
 }catch(e){}})();`;
   return <script dangerouslySetInnerHTML={{ __html: code }} />;
