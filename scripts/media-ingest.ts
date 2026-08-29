@@ -26,9 +26,16 @@ const PUBLIC = join(root, "public");
 
 function findSource(publicSrc: string): string | undefined {
   const name = basename(publicSrc);
+  const stem = name.replace(/\.\w+$/, "");
   for (const dir of ["video", "images", "brand", "documents"]) {
-    const candidate = join(SOURCE, dir, name);
-    if (existsSync(candidate)) return candidate;
+    const exact = join(SOURCE, dir, name);
+    if (existsSync(exact)) return exact;
+    // the public derivative may change format (e.g. .png master → .webp):
+    // match by stem across common source extensions
+    for (const ext of [".png", ".jpg", ".jpeg", ".webp", ".avif", ".mp4", ".webm"]) {
+      const candidate = join(SOURCE, dir, stem + ext);
+      if (existsSync(candidate)) return candidate;
+    }
   }
   return undefined;
 }

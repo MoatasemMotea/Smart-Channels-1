@@ -40,9 +40,13 @@ describe("approved business data invariants", () => {
 });
 
 describe("publish filtering (A-004 / Amendment 3)", () => {
-  it("exposes no unpublished gallery items", () => {
-    expect(getPublishedGalleryItems()).toHaveLength(0); // P3 ships candidates only
-    expect(galleryItems.length).toBeGreaterThan(0);
+  it("exposes only published gallery items (P5 starter set approved, Q-P5-5)", () => {
+    const published = getPublishedGalleryItems();
+    expect(published.length).toBeGreaterThan(0);
+    for (const g of published) expect(g.published).toBe(true);
+    // nothing unpublished may ever leak through the accessor
+    const publicIds = new Set(published.map((g) => g.id));
+    for (const g of galleryItems) if (!g.published) expect(publicIds.has(g.id)).toBe(false);
   });
 
   it("filters hidden projects out of public access", () => {
