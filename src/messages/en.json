@@ -20,7 +20,15 @@
   },
   "home": {
     "title": "Smart Channels — Technology Behind the Experience",
-    "description": "Smart Channels delivers integrated technology, communications, infrastructure and security solutions across the Kingdom and the Gulf."
+    "description": "Smart Channels delivers integrated technology, communications, infrastructure and security solutions across the Kingdom and the Gulf.",
+    "missionLabel": "Our mission",
+    "aboutImageCaption": "Fiber fusion splicing — Riyadh, 2025",
+    "featuredMark": "Featured focus sector",
+    "smartAi": {
+      "title": "Technology consultation, reimagined.",
+      "body": "Smart AI is the upcoming consultation experience from Smart Channels — describe your project needs and be guided toward the right technologies.",
+      "cta": "Discuss your project"
+    }
   },
   "sections": {
     "about": "About Smart Channels",

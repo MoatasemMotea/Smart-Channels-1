@@ -796,10 +796,14 @@ html[data-opening="running"] .floating-whatsapp {
 .reveal[data-reveal="mask"] {
   transform: none;
   opacity: 1;
+}
+/* the CHILD is clipped, never the observed section itself — a fully
+   clipped target reports zero intersection and the reveal deadlocks */
+.reveal[data-reveal="mask"] > * {
   clip-path: inset(0 0 100% 0);
   transition: clip-path calc(var(--dur-section) + 150ms) var(--ease-cinematic);
 }
-.reveal.is-visible[data-reveal="mask"] {
+.reveal.is-visible[data-reveal="mask"] > * {
   clip-path: inset(0 0 -2% 0);
 }
 .reveal[data-reveal="converge"] {
@@ -852,7 +856,8 @@ html[data-opening="running"] .floating-whatsapp {
 .reveal.is-visible[data-reveal="sweep"]::after {
   inset-inline-start: 110%;
 }
-[data-motion-tier="static"] .reveal[data-reveal] {
+[data-motion-tier="static"] .reveal[data-reveal],
+[data-motion-tier="static"] .reveal[data-reveal] > * {
   clip-path: none;
   filter: none;
   transform: none;
@@ -869,3 +874,250 @@ html[data-opening="running"] .floating-whatsapp {
 [dir="rtl"] .stat-block dt {
   line-height: 1.9; /* Arabic label rhythm under the large numeral */
 }
+
+/* ------------------------------------------------------------------ */
+/* P5 — Homepage journey sections.                                     */
+/* ------------------------------------------------------------------ */
+
+/* ABOUT (Q-P5-1): editorial split; the field image enters through a
+   masked editorial reveal once the section becomes visible. */
+.media-frame {
+  border: 1px solid var(--line);
+  padding: 0.5rem;
+}
+.media-reveal {
+  overflow: hidden;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path calc(var(--dur-section) + 300ms) var(--ease-cinematic) 250ms;
+}
+.reveal.is-visible .media-reveal,
+[data-motion-tier="static"] .media-reveal {
+  clip-path: inset(0);
+}
+
+/* SOLUTIONS (Q-P5-2): ecosystem index — the list is the interface. */
+.solutions-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  width: 100%;
+  padding-block: 0.95rem;
+  border-bottom: 1px solid var(--line);
+  text-align: start;
+  color: var(--ink-muted);
+}
+.solutions-item[data-current] {
+  color: var(--ink);
+}
+.solutions-rail {
+  inline-size: 26px;
+  block-size: 2px;
+  background: var(--line);
+  transition:
+    background-color var(--dur-control) var(--ease-engineered),
+    inline-size var(--dur-control) var(--ease-cinematic);
+}
+.solutions-item[data-current] .solutions-rail {
+  inline-size: 44px;
+  background: var(--accent);
+}
+.solutions-divider {
+  background: var(--line);
+}
+.solutions-preview {
+  position: relative;
+  padding-block: 0.95rem;
+}
+.solutions-preview-body {
+  animation: solutions-preview-in 380ms var(--ease-engineered) both;
+}
+@keyframes solutions-preview-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.solutions-tick {
+  inline-size: 14px;
+  block-size: 1px;
+  background: var(--accent);
+  flex: none;
+  transform: translateY(-3px);
+}
+
+/* INDUSTRIES (Q-P5-3): structural matrix — typography + rules only. */
+.industries-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-block-start: 1px solid var(--line);
+}
+@media (min-width: 768px) {
+  .industries-matrix { grid-template-columns: repeat(4, 1fr); }
+}
+.industry-cell {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 1.1rem 1rem 1.1rem 0;
+  border-block-end: 1px solid var(--line);
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+  transition: color var(--dur-control) var(--ease-engineered);
+}
+[dir="rtl"] .industry-cell { padding: 1.15rem 0 1.15rem 1rem; line-height: 1.7; }
+.industry-cell[data-featured] {
+  color: var(--ink);
+  font-weight: 600;
+}
+.industry-cell:hover { color: var(--accent); }
+.industry-mark {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  flex: none;
+}
+
+/* PROJECTS (Q-P5-4): evidence wall — signal rule answers interaction. */
+.project-entry { position: relative; }
+.project-entry::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: -1px;
+  block-size: 1px;
+  inline-size: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: var(--tx-origin, 0 0);
+  transition: transform var(--dur-control) var(--ease-cinematic);
+}
+[dir="rtl"] .project-entry::after { --tx-origin: 100% 0; }
+.project-entry:hover::after,
+.project-entry:focus-within::after { transform: scaleX(1); }
+.project-entry-scope { margin-top: 0.45rem; }
+[dir="rtl"] .project-entry-scope { line-height: 1.9; }
+
+/* GALLERY (Q-P5-5): editorial masonry preview. */
+.gallery-masonry {
+  columns: 1;
+  column-gap: 1.25rem;
+}
+@media (min-width: 640px) { .gallery-masonry { columns: 2; } }
+@media (min-width: 1024px) { .gallery-masonry { columns: 3; } }
+.gallery-tile {
+  break-inside: avoid;
+  margin-block-end: 1.25rem;
+  border: 1px solid var(--line);
+}
+.gallery-tile video,
+.gallery-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* editorial rhythm: portrait phone footage is cropped into balanced
+     tiles rather than towering at full 9:16 */
+  max-height: 460px;
+  object-fit: cover;
+}
+.gallery-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.85rem 0.85rem;
+  color: var(--ink-muted);
+}
+[dir="rtl"] .gallery-caption { line-height: 1.8; }
+
+/* SMART AI (Q-P5-6): convergence teaser — CSS only, honest by design. */
+.smartai-scene,
+.cta-scene {
+  position: relative;
+  background:
+    radial-gradient(60% 60% at 50% 42%, rgba(141, 52, 146, 0.12), transparent 70%),
+    #0a0a0c;
+  color: #f5f5f4;
+  --bg: #0a0a0c;
+  --ink: #f5f5f4;
+  --ink-muted: #b4b4b1;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #ff189c;
+  --accent-ink: #0a0a0c;
+  overflow: hidden;
+}
+.smartai-converge span,
+.cta-converge span {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.4));
+  block-size: 1px;
+  inline-size: 34%;
+  opacity: 0;
+}
+.reveal.is-visible .smartai-converge span,
+.reveal.is-visible .cta-converge span,
+[data-motion-tier="static"] .smartai-converge span,
+[data-motion-tier="static"] .cta-converge span {
+  animation: converge-in 1100ms var(--ease-cinematic) both;
+}
+.smartai-converge span:nth-child(1) { top: 24%; left: 0; }
+.smartai-converge span:nth-child(2) { top: 38%; right: 0; transform: scaleX(-1); animation-delay: 150ms; }
+.smartai-converge span:nth-child(3) { top: 62%; left: 4%; animation-delay: 280ms; }
+.smartai-converge span:nth-child(4) { top: 76%; right: 4%; transform: scaleX(-1); animation-delay: 420ms; }
+@keyframes converge-in {
+  from { opacity: 0; translate: 0 0; }
+  30% { opacity: 1; }
+  to { opacity: 0.55; }
+}
+
+/* FINAL CTA (Q-P5-8): distributed signals gather toward the action. */
+.cta-converge span {
+  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.5));
+  inline-size: 26%;
+}
+.cta-converge span:nth-child(1) { top: 18%; left: 6%; }
+.cta-converge span:nth-child(2) { top: 30%; right: 8%; transform: scaleX(-1); animation-delay: 120ms; }
+.cta-converge span:nth-child(3) { top: 48%; left: 0; animation-delay: 240ms; }
+.cta-converge span:nth-child(4) { top: 52%; right: 0; transform: scaleX(-1); animation-delay: 360ms; }
+.cta-converge span:nth-child(5) { top: 72%; left: 10%; animation-delay: 480ms; }
+.cta-converge span:nth-child(6) { top: 82%; right: 12%; transform: scaleX(-1); animation-delay: 600ms; }
+
+/* ALLIANCES (Q-P5-7): engineered vendor index — technical voice. */
+.alliances-index {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+@media (min-width: 768px) { .alliances-index { grid-template-columns: repeat(4, 1fr); } }
+.alliance-cell {
+  background: var(--bg);
+  padding: 1.4rem 1.2rem;
+  display: flex;
+  align-items: center;
+  min-block-size: 4.6rem;
+}
+.alliance-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+.alliance-cell:hover .alliance-name { color: var(--accent); }
+
+/* CLIENTS (Q-P5-7): calm trust field — quiet flowing names, no grid. */
+.clients-field {
+  margin-top: 2.5rem;
+  max-width: 64rem;
+  font-size: 0.9375rem;
+  line-height: 2.4;
+  color: var(--ink-muted);
+  text-align: start;
+}
+.clients-sep { color: var(--accent); opacity: 0.6; }
+.clients-name {
+  transition: color var(--dur-control) var(--ease-engineered);
+}
+.clients-name:hover { color: var(--ink); }
+[dir="rtl"] .clients-field { text-align: right; }
