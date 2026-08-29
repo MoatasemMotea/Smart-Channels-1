@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Link } from "@/i18n/navigation";
 import { HeroBackdropStatic } from "./HeroBackdropStatic";
+import { HeroCityscape } from "./HeroCityscape";
 import { HeroMedia } from "./HeroMedia";
 
 // Statically imported: the opening must hydrate WITH the page — a lazy
@@ -28,6 +29,9 @@ export async function Hero() {
       {/* D-024 media slot: cinematic film under the living field; renders
           nothing until an owner-approved asset is configured. */}
       <HeroMedia />
+      {/* §1 Riyadh cityscape horizon: Saudi urban identity from the first
+          frame — the live topology canvas paints above it. */}
+      <HeroCityscape />
       {/* CSS-only pre-stage: guarantees darkness → readable authoritative
           logo from the FIRST paint of a pending opening, before any JS —
           the engine's fixed stage (z-60) takes over above it. Hidden for

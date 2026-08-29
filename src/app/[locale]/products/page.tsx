@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { getPublishedProducts, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -22,10 +22,15 @@ export async function generateMetadata({
 }
 
 /**
- * PRODUCTS route (P5 §5 · D-034). Intentionally restrained until the
- * owner supplies the approved catalogue: renders published records only —
- * no invented products, no stock imagery, no placeholder cards. The copy
- * below states only approved solution-backed facts.
+ * PRODUCTS route (P5 Visual Correction §3 · D-034).
+ *
+ * Route-first: this page carries the FULL cinematic product presentation —
+ * the dark environmental stage (perspective floor grid, elliptical light
+ * platform, controlled beams; pure SVG/CSS, aria-hidden) that the homepage
+ * only teases. Published catalogue records land on the platform as depth
+ * objects (image + name + importance) with zero redesign; the empty stage
+ * is the designed state, not a gap — no invented products, no stock
+ * imagery, no placeholder cards. Copy states only approved facts.
  */
 export default async function ProductsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -35,30 +40,72 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   const products = getPublishedProducts();
 
   return (
-    <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
-      <SectionHeading as="h1">{t("pages.products.title")}</SectionHeading>
-      <p className="max-w-2xl text-lg leading-8 text-ink-muted">{t("home.products.sub")}</p>
+    <>
+      <section
+        className="products-scene border-b border-line"
+        aria-label={t("pages.products.title")}
+        data-env="dark"
+      >
+        <div className="relative mx-auto max-w-360 px-6 pb-24 pt-16 text-center lg:px-12">
+          <p className="microlabel text-accent">{t("sections.products")}</p>
+          <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-bold md:text-6xl">
+            {t("home.products.title")}
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-ink-muted">
+            {t("home.products.sub")}
+          </p>
+
+          {/* the stage: platform + grid + beams — environment, not decoration */}
+          <div className="products-stage">
+            <div className="stage-grid" aria-hidden="true" />
+            <div className="stage-beam stage-beam-a" aria-hidden="true" />
+            <div className="stage-beam stage-beam-b" aria-hidden="true" />
+            <div className="stage-ring" aria-hidden="true" />
+            {products.length > 0 ? (
+              <ul className="stage-rail">
+                {products.map((p) => (
+                  <li key={p.id} className="stage-pedestal">
+                    {p.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media
+                      <img src={p.image.src} alt="" loading="lazy" />
+                    ) : null}
+                    <p className="stage-product-name">{localize(p.name, locale)}</p>
+                    <p className="stage-product-importance">{localize(p.importance, locale)}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+
+          <p className="relative mt-10">
+            <Link
+              href="/contact"
+              className="inline-block rounded border border-accent px-6 py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
+            >
+              {t("home.products.cta")}&nbsp;&nbsp;<span aria-hidden="true">→</span>
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* editorial detail below the stage — appears once records publish */}
       {products.length > 0 ? (
-        <ul className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((p) => (
-            <li key={p.id} className="border-t border-line pt-5">
-              {p.image ? (
-                // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media, CSS-sized
-                <img src={p.image.src} alt={localize(p.name, locale)} className="mb-4 h-auto w-full" />
-              ) : null}
-              <p className="font-display text-xl font-semibold">{localize(p.name, locale)}</p>
-              <p className="mt-2 text-sm leading-7 text-ink-muted">{localize(p.summary, locale)}</p>
-              <p className="mt-3 text-sm leading-7">{localize(p.importance, locale)}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-10">
-          <Link href="/contact" className="tx-link font-semibold text-accent">
-            {t("home.products.cta")} →
-          </Link>
-        </p>
-      )}
-    </div>
+        <MotionSection className="border-b border-line" aria-label={t("pages.products.title")}>
+          <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
+            <ul className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+              {products.map((p) => (
+                <li key={p.id} className="border-t border-line pt-5">
+                  <p className="font-display text-xl font-semibold">{localize(p.name, locale)}</p>
+                  <p className="mt-2 text-sm leading-7 text-ink-muted">
+                    {localize(p.summary, locale)}
+                  </p>
+                  <p className="mt-3 text-sm leading-7">{localize(p.importance, locale)}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </MotionSection>
+      ) : null}
+    </>
   );
 }

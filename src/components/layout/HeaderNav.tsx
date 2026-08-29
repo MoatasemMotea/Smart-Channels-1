@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/types/content";
 import { getNavigation, localize } from "@/lib/content";
+import { overflowNavIds } from "@/content/navigation";
 import { Link, usePathname } from "@/i18n/navigation";
 
 /**
- * Desktop primary navigation (P5 §§6–9).
+ * Desktop primary navigation (P5 §§6–9 + Visual Correction §9).
  *
  * - Data-driven from navigation.ts (owner-editable IA).
  * - Restrained active indicator: route links match the pathname; homepage
@@ -17,6 +18,9 @@ import { Link, usePathname } from "@/i18n/navigation";
  *   scroll, hands the destination a short one-shot `.arrive` choreography,
  *   and resolves keyboard focus at the section — never an abrupt jump,
  *   never at accessibility's expense.
+ * - Width discipline (Correction §9): below 2xl the overflowNavIds fold
+ *   into a deliberate, keyboard-accessible "More" menu instead of
+ *   shrinking the row; everything returns inline at ≥2xl.
  */
 const ANCHOR_SCENES: Record<string, string> = {
   "/#partners": "partners",
@@ -39,9 +43,13 @@ export function arriveAt(sceneId: string, smooth: boolean) {
 
 export function HeaderNav() {
   const locale = useLocale() as Locale;
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const items = getNavigation().filter((i) => i.highlight !== "cta");
+  const overflow = items.filter((i) => overflowNavIds.has(i.id));
   const [sectionActive, setSectionActive] = useState<string | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   // homepage: the in-view anchor section drives the indicator
   useEffect(() => {
@@ -67,6 +75,26 @@ export function HeaderNav() {
     };
   }, [pathname]);
 
+  // the More menu dismisses on outside interaction and Escape
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onDown = (e: PointerEvent) => {
+      if (!moreRef.current?.contains(e.target as Node)) setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMoreOpen(false);
+        moreRef.current?.querySelector("button")?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
+
   const isActive = (href: string): boolean => {
     const scene = ANCHOR_SCENES[href];
     if (scene) return sectionActive === scene;
@@ -75,6 +103,7 @@ export function HeaderNav() {
   };
 
   const onClick = (href: string) => (e: React.MouseEvent) => {
+    setMoreOpen(false);
     const scene = ANCHOR_SCENES[href];
     if (scene && pathname === "/") {
       e.preventDefault();
@@ -82,6 +111,13 @@ export function HeaderNav() {
       history.replaceState(null, "", `#${scene}`);
     }
   };
+
+  const linkClass = (highlight?: string) =>
+    highlight === "smart-ai"
+      ? "nav-link tx-link text-[0.8125rem] font-semibold text-accent"
+      : "nav-link tx-link text-[0.8125rem] font-medium text-ink-muted";
+
+  const moreActive = overflow.some((i) => isActive(i.href));
 
   return (
     <nav aria-label="Main" className="ms-auto hidden items-center gap-5 xl:gap-6 lg:flex">
@@ -92,15 +128,46 @@ export function HeaderNav() {
           onClick={onClick(item.href)}
           data-active={isActive(item.href) || undefined}
           aria-current={isActive(item.href) ? "true" : undefined}
-          className={
-            item.highlight === "smart-ai"
-              ? "nav-link tx-link text-[0.8125rem] font-semibold text-accent"
-              : "nav-link tx-link text-[0.8125rem] font-medium text-ink-muted"
-          }
+          className={`${linkClass(item.highlight)}${overflowNavIds.has(item.id) ? " nav-collapsible" : ""}`}
         >
           {localize(item.label, locale)}
         </Link>
       ))}
+
+      {/* deliberate overflow menu — visible only while entries are folded */}
+      <div ref={moreRef} className="nav-more relative">
+        <button
+          type="button"
+          aria-expanded={moreOpen}
+          aria-haspopup="true"
+          aria-label={t("moreLabel")}
+          data-active={moreActive || undefined}
+          onClick={() => setMoreOpen((v) => !v)}
+          className="nav-link tx-link text-[0.8125rem] font-medium text-ink-muted"
+        >
+          {t("more")}
+          <span aria-hidden="true" className="nav-more-caret">
+            ▾
+          </span>
+        </button>
+        {moreOpen ? (
+          <div className="nav-more-panel" role="menu">
+            {overflow.map((item) => (
+              <Link
+                key={item.id}
+                role="menuitem"
+                href={item.href}
+                onClick={onClick(item.href)}
+                data-active={isActive(item.href) || undefined}
+                aria-current={isActive(item.href) ? "true" : undefined}
+                className="nav-more-item"
+              >
+                {localize(item.label, locale)}
+              </Link>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </nav>
   );
 }

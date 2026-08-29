@@ -41,13 +41,11 @@ function Rail({
   speed,
   chipClass,
   rtl,
-  tailLabel,
 }: {
   logos: RailLogo[];
   speed: number;
   chipClass: string;
   rtl: boolean;
-  tailLabel?: string;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const animRef = useRef<Animation | null>(null);
@@ -150,7 +148,6 @@ function Rail({
           <img src={l.src} alt={key === "a" ? l.name : ""} loading="lazy" />
         </div>
       ))}
-      {tailLabel ? <div className={`${chipClass} rail-more`}>{tailLabel}</div> : null}
     </div>
   );
 
@@ -164,7 +161,7 @@ function Rail({
 
 /* ------------------------- Technology Alliances ------------------------- */
 
-export function AllianceStream({ logos, rtl, more }: { logos: RailLogo[]; rtl: boolean; more: string }) {
+export function AllianceStream({ logos, rtl }: { logos: RailLogo[]; rtl: boolean }) {
   const tier = useTier();
   if (tier === "static") return <StaticGrid logos={logos} kind="alliance" />;
   const lite = tier === "lite";
@@ -177,7 +174,6 @@ export function AllianceStream({ logos, rtl, more }: { logos: RailLogo[]; rtl: b
         speed={lite ? -13 : -20}
         chipClass="stream-chip stream-chip-far"
         rtl={rtl}
-        tailLabel={more}
       />
       {!lite ? <div className="stream-sweep" aria-hidden="true" /> : null}
     </div>
@@ -186,7 +182,7 @@ export function AllianceStream({ logos, rtl, more }: { logos: RailLogo[]; rtl: b
 
 /* ----------------------------- Our Clients ------------------------------ */
 
-export function ClientConstellation({ logos, rtl, more }: { logos: RailLogo[]; rtl: boolean; more: string }) {
+export function ClientConstellation({ logos, rtl }: { logos: RailLogo[]; rtl: boolean }) {
   const tier = useTier();
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -227,7 +223,6 @@ export function ClientConstellation({ logos, rtl, more }: { logos: RailLogo[]; r
             speed={(i % 2 === 0 ? 1 : -1) * (lite ? 7 : [11, 8, 13][i]!)}
             chipClass="constellation-chip"
             rtl={rtl}
-            tailLabel={i === 2 ? more : undefined}
           />
         </div>
       ))}

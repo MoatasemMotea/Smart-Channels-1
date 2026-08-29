@@ -39,7 +39,10 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
     >
       <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
         <SectionHeading>{t("sections.partners")}</SectionHeading>
-        <AllianceStream logos={logos.filter((l) => l.src)} rtl={locale === "ar"} more={t("home.andMore")} />
+        <AllianceStream logos={logos.filter((l) => l.src)} rtl={locale === "ar"} />
+        {/* §4: the continuation note lives BELOW the ecosystem, never
+            inside the moving rails — restrained, typographic. */}
+        <p className="ecosystem-more microlabel">{t("home.morePartners")}</p>
       </div>
     </MotionSection>
   );
@@ -65,11 +68,9 @@ export async function ClientsField({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
         <SectionHeading>{t("sections.clients")}</SectionHeading>
         <p className="max-w-3xl text-xl leading-9">{localize(company.reach, locale)}</p>
-        <ClientConstellation
-          logos={logos.filter((l) => l.src)}
-          rtl={locale === "ar"}
-          more={t("home.andMore")}
-        />
+        <ClientConstellation logos={logos.filter((l) => l.src)} rtl={locale === "ar"} />
+        {/* §5: continuation note below the constellation (owner wording). */}
+        <p className="ecosystem-more microlabel">{t("home.moreClients")}</p>
       </div>
     </MotionSection>
   );

@@ -5,7 +5,7 @@ import { NetworkScene } from "@/components/network/NetworkScene";
 import { AboutScene } from "@/components/home/AboutScene";
 import { SolutionsIndex } from "@/components/home/SolutionsIndex";
 import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
-import { ProductsStage } from "@/components/home/ProductsStage";
+import { ProductsTeaser } from "@/components/home/ProductsStage";
 import { ProjectsWall } from "@/components/home/ProjectsWall";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { SmartAiTeaser } from "@/components/home/SmartAiTeaser";
@@ -54,7 +54,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
-      <ProductsStage locale={locale} />
+      <ProductsTeaser />
 
       <IndustriesMatrix locale={locale} />
 

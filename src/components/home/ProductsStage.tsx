@@ -1,24 +1,18 @@
 import { getTranslations } from "next-intl/server";
-import type { Locale } from "@/types/content";
-import { getFeaturedProducts, localize } from "@/lib/content";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
 
 /**
- * PRODUCTS — cinematic stage (P5 §4 · D-034).
+ * PRODUCTS — homepage teaser (P5 Visual Correction §3 · D-034).
  *
- * The architectural scene ships NOW; the products arrive later as data.
- * A dark environmental stage — perspective floor grid, elliptical light
- * platform, controlled beams (pure SVG/CSS, aria-hidden) — with a strong
- * headline and solution-backed supporting copy. When the owner publishes
- * featured records they appear as depth objects on the platform (image +
- * name + importance) with zero component redesign. No invented products,
- * no stock imagery, no placeholder cards — the empty stage is the
- * designed state, not a gap.
+ * Route-first architecture: the full cinematic product stage lives on
+ * /products; the homepage carries only a minimal, deliberate teaser —
+ * title, the approved one-line intro, and a cinematic doorway CTA. No
+ * product cards here, invented or otherwise. The restrained ring motif
+ * hints at the stage waiting behind the route.
  */
-export async function ProductsStage({ locale }: { locale: Locale }) {
+export async function ProductsTeaser() {
   const t = await getTranslations();
-  const featured = getFeaturedProducts();
 
   return (
     <MotionSection
@@ -37,34 +31,17 @@ export async function ProductsStage({ locale }: { locale: Locale }) {
           {t("home.products.sub")}
         </p>
 
-        {/* the stage: platform + grid + beams — environment, not decoration */}
-        <div className="products-stage" aria-hidden="true">
-          <div className="stage-grid" />
-          <div className="stage-beam stage-beam-a" />
-          <div className="stage-beam stage-beam-b" />
-          <div className="stage-ring" />
-          {featured.length > 0 ? (
-            <ul className="stage-rail">
-              {featured.map((p) => (
-                <li key={p.id} className="stage-pedestal">
-                  {p.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media
-                    <img src={p.image.src} alt="" loading="lazy" />
-                  ) : null}
-                  <p className="stage-product-name">{localize(p.name, locale)}</p>
-                  <p className="stage-product-importance">{localize(p.importance, locale)}</p>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+        {/* the doorway: a single light-ring horizon, not the full stage */}
+        <div className="products-teaser-motif" aria-hidden="true">
+          <div className="teaser-ring" />
         </div>
 
-        <p className="relative mt-10">
+        <p className="relative mt-2">
           <Link
             href="/products"
-            className="inline-block rounded border border-accent px-6 py-3.5 font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
+            className="inline-block rounded border border-accent px-7 py-4 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
           >
-            {t("home.products.cta")} →
+            {t("home.products.explore")}&nbsp;&nbsp;<span aria-hidden="true">→</span>
           </Link>
         </p>
       </div>

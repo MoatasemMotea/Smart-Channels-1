@@ -229,7 +229,10 @@ html[data-header-env="dark"] .site-header .logo-light-mark { display: none; }
   display: flex;
   flex-direction: column;
   min-height: 100svh;
-  background: #0a0a0c;
+  /* §1: subtle cool-blue atmosphere settling toward the city horizon */
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(17, 24, 56, 0.5) 0%, rgba(10, 10, 12, 0) 60%),
+    #0a0a0c;
   color: #f5f5f4;
   overflow: hidden;
   /* dark-scene locals so children keep dark tokens under Light theme */
@@ -495,6 +498,125 @@ html[data-opening="revealing"] .hero-accent-word {
   width: 1px;
   height: 34px;
   background: linear-gradient(180deg, var(--accent), transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/* P5 Visual Correction §1 — Riyadh cityscape hero composition.        */
+/* Layered original vector skyline on the hero horizon: foreground /   */
+/* background separation, cool-blue atmosphere with the magenta brand  */
+/* light, and scroll parallax where view-timelines are supported. The  */
+/* live particle canvas paints ABOVE it (topology over the city); the  */
+/* legibility scrim (.hero-scene::after, z-1) grounds the headline.    */
+/* ------------------------------------------------------------------ */
+.hero-cityscape {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: clamp(260px, 46svh, 560px);
+  pointer-events: none;
+  /* the city paints ABOVE the legibility scrim (its silhouettes are darker
+     than the scrim anyway) and above the particle canvas — stars sit
+     BEHIND the skyline, reading as depth; hero-content (z-2) stays on top */
+  z-index: 2;
+}
+.hero-cityscape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* callout: HQ annotation over the tower district (desktop composition
+   only — on small screens the headline owns this zone) */
+.hero-city-label {
+  display: none;
+}
+@media (min-width: 64rem) {
+  .hero-city-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    top: 16%;
+    inset-inline-start: 66%;
+    margin: 0;
+    color: rgba(245, 245, 244, 0.62);
+    letter-spacing: 0.3em;
+    white-space: nowrap;
+  }
+  .hero-city-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-magenta);
+    box-shadow: 0 0 12px 2px rgba(255, 24, 156, 0.55);
+  }
+}
+/* living light: the beacon breathes, signal routes carry flow (FULL) */
+html:not([data-motion-tier="static"]) .tower-beacon {
+  animation: beacon-pulse 3.4s var(--ease-cinematic) infinite;
+}
+@keyframes beacon-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+html[data-motion-tier="full"] .city-signal {
+  stroke-dasharray: 3 9;
+  animation: signal-flow 7s linear infinite;
+}
+html[data-motion-tier="full"] .city-signal-b {
+  animation-duration: 9.5s;
+  animation-direction: reverse;
+}
+@keyframes signal-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -120; }
+}
+/* scroll parallax: layers separate as the hero leaves the viewport —
+   the far ridge lags, the near plane travels with the page */
+@supports (animation-timeline: view()) {
+  html:not([data-motion-tier="static"]) .hero-cityscape .city-far,
+  html:not([data-motion-tier="static"]) .hero-cityscape .city-mid {
+    animation: city-parallax linear both;
+    animation-timeline: view(block 0% 130%);
+  }
+  html:not([data-motion-tier="static"]) .hero-cityscape .city-far {
+    --city-lag: 52px;
+  }
+  html:not([data-motion-tier="static"]) .hero-cityscape .city-mid {
+    --city-lag: 24px;
+  }
+}
+@keyframes city-parallax {
+  /* progress runs as the hero scrolls OUT: distant layers sink behind the
+     near plane, so the far city reads as travelling slower than the page */
+  from { transform: translateY(0px); }
+  to { transform: translateY(var(--city-lag, 0px)); }
+}
+
+/* §8 — Hero → About handoff: as the editorial scene reveals, a single
+   signal line carries the hero's light down across the boundary. */
+[data-scene="about"] {
+  position: relative;
+}
+[data-scene="about"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 1px;
+  height: 84px;
+  background: linear-gradient(180deg, var(--brand-magenta), transparent);
+  transform: scaleY(0);
+  transform-origin: top;
+  pointer-events: none;
+}
+.reveal.is-visible[data-scene="about"]::after {
+  animation: handoff-line 900ms var(--ease-cinematic) 150ms forwards;
+}
+@keyframes handoff-line {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
 /* Header chrome (F-7): transparent over the hero, blur/solid after scroll. */
@@ -1261,6 +1383,59 @@ html[data-opening="running"] .floating-whatsapp {
 .nav-link[data-active] { color: var(--ink); }
 .nav-link[data-active]::after { transform: scaleX(1); }
 
+/* Correction §9 — width discipline: below 2xl the marked entries fold
+   into the deliberate More menu; at ≥2xl everything returns inline and
+   the menu disappears. Never shrunken text. */
+.nav-collapsible { display: none; }
+.nav-more { display: block; }
+@media (min-width: 96rem) {
+  .nav-collapsible { display: inline-block; }
+  .nav-more { display: none; }
+}
+.nav-more-caret {
+  display: inline-block;
+  margin-inline-start: 0.35rem;
+  font-size: 0.6rem;
+  translate: 0 -1px;
+}
+.nav-more-panel {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 0.9rem);
+  min-inline-size: 15rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
+  animation: more-panel-in 260ms var(--ease-cinematic) both;
+}
+@supports (backdrop-filter: blur(8px)) {
+  .nav-more-panel { backdrop-filter: blur(12px); }
+}
+@keyframes more-panel-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+.nav-more-item {
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  transition:
+    color var(--dur-control) var(--ease-engineered),
+    background-color var(--dur-control) var(--ease-engineered);
+}
+.nav-more-item:hover,
+.nav-more-item:focus-visible {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.nav-more-item[data-active] { color: var(--accent); }
+
 /* §9 — cinematic arrival: a signal traces across the destination's top
    edge; scenes add their own beat below. One-shot, ≤700ms, focus-safe. */
 .arrive { position: relative; }
@@ -1311,6 +1486,27 @@ html[data-opening="running"] .floating-whatsapp {
   margin-top: 3rem;
   min-block-size: 240px;
 }
+/* §3 homepage teaser: a single light-ring doorway, not the full stage */
+.products-teaser-motif {
+  position: relative;
+  block-size: 110px;
+  margin-block: 2.25rem 1.5rem;
+  pointer-events: none;
+}
+.teaser-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  inline-size: min(420px, 68vw);
+  block-size: 64px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 24, 156, 0.35);
+  box-shadow:
+    0 0 34px rgba(255, 24, 156, 0.16),
+    inset 0 0 26px rgba(255, 24, 156, 0.1);
+}
+.arrive .teaser-ring { animation: stage-ring-pulse 800ms var(--ease-cinematic); }
 .stage-grid {
   position: absolute;
   inset: 40% -10% 0;
@@ -1396,17 +1592,24 @@ html[data-opening="running"] .floating-whatsapp {
   gap: 1rem;
   padding-inline-end: 1rem;
 }
-.rail-more {
-  color: var(--accent) !important;
-  background: transparent !important;
-  border: 1px dashed var(--line) !important;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  box-shadow: none !important;
+/* §§4–5 continuation notes: restrained typographic lines BELOW the
+   ecosystems — never chips inside the moving rails. */
+.ecosystem-more {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--ink-muted);
 }
-[dir="rtl"] .rail-more { font-family: var(--font-body); letter-spacing: 0; }
+.ecosystem-more::before {
+  content: "";
+  inline-size: 2.25rem;
+  block-size: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+[dir="rtl"] .ecosystem-more::before {
+  background: linear-gradient(-90deg, var(--accent), transparent);
+}
 
 /* Technology Alliances — engineered stream: depth rows + signal sweep. */
 .alliance-stream {
@@ -1451,6 +1654,16 @@ html[data-opening="running"] .floating-whatsapp {
   opacity: 0.82; /* depth layer */
 }
 .alliance-stream[data-lite] .stream-chip { inline-size: 8.6rem; block-size: 4.2rem; }
+/* §6 depth: a faint engineered under-glow beneath the stream rows */
+.alliance-stream::after {
+  content: "";
+  position: absolute;
+  inset-inline: 12%;
+  bottom: 0;
+  block-size: 42px;
+  background: radial-gradient(50% 100% at 50% 100%, rgba(255, 24, 156, 0.1), transparent 72%);
+  pointer-events: none;
+}
 .stream-sweep {
   position: absolute;
   inset-block: 0;

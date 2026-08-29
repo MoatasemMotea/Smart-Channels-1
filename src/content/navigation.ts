@@ -32,11 +32,19 @@ export const navigation: NavItem[] = [
     highlight: "smart-ai",
     order: 10,
   },
+  { id: "contact", label: { en: "Contact", ar: "اتصل بنا" }, href: "/contact", order: 11 },
   {
     id: "lets-talk",
     label: { en: "Let's Talk", ar: "تواصل معنا" },
     href: "/contact",
     highlight: "cta",
-    order: 11,
+    order: 12,
   },
 ];
+
+/**
+ * §9 width discipline: when the full architecture cannot breathe on one
+ * line, these entries fold into a deliberate "More" menu — never shrunken
+ * text, never a squeezed row. All entries return inline at ≥2xl.
+ */
+export const overflowNavIds = new Set(["gallery", "alliances", "clients"]);

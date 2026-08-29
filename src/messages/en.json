@@ -16,7 +16,9 @@
     "switchLocaleLabel": "Switch language to Arabic",
     "theme": "Theme",
     "themeDark": "Dark theme",
-    "themeLight": "Light theme"
+    "themeLight": "Light theme",
+    "more": "More",
+    "moreLabel": "More navigation"
   },
   "home": {
     "title": "Smart Channels — Technology Behind the Experience",
@@ -29,12 +31,14 @@
       "body": "Smart AI is the upcoming consultation experience from Smart Channels — describe your project needs and be guided toward the right technologies.",
       "cta": "Discuss your project"
     },
-    "andMore": "And more",
     "products": {
       "sub": "The technologies we deploy — networking, security, audio-visual and communications hardware — delivered, integrated and supported as complete solutions.",
       "cta": "Talk to us about products",
-      "title": "The hardware behind the experience"
-    }
+      "title": "The hardware behind the experience",
+      "explore": "Explore our products"
+    },
+    "morePartners": "And more technology partners",
+    "moreClients": "And more trusted organizations"
   },
   "sections": {
     "about": "About Smart Channels",

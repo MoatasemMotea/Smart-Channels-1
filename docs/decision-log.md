@@ -608,6 +608,71 @@ errors; no overflow; D-020 intact.
 
 ---
 
+## P5 Visual Correction Round decisions (recorded 2026-08-29)
+
+**D-037 — Riyadh cityscape hero composition (§1).** The hero now carries
+Saudi urban identity from the first frame: `HeroCityscape` — ORIGINAL
+stylized vector art drawn for this project (no photography, no
+third-party or mirrored assets) — places a layered Riyadh skyline on the
+hero horizon: far bluish ridge, mid indigo skyline, near-black silhouette
+plane carrying a distinctive Riyadh-tower form (tapering shaft, open
+crown arch traced in brand magenta, pulsing beacon), sparse deterministic
+window lights, and two signal routes arcing over the city (topology over
+the city; the live particle canvas plays BEHIND the skyline so stars read
+as depth, not the subject). Cool-blue atmosphere settles onto a magenta
+horizon glow (approved blue + magenta light). Scroll parallax separates
+the layers where view-timelines are supported; FULL animates
+beacon/signal flow, LITE keeps it calm, STATIC/no-JS renders the full
+server-side SVG. The label reuses the approved "RIYADH — HEADQUARTERS" /
+«الرياض — المقر الرئيسي» wording — brand storytelling, never project
+evidence. The composition is 100% code (owner-editable, no binary
+assets).
+
+**D-038 — Route-first Products (§3, supersedes the D-034 placement).**
+The full cinematic product stage (perspective grid, platform ring, light
+beams, future depth-object pedestals) moved to /products, which is now a
+dark-committed scene (header adopts the dark environment pre-paint). The
+homepage carries only a minimal deliberate teaser: section title, the
+approved one-line intro, a single light-ring doorway motif, and the
+"Explore our products" cinematic CTA into the route. Still ZERO invented
+products anywhere; `products.ts` ships empty by design.
+
+**D-039 — Ecosystem continuation notes (§§4–5).** "And more" chips were
+removed from INSIDE both logo systems. Each section now closes with a
+restrained typographic line below the motion field, exact owner wording:
+EN "And more technology partners" / AR «والمزيد من الشركاء التقنيين»
+(Alliances) and EN "And more trusted organizations" / AR «والمزيد من
+الجهات الموثوقة» (Clients), set as microlabels with a short accent
+gradient dash.
+
+**D-040 — Final header architecture with width discipline (§9).** Nav
+order is now the approved final set: Home · About Us · Products ·
+Solutions · Industries · Projects · Gallery · Technology Alliances · Our
+Clients · Smart AI · Contact, plus locale/theme switches and the Let's
+Talk CTA. Below 2xl (1536px) Gallery/Technology Alliances/Our Clients
+fold into a deliberate "More" menu (keyboard accessible: Escape closes
+and returns focus; outside-click dismisses; active state bubbles to the
+More button while a folded destination is current) — never shrunken
+text. At ≥2xl everything returns inline and the menu disappears. Arabic
+remains an intentional RTL composition of the same system.
+
+**§6/§8 polish.** Alliance stream gained a faint engineered under-glow;
+a hero→about handoff line (single magenta signal drawn downward across
+the boundary as the editorial scene reveals) joins the existing
+transition vocabulary. No scroll-jacking anywhere.
+
+**Verification (2026-08-29):** correction suite 36/36 (cityscape
+composition/label EN+AR, teaser minimalism, /products full stage + dark
+header env, rail-chip removal + exact closing wordings, stream motion,
+handoff line, nav order, More fold/unfold/Escape, no overflow, zero
+console errors); updated P5 suite 29/29 + mobile 6/6 (12-link menu);
+RTL stats 15/15; Round-3 30/30; behavior 20/20; matrix 64/64 + extra
+11/11; repo Playwright 50/50 (routes incl. /products + opening replay
+regression); unit 7/7. Light theme keeps the dark-committed hero
+(D-019); mobile composition verified.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
