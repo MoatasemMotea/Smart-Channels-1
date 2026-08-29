@@ -15,7 +15,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "infrastructure",
     slug: "infrastructure-data-centre",
     name: { en: "Infrastructure & Data Centre", ar: "البنية التحتية ومراكز البيانات" },
-    tagline: { en: "Building the foundation for connected, scalable and reliable technology" },
+    tagline: { en: "Building the foundation for connected, scalable and reliable technology", ar: "نبني الأساس لتقنية متصلة وموثوقة وقابلة للتوسّع" },
     summary: {
       en: "We design and deliver robust infrastructure solutions for enterprises, multi-tenant buildings and data centers — from structured cabling and connectivity to racks, switching, fiber and complete infrastructure deployment.",
     },
@@ -49,7 +49,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "networking",
     slug: "networking-connectivity",
     name: { en: "Networking & Connectivity", ar: "الشبكات والاتصال" },
-    tagline: { en: "Building reliable networks for connected businesses" },
+    tagline: { en: "Building reliable networks for connected businesses", ar: "شبكات موثوقة لأعمال متصلة" },
     summary: {
       en: "We design, deploy and manage reliable network and connectivity solutions that keep businesses connected, secure and ready to scale. From enterprise networking and Wi-Fi to routing, switching, connectivity and network security, our solutions are built for performance, availability and long-term growth.",
     },
@@ -92,7 +92,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "security",
     slug: "security-solutions",
     name: { en: "Security Solutions", ar: "الحلول الأمنية" },
-    tagline: { en: "Protect what matters — from people and property to networks and data" },
+    tagline: { en: "Protect what matters — from people and property to networks and data", ar: "نحمي ما يهم — من الأشخاص والممتلكات إلى الشبكات والبيانات" },
     summary: {
       en: "We deliver integrated security solutions that protect people, property, assets and digital environments. From CCTV and video analytics to access control, biometrics, firewalls and network security, our solutions provide reliable protection, visibility and control.",
     },
@@ -128,7 +128,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "biometrics",
     slug: "biometrics-access-control",
     name: { en: "Biometrics & Access Control", ar: "القياسات الحيوية والتحكم في الدخول" },
-    tagline: { en: "A matter of who, where and when" },
+    tagline: { en: "A matter of who, where and when", ar: "مسألة مَن وأين ومتى" },
     summary: {
       en: "From standalone access points to fully networked access control systems, we deliver scalable solutions tailored to the size, security and operational needs of each facility.",
     },
@@ -144,7 +144,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "audio-visual",
     slug: "audio-visual-solutions",
     name: { en: "Audio & Visual Solutions", ar: "حلول الصوت والصورة" },
-    tagline: { en: "Immersive audio and visual solutions for every environment" },
+    tagline: { en: "Immersive audio and visual solutions for every environment", ar: "حلول صوت وصورة غامرة لكل بيئة" },
     summary: {
       en: "We deliver integrated audio visual solutions for meeting rooms, classrooms, offices, retail spaces, events and large-scale environments. From displays and video walls to professional audio, digital signage and presentation systems, we design, supply, install and support solutions tailored to each space.",
     },
@@ -159,7 +159,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "unified-comms",
     slug: "unified-communications-smart-buildings",
     name: { en: "Unified Communications & Smart Buildings", ar: "الاتصالات الموحدة والمباني الذكية" },
-    tagline: { en: "Connected communications and smarter buildings" },
+    tagline: { en: "Connected communications and smarter buildings", ar: "اتصالات متصلة ومبانٍ أكثر ذكاءً" },
     summary: {
       en: "From enterprise IP telephony to intelligent building management, we integrate communication and facility technologies to create connected, efficient and easier-to-manage environments.",
     },
@@ -192,7 +192,7 @@ export const solutionFamilies: SolutionFamily[] = [
     id: "surveillance-ai",
     slug: "video-surveillance-ai",
     name: { en: "Video Surveillance & AI Solutions", ar: "المراقبة بالفيديو وحلول الذكاء الاصطناعي" },
-    tagline: { en: "Intelligent surveillance built for visibility, security and control" },
+    tagline: { en: "Intelligent surveillance built for visibility, security and control", ar: "مراقبة ذكية مصمّمة للرؤية والأمن والتحكم" },
     summary: {
       en: "We design and deploy comprehensive video surveillance solutions tailored to the security and operational requirements of each environment. From IP CCTV and high-resolution cameras to AI-powered video analytics, thermal imaging, solar-powered surveillance and advanced multi-sensor systems, we deliver scalable solutions for permanent facilities, remote locations and temporary deployments.",
     },

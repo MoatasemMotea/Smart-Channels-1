@@ -21,14 +21,14 @@ import type { LocalizedText, Project } from "@/types/content";
  * venue"). Naming follows p.26 where it is more complete than p.24.
  */
 
-/** Scope delivered at the p.26 sports venues (verbatim list, p.26). */
+/** Scope delivered at the p.26 sports venues (verbatim EN, p.26; AR authored per D-006 — owner review pending). */
 const venueScope: LocalizedText[] = [
-  { en: "Fiber and internet cabling" },
-  { en: "Network components & switching" },
-  { en: "Server and equipment rooms" },
-  { en: "Ticket booths & workstations" },
-  { en: "CCTV design and installation" },
-  { en: "Operations and control room" },
+  { en: "Fiber and internet cabling", ar: "تمديدات الألياف والإنترنت" },
+  { en: "Network components & switching", ar: "مكوّنات الشبكات والتحويل" },
+  { en: "Server and equipment rooms", ar: "غرف الخوادم والمعدات" },
+  { en: "Ticket booths & workstations", ar: "أكشاك التذاكر ومحطات العمل" },
+  { en: "CCTV design and installation", ar: "تصميم وتركيب كاميرات المراقبة" },
+  { en: "Operations and control room", ar: "غرفة العمليات والتحكم" },
 ];
 
 const base = { display: "text-only" as const, featured: false };

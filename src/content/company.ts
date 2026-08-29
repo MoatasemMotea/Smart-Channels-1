@@ -17,11 +17,15 @@ export const company = {
   /** p.3 about paragraph — verbatim from the approved profile. */
   about: {
     en: "Smart Channels delivers integrated technology, communications, infrastructure and security solutions for businesses, institutions, facilities and events. Our capabilities span advisory and technical services, systems integration, managed services, project delivery and ongoing support — helping customers build reliable, secure and scalable environments.",
+    // AR authored from the approved EN (D-006) — owner review pending
+    ar: "تقدّم Smart Channels حلولاً متكاملة للتقنية والاتصالات والبنية التحتية والأمن للشركات والمؤسسات والمنشآت والفعاليات. تمتد قدراتنا من الاستشارات والخدمات التقنية إلى تكامل الأنظمة والخدمات المُدارة وتنفيذ المشاريع والدعم المستمر — لنساعد عملاءنا على بناء بيئات موثوقة وآمنة وقابلة للتوسّع.",
   } satisfies LocalizedText,
 
   /** p.4 mission — verbatim from the approved profile. */
   mission: {
     en: "We are committed to carefully listening to our customers' distinct needs, fully understanding their requirements, and then guiding them to the best technologies that serve those needs and contribute to the tangible growth of their business.",
+    // AR authored from the approved EN (D-006) — owner review pending
+    ar: "نلتزم بالإصغاء بعناية إلى الاحتياجات الخاصة لعملائنا وفهم متطلباتهم فهماً كاملاً، ثم إرشادهم إلى أفضل التقنيات التي تخدم تلك الاحتياجات وتسهم في نموّ أعمالهم نموّاً ملموساً.",
   } satisfies LocalizedText,
 
   /** p.4 numbered value statements. */
@@ -38,6 +42,7 @@ export const company = {
       name: { en: "Advisory & Technical", ar: "الاستشارات والخدمات التقنية" },
       description: {
         en: "Guiding clients to the technologies that serve their needs and drive tangible business growth.",
+        ar: "نرشد عملاءنا إلى التقنيات التي تخدم احتياجاتهم وتدفع نموّ أعمالهم بشكل ملموس.", // authored from approved EN (D-006) — owner review pending
       },
     },
     {
@@ -45,6 +50,7 @@ export const company = {
       name: { en: "Engineering Team", ar: "الفريق الهندسي" },
       description: {
         en: "Highly experienced engineers and technicians across design, implementation and maintenance.",
+        ar: "مهندسون وفنيّون بخبرات عالية في التصميم والتنفيذ والصيانة.", // authored from approved EN (D-006) — owner review pending
       },
     },
     {
@@ -52,6 +58,7 @@ export const company = {
       name: { en: "Systems Integration", ar: "تكامل الأنظمة" },
       description: {
         en: "Network, communications and security systems brought into one scalable architecture.",
+        ar: "أنظمة الشبكات والاتصالات والأمن في بنية واحدة قابلة للتوسّع.", // authored from approved EN (D-006) — owner review pending
       },
     },
     {
@@ -59,6 +66,7 @@ export const company = {
       name: { en: "Managed Services", ar: "الخدمات المُدارة" },
       description: {
         en: "Operation, monitoring and continuous support, with annual maintenance contracts.",
+        ar: "تشغيل ومراقبة ودعم مستمر، مع عقود صيانة سنوية.", // authored from approved EN (D-006) — owner review pending
       },
     },
   ],
@@ -66,5 +74,7 @@ export const company = {
   /** p.30 client-base scope statement (approved source scope, P2-A04). */
   reach: {
     en: "Government bodies, giga-projects, financial institutions, global brands and event organisers across the Kingdom and the Gulf.",
+    // AR authored from the approved EN (D-006) — owner review pending
+    ar: "جهات حكومية ومشاريع كبرى ومؤسسات مالية وعلامات عالمية ومنظّمو فعاليات في المملكة والخليج.",
   } satisfies LocalizedText,
 };
