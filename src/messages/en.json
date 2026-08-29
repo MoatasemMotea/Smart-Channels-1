@@ -117,5 +117,9 @@
     "role": "HEADQUARTERS",
     "asOf": "As of 2026",
     "regional": "Regional reach"
+  },
+  "carousel": {
+    "prev": "Previous logos",
+    "next": "Next logos"
   }
 }

@@ -399,6 +399,7 @@ html[data-opening="revealing"] [data-stage="4"] { transition-delay: 320ms; }
 html[data-opening="revealing"] [data-stage="5"] { transition-delay: 520ms; }
 html[data-opening="revealing"] [data-stage="6"] { transition-delay: 660ms; }
 html[data-opening="revealing"] [data-stage="7"] { transition-delay: 820ms; }
+html[data-opening="revealing"] [data-stage="8"] { transition-delay: 960ms; }
 
 /* Cinematic parity on every arrival (Revision 2 defect C): loads where the
    full opening does not run — return visits, locale switches, auto-skip —
@@ -415,6 +416,7 @@ html[data-opening="skipped"] [data-stage="4"], html:not([data-opening]) [data-st
 html[data-opening="skipped"] [data-stage="5"], html:not([data-opening]) [data-stage="5"] { animation-delay: 540ms; }
 html[data-opening="skipped"] [data-stage="6"], html:not([data-opening]) [data-stage="6"] { animation-delay: 670ms; }
 html[data-opening="skipped"] [data-stage="7"], html:not([data-opening]) [data-stage="7"] { animation-delay: 820ms; }
+html[data-opening="skipped"] [data-stage="8"], html:not([data-opening]) [data-stage="8"] { animation-delay: 960ms; }
 @keyframes hero-stage-enter {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
@@ -429,10 +431,12 @@ html:not([data-opening]) .hero-accent-word {
 .hero-headline {
   display: flex;
   flex-direction: column;
-  font-size: clamp(2.6rem, 8.2vw, 7rem);
-  line-height: 0.98;
-  letter-spacing: -0.015em;
-  font-stretch: 118%;
+  /* D-042 reference proportions: a restrained editorial headline that
+     shares the frame with the skyline instead of dominating it */
+  font-size: clamp(2.2rem, 3.9vw, 3.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  font-stretch: 112%;
   text-wrap: initial;
 }
 /* Arabic hero art direction (Revision 2 §13): dedicated composition, not
@@ -440,16 +444,16 @@ html:not([data-opening]) .hero-accent-word {
    the Arabic headline runs smaller than the Latin clamp, with taller
    leading and a bounded measure — dramatic without dominating the field. */
 [dir="rtl"] .hero-headline {
-  font-size: clamp(2.25rem, 6vw, 5.25rem);
-  line-height: 1.32;
+  font-size: clamp(1.9rem, 3.3vw, 3.1rem);
+  line-height: 1.42;
   letter-spacing: 0;
   font-stretch: normal;
   max-width: 14em;
 }
 [dir="rtl"] .hero-sub {
-  font-size: 1.1875rem;
-  line-height: 2.05;
-  max-width: 36rem;
+  font-size: 1.0625rem;
+  line-height: 1.95;
+  max-width: 32rem;
 }
 /* Arabic microlabels leave the Latin mono voice: Plex Sans Arabic with no
    letterspacing (tracking Arabic script is a typographic error). */
@@ -512,6 +516,53 @@ html[data-opening="revealing"] .hero-accent-word {
   width: 1px;
   height: 34px;
   background: linear-gradient(180deg, var(--accent), transparent);
+}
+
+/* D-042 §5 — approved Track Record figures as a quiet vertical rail on
+   the hero's inline-end. Single source: stats.ts (D-002). Desktop only;
+   smaller viewports keep the Track Record section as the stats home. */
+.hero-stats-rail {
+  display: none;
+}
+@media (min-width: 80rem) {
+  .hero-stats-rail {
+    position: absolute;
+    inset-inline-end: 3rem;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.05rem;
+    padding-inline-start: 1.1rem;
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  [dir="rtl"] .hero-stats-rail {
+    border-inline-start: none;
+    border-inline-end: 1px solid rgba(255, 255, 255, 0.16);
+    padding-inline-start: 0;
+    padding-inline-end: 1.1rem;
+    text-align: end;
+  }
+  .hero-stat + .hero-stat {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.05rem;
+  }
+  .hero-stat-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--accent);
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+  }
+  .hero-stat-label {
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    max-inline-size: 9.5rem;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -614,34 +665,6 @@ html[data-motion-tier="static"] .riyadh-pulse { display: none; }
 html[data-motion-tier="lite"] .riyadh-pulse-b,
 html[data-motion-tier="lite"] .riyadh-pulse-c,
 html[data-motion-tier="lite"] .riyadh-route-far { display: none; }
-/* HQ annotation near the crown (desktop composition only) */
-.riyadh-hq-label {
-  display: none;
-}
-@media (min-width: 64rem) and (orientation: landscape) {
-  .riyadh-hq-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: absolute;
-    /* frame coordinates: beside the origin node, in open sky */
-    top: 14.2%;
-    left: 73%;
-    margin: 0;
-    color: rgba(245, 245, 244, 0.66);
-    letter-spacing: 0.3em;
-    white-space: nowrap;
-    direction: ltr;
-  }
-  .riyadh-hq-label::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--brand-magenta);
-    box-shadow: 0 0 12px 2px rgba(255, 24, 156, 0.55);
-  }
-}
 /* §9 — the opening disperses INTO the Riyadh scene: hidden under the
    opaque stage, then a slow cinematic materialization at reveal; calm
    quick entrance on skipped/return loads; instant on STATIC (global
@@ -838,40 +861,8 @@ main > *:not(.hero-scene):first-child {
   width: 100%;
   height: 100%;
 }
-/* Riyadh label — DOM text, never canvas (Arabic shaping + a11y). */
-.network-hq-label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin-left: 18px;
-  margin-top: -10px;
-  opacity: 0;
-  transition: opacity 480ms var(--ease-cinematic);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  pointer-events: none;
-  white-space: nowrap;
-}
-.network-hq-city {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.9375rem;
-  letter-spacing: 0.06em;
-  color: #f5f5f4;
-}
-[dir="rtl"] .network-hq-city { letter-spacing: 0; }
-.network-hq-role {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-[dir="rtl"] .network-hq-role {
-  font-family: var(--font-body);
-  letter-spacing: 0.01em;
-}
+/* D-042: no geographic text labels on the network — the origin
+   pulse, routes and hollow reach markers carry the geography. */
 /* Designed static frame (§18): server-rendered SVG — the STATIC-tier and
    no-JS experience. The tier attribute decides pre-paint; the geography
    never mirrors (dir="ltr" isolation on the container). */
@@ -980,24 +971,7 @@ html[data-opening="running"] .floating-whatsapp {
   pointer-events: none;
 }
 
-/* §10 — regional-reach voice: muted labels + delayed legend, clearly
-   separated from evidence nodes. */
-.network-region-label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin-left: 12px;
-  margin-top: -18px;
-  opacity: 0;
-  transition: opacity 420ms var(--ease-cinematic);
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  color: var(--ink-muted);
-  pointer-events: none;
-  white-space: nowrap;
-}
-[dir="rtl"] .network-region-label { letter-spacing: 0; }
+/* §10 — regional-reach legend (no city names, D-042). */
 .network-regional-legend {
   position: absolute;
   inset-inline-end: 2%;
@@ -1331,113 +1305,6 @@ html[data-opening="running"] .floating-whatsapp {
 .cta-converge span:nth-child(5) { top: 72%; left: 10%; animation-delay: 480ms; }
 .cta-converge span:nth-child(6) { top: 82%; right: 12%; transform: scaleX(-1); animation-delay: 600ms; }
 
-/* ALLIANCES — engineered vendor index (P5 logo revision): the approved
-   marks in a hairline-ruled technical grid. Logos live on neutral light
-   surfaces in BOTH themes; nothing is ever mirrored in RTL. */
-.alliances-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-}
-@media (min-width: 560px) { .alliances-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 900px) { .alliances-grid { grid-template-columns: repeat(5, 1fr); } }
-@media (min-width: 1200px) { .alliances-grid { grid-template-columns: repeat(7, 1fr); } }
-.alliance-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-block-size: 5.4rem;
-  padding: 1rem 1.1rem;
-  background: #fdfdfc; /* logo surface: light in both themes by design */
-  /* per-cell masked entrance, staggered via inline transition-delay */
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 620ms var(--ease-cinematic);
-}
-.reveal.is-visible .alliance-cell,
-[data-motion-tier="static"] .alliance-cell {
-  clip-path: inset(0);
-}
-.alliance-logo {
-  max-block-size: 2.1rem;
-  max-inline-size: 82%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  transition: transform var(--dur-control) var(--ease-engineered);
-}
-.alliance-cell:hover {
-  box-shadow: inset 0 -2px 0 0 var(--accent); /* signal-line response */
-}
-.alliance-cell:hover .alliance-logo { transform: scale(1.05); }
-.alliance-name { color: #141416; font-weight: 600; font-size: 0.9rem; }
-.alliance-more {
-  background: var(--bg);
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-[dir="rtl"] .alliance-more { font-family: var(--font-body); letter-spacing: 0; }
-
-/* CLIENTS — calm trust constellation (P5 logo revision): floating chips
-   at natural widths, soft staggered rise, quiet depth on hover. */
-.clients-wall {
-  margin-top: 2.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.9rem 1rem;
-  align-items: stretch;
-}
-.client-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.4rem;
-  border-radius: 10px;
-  background: #fdfdfc;
-  border: 1px solid var(--line);
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 560ms var(--ease-engineered),
-    transform 560ms var(--ease-engineered),
-    box-shadow var(--dur-control) var(--ease-engineered);
-}
-.reveal.is-visible .client-chip,
-[data-motion-tier="static"] .client-chip {
-  opacity: 1;
-  transform: none;
-}
-.client-chip:hover {
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
-}
-.client-logo {
-  block-size: 2rem;
-  inline-size: auto;
-  max-inline-size: 9.5rem;
-  object-fit: contain;
-}
-@media (max-width: 640px) {
-  /* dedicated mobile composition: two comfortable columns, larger marks */
-  .clients-wall { gap: 0.7rem; }
-  .client-chip { flex: 1 1 calc(50% - 0.7rem); padding: 0.8rem 0.9rem; }
-  .client-logo { block-size: 1.8rem; max-inline-size: 100%; }
-  .alliance-cell { min-block-size: 4.6rem; }
-}
-.client-chip > span { color: #141416; font-weight: 600; font-size: 0.9rem; }
-.client-more {
-  background: transparent;
-  border-style: dashed;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-[dir="rtl"] .client-more { font-family: var(--font-body); letter-spacing: 0; }
 
 /* ------------------------------------------------------------------ */
 /* P5 — Cinematic content experience: nav, arrivals, product stage,    */
@@ -1589,6 +1456,10 @@ html[data-opening="running"] .floating-whatsapp {
     inset 0 0 26px rgba(255, 24, 156, 0.1);
 }
 .arrive .teaser-ring { animation: stage-ring-pulse 800ms var(--ease-cinematic); }
+/* §14: the platform light activates as the teaser enters the viewport */
+.reveal.is-visible[data-scene="products"] .teaser-ring {
+  animation: stage-ring-pulse 1100ms var(--ease-cinematic) 250ms;
+}
 .stage-grid {
   position: absolute;
   inset: 40% -10% 0;
@@ -1662,18 +1533,214 @@ html[data-opening="running"] .floating-whatsapp {
   color: var(--ink-muted);
 }
 
-/* §§2–3 — logo motion rails (shared engine). */
+/* ------------------------------------------------------------------ */
+/* D-042 — cinematic logo carousels (reference-locked family).         */
+/* One seamless auto-flowing rail per ecosystem: dark glass cells, a   */
+/* compact light plate preserving each mark's original color (D-033 —  */
+/* never recolored/mirrored/distorted), arrow controls, drag/swipe,    */
+/* under-rail signal line. RTL reverses flow semantics only.           */
+/* ------------------------------------------------------------------ */
+.logo-rail {
+  position: relative;
+  margin-top: 2.5rem;
+}
+.rail-viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  padding-block: 0.5rem;
+  mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+}
+.rail-viewport:active { cursor: grabbing; }
+/* no-JS baseline (no motion-tier attribute was ever set): a native
+   horizontally scrollable strip, single copy, no controls */
+html:not([data-motion-tier]) .rail-viewport { overflow-x: auto; mask-image: none; }
+html:not([data-motion-tier]) .rail-copy-b,
+html:not([data-motion-tier]) .rail-nav { display: none; }
 .rail-track {
   display: flex;
   width: max-content;
   will-change: transform;
 }
-.rail-half {
+.rail-copy {
   display: flex;
   align-items: stretch;
-  gap: 1rem;
-  padding-inline-end: 1rem;
+  gap: 0.9rem;
+  padding-inline-end: 0.9rem;
 }
+.rail-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: 5.6rem;
+  min-inline-size: 11.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  /* dark glass — committed dark in BOTH themes, like the hero */
+  background: linear-gradient(180deg, #151b30 0%, #0b0e1b 100%);
+  border: 1px solid rgba(146, 160, 214, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 26px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered);
+}
+.rail-cell:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(255, 24, 156, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 34px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(255, 24, 156, 0.14);
+}
+/* the light plate is the logo's ground — original colors stay intact
+   (a third of the approved marks are near-black glyphs) */
+.rail-plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdfdfc;
+  border-radius: 8px;
+  block-size: 3.4rem;
+  min-inline-size: 8.25rem;
+  padding: 0.5rem 1rem;
+}
+.rail-plate img {
+  max-block-size: 2.1rem;
+  max-inline-size: 8.5rem;
+  inline-size: auto;
+  block-size: auto;
+  object-fit: contain;
+  user-select: none;
+}
+/* Clients — same family, calmer voice: shorter cells, cooler edge */
+.client-rail-cell {
+  block-size: 5rem;
+  min-inline-size: 10.25rem;
+  border-color: rgba(120, 150, 220, 0.18);
+}
+.client-rail-cell:hover {
+  border-color: rgba(95, 123, 220, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 34px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(95, 123, 220, 0.16);
+}
+.client-rail-cell .rail-plate { block-size: 3rem; min-inline-size: 7.25rem; }
+.client-rail-cell .rail-plate img { max-block-size: 1.85rem; }
+
+/* arrow controls: dark glass rounds floating at the rail edges */
+.rail-nav {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: 50%;
+  background: rgba(11, 14, 27, 0.82);
+  border: 1px solid rgba(146, 160, 214, 0.28);
+  color: #e8eaf4;
+  transition:
+    border-color var(--dur-control) var(--ease-engineered),
+    color var(--dur-control) var(--ease-engineered),
+    background-color var(--dur-control) var(--ease-engineered);
+}
+@supports (backdrop-filter: blur(6px)) {
+  .rail-nav { backdrop-filter: blur(6px); }
+}
+.rail-nav:hover,
+.rail-nav:focus-visible {
+  border-color: rgba(255, 24, 156, 0.55);
+  color: #ffffff;
+}
+.rail-nav svg { inline-size: 1rem; block-size: 1rem; }
+.rail-nav-prev { inset-inline-start: -0.5rem; }
+.rail-nav-next { inset-inline-end: -0.5rem; }
+/* chevrons follow reading direction (icons, not artwork) */
+[dir="rtl"] .rail-nav svg { transform: scaleX(-1); }
+
+/* §12 depth: illuminated line beneath the rail + traveling highlight */
+.rail-underline {
+  position: absolute;
+  inset-inline: 6%;
+  bottom: -0.45rem;
+  block-size: 1px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 24, 156, 0.3) 30%,
+    rgba(95, 123, 220, 0.28) 70%,
+    transparent
+  );
+  pointer-events: none;
+}
+html[data-motion-tier="full"] .rail-underline::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: 18%;
+  inset-inline-start: -20%;
+  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.7), transparent);
+  animation: underline-run 7s linear infinite;
+}
+html[data-motion-tier="full"] .logo-rail-client .rail-underline::after {
+  background: linear-gradient(90deg, transparent, rgba(95, 123, 220, 0.65), transparent);
+  animation-duration: 10s;
+}
+@keyframes underline-run {
+  from { inset-inline-start: -20%; }
+  to { inset-inline-start: 102%; }
+}
+/* alliances: one slow light pass across the viewport (FULL) */
+.rail-sweep {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 22%;
+  inset-inline-start: -25%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.06), transparent);
+  animation: rail-sweep 9s var(--ease-cinematic) infinite;
+}
+@keyframes rail-sweep {
+  0%, 55% { inset-inline-start: -25%; }
+  85%, 100% { inset-inline-start: 105%; }
+}
+
+/* section head: locale title + counterpart-language echo (approved
+   section names only) */
+.rail-head-echo {
+  /* shrink-to-fit so the counterpart-language echo sits UNDER the title
+     (a full-width block would edge-align via its own writing direction) */
+  display: inline-block;
+  inline-size: fit-content;
+  margin-top: -1.4rem;
+  margin-bottom: 2rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.rail-head { display: flex; flex-direction: column; align-items: flex-start; }
+[dir="rtl"] .rail-head { align-items: flex-start; }
+
+/* touch-size discipline on small screens */
+@media (max-width: 640px) {
+  .rail-cell { block-size: 4.7rem; min-inline-size: 9.25rem; }
+  .rail-plate { block-size: 2.9rem; min-inline-size: 6.5rem; }
+  .rail-plate img { max-block-size: 1.7rem; max-inline-size: 6.75rem; }
+  .client-rail-cell { block-size: 4.3rem; min-inline-size: 8.5rem; }
+  .rail-nav { inline-size: 2.5rem; block-size: 2.5rem; }
+  .rail-nav-prev { inset-inline-start: 0.25rem; }
+  .rail-nav-next { inset-inline-end: 0.25rem; }
+}
+
 /* §§4–5 continuation notes: restrained typographic lines BELOW the
    ecosystems — never chips inside the moving rails. */
 .ecosystem-more {
@@ -1692,117 +1759,6 @@ html[data-opening="running"] .floating-whatsapp {
 [dir="rtl"] .ecosystem-more::before {
   background: linear-gradient(-90deg, var(--accent), transparent);
 }
-
-/* Technology Alliances — engineered stream: depth rows + signal sweep. */
-.alliance-stream {
-  position: relative;
-  margin-top: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, black 7%, black 93%, transparent);
-}
-.stream-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 10.5rem;
-  block-size: 4.9rem;
-  padding: 1rem 1.2rem;
-  background: #fdfdfc;
-  border-radius: 8px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-  transition:
-    transform var(--dur-control) var(--ease-engineered),
-    box-shadow var(--dur-control) var(--ease-engineered);
-}
-.stream-chip img {
-  max-block-size: 2.1rem;
-  max-inline-size: 84%;
-  inline-size: auto;
-  block-size: auto;
-  object-fit: contain;
-}
-.stream-chip:hover {
-  transform: translateY(-4px) scale(1.04);
-  box-shadow:
-    0 10px 26px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 24, 156, 0.35),
-    0 0 22px rgba(255, 24, 156, 0.18);
-}
-.stream-chip-far {
-  scale: 0.88;
-  opacity: 0.82; /* depth layer */
-}
-.alliance-stream[data-lite] .stream-chip { inline-size: 8.6rem; block-size: 4.2rem; }
-/* §6 depth: a faint engineered under-glow beneath the stream rows */
-.alliance-stream::after {
-  content: "";
-  position: absolute;
-  inset-inline: 12%;
-  bottom: 0;
-  block-size: 42px;
-  background: radial-gradient(50% 100% at 50% 100%, rgba(255, 24, 156, 0.1), transparent 72%);
-  pointer-events: none;
-}
-.stream-sweep {
-  position: absolute;
-  inset-block: 0;
-  inline-size: 26%;
-  inset-inline-start: -30%;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.07), transparent);
-  animation: stream-sweep 8.5s var(--ease-cinematic) infinite;
-}
-@keyframes stream-sweep {
-  0%, 55% { inset-inline-start: -30%; }
-  85%, 100% { inset-inline-start: 110%; }
-}
-
-/* Our Clients — institutional constellation: calm, depth, edge masks. */
-.client-constellation {
-  position: relative;
-  margin-top: 2.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, black 9%, black 91%, transparent);
-}
-.constellation-row {
-  transition: transform 600ms var(--ease-engineered);
-}
-.constellation-row-0 { transform: translateX(calc(var(--px, 0) * -7px)); }
-.constellation-row-1 { transform: translateX(calc(var(--px, 0) * 5px)) scale(0.94); opacity: 0.9; }
-.constellation-row-2 { transform: translateX(calc(var(--px, 0) * -4px)) scale(0.9); opacity: 0.82; }
-.constellation-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.5rem;
-  background: #fdfdfc;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  animation: chip-drift 8s ease-in-out infinite;
-  transition: box-shadow var(--dur-control) var(--ease-engineered);
-}
-.constellation-chip:nth-child(2n) { animation-delay: -2.6s; }
-.constellation-chip:nth-child(3n) { animation-delay: -5.1s; }
-@keyframes chip-drift {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -4px; }
-}
-.constellation-chip:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 24, 156, 0.25);
-}
-.constellation-chip img {
-  block-size: 1.9rem;
-  inline-size: auto;
-  max-inline-size: 9rem;
-  object-fit: contain;
-}
-.client-constellation[data-lite] .constellation-chip img { block-size: 1.65rem; }
 
 /* §10 — restrained scroll-driven depth where the browser supports it. */
 @supports (animation-timeline: view()) {

@@ -736,6 +736,64 @@ right); matrix 64/64 + extra 11/11; unit 7/7.
 
 ---
 
+## Strict visual implementation round (recorded 2026-08-29)
+
+**D-042 — Reference-locked homepage composition.** The owner supplied an
+approved visual target; this round implements its visual SYSTEM with
+existing approved content only (§2 content-safety honored — none of the
+reference's statistics, names or copy was carried over).
+
+*Hero:* restrained reference-scale typography (EN clamp 2.2–3.6 rem,
+AR 1.9–3.1 rem — dedicated compositions, wording unchanged/locked),
+editorial column centered on the inline-start, D-041 Riyadh photograph
+untouched as the visual subject, approved Track Record figures as a
+quiet accent vertical rail on the inline-end (data-driven from stats.ts
+— D-002 single source, bidi-isolated tokens), scroll indicator cleared
+of the floating action. **All geographic text labels removed** from the
+hero, the opening, and the network visualization ("RIYADH —
+HEADQUARTERS" hero/opening labels, Riyadh/Bahrain/Qatar/UAE map labels,
+the static caption's city names) — geography is now communicated
+visually (origin pulse, routes, hollow reach markers); the approved
+prose headings remain (editorial copy, not map labels). Engine label
+callbacks stay null-guarded; choreography timing untouched.
+
+*Logo ecosystems:* the dual counter-rails/constellation (D-036) are
+superseded by ONE premium cinematic horizontal carousel per section —
+the reference family. Dark glass cells (committed dark in both themes)
+with a compact light plate carrying each mark: measured ~30% of the
+approved logos are near-black glyphs, and recoloring is forbidden, so
+the plate is the uniform legibility ground — original color, geometry
+and proportions preserved for every logo (never recolored, mirrored,
+stretched, cropped or distorted). Engine: rAF offset over a duplicated
+sequence wrapping at one copy-width (physically continuous — no
+restart, no gap, no jump); Alliances ≈30 px/s + signal sweep + magenta
+edge response; Clients ≈22 px/s, cooler edge — same family, calmer
+voice. Arrow controls page ~60% of the viewport with an eased tween;
+drag/swipe (pointer capture) and horizontal trackpad wheel steer it
+1:1; any manual interaction pauses the flow and it resumes ~4 s later
+from the same position; hover (mouse) and keyboard focus pause in
+place; rails pause offscreen/hidden-tab. Under-rail illuminated line
+with a traveling highlight (FULL). LITE flows identically; STATIC
+renders the complete motionless rail with working arrows; no-JS falls
+back to a native horizontally scrollable strip (keyed off the absent
+motion-tier attribute). Section heads pair the locale title with its
+counterpart-language approved name as an accent echo. Continuation
+lines remain BELOW the rails with the exact approved wordings.
+
+*Products:* unchanged route-first teaser; the platform ring now
+activates as the section reveals (§14 platform-light).
+
+**Verification (2026-08-29):** new strict-round suite 32/32 (no
+geographic labels on visualizations EN/AR, stats rail approved figures
+inline-end, flow speed/direction/RTL, arrow paging + pause + ~4 s
+resume, drag, clients calmer, closing wordings, no mirrored surfaces,
+LITE flow + swipe, STATIC complete + arrow-navigable, browser-zoom
+sweep 80→200% with zero overflow); updated regression battery all
+green (rp 33, vc 36, p5b 29+6, rtl 15, r3 30, p4 20, matrix 64, extra
+11); repo Playwright 50/50; unit 7/7; zero console errors.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)

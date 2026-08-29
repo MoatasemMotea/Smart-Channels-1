@@ -197,9 +197,9 @@ export function OpeningExperience() {
       <p ref={captionRef} className="opening-caption microlabel">
         {t("caption")}
       </p>
-      <p ref={labelRef} className="opening-hq-label microlabel" dir={locale === "ar" ? "rtl" : "ltr"}>
-        {t("hqLabel")}
-      </p>
+      {/* D-042: no geographic text labels anywhere in the hero/opening —
+          the map beat communicates the geography visually. The labelRef
+          stays declared; every engine callback null-guards it. */}
     </div>
   );
 }

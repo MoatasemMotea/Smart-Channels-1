@@ -195,26 +195,10 @@ export function NetworkScene() {
           {tier === "static" ? null : (
             <>
               <canvas ref={canvasRef} className="network-canvas" />
-              <p ref={labelRef} className="network-hq-label" dir={locale === "ar" ? "rtl" : "ltr"}>
-                <span className="network-hq-city">{t("network.city")}</span>
-                <span className="network-hq-role">{t("network.role")}</span>
-              </p>
-              {/* Regional-reach labels (§10): muted, hollow-marker voice —
-                  storytelling reach, never project evidence. */}
-              {gulfRegions
-                .filter((r) => r.enabled)
-                .map((r) => (
-                  <span
-                    key={r.id}
-                    ref={(el) => {
-                      regionRefs.current[r.id] = el;
-                    }}
-                    className="network-region-label"
-                    dir={locale === "ar" ? "rtl" : "ltr"}
-                  >
-                    {locale === "ar" && r.name.ar ? r.name.ar : r.name.en}
-                  </span>
-                ))}
+              {/* D-042: no city/country text labels on the network — the
+                  origin pulse, national routes and dashed regional-reach
+                  markers carry the geography visually. The label/region
+                  refs stay declared; every engine callback null-guards. */}
               <p ref={legendRef} className="network-regional-legend microlabel">
                 {t("network.regional")}
               </p>
@@ -274,18 +258,10 @@ export function NetworkScene() {
                 ),
               )}
             </svg>
+            {/* D-042: the static frame carries no geographic text either —
+                only the regional-reach legend voice. */}
             <p className="network-static-caption" dir={locale === "ar" ? "rtl" : "ltr"}>
-              <span className="network-hq-city">{t("network.city")}</span>
-              <span aria-hidden="true"> — </span>
-              <span className="network-hq-role">{t("network.role")}</span>
-              <span className="network-static-caption-sep" aria-hidden="true"> · </span>
-              <span className="text-ink-muted">
-                {t("network.regional")}:{" "}
-                {gulfRegions
-                  .filter((r) => r.enabled)
-                  .map((r) => (locale === "ar" && r.name.ar ? r.name.ar : r.name.en))
-                  .join(" · ")}
-              </span>
+              <span className="text-ink-muted">{t("network.regional")}</span>
             </p>
           </div>
         </div>

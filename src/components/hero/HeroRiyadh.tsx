@@ -1,5 +1,4 @@
 import { preload } from "react-dom";
-import { getTranslations } from "next-intl/server";
 import { heroScene } from "@/content/hero-media";
 import { HeroMedia } from "./HeroMedia";
 import { HeroPointerDepth } from "./HeroPointerDepth";
@@ -32,7 +31,6 @@ import { HeroPointerDepth } from "./HeroPointerDepth";
  * Gulf exists inside the Riyadh photograph.
  */
 export async function HeroRiyadh() {
-  const t = await getTranslations("opening");
   preload(heroScene.src, {
     as: "image",
     imageSrcSet: heroScene.srcSet,
@@ -128,11 +126,6 @@ export async function HeroRiyadh() {
             </circle>
           </svg>
         </div>
-
-        {/* approved wording only — Riyadh is the origin, not a project
-            claim. Inside the frame (outside the drift) so it stays
-            beside the tower at every viewport. */}
-        <p className="riyadh-hq-label microlabel">{t("hqLabel")}</p>
       </div>
 
       <HeroPointerDepth />
