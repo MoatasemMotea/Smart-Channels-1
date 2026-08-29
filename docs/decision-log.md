@@ -463,6 +463,53 @@ desktop/mobile). P4 is approved; P5 (Homepage Journey) is authorized.
 
 ---
 
+## P5 — Homepage Journey (2026-08-29, owner answers Q-P5-1…Q-P5-8)
+
+**D-030 — Homepage journey compositions (implemented per owner answers).**
+About = editorial split with the authentic fiber-splicing field still
+(masked reveal; never stock or AI-as-evidence). Solutions = ecosystem
+index (the seven families are the interface; signal rail + preview panel;
+tap-to-expand disclosure on touch; no hover dependency). Industries = all
+16 sectors in a structural typographic matrix, featured sectors emphasized,
+no invented claims. Selected Projects = equal-weight evidence wall
+(name / approved location / period / p.26 scope; NO featured hierarchy —
+D-004 stays a P9 gate). Gallery = editorial masonry preview of the
+owner-approved starter set. Smart AI = cinematic convergence teaser, honest
+"upcoming experience" framing, CTA routed to /contact until P11 ships the
+dedicated route (no fake chat — D-009). Alliances = engineered typographic
+vendor index; Clients = calm structural trust field (deliberately
+different; records upgrade to logo-backed via data when official assets
+arrive). Final CTA = the signal field returns (distributed signals →
+controlled convergence → action), dark in both themes, approved routes
+only. Section rhythm: no adjacent composition or entry choreography
+repeats.
+
+**D-031 — Gallery starter set published (Q-P5-5).** Owner-approved:
+event-network-build-2025.mp4, event-environment-night.mp4,
+hospitality-walkway-night.mp4, and the fiber-splicing still (a frame
+extracted at 42.5s from the approved network-build video — same owner
+source, no external media; also the About image). Captions carry only
+source-supported metadata; unresolved fields stay absent. Expansion
+remains data-only (D-008/Amendment 3 pipeline unchanged).
+
+**Arabic authoring (D-006).** P5 surfaces required AR for: company about /
+mission / reach, four capability descriptions, seven solution taglines,
+and the p.26 venue scope bullets — authored strictly from the approved
+English, no new claims, marked in-source as pending owner review.
+Remaining AR gaps: 54 (later-phase surfaces).
+
+**Engineering note.** Fixed a latent reveal deadlock: a section clipped by
+its own `clip-path` reports zero intersection, so the mask variant now
+clips the section's child, never the observed element.
+
+**P5 verification:** journey QA EN/AR × desktop/mobile — zero console
+errors, no overflow, no dead links; suites 140/140 (behavior 20, matrix
+64, switching 30, static/profile 11, RTL stats 15); unit 7/7 (publish
+filter updated to the approved-set contract); smoke 40/40; hero field
+≈4.4ms avg desktop FULL; interactive client chunks ≈39 KB gz.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
