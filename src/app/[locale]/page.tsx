@@ -72,7 +72,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <SmartAiTeaser />
 
-      <AlliancesIndex />
+      <AlliancesIndex locale={locale} />
 
       <ClientsField locale={locale} />
 

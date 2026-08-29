@@ -510,6 +510,50 @@ filter updated to the approved-set contract); smoke 40/40; hero field
 
 ---
 
+## P5 hotfix + logo revision (2026-08-29, owner live review)
+
+**D-032 — Opening visibility (blocking defect, root-caused and fixed).**
+Two reproduced causes made the cinematic opening invisible on real loads:
+(1) browser scroll restoration replayed the sequence above the restored
+viewport on any mid-page refresh; (2) the 1.5s auto-skip raced hydration
+(the engine was a lazy chunk) and silently cancelled the sequence.
+Binding behavior now: the opening OWNS the initial viewport — a fixed
+opaque stage (z-60) above header and hero until the reveal; scroll
+restoration is neutralized (manual + instant top) while the sequence
+runs; the engine hydrates with the page; a server-rendered CSS-only
+pre-stage guarantees darkness → readable authoritative logo from first
+paint before ANY JavaScript, with a silent 4s deterministic fallback (no
+spinner); the logo asset is preloaded (fetchPriority=high) and decode()d
+before the readable beat (~1.6–2.75s, ≥1s hold). Skip stays
+intentional-input only; STATIC/reduced-motion stays exempt; locale/theme
+switches never replay. Guarded by tests/smoke/opening.spec.ts (computed
+visibility, stage geometry, logo hold, replay-on-reload, mid-page
+refresh — desktop + mobile).
+
+**D-033 — Technology Alliances & Our Clients are LOGO-driven.** The
+typographic walls are superseded: both sections use the ACTUAL approved
+marks from the updated Company Profile grids — p.28 (41 vendor logos) and
+p.30 (27 client logos) — extracted at 300 DPI from the source PDF
+(masters in media-source/brand/{alliances,clients}/, optimized webp
+derivatives in public/media/logos/), proportions untouched, nothing
+mirrored, no internet substitutes, no text fallbacks rendered. Alliances
+= engineered hairline-ruled vendor grid with per-cell masked entrance and
+signal-line hover; Clients = calm trust constellation of floating
+natural-width chips with staggered rise. Logos sit on neutral light
+surfaces in BOTH themes; each profile grid's closing "And more" is kept
+as an honest ghost cell. The updated profile also resolved O-014: "Saleh
+Al Rajhi Partners" and "HQWS" are now recorded (27 clients total).
+Records upgrade to official assets via `logo.src` data edits. The source
+PDF remains private (D-020 re-verified: 404, zero PDFs under public/).
+
+**Verification:** logo QA 17/17 (counts/broken/fallbacks × EN/AR ×
+desktop/mobile × themes, theme/locale-switch persistence); full battery
+157 harness checks + repo Playwright 46/46 (routes + opening regression)
++ unit 7/7; frames A–F timed evidence (logo readable 2.16s, held 2.87s,
+reveal 5.16s); refresh × EN/AR × dark/light all visible.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)
@@ -536,6 +580,6 @@ filter updated to the approved-set contract); smoke 40/40; hero field
 | O-011 | Production domain & hosting | P19+/deployment | D-010. |
 | O-012 | Client-identifying imagery permissions (e.g., "SMC vibes" office photo, Al Nassr room) | P10 gallery population | Owner to confirm usage rights per photo. |
 | O-013 | Official light-background logo lockup not supplied | Light-theme brand presentation (P4+ polish) | Light theme currently uses the SC mark cropped from the authoritative asset; no lockup fabricated (D-001). |
-| O-014 | Two p.30 client names not confidently legible in source PDF (row-1 Arabic-named partner firm; the "HQWS"-like mark) | P12 clients completeness | Omitted from clients.ts pending owner confirmation (Amendment 2). |
+| O-014 | ~~Two p.30 client names not legible~~ **RESOLVED** (updated profile, 2026-08-29): "Saleh Al Rajhi Partners" and "HQWS" recorded with logos (D-033). | — | Closed. |
 | O-015 | Hero AI cinematic video + poster (D-027) not yet generated/approved | Final Hero media | Slot architecture ready; generation brief in the Round 3 report; spec in src/content/hero-media.ts. |
 | O-016 | Official LinkedIn / Instagram / X company URLs | Footer social treatment | Records prepared disabled in src/content/social.ts; enabling is a data edit (D-029). |

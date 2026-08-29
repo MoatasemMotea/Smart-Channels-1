@@ -1127,43 +1127,110 @@ html[data-opening="running"] .floating-whatsapp {
 .cta-converge span:nth-child(5) { top: 72%; left: 10%; animation-delay: 480ms; }
 .cta-converge span:nth-child(6) { top: 82%; right: 12%; transform: scaleX(-1); animation-delay: 600ms; }
 
-/* ALLIANCES (Q-P5-7): engineered vendor index — technical voice. */
-.alliances-index {
+/* ALLIANCES — engineered vendor index (P5 logo revision): the approved
+   marks in a hairline-ruled technical grid. Logos live on neutral light
+   surfaces in BOTH themes; nothing is ever mirrored in RTL. */
+.alliances-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
 }
-@media (min-width: 768px) { .alliances-index { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 560px) { .alliances-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .alliances-grid { grid-template-columns: repeat(5, 1fr); } }
+@media (min-width: 1200px) { .alliances-grid { grid-template-columns: repeat(7, 1fr); } }
 .alliance-cell {
-  background: var(--bg);
-  padding: 1.4rem 1.2rem;
   display: flex;
   align-items: center;
-  min-block-size: 4.6rem;
+  justify-content: center;
+  min-block-size: 5.4rem;
+  padding: 1rem 1.1rem;
+  background: #fdfdfc; /* logo surface: light in both themes by design */
+  /* per-cell masked entrance, staggered via inline transition-delay */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 620ms var(--ease-cinematic);
 }
-.alliance-name {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.01em;
-  color: var(--ink-muted);
+.reveal.is-visible .alliance-cell,
+[data-motion-tier="static"] .alliance-cell {
+  clip-path: inset(0);
 }
-.alliance-cell:hover .alliance-name { color: var(--accent); }
+.alliance-logo {
+  max-block-size: 2.1rem;
+  max-inline-size: 82%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform var(--dur-control) var(--ease-engineered);
+}
+.alliance-cell:hover {
+  box-shadow: inset 0 -2px 0 0 var(--accent); /* signal-line response */
+}
+.alliance-cell:hover .alliance-logo { transform: scale(1.05); }
+.alliance-name { color: #141416; font-weight: 600; font-size: 0.9rem; }
+.alliance-more {
+  background: var(--bg);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[dir="rtl"] .alliance-more { font-family: var(--font-body); letter-spacing: 0; }
 
-/* CLIENTS (Q-P5-7): calm trust field — quiet flowing names, no grid. */
-.clients-field {
-  margin-top: 2.5rem;
-  max-width: 64rem;
-  font-size: 0.9375rem;
-  line-height: 2.4;
-  color: var(--ink-muted);
-  text-align: start;
+/* CLIENTS — calm trust constellation (P5 logo revision): floating chips
+   at natural widths, soft staggered rise, quiet depth on hover. */
+.clients-wall {
+  margin-top: 2.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1rem;
+  align-items: stretch;
 }
-.clients-sep { color: var(--accent); opacity: 0.6; }
-.clients-name {
-  transition: color var(--dur-control) var(--ease-engineered);
+.client-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 10px;
+  background: #fdfdfc;
+  border: 1px solid var(--line);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 560ms var(--ease-engineered),
+    transform 560ms var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered);
 }
-.clients-name:hover { color: var(--ink); }
-[dir="rtl"] .clients-field { text-align: right; }
+.reveal.is-visible .client-chip,
+[data-motion-tier="static"] .client-chip {
+  opacity: 1;
+  transform: none;
+}
+.client-chip:hover {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+}
+.client-logo {
+  block-size: 2rem;
+  inline-size: auto;
+  max-inline-size: 9.5rem;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  /* dedicated mobile composition: two comfortable columns, larger marks */
+  .clients-wall { gap: 0.7rem; }
+  .client-chip { flex: 1 1 calc(50% - 0.7rem); padding: 0.8rem 0.9rem; }
+  .client-logo { block-size: 1.8rem; max-inline-size: 100%; }
+  .alliance-cell { min-block-size: 4.6rem; }
+}
+.client-chip > span { color: #141416; font-weight: 600; font-size: 0.9rem; }
+.client-more {
+  background: transparent;
+  border-style: dashed;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+[dir="rtl"] .client-more { font-family: var(--font-body); letter-spacing: 0; }
