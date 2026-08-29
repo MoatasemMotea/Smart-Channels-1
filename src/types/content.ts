@@ -270,6 +270,33 @@ export interface ProfileDocument {
 /* Navigation (Q10)                                                    */
 /* ------------------------------------------------------------------ */
 
+/**
+ * PRODUCT CATALOGUE record (P5 §4 — architecture first, content later).
+ * Localized fields use LocalizedText: `name.ar` carries the owner-approved
+ * Arabic (the schema's nameAr/summaryAr/importanceAr). Optional fields
+ * stay ABSENT until owner-approved — no placeholders, no invention.
+ */
+export interface CatalogProduct {
+  id: string;
+  /** Future /products/[slug] detail route. */
+  slug: string;
+  name: LocalizedText;
+  /** Short supporting copy. */
+  summary: LocalizedText;
+  /** Why it matters / use case (owner-supplied). */
+  importance: LocalizedText;
+  /** Owner-approved category wording only. */
+  category?: LocalizedText;
+  /** Primary product photograph under /public (owner-supplied). */
+  image?: MediaRef;
+  /** Additional owner-supplied imagery. */
+  gallery?: MediaRef[];
+  featured: boolean;
+  /** A-004 pattern: false = excluded from ALL public rendering. */
+  published: boolean;
+  sortOrder: number;
+}
+
 export interface NavItem {
   id: string;
   label: LocalizedText;

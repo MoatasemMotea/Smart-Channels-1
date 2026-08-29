@@ -115,6 +115,23 @@ for (const d of documents)
   if (/profile/i.test(d.src) || /profile/i.test(d.label.en))
     errors.push(`D-020: Company Profile record "${d.src}" must never be publicly enabled`);
 
+/* ---- P5 §4: product records (architecture ships empty; guards armed) ---- */
+import { products } from "../src/content/products";
+{
+  const ids = new Set<string>();
+  const slugs = new Set<string>();
+  for (const pr of products) {
+    if (ids.has(pr.id)) errors.push(`product ${pr.id}: duplicate id`);
+    if (slugs.has(pr.slug)) errors.push(`product ${pr.slug}: duplicate slug`);
+    ids.add(pr.id);
+    slugs.add(pr.slug);
+    if (pr.image) checkPath(pr.image.src, `product ${pr.id} image`, pr.published);
+    for (const g of pr.gallery ?? []) checkPath(g.src, `product ${pr.id} gallery`, pr.published);
+    if (pr.published && !pr.image)
+      warnings.push(`product ${pr.id}: published without an image (stage renders text-only)`);
+  }
+}
+
 /* ---- Rev3 §13: social records — no dead links, no invented URLs ---- */
 import { socialLinks } from "../src/content/social";
 for (const l of socialLinks) {

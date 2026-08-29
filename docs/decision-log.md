@@ -554,6 +554,60 @@ reveal 5.16s); refresh × EN/AR × dark/light all visible.
 
 ---
 
+## P5 — Cinematic content experience, navigation & ecosystem motion (2026-08-29)
+
+**D-034 — Products architecture (content later, never invented).** A
+first-class Products section exists: typed `CatalogProduct` schema
+(id/slug/name/summary/importance/category/image/gallery/featured/
+published/sortOrder; localized fields carry the Arabic via LocalizedText),
+`src/content/products.ts` SHIPS EMPTY by design, /en/products +
+/ar/products routes are live and restrained, and the homepage carries the
+cinematic product stage (perspective floor grid, glowing platform ring,
+light beams — the designed environment IS the empty state). Owner-supplied
+records land as depth objects on the platform with zero component
+redesign. Copy states only approved solution-backed facts. Validation
+guards uniqueness/paths.
+
+**D-035 — Navigation information architecture + premium behavior.** The
+header now reflects the real site: Home · About Us(/company) · Products ·
+Solutions · Industries · Projects · Gallery · Technology Alliances(/#partners)
+· Our Clients(/#clients) · Smart AI(/#smart-ai) + the Let's Talk CTA (the
+Contact destination). Data-driven from navigation.ts; restrained
+active-section indicator (route match + dominant-section probe on the
+homepage); anchor clicks perform smooth cinematic ARRIVALS (§9): a signal
+traces the destination's top edge, scene-specific beats fire (Smart AI
+convergence replay, product-ring pulse), and keyboard focus resolves at
+the section. The environment-aware header behavior (D-022) is untouched.
+
+**D-036 — Logo ecosystems in motion.** Technology Alliances = the
+ENGINEERED TECHNOLOGY STREAM: two counter-flowing depth rows of the
+approved marks on seamless WAAPI loops (double-sequence tracks translated
+exactly one copy-width — no visible jump), slow premium velocity, periodic
+signal sweep, hover/focus eases the row to near-stillness while the mark
+lifts with restrained glow. Our Clients = the TRUSTED INSTITUTIONAL
+CONSTELLATION: three calmer counter-flowing rows with depth scale/opacity,
+per-chip drift, soft edge masks and gentle pointer parallax — a visibly
+different identity. Logos are never distorted, recolored or mirrored; RTL
+reverses FLOW DIRECTION only (rail viewports are dir-isolated). Rails
+pause offscreen/hidden-tab; LITE slows and simplifies; STATIC/no-JS keeps
+the premium D-033 static grid compositions.
+
+**Transition vocabulary mapping (§8):** SIGNAL TRACE=trace · MASK
+REVEAL=mask · LIGHT SWEEP=sweep · CONVERGENCE=converge (+ Smart AI/CTA
+scenes) · MEDIA REVEAL=media-reveal (About) · DEPTH SHIFT=scroll-driven
+view-timeline depth on the About media and product-stage grid
+(progressive enhancement, static-neutralized). Adjacent sections never
+share an entry device.
+
+**Verification:** P5 suite 29/29 (stream motion/direction/counts, RTL
+flow reversal, hover localization, constellation counter-flow, stage
+integrity with ZERO fake products, header IA/active/arrival/focus, STATIC
+grids); mobile 6/6 (LITE rails EN/AR, IA menu); standing battery 140/140;
+repo Playwright 44/44 + opening regression; unit 7/7; zero console
+errors; no overflow; D-020 intact.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)

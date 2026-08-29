@@ -34,6 +34,7 @@ import { documents } from "@/content/documents";
 import { socialLinks } from "@/content/social";
 import { gulfRegions } from "@/content/regions";
 import { heroMedia } from "@/content/hero-media";
+import { products } from "@/content/products";
 import { navigation } from "@/content/navigation";
 import { company } from "@/content/company";
 
@@ -104,6 +105,14 @@ export function getDocuments(): ProfileDocument[] {
 
 export function getNavigation(): NavItem[] {
   return [...navigation].sort(byOrder);
+}
+
+export function getPublishedProducts() {
+  return products.filter((p) => p.published).sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+export function getFeaturedProducts() {
+  return getPublishedProducts().filter((p) => p.featured);
 }
 
 export function getSocialLinks() {

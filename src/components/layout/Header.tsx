@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { getNavigation, localize } from "@/lib/content";
 import { Link } from "@/i18n/navigation";
+import { HeaderNav } from "./HeaderNav";
 import { LocaleSwitch } from "./LocaleSwitch";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { MobileMenu } from "./MobileMenu";
@@ -18,9 +19,7 @@ import { ScrollState } from "./ScrollState";
 export async function Header() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("nav");
-  const items = getNavigation();
-  const links = items.filter((i) => !i.highlight || i.highlight === "smart-ai");
-  const cta = items.find((i) => i.highlight === "cta");
+  const cta = getNavigation().find((i) => i.highlight === "cta");
 
   return (
     <header className="site-header">
@@ -43,30 +42,16 @@ export async function Header() {
             className="logo-light-mark h-12 w-auto"
           />
         </Link>
-        <nav aria-label="Main" className="ms-auto hidden items-center gap-7 lg:flex">
-          {links.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={
-                item.highlight === "smart-ai"
-                  ? "tx-link border-b-2 border-accent pb-1 text-sm font-medium text-ink"
-                  : "tx-link text-sm font-medium text-ink-muted"
-              }
-            >
-              {localize(item.label, locale)}
-            </Link>
-          ))}
-          {cta ? (
-            <Link
-              href={cta.href}
-              className="rounded bg-accent px-5 py-3 text-sm font-semibold text-accent-ink"
-            >
-              {localize(cta.label, locale)}
-            </Link>
-          ) : null}
-        </nav>
-        <div className="ms-auto flex items-center gap-2 lg:ms-4">
+        <HeaderNav />
+      {cta ? (
+        <Link
+          href={cta.href}
+          className="hidden rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
+        >
+          {localize(cta.label, locale)}
+        </Link>
+      ) : null}
+        <div className="ms-auto flex items-center gap-2 lg:ms-3">
           <LocaleSwitch />
           <ThemeSwitch />
           <MobileMenu label={t("openMenu")} closeLabel={t("closeMenu")} />

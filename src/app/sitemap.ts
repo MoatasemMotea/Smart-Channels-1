@@ -13,6 +13,7 @@ const BASE = "https://example.invalid";
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths = [
     "",
+    "/products",
     "/solutions",
     "/projects",
     "/industries",

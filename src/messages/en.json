@@ -29,7 +29,12 @@
       "body": "Smart AI is the upcoming consultation experience from Smart Channels — describe your project needs and be guided toward the right technologies.",
       "cta": "Discuss your project"
     },
-    "andMore": "And more"
+    "andMore": "And more",
+    "products": {
+      "sub": "The technologies we deploy — networking, security, audio-visual and communications hardware — delivered, integrated and supported as complete solutions.",
+      "cta": "Talk to us about products",
+      "title": "The hardware behind the experience"
+    }
   },
   "sections": {
     "about": "About Smart Channels",
@@ -41,7 +46,8 @@
     "smartAi": "Smart AI",
     "partners": "Technology Alliances",
     "clients": "Our Clients",
-    "contact": "Contact"
+    "contact": "Contact",
+    "products": "Products"
   },
   "pages": {
     "solutions": {
@@ -71,6 +77,10 @@
     "contact": {
       "title": "Contact",
       "description": "Talk to our team about your next technology project."
+    },
+    "products": {
+      "title": "Products",
+      "description": "The technologies Smart Channels deploys — delivered and supported as complete solutions."
     }
   },
   "contact": {
