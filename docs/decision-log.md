@@ -447,6 +447,22 @@ mobile).
 
 ---
 
+## P5 authorization note — P4 carryover fix (2026-08-29)
+
+**Arabic Track Record RTL composition (owner live-review correction).**
+Each statistic block now composes with the reading direction: in Arabic the
+numeric value anchors at the UPPER-RIGHT of its own cell, the label sits
+directly beneath it right-aligned, supporting text follows the same block,
+and the four statistics read RTL from the right of the section. Root cause:
+`dir="ltr"` sat on the `<dd>` block (left-anchoring the whole numeral);
+bidi isolation moved to an inline token, so RTL controls block position
+while `200+` never renders as `+200`. Western numerals kept (D-014/O-004);
+EN unchanged; count-up unaffected. Applied to the network scene and the
+company page; geometric regression checks added (15 assertions, EN/AR ×
+desktop/mobile). P4 is approved; P5 (Homepage Journey) is authorized.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)

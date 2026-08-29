@@ -36,10 +36,14 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
       <h2 className="mt-12 text-2xl font-semibold">{t("sections.trackRecord")}</h2>
       <dl className="mt-6 grid grid-cols-2 gap-8 md:grid-cols-4">
         {getStats().map((s) => (
-          <div key={s.id} className="border-t border-line pt-4">
-            <dd className="font-display text-4xl font-bold tabular-nums" dir="ltr">
-              {s.value}
-              {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
+          <div key={s.id} className="stat-block border-t border-line pt-4">
+            {/* block follows the reading direction; only the numeric token
+                is bidi-isolated so 200+ never renders as +200 */}
+            <dd className="font-display text-4xl font-bold tabular-nums">
+              <span dir="ltr" className="inline-block">
+                {s.value}
+                {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
+              </span>
             </dd>
             <dt className="mt-2 text-sm text-ink-muted">{localize(s.label, locale)}</dt>
           </div>

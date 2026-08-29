@@ -293,18 +293,25 @@ export function NetworkScene() {
         {/* Track Record — approved figures (D-002); server-rendered final
             values are the no-JS/STATIC truth, the engine counts them up in
             step with the network choreography. Suffixes never animate. */}
-        <dl className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        {/* P5 carryover fix: each statistic BLOCK aligns with the reading
+            direction (number anchored upper-RIGHT in Arabic, cells flowing
+            RTL), while the numeric TOKEN keeps its own dir="ltr" bidi
+            isolation so 200+ never renders as +200. Logical flow only —
+            no hard-coded left/right; EN composition unchanged. */}
+        <dl className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((s, i) => (
-            <div key={s.id} className="border-t border-line pt-4">
-              <dd className="font-display text-5xl font-bold tabular-nums" dir="ltr">
-                <span
-                  ref={(el) => {
-                    valueRefs.current[i] = el;
-                  }}
-                >
-                  {s.value}
+            <div key={s.id} className="stat-block border-t border-line pt-4">
+              <dd className="font-display text-5xl font-bold tabular-nums">
+                <span dir="ltr" className="inline-block">
+                  <span
+                    ref={(el) => {
+                      valueRefs.current[i] = el;
+                    }}
+                  >
+                    {s.value}
+                  </span>
+                  {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
                 </span>
-                {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
               </dd>
               <dt className="mt-2 text-sm text-ink-muted">
                 {locale === "ar" && s.label.ar ? s.label.ar : s.label.en}

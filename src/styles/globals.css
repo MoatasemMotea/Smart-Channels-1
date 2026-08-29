@@ -858,3 +858,14 @@ html[data-opening="running"] .floating-whatsapp {
   transform: none;
   opacity: 1;
 }
+
+/* P5 carryover — Track Record statistic blocks compose with the reading
+   direction (logical `start`): Arabic anchors number + label + support to
+   the RIGHT of each cell and the grid flows RTL; English is unchanged.
+   Never centered; the numeric token inside stays bidi-isolated LTR. */
+.stat-block {
+  text-align: start;
+}
+[dir="rtl"] .stat-block dt {
+  line-height: 1.9; /* Arabic label rhythm under the large numeral */
+}
