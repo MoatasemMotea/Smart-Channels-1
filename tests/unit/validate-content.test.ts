@@ -34,13 +34,13 @@ describe("approved business data invariants", () => {
     expect(getFeaturedIndustries().length).toBeGreaterThanOrEqual(6);
   });
 
-  it("features exactly the owner's D-044 selection (D-004 resolved 2026-08-30)", () => {
+  it("features exactly the owner's D-050 §12 Selected Projects (supersedes D-044)", () => {
     const featured = projects.filter((p) => p.featured).map((p) => p.id).sort();
     expect(featured).toEqual([
-      "al-awal-park-king-fahd",
-      "f1-saudi-arabian-gp",
-      "king-abdullah-sports-city",
-      "prince-abdullah-al-faisal",
+      "diriyah-season",
+      "grand-mosque-makkah",
+      "neom-sports-village",
+      "red-sea-film-festival",
     ]);
   });
 });

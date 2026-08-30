@@ -6,7 +6,7 @@ import { AboutScene } from "@/components/home/AboutScene";
 import { SolutionsIndex } from "@/components/home/SolutionsIndex";
 import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
 import { ProductsTeaser } from "@/components/home/ProductsStage";
-import { ProjectsWall } from "@/components/home/ProjectsWall";
+import { SelectedProjects } from "@/components/home/SelectedProjects";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
 import { FinalCta } from "@/components/home/FinalCta";
@@ -63,7 +63,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <IndustriesMatrix locale={locale} />
 
-      <ProjectsWall locale={locale} />
+      <SelectedProjects locale={locale} />
 
       {/* Gallery — approved starter media, editorial masonry (Q-P5-5) */}
       <MotionSection

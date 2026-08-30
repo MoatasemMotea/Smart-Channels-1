@@ -8,10 +8,13 @@ import type { LocalizedText, Project } from "@/types/content";
  * - `display` controls public exposure: 'logo' | 'text-only' | 'hidden'.
  *   All records ship 'text-only' — no approved standalone logo assets
  *   exist yet (O-005). Never substitute internet logos.
- * - `featured`: the owner's P9/D-004 selection (2026-08-30 directive —
- *   "use the selected candidates already discussed"): F1 Saudi Arabian
- *   Grand Prix + the three deepest-evidence venues. Grand Mosque remains
- *   ledger-only (the conditional recommendation was not confirmed).
+ * - `featured`: the owner's FINAL Selected Projects (D-050 §12,
+ *   2026-08-30 final pre-media directive — supersedes the P9/D-044
+ *   set): 1. Grand House → grand-mosque-makkah (closest ledger record;
+ *   mapping FLAGGED for owner confirmation — "Grand House" is not a
+ *   verbatim ledger name), 2. Diriyah → diriyah-season, 3. NEOM
+ *   Village → neom-sports-village, 4. Red Sea → red-sea-film-festival.
+ *   No new records were invented for this selection.
  * - `years`, `scope`, `services`, `media` may only be filled with
  *   owner-approved, source-backed facts. Absent field = not yet approved,
  *   NOT unknown-so-guessed.
@@ -38,14 +41,14 @@ const base = { display: "text-only" as const, featured: false };
 
 export const projects: Project[] = [
   // ---- p.24 ----
-  { ...base, id: "grand-mosque-makkah", slug: "grand-mosque-makkah", name: { en: "Grand Mosque — Makkah", ar: "المسجد الحرام — مكة المكرمة" }, location: { en: "Makkah", ar: "مكة المكرمة" }, sectorIds: ["religious-holy-sites"], order: 1 },
+  { ...base, id: "grand-mosque-makkah", featured: true, slug: "grand-mosque-makkah", name: { en: "Grand Mosque — Makkah", ar: "المسجد الحرام — مكة المكرمة" }, location: { en: "Makkah", ar: "مكة المكرمة" }, sectorIds: ["religious-holy-sites"], order: 1 },
   { ...base, id: "rcu-outdoor-alula", slug: "rcu-outdoor-entertainment-alula", name: { en: "RCU Outdoor Entertainment — AlUla", arPolicy: "latin" }, location: { en: "AlUla", ar: "العلا" }, sectorIds: ["cultural-seasons-festivals"], order: 2 },
-  { ...base, id: "diriyah-season", slug: "diriyah-season", name: { en: "Diriyah Season", ar: "موسم الدرعية" }, location: { en: "Diriyah", ar: "الدرعية" }, sectorIds: ["cultural-seasons-festivals"], order: 3 },
-  { ...base, id: "red-sea-film-festival", slug: "red-sea-film-festival", name: { en: "Red Sea Film Festival", ar: "مهرجان البحر الأحمر السينمائي" }, sectorIds: ["cultural-seasons-festivals"], order: 4 },
-  { ...base, id: "neom-sports-village", slug: "neom-sports-village", name: { en: "NEOM Sports Village", arPolicy: "latin" }, location: { en: "NEOM", ar: "نيوم" }, sectorIds: ["giga-projects"], order: 5 },
+  { ...base, id: "diriyah-season", featured: true, slug: "diriyah-season", name: { en: "Diriyah Season", ar: "موسم الدرعية" }, location: { en: "Diriyah", ar: "الدرعية" }, sectorIds: ["cultural-seasons-festivals"], order: 3 },
+  { ...base, id: "red-sea-film-festival", featured: true, slug: "red-sea-film-festival", name: { en: "Red Sea Film Festival", ar: "مهرجان البحر الأحمر السينمائي" }, sectorIds: ["cultural-seasons-festivals"], order: 4 },
+  { ...base, id: "neom-sports-village", featured: true, slug: "neom-sports-village", name: { en: "NEOM Sports Village", arPolicy: "latin" }, location: { en: "NEOM", ar: "نيوم" }, sectorIds: ["giga-projects"], order: 5 },
   {
     ...base,
-    id: "prince-abdullah-al-faisal", featured: true,
+    id: "prince-abdullah-al-faisal",
     slug: "prince-abdullah-al-faisal-sports-city",
     name: { en: "Prince Abdullah Al-Faisal Sports City — Jeddah", ar: "مدينة الأمير عبدالله الفيصل الرياضية — جدة" },
     location: { en: "Jeddah", ar: "جدة" },
@@ -56,7 +59,7 @@ export const projects: Project[] = [
   },
   {
     ...base,
-    id: "king-abdullah-sports-city", featured: true,
+    id: "king-abdullah-sports-city",
     slug: "king-abdullah-sports-city",
     name: { en: "King Abdullah Sports City — Jeddah", ar: "مدينة الملك عبدالله الرياضية — جدة" },
     location: { en: "Jeddah", ar: "جدة" },
@@ -93,7 +96,7 @@ export const projects: Project[] = [
   { ...base, id: "afc-u23-championship", slug: "afc-u23-championship", name: { en: "AFC U23 Championship", arPolicy: "latin" }, sectorIds: ["major-sporting-events"], order: 13 },
   { ...base, id: "afc-u17-championship", slug: "afc-u17-championship", name: { en: "AFC U17 Championship", arPolicy: "latin" }, sectorIds: ["major-sporting-events"], order: 14 },
   { ...base, id: "world-combat-games", slug: "world-combat-games", name: { en: "World Combat Games — Riyadh 2023", arPolicy: "latin" }, location: { en: "Riyadh", ar: "الرياض" }, sectorIds: ["major-sporting-events"], order: 15 },
-  { ...base, id: "f1-saudi-arabian-gp", featured: true, slug: "formula-1-saudi-arabian-grand-prix", name: { en: "Formula 1 Saudi Arabian Grand Prix", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 16 },
+  { ...base, id: "f1-saudi-arabian-gp", slug: "formula-1-saudi-arabian-grand-prix", name: { en: "Formula 1 Saudi Arabian Grand Prix", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 16 },
   { ...base, id: "formula-e1-jeddah", slug: "formula-e1-jeddah", name: { en: "Formula E1 — Jeddah", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 17 },
   { ...base, id: "rally-dakar", slug: "rally-dakar", name: { en: "Rally Dakar", arPolicy: "latin" }, sectorIds: ["motorsport-racing"], order: 18 },
   { ...base, id: "alula-tour", slug: "alula-tour", name: { en: "AlUla Tour", arPolicy: "latin" }, location: { en: "AlUla", ar: "العلا" }, sectorIds: ["major-sporting-events"], order: 19 },
@@ -123,7 +126,7 @@ export const projects: Project[] = [
   },
   {
     ...base,
-    id: "al-awal-park-king-fahd", featured: true,
+    id: "al-awal-park-king-fahd",
     slug: "al-awal-park-king-fahd-sports-city",
     name: { en: "Al Awal Park & King Fahd Sports City", arPolicy: "latin" },
     // location intentionally absent — p.26 does not state it (Amendment 2).

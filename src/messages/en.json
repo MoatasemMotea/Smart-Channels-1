@@ -38,7 +38,11 @@
       "explore": "Explore our products"
     },
     "morePartners": "And more technology partners",
-    "moreClients": "And more trusted organizations"
+    "moreClients": "And more trusted organizations",
+    "selectedProjects": {
+      "exploreProject": "Explore Project",
+      "allProjects": "View all projects"
+    }
   },
   "sections": {
     "about": "About Smart Channels",
