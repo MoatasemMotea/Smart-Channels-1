@@ -61,8 +61,19 @@ export function LogoCarousel({
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // motion state lives in refs — the rAF loop never re-renders React
+  // motion state lives in refs — the rAF loop never re-renders React.
+  // §35 continuity: the offset survives locale/theme switches (which
+  // remount the tree) via a per-rail sessionStorage mirror, so the
+  // rail resumes where it was instead of resetting.
   const xRef = useRef(0); // 0..copyWidth, in flow direction
+  useEffect(() => {
+    try {
+      const saved = Number(sessionStorage.getItem(`sc-rail-${kind}`));
+      if (Number.isFinite(saved) && saved > 0) xRef.current = saved;
+    } catch {
+      /* storage unavailable — start from 0 */
+    }
+  }, [kind]);
   const copyWRef = useRef(0);
   const pausesRef = useRef(new Set<string>());
   const resumeTimer = useRef(0);
@@ -87,14 +98,23 @@ export function LogoCarousel({
       if (!img.complete) img.addEventListener("load", measure, { once: true });
     });
 
-    // x grows in the FLOW direction; RTL flips only the applied sign
+    // x grows in the FLOW direction; RTL flips the applied sign AND
+    // pre-shifts by one copy width (D-050 §35): the duplicated copies
+    // extend rightward from the track origin, so a bare +x shift left
+    // an uncovered region at the viewport's left edge in RTL — x−w
+    // keeps both edges seamlessly covered for every x in [0, w).
     const apply = () => {
       const w = copyWRef.current;
       if (w < 10) return;
       let x = xRef.current;
       x = ((x % w) + w) % w;
       xRef.current = x;
-      track.style.transform = `translateX(${rtl ? x : -x}px)`;
+      track.style.transform = `translateX(${rtl ? x - w : -x}px)`;
+      try {
+        sessionStorage.setItem(`sc-rail-${kind}`, String(x));
+      } catch {
+        /* continuity mirror only */
+      }
     };
 
     const holdThenResume = () => {
@@ -206,7 +226,7 @@ export function LogoCarousel({
       viewport.removeEventListener("pointercancel", onUp);
       viewport.removeEventListener("wheel", onWheel);
     };
-  }, [rtl, speed, autoOn, logos.length]);
+  }, [rtl, speed, autoOn, logos.length, kind]);
 
   // arrows page the rail by ~60% of the viewport, eased; never a reset
   const page = (dir: 1 | -1) => {
@@ -221,7 +241,8 @@ export function LogoCarousel({
       if (track && w > 10) {
         const x = (((xRef.current % w) + w) % w);
         xRef.current = x;
-        track.style.transform = `translateX(${rtl ? x : -x}px)`;
+        // same RTL coverage rule as apply() above (§35)
+        track.style.transform = `translateX(${rtl ? x - w : -x}px)`;
       }
     } else {
       tweenRef.current = { from, to: from + dist, start: performance.now() };
