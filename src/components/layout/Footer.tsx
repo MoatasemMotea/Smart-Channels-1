@@ -91,6 +91,11 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
       <path fill="currentColor" d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.67l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64Z" />
     </svg>
   ),
+  tiktok: (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M19.32 5.56a5.1 5.1 0 0 1-3.05-2.99 5.05 5.05 0 0 1-.27-1.63h-3.35v13.4a2.83 2.83 0 1 1-2.83-2.83c.29 0 .57.05.83.13V8.2a6.2 6.2 0 0 0-.83-.06 6.18 6.18 0 1 0 6.18 6.18V8.63a8.4 8.4 0 0 0 4.62 1.38V6.66c-.46 0-.9-.06-1.3-.18a5.1 5.1 0 0 1-.02-.02Z" />
+    </svg>
+  ),
 };
 
 async function SocialRow() {

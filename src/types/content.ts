@@ -230,7 +230,7 @@ export interface ContactInfo {
  *  entry renders publicly ONLY when enabled with a real URL — no dead
  *  links, no placeholders. */
 export interface SocialLink {
-  platform: "linkedin" | "instagram" | "x";
+  platform: "linkedin" | "instagram" | "x" | "tiktok";
   /** Official company URL — never invented. null until supplied. */
   url: string | null;
   enabled: boolean;

@@ -80,7 +80,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
 
           <p className="relative mt-10">
             <Link
-              href="/contact"
+              href="/#contact"
               className="inline-block rounded border border-accent px-6 py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
             >
               {t("home.products.cta")}&nbsp;&nbsp;<span aria-hidden="true">→</span>

@@ -31,4 +31,11 @@ export const socialLinks: SocialLink[] = [
     label: { en: "Smart Channels on X", ar: "Smart Channels على إكس" },
     order: 3,
   },
+  {
+    platform: "tiktok",
+    url: null, // official URL pending owner input (D-050 §39)
+    enabled: false,
+    label: { en: "Smart Channels on TikTok", ar: "Smart Channels على تيك توك" },
+    order: 4,
+  },
 ];

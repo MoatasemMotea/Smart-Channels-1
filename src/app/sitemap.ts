@@ -21,8 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/company",
     "/partners",
     "/clients",
-    "/contact",
-    "/smart-ai",
     ...getSolutionFamilies().map((f) => `/solutions/${f.slug}`),
     ...getDetailProjects().map((p) => `/projects/${p.slug}`),
   ];

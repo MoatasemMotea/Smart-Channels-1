@@ -124,7 +124,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
           <p className="max-w-3xl text-xl leading-9">{localize(company.reach, locale)}</p>
           <p className="mt-8">
             <Link
-              href="/contact"
+              href="/#contact"
               className="inline-block rounded border border-accent px-6 py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
             >
               {t("inner.startConversation")}&nbsp;&nbsp;<span aria-hidden="true">→</span>

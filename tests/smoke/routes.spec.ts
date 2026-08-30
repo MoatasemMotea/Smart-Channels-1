@@ -14,10 +14,24 @@ const routes = [
   "/company",
   "/partners",
   "/clients",
-  "/contact",
-  "/smart-ai",
 ];
 const locales = ["en", "ar"] as const;
+
+/* D-050 §51 route compatibility: historical destinations redirect,
+   locale preserved. */
+const redirects: Array<[string, string]> = [
+  ["/en/contact", "/en/#contact"],
+  ["/ar/contact", "/ar/#contact"],
+  ["/en/smart-ai", "/en"],
+  ["/ar/smart-ai", "/ar"],
+];
+for (const [from, to] of redirects) {
+  test(`${from} redirects to ${to}`, async ({ request }) => {
+    const res = await request.get(from, { maxRedirects: 0 });
+    expect([307, 308]).toContain(res.status());
+    expect(res.headers()["location"]).toBe(to);
+  });
+}
 
 for (const locale of locales) {
   for (const route of routes) {
