@@ -26,11 +26,6 @@
     "missionLabel": "Our mission",
     "aboutImageCaption": "Fiber fusion splicing — Riyadh, 2025",
     "featuredMark": "Featured focus sector",
-    "smartAi": {
-      "title": "Technology consultation, reimagined.",
-      "body": "Smart AI is the upcoming consultation experience from Smart Channels — describe your project needs and be guided toward the right technologies.",
-      "cta": "Discuss your project"
-    },
     "products": {
       "sub": "The technologies we deploy — networking, security, audio-visual and communications hardware — delivered, integrated and supported as complete solutions.",
       "cta": "Talk to us about products",
@@ -51,7 +46,6 @@
     "industries": "Industries",
     "projects": "Selected Projects",
     "gallery": "Gallery",
-    "smartAi": "Smart AI",
     "partners": "Technology Alliances",
     "clients": "Our Clients",
     "contact": "Contact",
@@ -93,10 +87,6 @@
     "clients": {
       "title": "Our Clients",
       "description": "The organisations that trust Smart Channels across the Kingdom and the Gulf."
-    },
-    "smartAi": {
-      "title": "Smart AI",
-      "description": "The upcoming AI consultation experience from Smart Channels."
     }
   },
   "contact": {
@@ -155,19 +145,6 @@
     "projectMedia": "Project media",
     "allProjects": "All projects"
   },
-  "smartai": {
-    "status": "Prototype — no live engine connected",
-    "honesty": "Smart AI is not connected yet. Nothing typed here is sent, stored or processed — when the experience goes live, a clear privacy notice will appear before anything is shared.",
-    "stepsTitle": "How the experience will work",
-    "step1": "Describe your project needs in your own words.",
-    "step2": "Smart AI relates them to Smart Channels' solution families.",
-    "step3": "You are guided toward the right technologies — and our engineers take it from there.",
-    "domains": "Solution domains it will draw on",
-    "composerLabel": "Describe your project needs",
-    "placeholder": "Your project, in a few sentences",
-    "sendSoon": "Send to Smart AI — coming soon",
-    "continue": "Continue with our team"
-  },
   "form": {
     "title": "Send us an enquiry",
     "status": "Direct online submission is not yet active — your message is composed in your own email or WhatsApp app and sent from there.",
@@ -219,5 +196,38 @@
     "mapLoad": "View map",
     "mapHint": "The map loads from Google Maps only when you choose to view it.",
     "mapTitle": "Smart Channels — location map"
+  },
+  "assistant": {
+    "name": "Smart Channels Digital Employee",
+    "honesty": "Digital assistant — not a human",
+    "open": "Open the Smart Channels Digital Employee",
+    "close": "Close",
+    "welcome": "Welcome to Smart Channels. I'm the Smart Channels Digital Employee — a digital assistant, not a human. I can take your enquiry and make sure the right engineer follows up personally. May I have your name?",
+    "askCompany": "Thank you, {name}. Which company or organisation are you with?",
+    "askPhone": "What's the best phone number to reach you on?",
+    "askEmail": "And your email address, so our team can reply to you?",
+    "askService": "Which service is your enquiry about?",
+    "askMessage": "Tell me briefly what you need — a few sentences are perfect.",
+    "askConsent": "Before I record your enquiry, one confirmation:",
+    "consentText": "By submitting your details, you agree that Smart Channels may contact you regarding your enquiry.",
+    "consentAgree": "I agree — send it",
+    "consentDecline": "Not now",
+    "declined": "Understood — nothing has been recorded. You can reach our team directly at {phone} or {email}, and I'm here whenever you'd like to continue.",
+    "submitting": "Recording your enquiry…",
+    "done": "Thank you, {name} — your enquiry has been recorded (reference {ref}). Our team will contact you soon.",
+    "failed": "I couldn't record your enquiry just now — nothing was sent. Please try again, or reach our team directly at {email}.",
+    "retry": "Try again",
+    "skip": "Skip",
+    "handoff": "Just to be clear — I'm a digital assistant, not a human. To talk to a person right away, call {phone} or email {email}. Or continue here and a member of our team will follow up personally.",
+    "errEmail": "That doesn't look like a valid email address — could you check it?",
+    "errPhone": "That doesn't look like a valid phone number — could you check it?",
+    "errEmpty": "Could you type a short reply so I can continue?",
+    "inputLabel": "Your reply",
+    "placeholder": "Type your reply…",
+    "send": "Send",
+    "generalService": "General enquiry",
+    "restart": "Start a new enquiry",
+    "summaryPrefix": "Enquiry via Digital Employee",
+    "transcriptLabel": "Conversation"
   }
 }

@@ -1057,6 +1057,198 @@ html[data-opening="running"] .floating-whatsapp {
   pointer-events: none;
 }
 
+/* ------------------------------------------------------------------ */
+/* D-050 §§15–22, §36 — Smart Channels Digital Employee: launcher in   */
+/* the floating stack (above WhatsApp) + conversation panel.           */
+/* ------------------------------------------------------------------ */
+.floating-de {
+  position: fixed;
+  inset-inline-end: max(1.25rem, env(safe-area-inset-right));
+  bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 4rem);
+  z-index: 46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  background: var(--brand-magenta);
+  color: #ffffff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition:
+    transform var(--dur-control) var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered),
+    opacity var(--dur-section) var(--ease-cinematic);
+}
+[dir="rtl"] .floating-de {
+  inset-inline-end: max(1.25rem, env(safe-area-inset-left));
+}
+.floating-de:hover,
+.floating-de:focus-visible {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+html[data-opening="pending"] .floating-de,
+html[data-opening="running"] .floating-de {
+  opacity: 0;
+  pointer-events: none;
+}
+.de-panel {
+  position: fixed;
+  inset-inline-end: max(1.25rem, env(safe-area-inset-right));
+  bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 8rem);
+  z-index: 46;
+  display: flex;
+  flex-direction: column;
+  inline-size: min(24rem, calc(100vw - 2.5rem));
+  max-block-size: min(34rem, calc(100svh - 10rem));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+}
+[dir="rtl"] .de-panel {
+  inset-inline-end: max(1.25rem, env(safe-area-inset-left));
+}
+.de-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--brand-magenta) 7%, var(--bg));
+}
+.de-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.de-honesty {
+  margin-top: 0.2rem;
+  color: var(--ink-muted);
+}
+.de-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+}
+.de-close:hover,
+.de-close:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.de-log {
+  flex: 1;
+  min-block-size: 8rem;
+  overflow-y: auto;
+  padding: 1rem 1.15rem;
+  overscroll-behavior: contain;
+}
+.de-msg {
+  max-inline-size: 88%;
+  margin-block-end: 0.7rem;
+  border-radius: 12px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.de-msg[data-role="assistant"] {
+  background: color-mix(in srgb, var(--ink) 6%, var(--bg));
+  border-start-start-radius: 4px;
+}
+.de-msg[data-role="visitor"] {
+  margin-inline-start: auto;
+  background: color-mix(in srgb, var(--brand-magenta) 14%, var(--bg));
+  border-start-end-radius: 4px;
+}
+.de-actions {
+  border-top: 1px solid var(--line);
+  padding: 0.9rem 1.15rem;
+}
+.de-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.de-choices button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition:
+    color var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered),
+    background-color var(--dur-control) var(--ease-engineered);
+}
+.de-choices button:hover,
+.de-choices button:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.de-choices .de-primary,
+.de-input-row .de-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.de-choices .de-primary:hover,
+.de-choices .de-primary:focus-visible {
+  color: var(--accent-ink);
+  opacity: 0.9;
+}
+.de-consent-text {
+  margin-block-end: 0.7rem;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+.de-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.de-input-row input {
+  flex: 1;
+  min-inline-size: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.875rem;
+}
+.de-input-row input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.de-input-row button {
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.de-input-row .de-skip {
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+.de-input-row .de-skip:hover,
+.de-input-row .de-skip:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* §10 — regional-reach legend (no city names, D-042). */
 .network-regional-legend {
   position: absolute;
@@ -1339,8 +1531,7 @@ html[data-opening="running"] .floating-whatsapp {
 }
 [dir="rtl"] .gallery-caption { line-height: 1.8; }
 
-/* SMART AI (Q-P5-6): convergence teaser — CSS only, honest by design. */
-.smartai-scene,
+/* LET'S TALK / CTA scene — dark committed signal ground. */
 .cta-scene {
   position: relative;
   background:
@@ -1355,7 +1546,6 @@ html[data-opening="running"] .floating-whatsapp {
   --accent-ink: #0a0a0c;
   overflow: hidden;
 }
-.smartai-converge span,
 .cta-converge span {
   position: absolute;
   background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.4));
@@ -1363,16 +1553,10 @@ html[data-opening="running"] .floating-whatsapp {
   inline-size: 34%;
   opacity: 0;
 }
-.reveal.is-visible .smartai-converge span,
 .reveal.is-visible .cta-converge span,
-[data-motion-tier="static"] .smartai-converge span,
 [data-motion-tier="static"] .cta-converge span {
   animation: converge-in 1100ms var(--ease-cinematic) both;
 }
-.smartai-converge span:nth-child(1) { top: 24%; left: 0; }
-.smartai-converge span:nth-child(2) { top: 38%; right: 0; transform: scaleX(-1); animation-delay: 150ms; }
-.smartai-converge span:nth-child(3) { top: 62%; left: 4%; animation-delay: 280ms; }
-.smartai-converge span:nth-child(4) { top: 76%; right: 4%; transform: scaleX(-1); animation-delay: 420ms; }
 @keyframes converge-in {
   from { opacity: 0; translate: 0 0; }
   30% { opacity: 1; }
@@ -1496,7 +1680,6 @@ html[data-opening="running"] .floating-whatsapp {
   30% { opacity: 1; }
   to { transform: translateX(-70%); opacity: 0; }
 }
-.arrive .smartai-converge span { animation: converge-in 900ms var(--ease-cinematic) both; }
 .arrive .stage-ring { animation: stage-ring-pulse 800ms var(--ease-cinematic); }
 .arrive:focus { outline: none; } /* focus lands programmatically; links inside stay outlined */
 
@@ -2757,85 +2940,6 @@ html[data-motion-tier="full"] .project-opening-backdrop .po-c {
     translate: none;
   }
   .gallery-lightbox-body { padding-top: 3.25rem; }
-}
-
-/* ------------------------------------------------------------------ */
-/* P11 · D-046 — Smart AI experience (honest prototype state, D-009).  */
-/* ------------------------------------------------------------------ */
-.smartai-steps { display: flex; flex-direction: column; max-width: 52rem; }
-.smartai-step {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  padding-block: 1.3rem;
-  border-top: 1px solid var(--line);
-}
-.smartai-step:last-child { border-bottom: 1px solid var(--line); }
-.smartai-step-index { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
-.smartai-domains { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-.smartai-domain {
-  display: inline-block;
-  transition:
-    color var(--dur-control) var(--ease-engineered),
-    border-color var(--dur-control) var(--ease-engineered);
-}
-.smartai-domain:hover { color: var(--accent); border-color: var(--accent); }
-
-.smartai-shell {
-  max-width: 46rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 1.75rem;
-  background: color-mix(in srgb, var(--ink) 3%, var(--bg));
-}
-.smartai-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  border: 1px dashed var(--line);
-  border-radius: 999px;
-  padding: 0.45rem 0.95rem;
-  margin-bottom: 1.5rem;
-  color: var(--ink-muted);
-}
-.smartai-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--ink-muted);
-}
-html[data-motion-tier="full"] .smartai-status-dot { animation: origin-core 3s ease-in-out infinite; }
-.smartai-composer {
-  width: 100%;
-  resize: vertical;
-  min-height: 7rem;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--ink);
-  padding: 0.9rem 1rem;
-  font-size: 0.9375rem;
-  line-height: 1.7;
-}
-.smartai-composer:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-.smartai-honesty {
-  margin-top: 0.9rem;
-  font-size: 0.8125rem;
-  line-height: 1.7;
-  color: var(--ink-muted);
-}
-.smartai-send {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 0.85rem 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--ink-muted);
-  cursor: not-allowed;
-  opacity: 0.65;
 }
 
 /* ------------------------------------------------------------------ */

@@ -8,6 +8,7 @@ import { HtmlStateGuard } from "@/components/layout/HtmlStateGuard";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
+import { DigitalEmployee } from "@/components/assistant/DigitalEmployee";
 import { indexingAllowed, SITE_NAME } from "@/lib/seo";
 import "@/styles/globals.css";
 
@@ -59,6 +60,9 @@ export default async function LocaleLayout({
           <Header />
           <main id="main">{children}</main>
           <Footer />
+          {/* floating action stack (§36): Digital Employee above the
+              icon-only WhatsApp action; back-to-top joins the stack */}
+          <DigitalEmployee />
           <FloatingWhatsApp />
         </NextIntlClientProvider>
       </body>
