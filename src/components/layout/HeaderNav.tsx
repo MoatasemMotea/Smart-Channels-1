@@ -27,6 +27,12 @@ const ANCHOR_SCENES: Record<string, string> = {
   "/#clients": "clients",
   "/#smart-ai": "smart-ai",
 };
+/* P6: anchor destinations with standalone routes — the nav item lights
+   up on those inner pages too (§13 active-route correctness). */
+const ANCHOR_ROUTE_ALIASES: Record<string, string> = {
+  "/#partners": "/partners",
+  "/#clients": "/clients",
+};
 
 export function arriveAt(sceneId: string, smooth: boolean) {
   const el = document.getElementById(sceneId);
@@ -97,7 +103,10 @@ export function HeaderNav() {
 
   const isActive = (href: string): boolean => {
     const scene = ANCHOR_SCENES[href];
-    if (scene) return sectionActive === scene;
+    if (scene) {
+      const alias = ANCHOR_ROUTE_ALIASES[href];
+      return sectionActive === scene || (Boolean(alias) && pathname === alias);
+    }
     if (href === "/") return pathname === "/" && sectionActive === null;
     return pathname === href || pathname.startsWith(`${href}/`);
   };

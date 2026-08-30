@@ -76,7 +76,7 @@
     },
     "partners": {
       "title": "الشركاء",
-      "description": "تحالفات تقنية معتمدة وعملاء يثقون بنا."
+      "description": "التحالفات التقنية المعتمدة التي تقف خلف حلول Smart Channels."
     },
     "contact": {
       "title": "تواصل معنا",
@@ -85,6 +85,10 @@
     "products": {
       "title": "المنتجات",
       "description": "التقنيات التي تنشرها Smart Channels — تُسلَّم وتُدعَم ضمن حلول متكاملة."
+    },
+    "clients": {
+      "title": "عملاؤنا",
+      "description": "الجهات التي تثق بـ Smart Channels في المملكة والخليج."
     }
   },
   "contact": {
@@ -121,5 +125,21 @@
   "carousel": {
     "prev": "الشعارات السابقة",
     "next": "الشعارات التالية"
+  },
+  "inner": {
+    "mission": "رسالتنا",
+    "values": "قيمنا",
+    "capabilities": "قدراتنا",
+    "allSolutions": "جميع الحلول",
+    "prevSolution": "الحل السابق",
+    "nextSolution": "الحل التالي",
+    "vendors": "موردون معتمدون",
+    "completeIndex": "الفهرس الكامل",
+    "channels": "طرق التواصل معنا",
+    "whatsappShort": "واتساب",
+    "solutionsChapter": "الحلول",
+    "categories": "التصنيفات",
+    "evidenceNote": "مشاريع منفّذة — سجلات معتمدة فقط",
+    "startConversation": "ابدأ الحوار"
   }
 }

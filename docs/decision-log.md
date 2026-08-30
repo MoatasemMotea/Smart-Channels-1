@@ -794,6 +794,68 @@ green (rp 33, vc 36, p5b 29+6, rtl 15, r3 30, p4 20, matrix 64, extra
 
 ---
 
+## P6 — Inner-page experience build-out (recorded 2026-08-29)
+
+**D-043 — Inner routes at the approved P5 standard (Q-P6-1a/2/3).**
+Scope delivered exactly as authorized: /company, /solutions,
+/solutions/[slug] ×7, /industries, /projects, /partners, /clients
+(new route), /contact, /gallery shell. Approved content only; every
+excluded item (projects detail routes, featured promotion, gallery
+lightbox/masonry/FLIP, Smart AI experience, contact backend) remains
+reserved for P9/P10/P11+.
+
+*System:* `PageHero` — the dark-committed cinematic intro moment of an
+inner route (Q-P6-3), one band with five PROGRAMMATIC motifs (signal /
+nodes / grid / field / trace — pure CSS, no photography, no invented
+imagery), staged typography, dark header environment pre-painted by the
+bootstrap for hero-led routes. Bodies below stay theme-aware editorial.
+Light-led pages (/solutions, /industries, /projects, /gallery) open
+with editorial headers instead — every route has its own composition,
+never the homepage copied.
+
+*Per page:* Company = signal intro (approved positioning + about) →
+mission pull-statement → p.4 values as a numbered index → four
+capability pillars → Track Record (stats.ts single source) → reach +
+contact CTA; profile stays source-only (D-020). Solutions index =
+technical numbered index rows (01–07) with taglines + sub-solution
+tags. Solution details = nodes intro with chapter index (0X/07),
+summary lede, structured sub-solution columns (numbered 0X.Y, accent
+bullets), certified-vendor marks ONLY where the profile associates them
+(pp.18–19: unified-communications, video-surveillance-ai), and
+prev/next/index cross-navigation. Industries = hairline structural
+matrix, all 16, no per-industry claims. Projects = equal-weight
+evidence ledger (32 records; name/location/years/scope only; no
+featured hierarchy — P9's D-004 gate; zero detail links — D-011).
+Partners = alliances-only now (grid intro, D-042 alliance carousel
+REUSED at 30 px/s, complete typographic index below). Clients = NEW
+/clients route (field intro, reach lede, D-042 client carousel reused
+at its calmer 22 px/s, complete index); nav "Our Clients"/"Technology
+Alliances" items now also light up on these standalone routes (alias
+active-state). Contact = trace intro (converging signals), channel
+board of the four approved channels with functional tel:/mailto:/wa.me
+links — NO form exists or is mocked (D-010/O-009 unchanged). Gallery
+shell = designed editorial shell (category tags + the 4 approved
+starter records as poster-first cards with controls) — the P10 system
+intentionally NOT implemented.
+
+*Housekeeping:* pages.clients metadata + inner-page UI labels (EN/AR),
+sitemap + route-smoke coverage for /clients, pages.partners description
+updated to alliances-only framing (UI copy, no new business claims).
+
+**Verification (2026-08-29):** P6 suite 53/53 (motif/env per route,
+carousel reuse + speeds + RTL flow on both standalone routes, closing
+lines, 7 index rows, cross-nav + vendor-association correctness, 16
+sectors, 32 equal-weight records with zero featured markers/links,
+4 approved channels + zero form elements, gallery shell 4/4 records +
+zero lightbox, alias active-states, D-020 probes, STATIC completeness,
+zoom 80→200% clean, EN/AR mobile clean); repo Playwright 54/54 (now
+incl. /clients EN/AR ×2 projects); full standing battery green (sv 32,
+rp 33, vc 36, p5b 29+6, rtl 15, r3 30, p4 20, matrix 64, extra 11);
+unit 7/7; zero console/hydration errors; live visual inspection EN/AR
+× dark/light × desktop/mobile performed via real browser screenshots.
+
+---
+
 ## Project-wide requirements (recorded 2026-08-27)
 
 - **Owner editability:** The finished website must not depend on Claude for ordinary maintenance. Full owner ownership/editability of source, content, statistics, media, projects, gallery, clients, alliances, navigation, contact, translations. Routine content changes happen in obvious structured files, not presentation components. No vendor lock-in; no proprietary visual builder required; code maintainable by another developer. (Detailed in `docs/maintenance-model.md`.)

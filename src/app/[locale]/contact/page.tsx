@@ -3,7 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { getContact, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { MotionSection } from "@/components/motion/MotionSection";
+import { PageHero } from "@/components/page/PageHero";
 
 export async function generateMetadata({
   params,
@@ -21,9 +22,14 @@ export async function generateMetadata({
 }
 
 /**
- * P3 foundation contact page: approved details with functional tel:/mailto:
- * links (Q9/D-011). The designed enquiry form UI arrives at P13 — with its
- * integration state explicit and NO fabricated submission backend.
+ * CONTACT (P6 · D-043) — the conversation page. Dark converging intro
+ * (the signals meet — the closing echo of the homepage journey), then a
+ * theme-aware channel board: every approved way to reach Smart Channels
+ * as a large deliberate row (address, telephone, email, WhatsApp) with
+ * functional tel:/mailto:/wa.me links only. NO submission form exists —
+ * none is mocked, nothing pretends to send (D-010/O-009: the designed
+ * enquiry form arrives with its integration state explicit in a later
+ * phase). Approved contact details only (D-011).
  */
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -31,28 +37,64 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   setRequestLocale(raw);
   const t = await getTranslations();
   const contact = getContact();
+  const waDigits = contact.whatsapp?.replace(/[^\d]/g, "") ?? "";
 
   return (
-    <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
-      <SectionHeading as="h1" index={t("pages.contact.title")}>
-        {t("pages.contact.description")}
-      </SectionHeading>
-      <dl className="max-w-xl">
-        <dt className="microlabel mt-8">{t("contact.addressLabel")}</dt>
-        <dd className="mt-2 text-lg">{localize(contact.address, locale)}</dd>
-        <dt className="microlabel mt-8">{t("contact.phoneLabel")}</dt>
-        <dd className="mt-2 text-lg" dir="ltr">
-          <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="hover:text-accent">
-            {contact.phone}
-          </a>
-        </dd>
-        <dt className="microlabel mt-8">{t("contact.emailLabel")}</dt>
-        <dd className="mt-2 text-lg">
-          <a href={`mailto:${contact.email}`} className="hover:text-accent">
-            {contact.email}
-          </a>
-        </dd>
-      </dl>
-    </div>
+    <>
+      <PageHero
+        motif="trace"
+        overline={t("pages.contact.title")}
+        title={t("pages.contact.description")}
+      />
+
+      <MotionSection reveal="converge" aria-label={t("inner.channels")}>
+        <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
+          <p className="microlabel mb-8 text-accent">{t("inner.channels")}</p>
+          <dl className="channel-board">
+            <div className="channel-row">
+              <dt className="channel-label microlabel">{t("contact.addressLabel")}</dt>
+              <dd className="channel-value">{localize(contact.address, locale)}</dd>
+            </div>
+            <div className="channel-row">
+              <dt className="channel-label microlabel">{t("contact.phoneLabel")}</dt>
+              <dd className="channel-value">
+                <a
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                  className="tx-link"
+                  dir="ltr"
+                >
+                  {contact.phone}
+                </a>
+              </dd>
+            </div>
+            <div className="channel-row">
+              <dt className="channel-label microlabel">{t("contact.emailLabel")}</dt>
+              <dd className="channel-value">
+                <a href={`mailto:${contact.email}`} className="tx-link">
+                  {contact.email}
+                </a>
+              </dd>
+            </div>
+            {contact.whatsapp ? (
+              <div className="channel-row">
+                <dt className="channel-label microlabel">{t("inner.whatsappShort")}</dt>
+                <dd className="channel-value">
+                  <a
+                    href={`https://wa.me/${waDigits}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tx-link"
+                    aria-label={t("contact.whatsappLabel")}
+                    dir="ltr"
+                  >
+                    {contact.whatsapp}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        </div>
+      </MotionSection>
+    </>
   );
 }

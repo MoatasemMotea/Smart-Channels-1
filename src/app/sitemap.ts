@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/gallery",
     "/company",
     "/partners",
+    "/clients",
     "/contact",
     ...getSolutionFamilies().map((f) => `/solutions/${f.slug}`),
   ];

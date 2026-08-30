@@ -10,6 +10,7 @@ const routes = [
   "/gallery",
   "/company",
   "/partners",
+  "/clients",
   "/contact",
 ];
 const locales = ["en", "ar"] as const;

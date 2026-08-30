@@ -23,8 +23,9 @@ var tier=rm||sd?"static":(window.matchMedia("(max-width: 767px)").matches?"lite"
 d.setAttribute("data-motion-tier",tier);
 var path=location.pathname.replace(/\\/$/,"");
 var isHome=/^\\/(en|ar)?$/.test(path)||path==="";
-/* dark-committed routes (products stage) pre-paint the dark header too */
-var darkRoute=isHome||/\\/products$/.test(path);
+/* dark-committed routes (products stage + P6 inner-page cinematic
+   intros) pre-paint the dark header too */
+var darkRoute=isHome||/\\/(products|company|partners|clients|contact)$/.test(path)||/\\/solutions\\/[^/]+$/.test(path);
 d.setAttribute("data-header-env",darkRoute?"dark":"surface");
 /* Revision 3 §1: the cinematic opening plays on EVERY full document load
    of the homepage (no session gating). Soft navigations (locale switch,

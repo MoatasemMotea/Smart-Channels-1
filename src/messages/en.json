@@ -76,7 +76,7 @@
     },
     "partners": {
       "title": "Partners",
-      "description": "Certified technology alliances and the clients who trust us."
+      "description": "The certified technology alliances behind Smart Channels solutions."
     },
     "contact": {
       "title": "Contact",
@@ -85,6 +85,10 @@
     "products": {
       "title": "Products",
       "description": "The technologies Smart Channels deploys — delivered and supported as complete solutions."
+    },
+    "clients": {
+      "title": "Our Clients",
+      "description": "The organisations that trust Smart Channels across the Kingdom and the Gulf."
     }
   },
   "contact": {
@@ -121,5 +125,21 @@
   "carousel": {
     "prev": "Previous logos",
     "next": "Next logos"
+  },
+  "inner": {
+    "mission": "Mission",
+    "values": "Values",
+    "capabilities": "Capabilities",
+    "allSolutions": "All solutions",
+    "prevSolution": "Previous solution",
+    "nextSolution": "Next solution",
+    "vendors": "Certified vendors",
+    "completeIndex": "Complete index",
+    "channels": "Ways to reach us",
+    "whatsappShort": "WhatsApp",
+    "solutionsChapter": "Solutions",
+    "categories": "Categories",
+    "evidenceNote": "Delivered engagements — approved records only",
+    "startConversation": "Start the conversation"
   }
 }
