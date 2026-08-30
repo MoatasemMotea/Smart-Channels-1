@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { GalleryItem, Locale } from "@/types/content";
 import { getGalleryCategories, getPublishedGalleryItems, localize } from "@/lib/content";
@@ -48,10 +48,7 @@ export function GalleryExperience() {
   const openerRef = useRef<HTMLElement | null>(null);
   const rectsRef = useRef(new Map<string, DOMRect>());
 
-  const visible = useMemo(
-    () => (filter === "all" ? items : items.filter((i) => i.category === filter)),
-    [filter, items],
-  );
+  const visible = filter === "all" ? items : items.filter((i) => i.category === filter);
 
   // FLIP: capture positions before a filter change…
   const applyFilter = (next: string) => {
@@ -110,37 +107,53 @@ export function GalleryExperience() {
     return () => dialog.removeEventListener("close", onClose);
   }, [lightbox]);
 
-  const step = (dir: 1 | -1) => {
-    setLightbox((cur) =>
-      cur === null ? cur : (cur + dir + visible.length) % visible.length,
-    );
-  };
+  const total = visible.length;
+  const step = useCallback(
+    (dir: 1 | -1) => {
+      setLightbox((cur) => (cur === null ? cur : (cur + dir + total) % total));
+    },
+    [total],
+  );
 
-  // keyboard steps (logical: "next" follows reading direction) + swipe
+  // keyboard steps (logical: "next" follows reading direction), backdrop
+  // click, and pointer swipe — all registered imperatively on the dialog
+  // (the dialog element itself carries no JSX interaction handlers)
   useEffect(() => {
     if (lightbox === null) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
     const rtl = locale === "ar";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") step(rtl ? -1 : 1);
       if (e.key === "ArrowLeft") step(rtl ? 1 : -1);
     };
+    let swipe: { x: number; t: number } | null = null;
+    const onDown = (e: PointerEvent) => {
+      swipe = { x: e.clientX, t: Date.now() };
+    };
+    const onUp = (e: PointerEvent) => {
+      const start = swipe;
+      swipe = null;
+      if (!start || Date.now() - start.t > 700) return;
+      const dx = e.clientX - start.x;
+      if (Math.abs(dx) < 48) return;
+      // physical swipe: dragging left always brings the item on the right
+      step(dx < 0 ? 1 : -1);
+    };
+    const onClick = (e: MouseEvent) => {
+      if (e.target === dialog) dialog.close(); // backdrop click
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [lightbox, locale]);
-
-  const swipe = useRef<{ x: number; t: number } | null>(null);
-  const onPointerDown = (e: React.PointerEvent) => {
-    swipe.current = { x: e.clientX, t: Date.now() };
-  };
-  const onPointerUp = (e: React.PointerEvent) => {
-    const s = swipe.current;
-    swipe.current = null;
-    if (!s || Date.now() - s.t > 700) return;
-    const dx = e.clientX - s.x;
-    if (Math.abs(dx) < 48) return;
-    // physical swipe: dragging left always brings the item on the right
-    step(dx < 0 ? 1 : -1);
-  };
+    dialog.addEventListener("pointerdown", onDown);
+    dialog.addEventListener("pointerup", onUp);
+    dialog.addEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      dialog.removeEventListener("pointerdown", onDown);
+      dialog.removeEventListener("pointerup", onUp);
+      dialog.removeEventListener("click", onClick);
+    };
+  }, [lightbox, locale, step]);
 
   const meta = (item: GalleryItem) =>
     [item.location ? localize(item.location, locale) : null, item.year ? String(item.year) : null]
@@ -216,11 +229,6 @@ export function GalleryExperience() {
         ref={dialogRef}
         className="gallery-lightbox"
         aria-label={current ? localize(current.alt, locale) : t("pages.gallery.title")}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onClick={(e) => {
-          if (e.target === dialogRef.current) close(); // backdrop click
-        }}
       >
         {current ? (
           <div className="gallery-lightbox-body">

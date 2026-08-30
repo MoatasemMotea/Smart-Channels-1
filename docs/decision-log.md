@@ -893,6 +893,67 @@ glow balance · section spacing · mobile composition · micro-interactions
 
 ---
 
+## Master implementation directive — complete programming first (recorded 2026-08-30)
+
+**Owner decision (explicit):** FINAL MEDIA POPULATION IS DEFERRED UNTIL
+AFTER COMPLETE WEBSITE PROGRAMMING. Missing section/project media is no
+longer an implementation blocker; every media surface ships
+media-READY (structured optional data slots, deliberate programmatic
+fallbacks, automatic data-only upgrades) — while the content-integrity
+absolutes stay binding: no invented imagery/facts/products/relations,
+no stock-as-evidence, D-009 and D-020 absolute. Exception: Technology
+Alliances and Our Clients already carry approved logo assets and remain
+as approved. After programming completes, the owner inspects the full
+site and supplies section/project/product media, the hero film (O-015)
+and social URLs (O-016), followed by the FINAL VISUAL REFINEMENT &
+POLISH ROUND (R-001).
+
+**D-044 — P9 Featured Projects + evidence-adaptive detail system.**
+O-003 resolved per the accepted D-004 assessment: featured =
+F1 Saudi Arabian Grand Prix, King Abdullah Sports City — Jeddah,
+Prince Abdullah Al-Faisal Sports City — Jeddah, Al Awal Park & King
+Fahd Sports City (Grand Mosque remains ledger-only; the conditional
+recommendation was not confirmed). /projects opens with the Featured
+chapter (cinematic evidence cards, programmatic motifs, media-ready);
+detail routes exist ONLY for Featured or deep-evidence records (7
+today) — Cinematic Media Mode is pure data activation
+(caseStudy.heroMedia / media / galleryItemIds); evidence-led
+programmatic opening until then; related projects + featured-to-
+featured transition; thin records never get routes.
+
+**D-045 — P10 Gallery system.** Filtered editorial masonry (All +
+populated categories only), FLIP reflow (FULL) with fade-up entrances,
+poster-first cards, native-dialog lightbox (modal focus containment,
+Escape, direction-aware arrow keys, swipe, focus restoration,
+muted-autoplay + controls). Publishes approved records only; complete
+at any collection size.
+
+**D-046 — P11 Smart AI experience.** /smart-ai ships integration-ready
+and honestly disconnected (D-009): approved concept copy, future-tense
+three-step explanation, solution families as data-driven domains, an
+interaction shell wearing an explicit prototype state (status chip,
+honesty note, permanently disabled send, human path primary), and a
+typed provider adapter boundary (src/lib/smart-ai) whose contract
+REQUIRES an owner-approved privacy notice before any live connection
+(O-010, separately authorized). Homepage teaser CTA now opens the
+experience.
+
+**D-047 — P13 contact/enquiry form.** Bilingual owner-editable form
+(contact-form.ts) in an EXPLICIT non-production state: a visible status
+line says direct submission is not active; valid submissions compose
+the visitor's own email (mailto) or WhatsApp message through the
+approved channels — really sent by the visitor, never faked. Accessible
+validation; typed future integration boundary (O-009 unchanged).
+
+**D-048 — Products catalogue architecture.** /products is fully
+media-ready: the approved stage remains the designed empty state;
+published records now flow into a catalogue with automatic category
+filter chips (≥2 approved categories) and cards that upgrade from a
+designed typographic motif to owner photography via data alone. No
+detail routes (not in the approved roadmap); zero invented inventory.
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

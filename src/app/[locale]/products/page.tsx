@@ -4,6 +4,7 @@ import type { Locale } from "@/types/content";
 import { getPublishedProducts, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
+import { ProductCatalog } from "@/components/products/ProductCatalog";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -88,21 +89,13 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
         </div>
       </section>
 
-      {/* editorial detail below the stage — appears once records publish */}
+      {/* catalogue below the stage — full media-ready architecture
+          (filter chips, photo/typographic cards); appears once records
+          publish (D-048) */}
       {products.length > 0 ? (
         <MotionSection className="border-b border-line" aria-label={t("pages.products.title")}>
           <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
-            <ul className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-              {products.map((p) => (
-                <li key={p.id} className="border-t border-line pt-5">
-                  <p className="font-display text-xl font-semibold">{localize(p.name, locale)}</p>
-                  <p className="mt-2 text-sm leading-7 text-ink-muted">
-                    {localize(p.summary, locale)}
-                  </p>
-                  <p className="mt-3 text-sm leading-7">{localize(p.importance, locale)}</p>
-                </li>
-              ))}
-            </ul>
+            <ProductCatalog />
           </div>
         </MotionSection>
       ) : null}
