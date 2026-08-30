@@ -76,6 +76,35 @@ export function getPublicProjects(): Project[] {
   return projects.filter((p) => p.display !== "hidden").sort(byOrder);
 }
 
+/** P9/D-044: the owner-selected Featured set. */
+export function getFeaturedProjects(): Project[] {
+  return getPublicProjects().filter((p) => p.featured);
+}
+
+/**
+ * P9 evidence-adaptive rule: a project earns a detail route when it is
+ * Featured OR carries deep approved evidence (years + delivered scope).
+ * Thin records stay ledger-only so weak pages never exist.
+ */
+export function projectHasDetail(p: Project): boolean {
+  return p.featured || Boolean(p.years && p.scope && p.scope.length > 0);
+}
+
+export function getDetailProjects(): Project[] {
+  return getPublicProjects().filter(projectHasDetail);
+}
+
+export function getProjectBySlug(slug: string): Project | undefined {
+  return projects.find((p) => p.slug === slug && p.display !== "hidden");
+}
+
+/** Same-sector related projects (excluding the project itself). */
+export function getRelatedProjects(project: Project, limit = 4): Project[] {
+  return getPublicProjects()
+    .filter((p) => p.id !== project.id && p.sectorIds.some((s) => project.sectorIds.includes(s)))
+    .slice(0, limit);
+}
+
 export function getGalleryCategories(): GalleryCategory[] {
   return [...galleryCategories].sort(byOrder);
 }

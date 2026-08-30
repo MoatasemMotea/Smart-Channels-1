@@ -34,8 +34,14 @@ describe("approved business data invariants", () => {
     expect(getFeaturedIndustries().length).toBeGreaterThanOrEqual(6);
   });
 
-  it("keeps every project unfeatured until the D-004 assessment", () => {
-    for (const p of projects) expect(p.featured).toBe(false);
+  it("features exactly the owner's D-044 selection (D-004 resolved 2026-08-30)", () => {
+    const featured = projects.filter((p) => p.featured).map((p) => p.id).sort();
+    expect(featured).toEqual([
+      "al-awal-park-king-fahd",
+      "f1-saudi-arabian-gp",
+      "king-abdullah-sports-city",
+      "prince-abdullah-al-faisal",
+    ]);
   });
 });
 

@@ -6,6 +6,8 @@ const routes = [
   "/solutions",
   "/solutions/security-solutions",
   "/projects",
+  "/projects/formula-1-saudi-arabian-grand-prix",
+  "/projects/king-abdullah-sports-city",
   "/industries",
   "/gallery",
   "/company",

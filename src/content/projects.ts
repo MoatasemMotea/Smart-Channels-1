@@ -8,7 +8,10 @@ import type { LocalizedText, Project } from "@/types/content";
  * - `display` controls public exposure: 'logo' | 'text-only' | 'hidden'.
  *   All records ship 'text-only' — no approved standalone logo assets
  *   exist yet (O-005). Never substitute internet logos.
- * - `featured` stays false until the owner's D-004 assessment.
+ * - `featured`: the owner's P9/D-004 selection (2026-08-30 directive —
+ *   "use the selected candidates already discussed"): F1 Saudi Arabian
+ *   Grand Prix + the three deepest-evidence venues. Grand Mosque remains
+ *   ledger-only (the conditional recommendation was not confirmed).
  * - `years`, `scope`, `services`, `media` may only be filled with
  *   owner-approved, source-backed facts. Absent field = not yet approved,
  *   NOT unknown-so-guessed.
@@ -42,7 +45,7 @@ export const projects: Project[] = [
   { ...base, id: "neom-sports-village", slug: "neom-sports-village", name: { en: "NEOM Sports Village", arPolicy: "latin" }, location: { en: "NEOM", ar: "نيوم" }, sectorIds: ["giga-projects"], order: 5 },
   {
     ...base,
-    id: "prince-abdullah-al-faisal",
+    id: "prince-abdullah-al-faisal", featured: true,
     slug: "prince-abdullah-al-faisal-sports-city",
     name: { en: "Prince Abdullah Al-Faisal Sports City — Jeddah", ar: "مدينة الأمير عبدالله الفيصل الرياضية — جدة" },
     location: { en: "Jeddah", ar: "جدة" },
@@ -53,7 +56,7 @@ export const projects: Project[] = [
   },
   {
     ...base,
-    id: "king-abdullah-sports-city",
+    id: "king-abdullah-sports-city", featured: true,
     slug: "king-abdullah-sports-city",
     name: { en: "King Abdullah Sports City — Jeddah", ar: "مدينة الملك عبدالله الرياضية — جدة" },
     location: { en: "Jeddah", ar: "جدة" },
@@ -90,7 +93,7 @@ export const projects: Project[] = [
   { ...base, id: "afc-u23-championship", slug: "afc-u23-championship", name: { en: "AFC U23 Championship", arPolicy: "latin" }, sectorIds: ["major-sporting-events"], order: 13 },
   { ...base, id: "afc-u17-championship", slug: "afc-u17-championship", name: { en: "AFC U17 Championship", arPolicy: "latin" }, sectorIds: ["major-sporting-events"], order: 14 },
   { ...base, id: "world-combat-games", slug: "world-combat-games", name: { en: "World Combat Games — Riyadh 2023", arPolicy: "latin" }, location: { en: "Riyadh", ar: "الرياض" }, sectorIds: ["major-sporting-events"], order: 15 },
-  { ...base, id: "f1-saudi-arabian-gp", slug: "formula-1-saudi-arabian-grand-prix", name: { en: "Formula 1 Saudi Arabian Grand Prix", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 16 },
+  { ...base, id: "f1-saudi-arabian-gp", featured: true, slug: "formula-1-saudi-arabian-grand-prix", name: { en: "Formula 1 Saudi Arabian Grand Prix", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 16 },
   { ...base, id: "formula-e1-jeddah", slug: "formula-e1-jeddah", name: { en: "Formula E1 — Jeddah", arPolicy: "latin" }, location: { en: "Jeddah", ar: "جدة" }, sectorIds: ["motorsport-racing"], order: 17 },
   { ...base, id: "rally-dakar", slug: "rally-dakar", name: { en: "Rally Dakar", arPolicy: "latin" }, sectorIds: ["motorsport-racing"], order: 18 },
   { ...base, id: "alula-tour", slug: "alula-tour", name: { en: "AlUla Tour", arPolicy: "latin" }, location: { en: "AlUla", ar: "العلا" }, sectorIds: ["major-sporting-events"], order: 19 },
@@ -120,7 +123,7 @@ export const projects: Project[] = [
   },
   {
     ...base,
-    id: "al-awal-park-king-fahd",
+    id: "al-awal-park-king-fahd", featured: true,
     slug: "al-awal-park-king-fahd-sports-city",
     name: { en: "Al Awal Park & King Fahd Sports City", arPolicy: "latin" },
     // location intentionally absent — p.26 does not state it (Amendment 2).

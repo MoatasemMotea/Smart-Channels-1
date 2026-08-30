@@ -140,6 +140,16 @@
     "solutionsChapter": "الحلول",
     "categories": "التصنيفات",
     "evidenceNote": "مشاريع منفّذة — سجلات معتمدة فقط",
-    "startConversation": "ابدأ الحوار"
+    "startConversation": "ابدأ الحوار",
+    "featuredChapter": "مشاريع مميزة",
+    "completeRecord": "السجل الكامل",
+    "enterProject": "استعرض المشروع",
+    "relatedProjects": "مشاريع ذات صلة",
+    "nextProject": "المشروع المميز التالي",
+    "prevProject": "المشروع المميز السابق",
+    "deliveredScope": "نطاق الأعمال المنفَّذة",
+    "overview": "نظرة عامة",
+    "projectMedia": "وسائط المشروع",
+    "allProjects": "جميع المشاريع"
   }
 }

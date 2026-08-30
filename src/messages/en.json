@@ -140,6 +140,16 @@
     "solutionsChapter": "Solutions",
     "categories": "Categories",
     "evidenceNote": "Delivered engagements — approved records only",
-    "startConversation": "Start the conversation"
+    "startConversation": "Start the conversation",
+    "featuredChapter": "Featured Projects",
+    "completeRecord": "Complete record",
+    "enterProject": "Enter project",
+    "relatedProjects": "Related projects",
+    "nextProject": "Next featured project",
+    "prevProject": "Previous featured project",
+    "deliveredScope": "Delivered scope",
+    "overview": "Overview",
+    "projectMedia": "Project media",
+    "allProjects": "All projects"
   }
 }

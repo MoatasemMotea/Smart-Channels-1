@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { getSolutionFamilies } from "@/lib/content";
+import { getDetailProjects, getSolutionFamilies } from "@/lib/content";
 
 /**
  * Sitemap generated from the same route/data sources as the pages.
@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/clients",
     "/contact",
     ...getSolutionFamilies().map((f) => `/solutions/${f.slug}`),
+    ...getDetailProjects().map((p) => `/projects/${p.slug}`),
   ];
   return routing.locales.flatMap((locale) =>
     staticPaths.map((p) => ({
