@@ -24,7 +24,7 @@ export async function Header() {
   return (
     <header className="site-header">
       <ScrollState />
-      <div className="mx-auto flex h-20 max-w-360 items-center gap-6 px-6 lg:px-12">
+      <div className="mx-auto flex h-20 max-w-360 items-center gap-4 px-6 xl:gap-6 lg:px-12">
         <Link href="/" className="flex items-center" aria-label="Smart Channels — Home">
           <Image
             src="/brand/logo-dark.png"
@@ -46,7 +46,7 @@ export async function Header() {
       {cta ? (
         <Link
           href={cta.href}
-          className="hidden rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
+          className="hidden whitespace-nowrap rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
         >
           {localize(cta.label, locale)}
         </Link>

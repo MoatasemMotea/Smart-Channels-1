@@ -954,6 +954,39 @@ detail routes (not in the approved roadmap); zero invented inventory.
 
 ---
 
+## Pre-media-population issue audit (recorded 2026-08-30)
+
+**D-049 — Final functional & visual issue audit round** (baseline
+`53833fb` accepted). Full-site audit across routes, homepage journey,
+contact, projects, gallery, products, Smart AI, carousels, header,
+Arabic, themes, motion, responsive/zoom, accessibility, privacy.
+
+Register: **CRITICAL — none found.** **MAJOR (fixed):** M1 unmatched
+URLs and notFound() guards rendered the bare framework 404 → branded
+localized not-found boundary inside full site chrome (locale not-found
+page + force-dynamic catch-all so the static-404 cache can never
+regress it to the default page; invalid-slug 404 status preserved);
+M2 header CTA wrapped to two lines at 1024 px → nowrap + tightened lg
+gaps. **MINOR (fixed):** m3 mobile lightbox arrows overlapped the
+media → arrows form a control row under the stage ≤640 px (desktop
+unchanged via display:contents). **Deferred to R-001 (cosmetic,
+non-blocking):** related-project meta spacing on detail pages;
+transient floating-WhatsApp overlap while scrolling (standard FAB
+behavior). Verified clean: locale switching on every dynamic route,
+browser back/forward with no opening replay, scroll restoration,
+homepage journey behaviors, AR contact form/lightbox/footer, light
+theme on all new routes, stats-rail collision-free at 1280 px,
+solutions live-preview interaction, tablet compositions.
+
+**Verification:** repo Playwright 66/66; final matrix 23/23; p6 53/53;
+standing battery all green (sv 32 · rp 33 · vc 36 · p5b 29+6 · rtl 15
+· r3 30 · p4 20 · matrix 64 · extra 11); unit 7/7; typecheck/lint/build
+clean; zero console/hydration errors; live browser inspection EN/AR ×
+dark/light × desktop/tablet/mobile. The website is stable and ready
+for media population.
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

@@ -254,7 +254,7 @@ export function GalleryExperience() {
               {meta(current) ? <p className="microlabel">{meta(current)}</p> : null}
             </div>
             {visible.length > 1 ? (
-              <>
+              <div className="gallery-lightbox-nav-row">
                 <button
                   type="button"
                   className="rail-nav gallery-lightbox-prev"
@@ -275,7 +275,7 @@ export function GalleryExperience() {
                     <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
-              </>
+              </div>
             ) : null}
             <button
               type="button"

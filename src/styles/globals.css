@@ -2618,6 +2618,23 @@ html[data-motion-tier="full"] .project-opening-backdrop .po-c {
 }
 .gallery-lightbox-close:hover,
 .gallery-lightbox-close:focus-visible { border-color: rgba(255, 24, 156, 0.55); color: #fff; }
+/* the arrow pair is transparent to layout on desktop (absolute at the
+   stage edges); on small screens it becomes a real row UNDER the stage
+   so controls never cover the media */
+.gallery-lightbox-nav-row { display: contents; }
+@media (max-width: 640px) {
+  .gallery-lightbox-nav-row {
+    display: flex;
+    gap: 0.75rem;
+    order: 3;
+  }
+  .gallery-lightbox-prev,
+  .gallery-lightbox-next {
+    position: static;
+    translate: none;
+  }
+  .gallery-lightbox-body { padding-top: 3.25rem; }
+}
 
 /* ------------------------------------------------------------------ */
 /* P11 · D-046 — Smart AI experience (honest prototype state, D-009).  */

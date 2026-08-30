@@ -185,5 +185,10 @@
     "sendEmail": "Review & send by email",
     "sendWhatsapp": "Send via WhatsApp",
     "subjectPrefix": "Website enquiry"
+  },
+  "notFound": {
+    "title": "This page could not be found",
+    "body": "The address may have changed or never existed. The signal continues from the homepage.",
+    "cta": "Back to the homepage"
   }
 }

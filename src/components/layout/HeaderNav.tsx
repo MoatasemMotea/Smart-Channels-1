@@ -130,7 +130,7 @@ export function HeaderNav() {
   const moreActive = overflow.some((i) => isActive(i.href));
 
   return (
-    <nav aria-label="Main" className="ms-auto hidden items-center gap-5 xl:gap-6 lg:flex">
+    <nav aria-label="Main" className="ms-auto hidden items-center gap-4 xl:gap-6 lg:flex">
       {items.map((item) => (
         <Link
           key={item.id}
