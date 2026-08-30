@@ -1427,31 +1427,68 @@ html[data-opening="running"] .floating-whatsapp {
   margin-top: 3rem;
   min-block-size: 240px;
 }
-/* §3 homepage teaser: a single light-ring doorway, not the full stage */
-.products-teaser-motif {
+/* D-050 §10 — the four-slot featured-product stage. Filled slots carry
+   the owner catalogue; reserved slots are quiet engineered frames. */
+.products-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+@media (min-width: 48rem) {
+  .products-slots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+.product-slot {
+  text-align: start;
+}
+.product-slot-media {
   position: relative;
-  block-size: 110px;
-  margin-block: 2.25rem 1.5rem;
-  pointer-events: none;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  aspect-ratio: 4 / 3;
 }
-.teaser-ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  inline-size: min(420px, 68vw);
-  block-size: 64px;
-  translate: -50% -50%;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 24, 156, 0.35);
-  box-shadow:
-    0 0 34px rgba(255, 24, 156, 0.16),
-    inset 0 0 26px rgba(255, 24, 156, 0.1);
+.product-slot-filled .product-slot-media {
+  border-color: rgba(255, 24, 156, 0.35);
 }
-.arrive .teaser-ring { animation: stage-ring-pulse 800ms var(--ease-cinematic); }
-/* §14: the platform light activates as the teaser enters the viewport */
-.reveal.is-visible[data-scene="products"] .teaser-ring {
-  animation: stage-ring-pulse 1100ms var(--ease-cinematic) 250ms;
+.product-slot-filled a:hover .product-slot-media,
+.product-slot-filled a:focus-visible .product-slot-media {
+  border-color: var(--brand-magenta);
+  box-shadow: 0 0 28px rgba(255, 24, 156, 0.14);
 }
+.product-slot-media-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+}
+.product-slot-mark {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 9999px;
+  background: rgba(255, 24, 156, 0.4);
+  box-shadow: 0 0 16px rgba(255, 24, 156, 0.3);
+}
+/* §14 arrival: the stage frames light in sequence as the section enters */
+.reveal.is-visible[data-scene="products"] .product-slot,
+.arrive[data-scene="products"] .product-slot {
+  animation: product-slot-in 700ms var(--ease-cinematic) both;
+}
+.reveal.is-visible[data-scene="products"] .product-slot:nth-child(2),
+.arrive[data-scene="products"] .product-slot:nth-child(2) { animation-delay: 120ms; }
+.reveal.is-visible[data-scene="products"] .product-slot:nth-child(3),
+.arrive[data-scene="products"] .product-slot:nth-child(3) { animation-delay: 240ms; }
+.reveal.is-visible[data-scene="products"] .product-slot:nth-child(4),
+.arrive[data-scene="products"] .product-slot:nth-child(4) { animation-delay: 360ms; }
+@keyframes product-slot-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+html[data-motion-tier="static"] .product-slot { animation: none !important; }
 .stage-grid {
   position: absolute;
   inset: 40% -10% 0;

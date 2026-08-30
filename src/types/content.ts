@@ -72,6 +72,8 @@ export interface SolutionFamily {
   subSolutions: SubSolution[];
   /** Only vendors the approved profile explicitly associates (Amendment 2). */
   relatedVendorIds?: string[];
+  /** D-050 §9 media-ready slot: owner-approved family visual (optional). */
+  media?: MediaRef;
   order: number;
 }
 

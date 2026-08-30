@@ -15,6 +15,9 @@ import type { GulfRegion } from "@/types/content";
  */
 export const gulfRegions: GulfRegion[] = [
   { id: "bahrain", name: { en: "Bahrain", ar: "البحرين" }, latitude: 26.05, longitude: 50.55, enabled: true },
-  { id: "qatar", name: { en: "Qatar", ar: "قطر" }, latitude: 25.3, longitude: 51.2, enabled: true },
-  { id: "uae", name: { en: "UAE", ar: "الإمارات" }, latitude: 24.3, longitude: 54.4, enabled: true },
+  // D-050 §8 (owner decision): the reach story shows Saudi cities +
+  // Riyadh + Bahrain only — Qatar and UAE points removed from the
+  // presentation. Records kept disabled for a future owner re-enable.
+  { id: "qatar", name: { en: "Qatar", ar: "قطر" }, latitude: 25.3, longitude: 51.2, enabled: false },
+  { id: "uae", name: { en: "UAE", ar: "الإمارات" }, latitude: 24.3, longitude: 54.4, enabled: false },
 ];

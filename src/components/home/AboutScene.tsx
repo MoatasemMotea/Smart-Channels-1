@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { getCompany, localize } from "@/lib/content";
+import { aboutMedia } from "@/content/company";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -42,18 +43,33 @@ export async function AboutScene({ locale }: { locale: Locale }) {
           </div>
           <figure className="media-frame self-center">
             <div className="media-reveal">
-              <Image
-                src="/media/gallery/fiber-splicing-riyadh-2025.webp"
-                alt={
-                  locale === "ar"
-                    ? "لِحام ألياف بصرية بيد فنيّ من Smart Channels، الرياض 2025"
-                    : "Fiber-optic fusion splicing by a Smart Channels technician, Riyadh 2025"
-                }
-                width={848}
-                height={464}
-                className="h-auto w-full"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-              />
+              {/* §7 media-ready: an owner-approved company film replaces
+                  the photograph the moment aboutMedia is enabled — the
+                  photograph stays the poster/fallback. */}
+              {aboutMedia.enabled && aboutMedia.videoSrc ? (
+                <video
+                  src={aboutMedia.videoSrc}
+                  poster={aboutMedia.poster ?? undefined}
+                  className="h-auto w-full"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
+              ) : (
+                <Image
+                  src="/media/gallery/fiber-splicing-riyadh-2025.webp"
+                  alt={
+                    locale === "ar"
+                      ? "لِحام ألياف بصرية بيد فنيّ من Smart Channels، الرياض 2025"
+                      : "Fiber-optic fusion splicing by a Smart Channels technician, Riyadh 2025"
+                  }
+                  width={848}
+                  height={464}
+                  className="h-auto w-full"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                />
+              )}
             </div>
             <figcaption className="microlabel mt-3">{t("home.aboutImageCaption")}</figcaption>
           </figure>

@@ -78,3 +78,23 @@ export const company = {
     ar: "جهات حكومية ومشاريع كبرى ومؤسسات مالية وعلامات عالمية ومنظّمو فعاليات في المملكة والخليج.",
   } satisfies LocalizedText,
 };
+
+/**
+ * ABOUT MEDIA SLOT (final pre-media directive §7 · D-050).
+ *
+ * The About section is designed to carry an owner-approved company
+ * film later. While `enabled` is false the section renders the
+ * approved fiber-splicing photograph; when the owner supplies the
+ * video, place the files under /public/media/about/, fill the paths
+ * and set enabled: true — no component changes. Never stock footage,
+ * never AI media presented as evidence (D-009).
+ */
+export const aboutMedia: {
+  enabled: boolean;
+  videoSrc: string | null;
+  poster: string | null;
+} = {
+  enabled: false,
+  videoSrc: null,
+  poster: null,
+};

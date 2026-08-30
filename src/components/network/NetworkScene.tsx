@@ -185,8 +185,9 @@ export function NetworkScene() {
       data-env="dark"
     >
       <div className="relative mx-auto max-w-360 px-6 py-20 lg:px-12">
-        <p className="microlabel">{t("sections.trackRecord")}</p>
-        <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold md:text-4xl">
+        {/* D-050 §8: no visible "Track Record" heading — the reach title
+            leads and the approved figures speak for themselves. */}
+        <h2 className="max-w-3xl font-display text-3xl font-bold md:text-4xl">
           {t("network.title")}
         </h2>
 
