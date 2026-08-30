@@ -23,16 +23,25 @@ import { Link, usePathname } from "@/i18n/navigation";
  *   shrinking the row; everything returns inline at ≥2xl.
  */
 const ANCHOR_SCENES: Record<string, string> = {
+  "/#about": "about",
+  "/#solutions": "solutions",
+  "/#industries": "industries",
+  "/#gallery": "gallery",
   "/#partners": "partners",
   "/#clients": "clients",
-  "/#smart-ai": "smart-ai",
+  "/#contact": "contact",
 };
-/* P6: anchor destinations with standalone routes — the nav item lights
-   up on those inner pages too (§13 active-route correctness). */
+/* P6/D-050: anchor destinations whose deep content lives on standalone
+   routes — the nav item lights up on those inner pages too (§13
+   active-route correctness). Prefix-matched so detail routes
+   (/solutions/[slug]) light their parent as well. */
 const ANCHOR_ROUTE_ALIASES: Record<string, string> = {
+  "/#about": "/company",
+  "/#solutions": "/solutions",
+  "/#industries": "/industries",
+  "/#gallery": "/gallery",
   "/#partners": "/partners",
   "/#clients": "/clients",
-  "/#smart-ai": "/smart-ai",
 };
 
 export function arriveAt(sceneId: string, smooth: boolean) {
@@ -106,7 +115,10 @@ export function HeaderNav() {
     const scene = ANCHOR_SCENES[href];
     if (scene) {
       const alias = ANCHOR_ROUTE_ALIASES[href];
-      return sectionActive === scene || (Boolean(alias) && pathname === alias);
+      return (
+        sectionActive === scene ||
+        (Boolean(alias) && (pathname === alias || pathname.startsWith(`${alias}/`)))
+      );
     }
     if (href === "/") return pathname === "/" && sectionActive === null;
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -122,10 +134,7 @@ export function HeaderNav() {
     }
   };
 
-  const linkClass = (highlight?: string) =>
-    highlight === "smart-ai"
-      ? "nav-link tx-link text-[0.8125rem] font-semibold text-accent"
-      : "nav-link tx-link text-[0.8125rem] font-medium text-ink-muted";
+  const linkClass = () => "nav-link tx-link text-[0.8125rem] font-medium text-ink-muted";
 
   const moreActive = overflow.some((i) => isActive(i.href));
 
@@ -138,7 +147,7 @@ export function HeaderNav() {
           onClick={onClick(item.href)}
           data-active={isActive(item.href) || undefined}
           aria-current={isActive(item.href) ? "true" : undefined}
-          className={`${linkClass(item.highlight)}${overflowNavIds.has(item.id) ? " nav-collapsible" : ""}`}
+          className={`${linkClass()}${overflowNavIds.has(item.id) ? " nav-collapsible" : ""}`}
         >
           {localize(item.label, locale)}
         </Link>

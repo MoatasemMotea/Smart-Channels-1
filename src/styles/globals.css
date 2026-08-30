@@ -273,9 +273,11 @@ html[data-opening="revealing"] .opening-host {
   z-index: 60;
   background: transparent;
 }
-/* CSS-only pre-stage: darkness → the authoritative logo becomes readable,
-   guaranteed from first paint even before ANY JavaScript beyond the
-   bootstrap. The engine's stage (z-60) covers it when it takes over. */
+/* CSS-only pre-stage (D-050): pure darkness with one subtle signal
+   pulse, guaranteed from first paint even before ANY JavaScript beyond
+   the bootstrap. Deliberately NOT the logo — the logo appears exactly
+   once, after the cinematic motion, driven by the engine (§1). The
+   engine's stage (z-60) covers this the moment it takes over. */
 .opening-prestage {
   display: none;
 }
@@ -289,16 +291,19 @@ html[data-opening="pending"] .opening-prestage {
   background: #060607;
   pointer-events: none;
 }
-.opening-prestage img {
-  width: min(240px, 40vw);
-  height: auto;
+.prestage-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--brand-magenta);
   opacity: 0;
-  transform: scale(0.96);
-  animation: prestage-logo 1300ms var(--ease-engineered) 450ms forwards;
+  animation: prestage-pulse 1600ms var(--ease-engineered) 350ms infinite;
 }
-@keyframes prestage-logo {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes prestage-pulse {
+  0% { opacity: 0; box-shadow: 0 0 0 0 rgba(255, 24, 156, 0.35); }
+  35% { opacity: 0.9; }
+  70% { opacity: 0.25; box-shadow: 0 0 0 18px rgba(255, 24, 156, 0); }
+  100% { opacity: 0; box-shadow: 0 0 0 26px rgba(255, 24, 156, 0); }
 }
 .opening-canvas {
   position: absolute;
@@ -323,35 +328,8 @@ html:not([data-motion-tier="static"]) .hero-backdrop polyline {
   opacity: 0;
   transition: opacity 420ms var(--ease-cinematic);
 }
-.opening-caption {
-  position: absolute;
-  left: 50%;
-  top: 72%;
-  transform: translateX(-50%);
-  letter-spacing: 0.34em;
-  color: rgba(245, 245, 244, 0.6);
-  opacity: 1;
-  transition: opacity 300ms var(--ease-engineered);
-}
-.opening-hq-label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin: 0;
-  padding-inline-start: 16px;
-  padding-top: 2px;
-  color: #ff189c;
-  letter-spacing: 0.14em;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 350ms var(--ease-engineered);
-  will-change: transform;
-}
-[dir="rtl"] .opening-hq-label {
-  padding-inline-start: 0;
-  padding-inline-end: 16px;
-  transform-origin: top right;
-}
+/* D-050: the separate wordmark caption and the geographic HQ label were
+   removed with the resequenced opening — no text accompanies the logo. */
 
 /* Page hold-back while the cinematic runs: everything after the hero is
    covered; header hidden; hero content staged (F-7). */
@@ -518,51 +496,65 @@ html[data-opening="revealing"] .hero-accent-word {
   background: linear-gradient(180deg, var(--accent), transparent);
 }
 
-/* D-042 §5 — approved Track Record figures as a quiet vertical rail on
-   the hero's inline-end. Single source: stats.ts (D-002). Desktop only;
-   smaller viewports keep the Track Record section as the stats home. */
-.hero-stats-rail {
-  display: none;
+/* ------------------------------------------------------------------ */
+/* §2.1/§2.2 (D-050) — small technology objects drifting above the     */
+/* photograph. Multi-depth, slow, restrained; STATIC tier renders them */
+/* still; extra objects hide on small viewports (3–4 mobile / 7 desk). */
+/* ------------------------------------------------------------------ */
+.hero-objects {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
 }
-@media (min-width: 80rem) {
-  .hero-stats-rail {
-    position: absolute;
-    inset-inline-end: 3rem;
-    top: 50%;
-    translate: 0 -50%;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 1.05rem;
-    padding-inline-start: 1.1rem;
-    border-inline-start: 1px solid rgba(255, 255, 255, 0.16);
-  }
-  [dir="rtl"] .hero-stats-rail {
-    border-inline-start: none;
-    border-inline-end: 1px solid rgba(255, 255, 255, 0.16);
-    padding-inline-start: 0;
-    padding-inline-end: 1.1rem;
-    text-align: end;
-  }
-  .hero-stat + .hero-stat {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1.05rem;
-  }
-  .hero-stat-value {
-    font-size: 1.55rem;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--accent);
-    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
-  }
-  .hero-stat-label {
-    margin-top: 0.2rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    color: var(--ink-muted);
-    max-inline-size: 9.5rem;
-    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
-  }
+.hero-object {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  color: rgba(235, 238, 246, 0.5);
+}
+.hero-object[data-depth="1"] { opacity: 0.85; }
+.hero-object[data-depth="2"] { opacity: 0.6; scale: 0.88; }
+.hero-object[data-depth="3"] { opacity: 0.4; scale: 0.74; filter: blur(0.4px); }
+.hero-object-drift {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hero-object svg,
+.hero-object img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55));
+}
+@media (max-width: 47.99rem) {
+  .hero-object[data-desktop-only] { display: none; }
+}
+/* slow orbital drift — depth picks period and radius; never on STATIC */
+html:not([data-motion-tier="static"]) .hero-object[data-depth="1"] .hero-object-drift {
+  animation: hero-object-orbit-a 44s linear infinite;
+}
+html:not([data-motion-tier="static"]) .hero-object[data-depth="2"] .hero-object-drift {
+  animation: hero-object-orbit-b 58s linear infinite;
+}
+html:not([data-motion-tier="static"]) .hero-object[data-depth="3"] .hero-object-drift {
+  animation: hero-object-orbit-a 74s linear infinite reverse;
+}
+@keyframes hero-object-orbit-a {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(9px, -7px); }
+  50% { transform: translate(0, -13px); }
+  75% { transform: translate(-9px, -7px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes hero-object-orbit-b {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-7px, 6px); }
+  50% { transform: translate(0, 11px); }
+  75% { transform: translate(7px, 6px); }
+  100% { transform: translate(0, 0); }
 }
 
 /* ------------------------------------------------------------------ */

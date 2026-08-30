@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { locations } from "@/content/locations";
 import { getOpeningState, setOpeningState } from "@/lib/opening-state";
 import { OpeningEngine, type EngineTier } from "./engine";
@@ -32,11 +32,8 @@ export function OpeningExperience() {
   // server-rendered hero with its designed static backdrop is the whole
   // experience. Server snapshot is "static" so SSR output matches.
   const tier = useSyncExternalStore(subscribeTier, getTier, () => "static");
-  const t = useTranslations("opening");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
-  const captionRef = useRef<HTMLParagraphElement>(null);
-  const labelRef = useRef<HTMLParagraphElement>(null);
   const engineRef = useRef<OpeningEngine | null>(null);
 
   useEffect(() => {
@@ -60,11 +57,7 @@ export function OpeningExperience() {
       callbacks: {
         onEvent: (name) => {
           if (name === "logo-in" && logoRef.current) logoRef.current.style.opacity = "1";
-          if (name === "logo-out") {
-            if (logoRef.current) logoRef.current.style.opacity = "0";
-            if (captionRef.current) captionRef.current.style.opacity = "0";
-          }
-          if (name === "riyadh" && labelRef.current) labelRef.current.style.opacity = "1";
+          if (name === "logo-out" && logoRef.current) logoRef.current.style.opacity = "0";
           if (name === "reveal") {
             try {
               window.scrollTo({ top: 0, left: 0, behavior: "instant" });
@@ -82,15 +75,6 @@ export function OpeningExperience() {
               /* unsupported */
             }
           }
-        },
-        onLabel: (pos) => {
-          const el = labelRef.current;
-          if (!el) return;
-          if (!pos) {
-            el.style.opacity = "0";
-            return;
-          }
-          el.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
         },
       },
     });
@@ -194,12 +178,8 @@ export function OpeningExperience() {
       {/* readable identity = the untouched authoritative asset (D-018) */}
       {/* eslint-disable-next-line @next/next/no-img-element -- opacity is engine-driven; next/image adds nothing for a decorative overlay */}
       <img ref={logoRef} src="/brand/logo-dark.png" alt="" className="opening-logo" />
-      <p ref={captionRef} className="opening-caption microlabel">
-        {t("caption")}
-      </p>
-      {/* D-042: no geographic text labels anywhere in the hero/opening —
-          the map beat communicates the geography visually. The labelRef
-          stays declared; every engine callback null-guards it. */}
+      {/* D-050: no separate wordmark text and no geographic labels —
+          the identity beat is the approved logo asset alone. */}
     </div>
   );
 }

@@ -37,27 +37,25 @@ export interface EngineOptions {
 /* Timeline (ms) — Revision 3 §2 lengthens the readable-identity hold
    (≈1.4s of fully readable logo) so the visitor recognizes the company
    before the transformation continues. FULL ≈5.35s, LITE ≈4.6s. */
+/* Final opening (D-050): CINEMATIC MOTION → convergence → the logo
+   appears ONCE → readable hold → seamless release into the Hero. The
+   geography/evidence beats moved out of the opening (the Reach section
+   owns them); the logo never appears before the motion. */
 const TIMELINE_FULL = {
-  driftEnd: 820,
-  assembleEnd: 1650,
-  logoIn: 1380,
-  holdEnd: 2750,
-  logoOut: 2950,
-  mapEnd: 3750, // geography settled + Riyadh ignition
-  networkEnd: 4550, // evidence network at national scale
-  reveal: 4650,
-  end: 5350,
+  driftEnd: 950,
+  assembleEnd: 1800,
+  logoIn: 1550,
+  holdEnd: 3150,
+  reveal: 3250,
+  end: 4000,
 };
 const TIMELINE_LITE = {
-  driftEnd: 700,
-  assembleEnd: 1420,
-  logoIn: 1180,
-  holdEnd: 2350,
-  logoOut: 2550,
-  mapEnd: 3270,
-  networkEnd: 3930,
-  reveal: 4010,
-  end: 4600,
+  driftEnd: 780,
+  assembleEnd: 1520,
+  logoIn: 1300,
+  holdEnd: 2700,
+  reveal: 2790,
+  end: 3450,
 };
 
 const easeCinematic = (t: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3.2);
@@ -291,25 +289,6 @@ export class OpeningEngine {
     });
   }
 
-  private assignMapTargets(): void {
-    const budget = this.tier === "lite" ? 0.45 : 1;
-    const pts = MAP_POINTS.filter(() => this.rnd() < budget);
-    const { x, y, w, h } = this.mapRect;
-    this.particles.forEach((pt, i) => {
-      // spread indices across the whole set so contour + interior are both
-      // covered even when particles < points (critical on LITE)
-      const s = pts[Math.floor((i * pts.length) / this.particles.length) % pts.length]!;
-      pt.tx = x + s[0] * w;
-      pt.ty = y + s[1] * h;
-      // Adopt the map point's depth so contour points render on the near
-      // layer: this is what makes the silhouette read immediately (B-3).
-      pt.depth = s[3];
-      pt.size = [0.95, 1.25, 1.95][s[3]]! * (0.85 + (i % 7) * 0.045);
-      // Geography is neutral by design; former magenta particles cool so
-      // the accent becomes selective again (visual diversity rule).
-      if (pt.color === 1) pt.cool = 1;
-    });
-  }
 
   private assignHeroTargets(): void {
     this.particles.forEach((pt, i) => {
@@ -375,22 +354,16 @@ export class OpeningEngine {
     this.t = now - this.start;
     const { tl } = this;
 
-    /* phase transitions (single continuous system — targets change, particles persist) */
+    /* phase transitions (single continuous system — targets change,
+       particles persist): motion → convergence → logo ONCE → release */
     if (this.t >= tl.driftEnd) this.fire("assemble");
-    if (this.t >= tl.logoIn && this.t < tl.logoOut) this.fire("logo-in");
-    if (this.t >= tl.logoOut) {
-      if (!this.fired.has("map")) {
-        this.fire("logo-out");
-        this.assignMapTargets();
-        this.fire("map");
-      }
-    }
-    if (this.t >= tl.mapEnd) this.fire("riyadh");
-    if (this.t >= tl.networkEnd && !this.fired.has("release")) {
+    if (this.t >= tl.logoIn) this.fire("logo-in");
+    if (this.t >= tl.reveal && !this.fired.has("release")) {
       this.fired.add("release");
+      this.fire("logo-out"); // the DOM logo fades AS the hero reveals
       this.assignHeroTargets();
+      this.fire("reveal");
     }
-    if (this.t >= tl.reveal) this.fire("reveal");
     if (this.t >= tl.end) {
       this.fire("done");
       this.mode = "ambient";
@@ -404,53 +377,27 @@ export class OpeningEngine {
     ctx.scale(cam.s, cam.s);
     ctx.translate(-this.width / 2 + cam.tx, -this.height / 2 + cam.ty);
 
-    /* physics: stiffness by phase — drifting is loose, assembly is firmer */
-    const assembling = this.t < tl.holdEnd;
-    // stiffer while the geography must resolve so the silhouette is
-    // readable well before the network beat (B-3 amendment)
-    // Near-critical damping (damp ≈ 2/√k) so each target set RESOLVES
-    // quickly and legibly instead of drifting in overdamped approach.
-    const settlingMap = this.t >= tl.logoOut && this.t < tl.networkEnd;
-    const k = this.t < tl.driftEnd ? 0.8 : assembling ? 5.5 : settlingMap ? 9.5 : 3.4;
+    /* physics: stiffness by phase — drifting is loose, convergence is
+       firm, the held logo stays crisp, the release relaxes into the
+       hero field. Near-critical damping (damp ≈ 2/√k) so each target
+       set RESOLVES legibly. */
+    const k = this.t < tl.driftEnd ? 0.8 : this.t < tl.reveal ? 5.5 : 3.4;
     const damp = this.t < tl.driftEnd ? 0.45 : 2 / Math.sqrt(k);
     this.stepParticles(dt, k, damp, false);
 
-    /* map substrate + network overlays */
-    const mapIn = clamp01((this.t - tl.logoOut) / (tl.mapEnd - tl.logoOut));
-    const mapOut = this.fired.has("release")
-      ? 1 - clamp01((this.t - tl.networkEnd) / (tl.end - tl.networkEnd))
-      : 1;
-    if (mapIn > 0 && mapOut > 0.02) this.drawGeoLayer(mapIn * mapOut);
-
-    const dissolve = clamp01((this.t - tl.networkEnd) / (tl.end - tl.networkEnd));
-    // calmer shimmer while the geography must be read
-    const geoPhase = this.t >= tl.logoOut && this.t < tl.networkEnd;
-    const geoLift = geoPhase ? 1.35 : 1;
-    this.drawParticles((1 - dissolve * 0.25) * geoLift, geoPhase ? 0.35 : 1, geoPhase);
-
-    /* Riyadh label anchor (DOM) */
-    if (this.fired.has("riyadh") && dissolve < 0.55) {
-      const hq = this.nodes.find((n) => n.hq);
-      if (hq) {
-        const sx = this.mapRect.x + hq.x * this.mapRect.w;
-        const sy = this.mapRect.y + hq.y * this.mapRect.h;
-        const p = this.toScreen(sx, sy, cam);
-        this.cb.onLabel?.(p);
-      }
-    } else if (dissolve >= 0.55) {
-      this.cb.onLabel?.(null);
-    }
+    const dissolve = clamp01((this.t - tl.reveal) / (tl.end - tl.reveal));
+    this.drawParticles(1 - dissolve * 0.25, 1, false);
   }
 
   private camera(): { s: number; tx: number; ty: number } {
     const { tl } = this;
     const dir = this.rtl ? -1 : 1;
-    // gentle push during network beat, reframe during release (E-6)
-    const push = easeCinematic(clamp01((this.t - tl.mapEnd) / (tl.networkEnd - tl.mapEnd)));
-    const release = easeCinematic(clamp01((this.t - tl.networkEnd) / (tl.end - tl.networkEnd)));
-    const s = 1 + 0.06 * push - 0.06 * release * 1.0;
-    const tx = dir * (10 * push - 10 * release);
-    const ty = -6 * push + 6 * release;
+    // gentle push while the logo converges/holds, reframe on release
+    const push = easeCinematic(clamp01((this.t - tl.driftEnd) / (tl.holdEnd - tl.driftEnd))) * 0.6;
+    const release = easeCinematic(clamp01((this.t - tl.reveal) / (tl.end - tl.reveal)));
+    const s = 1 + 0.05 * push - 0.05 * release;
+    const tx = dir * (7 * push - 7 * release);
+    const ty = -4 * push + 4 * release;
     return { s, tx, ty };
   }
 
@@ -518,110 +465,6 @@ export class OpeningEngine {
     }
   }
 
-  /** Evidence nodes, links, Riyadh ring, Gulf trajectories (canvas; text stays DOM). */
-  private drawGeoLayer(alpha: number): void {
-    const ctx = this.ctx;
-    const { x, y, w, h } = this.mapRect;
-    const { tl } = this;
-    const netP = clamp01((this.t - tl.mapEnd) / (tl.networkEnd - tl.mapEnd));
-
-    // evidence connections draw progressively (peer links, stroke-drawn)
-    if (netP > 0) {
-      this.links.forEach(([a, b], i) => {
-        const lp = clamp01(netP * 2.2 - i * 0.28);
-        if (lp <= 0) return;
-        const ax = x + a.x * w;
-        const ay = y + a.y * h;
-        const bx = x + b.x * w;
-        const by = y + b.y * h;
-        const mx = ax + (bx - ax) * easeCinematic(lp);
-        const my = ay + (by - ay) * easeCinematic(lp);
-        const grad = ctx.createLinearGradient(ax, ay, mx, my);
-        grad.addColorStop(0, `rgba(255,24,156,${0.34 * alpha})`);
-        grad.addColorStop(1, `rgba(255,24,156,${0.1 * alpha})`);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.1;
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(mx, my);
-        ctx.stroke();
-        if (lp >= 1 && i === 1) {
-          // one travelling pulse (the accent is earned — one at a time)
-          const t2 = (this.t % 1400) / 1400;
-          const px = ax + (bx - ax) * t2;
-          const py = ay + (by - ay) * t2;
-          ctx.fillStyle = `rgba(255,24,156,${0.85 * alpha})`;
-          ctx.beginPath();
-          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
-    }
-
-    // evidence nodes ignite in priority order
-    this.nodes.forEach((n, i) => {
-      if (n.hq) return;
-      const np = clamp01(netP * 2.6 - i * 0.18);
-      if (np <= 0) return;
-      const nx = x + n.x * w;
-      const ny = y + n.y * h;
-      const a = alpha * easeEngineered(np);
-      ctx.fillStyle = `rgba(233,233,236,${0.9 * a})`;
-      ctx.beginPath();
-      ctx.arc(nx, ny, 2.6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = `rgba(233,233,236,${0.14 * a})`;
-      ctx.beginPath();
-      ctx.arc(nx, ny, 9, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Riyadh HQ — precision ring + single ignition pulse (C-4; no spokes)
-    const hq = this.nodes.find((n) => n.hq);
-    if (hq && this.fired.has("riyadh")) {
-      const hx = x + hq.x * w;
-      const hy = y + hq.y * h;
-      const ig = clamp01((this.t - tl.mapEnd) / 500);
-      const a = alpha;
-      ctx.strokeStyle = `rgba(255,24,156,${0.9 * a * easeEngineered(ig)})`;
-      ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 10, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * easeCinematic(ig));
-      ctx.stroke();
-      ctx.strokeStyle = `rgba(255,24,156,${0.28 * a})`;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 17, 0, Math.PI * 2);
-      ctx.stroke();
-      const pulse = 1 + 0.5 * Math.abs(Math.sin((this.t - tl.mapEnd) / 640));
-      ctx.fillStyle = `rgba(255,24,156,${0.95 * a})`;
-      ctx.beginPath();
-      ctx.arc(hx, hy, 3.4 * pulse, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // abstract Gulf/regional reach: two outward trajectories, no nodes (§5)
-    if (netP > 0.55) {
-      const a = alpha * (netP - 0.55) * 1.6;
-      const startX = x + w * 0.93;
-      const startY = y + h * 0.34;
-      for (let i = 0; i < 2; i++) {
-        const grad = ctx.createLinearGradient(startX, startY, this.width + 40, startY - 60 - i * 90);
-        grad.addColorStop(0, `rgba(226,226,229,${0.22 * a})`);
-        grad.addColorStop(1, "rgba(226,226,229,0)");
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY + i * 26);
-        ctx.quadraticCurveTo(
-          startX + this.width * 0.14,
-          startY - 30 - i * 40,
-          this.width + 40,
-          startY - 70 - i * 100,
-        );
-        ctx.stroke();
-      }
-    }
-  }
 
   /** Post-opening hero life: one slow signal route redrawn periodically. */
   private drawAmbientSignal(): void {

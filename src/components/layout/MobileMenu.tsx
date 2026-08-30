@@ -118,9 +118,7 @@ export function MobileMenu({ label, closeLabel }: { label: string; closeLabel: s
                       onClick={close}
                       className="tx-link block py-4 font-display text-2xl font-semibold text-ink"
                     >
-                      <span className={item.highlight === "smart-ai" ? "text-accent" : undefined}>
-                        {label_(item.label)}
-                      </span>
+                      {label_(item.label)}
                     </Link>
                   </li>
                 ))}

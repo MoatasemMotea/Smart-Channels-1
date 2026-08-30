@@ -4,6 +4,7 @@ import type { Locale } from "@/types/content";
 import { getNavigation, localize } from "@/lib/content";
 import { Link } from "@/i18n/navigation";
 import { HeaderNav } from "./HeaderNav";
+import { LogoHomeLink } from "./LogoHomeLink";
 import { LocaleSwitch } from "./LocaleSwitch";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { MobileMenu } from "./MobileMenu";
@@ -25,7 +26,7 @@ export async function Header() {
     <header className="site-header">
       <ScrollState />
       <div className="mx-auto flex h-20 max-w-360 items-center gap-4 px-6 xl:gap-6 lg:px-12">
-        <Link href="/" className="flex items-center" aria-label="Smart Channels — Home">
+        <LogoHomeLink ariaLabel="Smart Channels — Home">
           <Image
             src="/brand/logo-dark.png"
             alt="Smart Channels — we take you to the future"
@@ -41,7 +42,7 @@ export async function Header() {
             height={66}
             className="logo-light-mark h-12 w-auto"
           />
-        </Link>
+        </LogoHomeLink>
         <HeaderNav />
       {cta ? (
         <Link

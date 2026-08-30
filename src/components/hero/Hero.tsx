@@ -1,10 +1,9 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Link } from "@/i18n/navigation";
-import { stats } from "@/content/stats";
-import { localize } from "@/lib/content";
 import { HeroBackdropStatic } from "./HeroBackdropStatic";
 import { HeroRiyadh } from "./HeroRiyadh";
+import { HeroTechObjects } from "./HeroTechObjects";
 
 // Statically imported: the opening must hydrate WITH the page — a lazy
 // chunk raced the auto-skip window and cancelled the sequence on
@@ -15,13 +14,13 @@ import { OpeningExperience } from "@/components/opening/OpeningExperience";
  * HERO — reference-locked composition (D-042; D-014/D-015 wording, D-019
  * dark cinematic environment, D-041 Riyadh photographic scene).
  *
- * Layout follows the approved visual target: editorial column on the
- * inline-start (overline → restrained headline → copy → CTAs), the
- * Riyadh skyline and network center/end, the approved Track Record
- * figures as a quiet vertical rail on the inline-end (single-sourced
- * from stats.ts — never duplicated literals, D-002), and the scroll
- * indicator on the bottom edge. No geographic text labels anywhere in
- * the composition — the geography is communicated visually.
+ * Layout (final pre-media directive §2 · D-050): editorial column on
+ * the inline-start (brand-only overline → locked headline → copy →
+ * CTAs), the Riyadh photograph dominant center/end with the small
+ * technology-object layer drifting above it, and the scroll indicator
+ * on the bottom edge. NO statistics, NO project/event references, NO
+ * industry descriptor and NO geographic text labels live in the hero —
+ * those belong to their own homepage sections.
  *
  * Server-rendered content is the STATIC/no-JS baseline; the opening
  * choreography only *stages* its reveal (CSS keyed off
@@ -39,13 +38,15 @@ export async function Hero() {
           D-024 video slot all live inside its art-direction frame. The
           live particle canvas paints above it. */}
       <HeroRiyadh />
-      {/* CSS-only pre-stage: guarantees darkness → readable authoritative
-          logo from the FIRST paint of a pending opening, before any JS —
-          the engine's fixed stage (z-60) takes over above it. Hidden for
-          STATIC (reduced-motion exempt) and once the opening resolves. */}
+      {/* §2.1/§2.2: small drifting technology objects — the hero's only
+          decorative motion layer besides the particle field */}
+      <HeroTechObjects />
+      {/* CSS-only pre-stage (D-050): darkness + a subtle signal pulse
+          from the FIRST paint of a pending opening — never the logo
+          (the logo appears ONCE, after the cinematic motion). The
+          engine's fixed stage (z-60) takes over above it. */}
       <div className="opening-prestage" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element -- preloaded authoritative asset; CSS choreographs it pre-hydration */}
-        <img src="/brand/logo-dark.png" alt="" width={264} height={216} />
+        <span className="prestage-pulse" />
       </div>
       <OpeningExperience />
 
@@ -94,37 +95,18 @@ export async function Hero() {
               {t("ctaProjects")}&nbsp;&nbsp;<span aria-hidden="true">→</span>
             </Link>
             <Link
-              href="/#smart-ai"
+              href="/#contact"
               className="rounded border border-line px-6 py-3.5 text-sm font-semibold text-ink"
             >
-              {t("ctaSmartAi")}
+              {t("ctaContact")}
             </Link>
           </div>
         </div>
 
-        {/* approved Track Record figures — quiet vertical rail on the
-            inline-end (reference composition §5). Reads stats.ts, the
-            single D-002 source; numeric tokens stay bidi-isolated. */}
-        <aside className="hero-stage hero-stats-rail" data-stage="7" aria-label={t("proof")}>
-          {stats.map((s) => (
-            <div key={s.id} className="hero-stat">
-              <p className="hero-stat-value font-display">
-                <bdi dir="ltr">
-                  {s.value}
-                  {s.suffix ?? ""}
-                </bdi>
-              </p>
-              <p className="hero-stat-label">{localize(s.label, locale)}</p>
-            </div>
-          ))}
-        </aside>
-
-        {/* pe-20 keeps the scroll indicator clear of the floating action */}
-        <div className="hero-stage mt-auto flex items-center justify-between pe-20 pt-10" data-stage="8">
-          <p className="microlabel flex items-center gap-3">
-            <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-            {t("proof")}
-          </p>
+        {/* §2: statistics live in the Reach section, not the hero. Only
+            the scroll indicator anchors to the bottom edge (pe-20 keeps
+            it clear of the floating action stack). */}
+        <div className="hero-stage mt-auto flex items-center justify-end pe-20 pt-10" data-stage="7">
           <p className="microlabel hidden items-center gap-3 sm:flex" aria-hidden="true">
             {t("scroll")}
             <span className="hero-scroll-line" />
