@@ -865,6 +865,34 @@ unit 7/7; zero console/hydration errors; live visual inspection EN/AR
 
 ---
 
+## Roadmap resolution after P6 approval (recorded 2026-08-30)
+
+**P6 approved at `a9b439f`.** Owner ruling: minor visual/detail
+refinements are INTENTIONALLY DEFERRED to dedicated refinement rounds —
+the current implementation is the accepted baseline but is NOT
+permanently frozen. P6 is not to be reopened for cosmetics now.
+
+**Phase-numbering audit (owner-directed):** an exhaustive search of the
+repository — all docs, source, tests, and git history — finds **no P7
+and no P8** in any authoritative project documentation. The recorded
+phase skeleton is: P1–P6 (complete), P9 Featured Projects, P10 Gallery,
+P11 Smart AI, P12 partner/client logos (delivered early, D-033), P13
+contact form UI (historical P3-era note), P14 RTL audit, P15
+contrast/legibility audit, P16 motion-contract closure, P17 performance
+audit, P18 final review, P19 handoff & export. If the owner's Master
+Directive defines P7/P8, that definition lives outside the repository
+and must be supplied; otherwise the next implementation phases proceed
+per the dependency-ordered roadmap.
+
+**R-001 — Deferred refinement register (owner-mandated).** To be
+revisited in dedicated polish rounds, explicitly NOT current blockers:
+typography sizing/spacing · Arabic typography polish · animation timing
+· transition intensity · Hero details · carousel details · lighting/
+glow balance · section spacing · mobile composition · micro-interactions
+· visual consistency.
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
