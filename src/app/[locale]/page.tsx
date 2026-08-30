@@ -3,7 +3,7 @@ import type { Locale } from "@/types/content";
 import { Hero } from "@/components/hero/Hero";
 import { NetworkScene } from "@/components/network/NetworkScene";
 import { AboutScene } from "@/components/home/AboutScene";
-import { SolutionsIndex } from "@/components/home/SolutionsIndex";
+import { SolutionsShowcase } from "@/components/home/SolutionsShowcase";
 import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
 import { ProductsTeaser } from "@/components/home/ProductsStage";
 import { SelectedProjects } from "@/components/home/SelectedProjects";
@@ -45,17 +45,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <NetworkScene />
 
-      {/* Solutions — technical ecosystem index (Q-P5-2a) */}
+      {/* Solutions — cinematic media showcase (D-050 Solutions
+          integration): the reach/evidence system resolves into tangible
+          technology media, then hands off toward the Products stage */}
       <MotionSection
         id="solutions"
         reveal="trace"
-        className="border-b border-line"
+        className="solutions-scene border-b border-line"
         aria-label={t("solutions")}
         data-scene="solutions"
       >
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
           <SectionHeading>{t("solutions")}</SectionHeading>
-          <SolutionsIndex />
+          <SolutionsShowcase />
         </div>
       </MotionSection>
 

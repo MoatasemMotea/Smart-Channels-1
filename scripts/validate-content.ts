@@ -90,6 +90,35 @@ for (const f of solutionFamilies) {
     if (!partnerIds.has(v)) errors.push(`solution ${f.id}: unknown vendorId "${v}"`);
   }
 }
+
+/* ---- D-050 Solutions media: locked MAPPING.md associations ---------- */
+const SOLUTION_MEDIA_MAPPING: Record<string, string> = {
+  "infrastructure-data-centre": "/media/solutions/01-infrastructure-data-centre-web.mp4",
+  "networking-connectivity": "/media/solutions/02-networking-connectivity-web.mp4",
+  "security-solutions": "/media/solutions/03-security-technology-solutions-web.mp4",
+  "biometrics-access-control": "/media/solutions/04-biometrics-access-control-web.mp4",
+  "audio-visual-solutions": "/media/solutions/05-audio-visual-solutions-web.mp4",
+  "unified-communications-smart-buildings":
+    "/media/solutions/06-unified-communications-smart-buildings-web.mp4",
+  "video-surveillance-ai": "/media/solutions/07-video-surveillance-ai-solutions-web.mp4",
+};
+for (const f of solutionFamilies) {
+  const expected = SOLUTION_MEDIA_MAPPING[f.slug];
+  if (!f.media) {
+    errors.push(`solution ${f.id}: missing owner-approved media record (D-050)`);
+    continue;
+  }
+  if (expected && f.media.video !== expected)
+    errors.push(`solution ${f.id}: media mapping violates MAPPING.md (got ${f.media.video})`);
+  if (f.media.video.startsWith("/media-source") || f.media.poster.startsWith("/media-source"))
+    errors.push(`solution ${f.id}: media must never be served from media-source/`);
+  checkPath(f.media.video, `solution ${f.id} video`, f.media.published);
+  checkPath(f.media.poster, `solution ${f.id} poster`, f.media.published);
+  const portrait = f.media.height > f.media.width;
+  if ((f.media.orientation === "portrait") !== portrait)
+    errors.push(`solution ${f.id}: orientation "${f.media.orientation}" contradicts ${f.media.width}×${f.media.height}`);
+  checkAr(f.media.alt, `solution ${f.id} media alt`);
+}
 for (const g of galleryItems) {
   if (!categoryIds.has(g.category)) errors.push(`gallery ${g.id}: unknown category "${g.category}"`);
   if (g.projectId && !projectIds.has(g.projectId))

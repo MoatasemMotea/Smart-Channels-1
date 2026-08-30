@@ -63,6 +63,28 @@ export interface SubSolution {
   items?: LocalizedText[];
 }
 
+/**
+ * Owner-approved Solution media record (D-050 Solutions integration ·
+ * §13). One structured record serves BOTH the homepage showcase and the
+ * detail-page moment. Paths point at PUBLIC delivery assets only —
+ * never media-source/. Replacing media later = edit this record.
+ */
+export interface SolutionMedia {
+  /** Public delivery video under /media/solutions/. */
+  video: string;
+  /** Reviewed meaningful-frame poster (STATIC/reduced-motion visual). */
+  poster: string;
+  orientation: "landscape" | "portrait";
+  width: number;
+  height: number;
+  /** object-position focal point for cover crops (landscape). */
+  focus?: { desktop?: string; mobile?: string };
+  /** Factual description of the footage (accessibility). */
+  alt: LocalizedText;
+  /** A-004 pattern: false = excluded from ALL public rendering. */
+  published: boolean;
+}
+
 export interface SolutionFamily {
   id: string;
   slug: string;
@@ -72,8 +94,8 @@ export interface SolutionFamily {
   subSolutions: SubSolution[];
   /** Only vendors the approved profile explicitly associates (Amendment 2). */
   relatedVendorIds?: string[];
-  /** D-050 §9 media-ready slot: owner-approved family visual (optional). */
-  media?: MediaRef;
+  /** D-050 owner-approved family film (see SolutionMedia). */
+  media?: SolutionMedia;
   order: number;
 }
 

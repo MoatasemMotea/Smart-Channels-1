@@ -1128,6 +1128,73 @@ iframe created on demand with no CSP refusal; live API checks
 
 ---
 
+## Solutions cinematic media integration (recorded 2026-08-30)
+
+**D-051 — Owner-approved Solutions media integrated** (first media
+population round; owner directive after the 7/7 asset audit).
+
+**Assets.** Sources archived untouched at media-source/video/solutions/
+(byte-identical, SHA-256 manifest in MAPPING.md — the binding
+file→family mapping, unchanged). Public delivery under
+public/media/solutions/: files 02/04/06/07 are byte-copies (already
+web-weight, faststart, no recompression); 01 (was 4K ≈22 Mbps + audio)
+and 05/03 (portrait 2160w) received lighter H.264 serving derivatives
+(1080-class, CRF-based, audio stripped, faststart) — 01: 26→2.8 MB,
+03: 18→3.1 MB, 05: 21→3.9 MB. Seven reviewed posters (meaningful
+frames chosen from 4-frame contact sheets, never blind frame-0) under
+public/media/solutions/posters/. All seven delivery files pass a full
+ffmpeg decode.
+
+**Data (§13).** SolutionMedia record on solutionFamilies[].media:
+video/poster/orientation/dimensions/per-viewport focus/localized
+alt/published — one record drives homepage AND detail page; validation
+enforces the locked mapping, public-only paths, orientation
+consistency and file existence; unit invariant asserts the exact
+seven-way mapping.
+
+**Homepage.** SolutionsIndex replaced by SolutionsShowcase: a
+structured index (numbers/rails/inline expansion; horizontal chips on
+mobile) driving one large cinematic stage. Manual activation only
+(click/tap/keyboard; active ≠ color-alone); scroll contributes only a
+subtle FULL-tier depth shift — no scroll-jacking, no trapping. One
+motion language: directional mask wipe (landscape), rising masked
+frame over same-media blurred atmosphere (portrait §10 — never
+stretched/cropped-away/mirrored), shared light sweep; LITE =
+crossfade; STATIC = posters only, zero video elements. Playback
+lifecycle (§7): poster-first, only the ACTIVE video ever mounts and
+only once the section is near (IO rootMargin 30%); offscreen and
+hidden-tab pause with clean resume; outgoing layer unmounts after the
+transition. Measured: initial /en = 0 solutions bytes; approaching the
+section loads exactly active poster + active video. Landscape records
+carry per-viewport object-position focus. Active Solution persists
+across locale/theme switches (sessionStorage mirror).
+
+**Detail pages (§12).** Each family opens its body with a
+SolutionCinematicMoment (same record, IO-managed playback, portrait
+treatment preserved) between the chapter hero and the approved
+summary; no content invented, no extra sections forced.
+
+**Verification.** typecheck/lint/validate/unit (8/8) clean; repo
+Playwright 80/80 incl. a new solutions-media spec (mapping, delivery
++ poster availability, media-source privacy, no eager loading,
+active-only mounting, portrait treatment, detail media); behavior
+matrix green (per-solution mapping ×7, keyboard, offscreen
+pause/resume, theme switch continuity, AR continuity + no mirroring,
+mobile 16:9 vs 4:5 stages, STATIC posters, boundary shots, zoom/width
+sweep, console clean). NOTE: the sandbox's Chromium lacks an H.264
+decoder, so rendered playback was verified as (a) full ffmpeg decode
+of all seven delivery files + (b) element/lifecycle assertions via
+stubs; H.264 MP4 plays in all production browsers.
+
+**Owner-flagged media observations (no action taken):** file 03
+contains legible in-footage third-party text ("RETRO SCI-FI
+SCREENSAVER … BY ANDY FIELDING"); file 06 is monochrome amid a color
+set; files 04/07 contain recognizable people (owner-supplied footage —
+usage rights assumed owner-cleared); loop seams vary (8.4–30 s
+sources). See the round report.
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

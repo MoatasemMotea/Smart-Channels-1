@@ -43,6 +43,17 @@ export const solutionFamilies: SolutionFamily[] = [
         ],
       },
     ],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 01) */
+    media: {
+      video: "/media/solutions/01-infrastructure-data-centre-web.mp4",
+      poster: "/media/solutions/posters/01-infrastructure-data-centre.jpg",
+      orientation: "landscape" as const,
+      width: 1920,
+      height: 1080,
+      focus: { desktop: "42% 45%", mobile: "40% 45%" },
+      alt: { en: "Data-centre server racks with active drive bays in low blue light", ar: "خزائن خوادم في مركز بيانات بإضاءة زرقاء خافتة" },
+      published: true,
+    },
     order: 1,
   },
   {
@@ -86,6 +97,17 @@ export const solutionFamilies: SolutionFamily[] = [
         ],
       },
     ],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 02) */
+    media: {
+      video: "/media/solutions/02-networking-connectivity-web.mp4",
+      poster: "/media/solutions/posters/02-networking-connectivity.jpg",
+      orientation: "landscape" as const,
+      width: 1920,
+      height: 1080,
+      focus: { desktop: "50% 45%", mobile: "50% 45%" },
+      alt: { en: "Dark terrain-mapping and network-analytics motion graphic", ar: "رسوم متحركة داكنة لخرائط طبوغرافية وتحليلات شبكية" },
+      published: true,
+    },
     order: 2,
   },
   {
@@ -122,6 +144,16 @@ export const solutionFamilies: SolutionFamily[] = [
         ],
       },
     ],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 03, portrait) */
+    media: {
+      video: "/media/solutions/03-security-technology-solutions-web.mp4",
+      poster: "/media/solutions/posters/03-security-technology-solutions.jpg",
+      orientation: "portrait" as const,
+      width: 1080,
+      height: 1920,
+      alt: { en: "Security operations screens with live monitoring readouts in a dark control room", ar: "شاشات عمليات أمنية بقراءات مراقبة حية في غرفة تحكم داكنة" },
+      published: true,
+    },
     order: 3,
   },
   {
@@ -138,6 +170,17 @@ export const solutionFamilies: SolutionFamily[] = [
       { id: "turnstiles-barriers", name: { en: "Turnstiles & Barriers", ar: "البوابات والحواجز" }, items: [{ en: "Turnstiles, vehicle barriers, road blockers and perimeter control solutions for secure entry and restricted areas." }] },
       { id: "time-attendance", name: { en: "Time & Attendance", ar: "الوقت والحضور" }, items: [{ en: "Integrated time and attendance solutions that help organizations manage employee working hours, attendance and access records." }] },
     ],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 04) */
+    media: {
+      video: "/media/solutions/04-biometrics-access-control-web.mp4",
+      poster: "/media/solutions/posters/04-biometrics-access-control.jpg",
+      orientation: "landscape" as const,
+      width: 1920,
+      height: 1080,
+      focus: { desktop: "45% 55%", mobile: "40% 55%" },
+      alt: { en: "Commuters passing through electronic access-control gates", ar: "أشخاص يعبرون بوابات تحكم دخول إلكترونية" },
+      published: true,
+    },
     order: 4,
   },
   {
@@ -153,6 +196,16 @@ export const solutionFamilies: SolutionFamily[] = [
       { id: "video-conferencing", name: { en: "Video Conferencing & Collaboration", ar: "الاجتماعات المرئية والتعاون" }, items: [{ en: "Professional video conferencing and collaboration solutions for meeting rooms, boardrooms, classrooms and distributed teams." }] },
       { id: "digital-signage", name: { en: "Digital Signage & Video Walls", ar: "اللوحات الرقمية وجدران الفيديو" }, items: [{ en: "Digital signage, video walls, commercial displays and content solutions designed for communication, engagement and information delivery." }] },
     ],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 05, portrait) */
+    media: {
+      video: "/media/solutions/05-audio-visual-solutions-web.mp4",
+      poster: "/media/solutions/posters/05-audio-visual-solutions.jpg",
+      orientation: "portrait" as const,
+      width: 1080,
+      height: 1920,
+      alt: { en: "Close-up of a laptop running professional audio-mixing software", ar: "لقطة قريبة لحاسوب محمول يشغّل برنامج مزج صوتي احترافي" },
+      published: true,
+    },
     order: 5,
   },
   {
@@ -186,6 +239,17 @@ export const solutionFamilies: SolutionFamily[] = [
     // Profile p.18 explicitly associates these PBX vendors; only ids that
     // exist in the approved p.28 alliances list are referenced here.
     relatedVendorIds: ["cisco", "panasonic", "grandstream"],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 06) */
+    media: {
+      video: "/media/solutions/06-unified-communications-smart-buildings-web.mp4",
+      poster: "/media/solutions/posters/06-unified-communications-smart-buildings.jpg",
+      orientation: "landscape" as const,
+      width: 1920,
+      height: 1080,
+      focus: { desktop: "50% 42%", mobile: "50% 42%" },
+      alt: { en: "Stereographic monochrome view of high-rise buildings curving around a glass dome", ar: "منظر بانورامي أحادي اللون لأبراج شاهقة تلتف حول قبة زجاجية" },
+      published: true,
+    },
     order: 6,
   },
   {
@@ -205,6 +269,17 @@ export const solutionFamilies: SolutionFamily[] = [
     ],
     // Profile p.19: "Technology from leading global brands".
     relatedVendorIds: ["dallmeier", "hikvision", "dahua", "hanwha", "bosch"],
+    /* D-050 Solutions integration — owner-approved film (MAPPING.md 07) */
+    media: {
+      video: "/media/solutions/07-video-surveillance-ai-solutions-web.mp4",
+      poster: "/media/solutions/posters/07-video-surveillance-ai-solutions.jpg",
+      orientation: "landscape" as const,
+      width: 1920,
+      height: 1080,
+      focus: { desktop: "50% 38%", mobile: "50% 38%" },
+      alt: { en: "Operators monitoring a large video-surveillance wall in a control room", ar: "مشغّلون يراقبون جدار شاشات مراقبة في غرفة تحكم" },
+      published: true,
+    },
     order: 7,
   },
 ];

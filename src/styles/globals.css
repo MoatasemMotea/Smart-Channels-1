@@ -1397,53 +1397,335 @@ html[data-opening="running"] .floating-de {
   clip-path: inset(0);
 }
 
-/* SOLUTIONS (Q-P5-2): ecosystem index — the list is the interface. */
-.solutions-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  width: 100%;
-  padding-block: 0.95rem;
-  border-bottom: 1px solid var(--line);
-  text-align: start;
-  color: var(--ink-muted);
-}
-.solutions-item[data-current] {
-  color: var(--ink);
-}
-.solutions-rail {
-  inline-size: 26px;
-  block-size: 2px;
-  background: var(--line);
-  transition:
-    background-color var(--dur-control) var(--ease-engineered),
-    inline-size var(--dur-control) var(--ease-cinematic);
-}
-.solutions-item[data-current] .solutions-rail {
-  inline-size: 44px;
-  background: var(--accent);
-}
-.solutions-divider {
-  background: var(--line);
-}
-.solutions-preview {
-  position: relative;
-  padding-block: 0.95rem;
-}
-.solutions-preview-body {
-  animation: solutions-preview-in 380ms var(--ease-engineered) both;
-}
-@keyframes solutions-preview-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
-}
+/* ------------------------------------------------------------------ */
+/* SOLUTIONS — cinematic media showcase (D-050 Solutions integration). */
+/* Index + large media stage as ONE system; owner films data-driven.  */
+/* ------------------------------------------------------------------ */
 .solutions-tick {
   inline-size: 14px;
   block-size: 1px;
   background: var(--accent);
   flex: none;
   transform: translateY(-3px);
+}
+.solutions-showcase {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 64rem) {
+  .solutions-showcase {
+    grid-template-columns: 5fr 7fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+}
+/* --- index --------------------------------------------------------- */
+.ss-index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ss-item {
+  border-bottom: 1px solid var(--line);
+}
+.ss-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  inline-size: 100%;
+  padding-block: 0.85rem;
+  text-align: start;
+  color: var(--ink-muted);
+}
+.ss-item[data-current] .ss-item-btn {
+  color: var(--ink);
+}
+.ss-item-no {
+  min-inline-size: 2ch;
+  color: var(--ink-muted);
+}
+.ss-item[data-current] .ss-item-no {
+  color: var(--accent);
+}
+.ss-item-rail {
+  inline-size: 18px;
+  block-size: 2px;
+  flex: none;
+  background: var(--line);
+  transition:
+    background-color var(--dur-control) var(--ease-engineered),
+    inline-size var(--dur-control) var(--ease-cinematic);
+}
+.ss-item[data-current] .ss-item-rail {
+  inline-size: 36px;
+  background: var(--accent);
+}
+.ss-item-name {
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+[dir="rtl"] .ss-item-name {
+  line-height: 1.6;
+}
+/* the active entry expands in place (desktop) */
+.ss-item-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms var(--ease-cinematic);
+}
+.ss-item[data-current] .ss-item-expand {
+  grid-template-rows: 1fr;
+}
+.ss-item-expand > .ss-details {
+  overflow: hidden;
+}
+.ss-item[data-current] .ss-item-expand > .ss-details {
+  padding-block: 0.35rem 1.3rem;
+  padding-inline-start: calc(2ch + 0.9rem);
+}
+html[data-motion-tier="static"] .ss-item-expand {
+  transition: none;
+}
+/* --- stage --------------------------------------------------------- */
+.ss-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #08090c;
+  aspect-ratio: 16 / 10;
+  min-block-size: 300px;
+}
+@media (max-width: 63.99rem) {
+  .ss-stage {
+    aspect-ratio: 16 / 9;
+    min-block-size: 0;
+  }
+  /* §17: portrait media takes advantage of the narrower viewport */
+  .ss-stage[data-orientation="portrait"] {
+    aspect-ratio: 4 / 5;
+  }
+}
+.ss-layer {
+  position: absolute;
+  inset: 0;
+}
+/* FULL: subtle scroll depth (never authoritative over scrolling, §5) */
+html[data-motion-tier="full"] .ss-layer .ss-cover,
+html[data-motion-tier="full"] .ss-layer .ss-portrait-frame,
+html[data-motion-tier="full"] .ss-layer .ss-depth {
+  transform: translateY(var(--ss-shift, 0px));
+  transition: transform 80ms linear;
+}
+.ss-cover {
+  position: absolute;
+  inset: -16px; /* breathing room for the depth shift */
+}
+.ss-cover video,
+.ss-cover img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--ss-focus, 50% 50%);
+}
+@media (max-width: 63.99rem) {
+  .ss-cover video,
+  .ss-cover img {
+    object-position: var(--ss-focus-m, 50% 50%);
+  }
+}
+/* §10 — portrait art direction: masked portrait frame over a blurred
+   SAME-MEDIA atmosphere. Never stretched, never mirrored. */
+.ss-depth {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) brightness(0.5) saturate(0.9);
+  transform: scale(1.12);
+}
+.ss-portrait-frame {
+  position: absolute;
+  top: 6%;
+  block-size: 88%;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  margin-inline: auto;
+  /* width derives from the 9:16 ratio — the portrait is NEVER
+     stretched wide; the same-media atmosphere carries the stage */
+  aspect-ratio: 9 / 16;
+  inline-size: auto;
+  max-inline-size: 92%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+}
+.ss-portrait-frame video,
+.ss-portrait-frame img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* theme-aware grade: keeps the ghost index and edges legible without
+   recoloring the source video */
+.ss-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(6, 7, 10, 0.18) 0%, transparent 30%),
+    linear-gradient(0deg, rgba(6, 7, 10, 0.35) 0%, transparent 38%);
+}
+.ss-ghost {
+  position: absolute;
+  inset-inline-end: 1.1rem;
+  bottom: 0.4rem;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.28);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5);
+}
+/* --- one motion language: layered transitions ---------------------- */
+/* landscape: directional mask wipe; portrait: frame rises while the
+   atmosphere crossfades; shared light sweep. LITE = crossfade only. */
+html[data-motion-tier="full"] .ss-layer[data-state="current"][data-orientation="landscape"] {
+  animation: ss-wipe-fwd 700ms var(--ease-cinematic) both;
+}
+html[data-motion-tier="full"] .ss-layer[data-state="current"][data-orientation="landscape"][data-dir="back"] {
+  animation-name: ss-wipe-back;
+}
+html[data-motion-tier="full"] .ss-layer[data-state="current"][data-orientation="portrait"] {
+  animation: ss-fade 600ms var(--ease-cinematic) both;
+}
+html[data-motion-tier="full"] .ss-layer[data-state="current"][data-orientation="portrait"] .ss-portrait-frame {
+  animation: ss-frame-rise 700ms var(--ease-cinematic) both;
+}
+html[data-motion-tier="full"] .ss-layer[data-state="prev"] {
+  animation: ss-recede 700ms var(--ease-cinematic) both;
+}
+html[data-motion-tier="lite"] .ss-layer[data-state="current"] {
+  animation: ss-fade 450ms var(--ease-engineered) both;
+}
+@keyframes ss-wipe-fwd {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes ss-wipe-back {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes ss-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ss-frame-rise {
+  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes ss-recede {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.985); }
+}
+html[data-motion-tier="full"] .ss-sweep {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 34%;
+  inset-inline-start: -40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.1), transparent);
+  animation: ss-sweep 900ms var(--ease-cinematic) 120ms both;
+  pointer-events: none;
+}
+@keyframes ss-sweep {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(400%); opacity: 0; }
+}
+[dir="rtl"] .ss-sweep {
+  animation-name: ss-sweep-rtl;
+}
+@keyframes ss-sweep-rtl {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-400%); opacity: 0; }
+}
+/* --- details / responsive ------------------------------------------ */
+.ss-details-mobile {
+  display: none;
+}
+@media (max-width: 63.99rem) {
+  /* §17 mobile hierarchy: identity chips → media → explanation → action */
+  .ss-index {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-block-end: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ss-item {
+    border-bottom: 0;
+    flex: none;
+  }
+  .ss-item-btn {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    gap: 0.5rem;
+  }
+  .ss-item[data-current] .ss-item-btn {
+    border-color: var(--accent);
+  }
+  .ss-item-rail {
+    display: none;
+  }
+  .ss-item-name {
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+  .ss-item-expand {
+    display: none;
+  }
+  .ss-details-mobile {
+    display: block;
+  }
+}
+/* §18 boundary: Solutions resolves toward the dark Products stage */
+.solutions-scene {
+  position: relative;
+}
+.solutions-scene::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  block-size: 90px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(10, 10, 12, 0.16));
+}
+/* --- detail-page cinematic moment (§12) ---------------------------- */
+.solution-moment {
+  position: relative;
+  overflow: hidden;
+  background: #08090c;
+  aspect-ratio: 21 / 9;
+  min-block-size: 320px;
+  max-block-size: 70svh;
+}
+.solution-moment[data-orientation="portrait"] {
+  aspect-ratio: auto;
+  block-size: min(78svh, 700px);
+}
+.solution-moment .ss-cover {
+  inset: 0;
+}
+@media (max-width: 47.99rem) {
+  .solution-moment {
+    aspect-ratio: 16 / 9;
+    min-block-size: 0;
+  }
+  .solution-moment[data-orientation="portrait"] {
+    block-size: min(70svh, 560px);
+  }
 }
 
 /* INDUSTRIES (Q-P5-3): structural matrix — typography + rules only. */

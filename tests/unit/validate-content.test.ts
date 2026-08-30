@@ -34,6 +34,28 @@ describe("approved business data invariants", () => {
     expect(getFeaturedIndustries().length).toBeGreaterThanOrEqual(6);
   });
 
+  it("carries the exact owner Solutions media mapping (D-050 MAPPING.md)", () => {
+    const mapping = Object.fromEntries(
+      solutionFamilies.map((f) => [f.slug, f.media?.video]),
+    );
+    expect(mapping).toEqual({
+      "infrastructure-data-centre": "/media/solutions/01-infrastructure-data-centre-web.mp4",
+      "networking-connectivity": "/media/solutions/02-networking-connectivity-web.mp4",
+      "security-solutions": "/media/solutions/03-security-technology-solutions-web.mp4",
+      "biometrics-access-control": "/media/solutions/04-biometrics-access-control-web.mp4",
+      "audio-visual-solutions": "/media/solutions/05-audio-visual-solutions-web.mp4",
+      "unified-communications-smart-buildings":
+        "/media/solutions/06-unified-communications-smart-buildings-web.mp4",
+      "video-surveillance-ai": "/media/solutions/07-video-surveillance-ai-solutions-web.mp4",
+    });
+    for (const f of solutionFamilies) {
+      expect(f.media?.published).toBe(true);
+      expect(f.media?.poster).toMatch(/^\/media\/solutions\/posters\//);
+      // portrait sources stay portrait — never forced to 16:9 (§10)
+      expect(f.media!.orientation === "portrait").toBe(f.media!.height > f.media!.width);
+    }
+  });
+
   it("features exactly the owner's D-050 §12 Selected Projects (supersedes D-044)", () => {
     const featured = projects.filter((p) => p.featured).map((p) => p.id).sort();
     expect(featured).toEqual([

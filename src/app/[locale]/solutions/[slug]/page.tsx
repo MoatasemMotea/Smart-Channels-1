@@ -7,6 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { PageHero } from "@/components/page/PageHero";
+import { SolutionCinematicMoment } from "@/components/solutions/SolutionCinematicMoment";
 import { Link } from "@/i18n/navigation";
 
 export function generateStaticParams() {
@@ -66,6 +67,14 @@ export default async function SolutionFamilyPage({
         title={localize(family.name, locale)}
         lede={localize(family.tagline, locale)}
       />
+
+      {/* D-050 §12: the family's owner-approved film opens the chapter
+          body — deeper than the homepage preview, same data record */}
+      {family.media?.published ? (
+        <MotionSection reveal="mask" className="border-b border-line" aria-label={localize(family.media.alt, locale)}>
+          <SolutionCinematicMoment media={family.media} />
+        </MotionSection>
+      ) : null}
 
       <MotionSection reveal="mask" className="border-b border-line" aria-label={localize(family.name, locale)}>
         <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
