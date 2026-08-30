@@ -49,6 +49,16 @@ af803aeb9c7d5e6f6106e6497c915be5863d30ce2d359a3a08f78ca2bf3561c1  07-video-surve
 | 06 unified-comms | H.264 | 1920×1080 (16:9) | 30 | 17.5 s | ≈3.5 Mbps | none |
 | 07 surveillance-ai | H.264 | 1920×1080 (16:9) | 25 | 10.2 s | ≈4.9 Mbps | none |
 
+## Required pre-launch replacement (owner decision 2026-08-30 · O-020)
+
+> Replace Security Technology Solutions video 03 before final launch
+> because visible third-party text appears inside the footage.
+
+The current file 03 stays temporarily and UNMODIFIED (no blur, crop or
+regeneration); the owner supplies a clean approved replacement in the
+final media/refinement round. The 03 → security-solutions mapping is
+unchanged.
+
 ## Flags for the owner (no action taken — D-050 honesty)
 
 - **Bitrate/size:** files 01 (4K @ ≈22 Mbps, 26 MB) and 05 (portrait @
