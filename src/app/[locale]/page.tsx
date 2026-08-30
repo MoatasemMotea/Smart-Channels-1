@@ -9,7 +9,7 @@ import { ProductsTeaser } from "@/components/home/ProductsStage";
 import { SelectedProjects } from "@/components/home/SelectedProjects";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
-import { FinalCta } from "@/components/home/FinalCta";
+import { LetsTalk } from "@/components/home/LetsTalk";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { HashArrival } from "@/components/motion/HashArrival";
@@ -83,7 +83,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <ClientsField locale={locale} />
 
-      <FinalCta locale={locale} />
+      <LetsTalk />
     </>
   );
 }

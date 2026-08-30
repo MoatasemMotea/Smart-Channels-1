@@ -2839,10 +2839,9 @@ html[data-motion-tier="full"] .smartai-status-dot { animation: origin-core 3s ea
 }
 
 /* ------------------------------------------------------------------ */
-/* P13 · D-047 — enquiry form (explicit non-production integration).   */
+/* D-050 §§24–27 — Let's Talk lead form (real local backend).          */
 /* ------------------------------------------------------------------ */
 .contact-form { max-width: 52rem; }
-.contact-form .smartai-status { margin-bottom: 1.75rem; }
 .form-grid {
   display: grid;
   gap: 1.4rem 2rem;
@@ -2868,6 +2867,92 @@ textarea.form-input { resize: vertical; }
 .form-input[aria-invalid="true"] { border-color: var(--accent); }
 .form-error { font-size: 0.8125rem; color: var(--accent); }
 select.form-input { appearance: auto; }
+/* honeypot — removed from every human modality, present in the DOM */
+.lead-hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.lead-consent {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.lead-consent input {
+  margin-top: 0.4rem;
+  inline-size: 1.05rem;
+  block-size: 1.05rem;
+  accent-color: var(--brand-magenta);
+  flex-shrink: 0;
+}
+.lead-success {
+  max-width: 52rem;
+  border: 1px solid rgba(255, 24, 156, 0.4);
+  border-radius: 10px;
+  padding: 2rem 2.2rem;
+  background: rgba(255, 24, 156, 0.05);
+}
+.lead-fail {
+  margin-bottom: 1.6rem;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--brand-magenta);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+.lets-talk-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+.lets-talk-info dd {
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+/* §27 — click-to-load Google map: nothing external until asked for */
+.location-map {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.location-map iframe {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 4 / 3;
+  border: 0;
+}
+.location-map-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  padding: 1.5rem;
+  text-align: center;
+  border-style: dashed;
+}
+.location-map-load {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  transition: background-color var(--dur-control) var(--ease-engineered), color var(--dur-control) var(--ease-engineered);
+}
+.location-map-load:hover,
+.location-map-load:focus-visible {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.location-map-pin { font-size: 1.1rem; }
 
 /* ------------------------------------------------------------------ */
 /* Products catalogue (D-048) — media-ready cards, designed motif      */

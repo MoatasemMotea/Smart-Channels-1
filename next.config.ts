@@ -23,9 +23,14 @@ const isDev = process.env.NODE_ENV === "development";
  *     WHY: React style attributes and Next's inline critical CSS.
  *     Scope: STYLE only. Low risk with no user-generated content.
  * - img/media/font-src 'self' (+ data: for inline SVG placeholders/favicons)
- * - connect-src 'self'        : no external calls exist; any future
+ * - connect-src 'self'        : the lead API is same-origin; any future
  *     analytics/AI/form provider requires an explicit CSP amendment +
  *     decision-log entry.
+ * - frame-src https://www.google.com
+ *     WHY (D-050 §27): the owner-directed location map embeds Google
+ *     Maps — and ONLY after the visitor explicitly clicks to load it
+ *     (LocationMap.tsx). Keyless query embed on the approved address;
+ *     no other frames are permitted.
  * - frame-ancestors 'none', object-src 'none', base-uri 'self',
  *   form-action 'self'.
  *
@@ -40,6 +45,7 @@ const csp = [
   "media-src 'self'",
   "font-src 'self'",
   `connect-src 'self'${isDev ? " ws:" : ""}`,
+  "frame-src https://www.google.com",
   "manifest-src 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",

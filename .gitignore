@@ -19,3 +19,6 @@ next-env.d.ts
 .env
 .env.local
 .env.*.local
+
+# local lead store (D-050) — never committed
+.data/
