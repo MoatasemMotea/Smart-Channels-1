@@ -987,6 +987,147 @@ for media population.
 
 ---
 
+## Final pre-media experience, architecture & lead system (recorded 2026-08-30)
+
+**D-050 — Owner's final pre-media directive** (56 sections,
+implemented as one twelve-phase round on baseline `9b88f69`).
+
+**Opening (§1):** resequenced — cinematic particle motion first,
+convergence, the approved logo appears ONCE (readable hold), seamless
+hero release. The separate wordmark caption and the geographic HQ
+label are removed (identity = the logo asset alone); the CSS prestage
+is a signal pulse, never the logo; replay on true refresh only
+(unchanged bootstrap rule).
+
+**Hero (§2):** Riyadh photograph stays dominant. Removed: the F1
+proof line, the "Systems Integration" descriptor, the stats rail and
+all geographic labels. Brand-only overline; secondary CTA leads to
+Let's Talk. New multi-depth technology-object layer: 7 desktop / 4
+mobile programmatic line-art motifs (CCTV, processor, access point,
+rack, sensor, switch, fiber node) at 2–4% hero width with slow
+orbital drift; every slot is media-ready for owner assets
+(src/content/hero-objects.ts).
+
+**Header (§3/§5):** the logo always returns to the homepage top (on
+the homepage it smooth-scrolls to the hero and clears the hash).
+Final IA: Home · About Us(#about) · Solutions(#solutions) · Products
+(/products) · Industries(#industries) · Projects(/projects) ·
+Gallery(#gallery) · Technology Alliances(#partners) · Our
+Clients(#clients) · Let's Talk CTA(#contact). No Contact item, no
+Smart AI item. HashArrival gives deep links and cross-route hash
+navigations the cinematic section arrival, deferred past a running
+opening; inner-route aliases still light their nav items.
+
+**Homepage journey (§4):** Opening → Hero → About → Reach → Solutions
+→ Products preview → Industries → Selected Projects → Gallery →
+Alliances → Clients → Let's Talk → Footer. Smart AI is gone as a
+section (§14; /smart-ai redirects home, locale preserved).
+
+**Reach (§8):** the visible "Track Record" heading is removed (the
+approved figures remain, single-sourced); Qatar and UAE reach points
+disabled — Saudi cities + Riyadh + Bahrain only.
+
+**Media-ready (§7/§9/§41):** About declares a company-film slot
+(aboutMedia — photograph remains poster/fallback); SolutionFamily
+gains an optional media field; hero objects, project moments, product
+slots and detail routes all upgrade by data alone.
+
+**Products preview (§10):** the homepage teaser is a fixed FOUR-slot
+featured stage reading getFeaturedProducts(); reserved engineered
+frames until the owner supplies the catalogue; "Explore our products"
+doorway.
+
+**D-050/§12 — Selected Projects (supersedes D-044 featured set):**
+owner's final four → grand-mosque-makkah (mapped from "Grand House" —
+closest ledger record; **mapping FLAGGED for owner confirmation**),
+diriyah-season, neom-sports-village, red-sea-film-festival. No new
+records invented. Homepage presents them as cinematic full-width
+numbered moments (alternating anchors, media-ready grounds, "Explore
+Project" doorways) — not a card grid. Detail routes: 4 featured + 6
+deep-evidence venues (10); F1 loses its route under the unchanged
+evidence rule.
+
+**Digital Employee (§§15–22, §34, §50):** "Smart Channels Digital
+Employee" / «الموظف الرقمي لدى القنوات الذكية» — floating
+conversational experience above the icon-only WhatsApp action. While
+no AI provider is selected it runs HONEST GUIDED INTAKE (a
+deterministic scripted assistant): permanent digital-identity
+disclosure (never claims to be human), progressive collection
+(name→company→phone→email→service→message), explicit consent with
+the approved wording, then a REAL lead (source `digital-employee`)
+with transcript + deterministic summary via POST /api/leads — success
+only on the backend's 2xx. EN/AR human-handoff phrases surface the
+approved channels. Conversation persists per browsing session
+(sessionStorage). Typed AIProvider boundary (src/lib/digital-employee)
+requires: server-side-only credentials, a privacy notice before first
+send, no model access to the lead store, conversation input treated
+as untrusted.
+
+**Lead system (§§23–27, §§32–33):** shared Lead domain
+(src/types/lead.ts) for both channels; human-owned status workflow
+NEW→CONTACTED→QUALIFIED→PROPOSAL→WON/LOST (AI never sets status);
+audit trail on every change. Provider-neutral boundaries: LeadStore
+adapter (dev/single-instance JSON file store under gitignored .data/,
+server-only, atomic writes) and a LeadCreated notification boundary
+(server-log observer; real delivery = owner provider decision).
+POST /api/leads: JSON-only, 64KB cap, per-IP fixed-window rate limit,
+full server-side validation/sanitization (control-char strip, length
+bounds, enum whitelists), honeypot, consent required; storage failure
+returns failure. Homepage Let's Talk: real form (Send Message),
+genuine success only on 2xx with reference, honest failure with the
+direct channels; contact info = phone/email/address + click-to-load
+Google map (keyless query embed on the approved address text — no
+invented coordinates; CSP amended narrowly with frame-src
+https://www.google.com); NO WhatsApp number row. /contact →
+locale-preserving redirect to /#contact; the D-047
+compose-your-own-email form is superseded and removed.
+
+**Admin console (§§28–31):** /admin/leads (second root layout outside
+the localized tree; middleware excludes /admin). Real auth:
+ADMIN_PASSWORD env credential (constant-time compare, rate-limited
+login), HMAC-signed httpOnly session cookie (8h); explicit locked
+state while unconfigured — no default credentials, nothing committed.
+Console: statistics from real data, status/source/text filters, lead
+detail (full record, transcript, summary), status workflow + internal
+notes via audited server actions, CSV export (UTF-8 BOM, escaped).
+
+**Floating stack & cursor (§§36–38):** bottom-up WhatsApp → Digital
+Employee → Back-to-Top (revealed after meaningful scroll; instant
+under reduced motion); all hidden during the opening; the DE panel
+overlays the stack while open. Custom cursor: a small magenta/purple
+halo that ACCOMPANIES the native cursor — fine pointers only, off for
+touch/coarse/reduced-motion/STATIC; link state grows the ring; DRAG
+(carousel viewports) and VIEW (gallery cards) states carry localized
+microlabels; text fields keep the pure native caret.
+
+**Carousels (§35):** root-caused RTL defect — translateX(+x) left the
+viewport's left edge uncovered in RTL because the duplicated copies
+extend rightward; fix = translateX(x − w) in RTL. The flow offset now
+survives locale/theme switches via a per-rail sessionStorage mirror
+(no reset, no gap, no stop). Verified: zero edge gap across ar/en ×
+dark/light over sampled flowing time.
+
+**Social (§39):** TikTok added as a fourth disabled record; footer
+renders only owner-supplied URLs (O-016 now covers LinkedIn /
+Instagram / X / TikTok). Sitemap drops redirecting routes; inner-page
+contact CTAs point at /#contact. §40: no welcome audio exists.
+
+**Verification (§§52–53):** typecheck/lint/build clean; unit 7/7
+(featured invariant updated to the owner's four); repo Playwright
+70/70 (routes + §51 redirect assertions, desktop+mobile);
+D-050 matrix 61 checks green (opening single-logo timing, hero
+cleanliness + object counts, header IA + anchor/logo behavior,
+journey ids, reach heading/markers/counters, four product slots,
+four cinematic moments in owner order, Let's Talk consent/validation/
+genuine-success, full Digital Employee guided run incl. handoff and
+cross-route persistence, floating stack, cursor states + touch
+absence, AR parity incl. exact Arabic consent line, light theme,
+mobile/narrow overflow); console-error sweep clean on 12 routes; map
+iframe created on demand with no CSP refusal; live API checks
+(201/422/405/honeypot/429 path, admin auth, BOM CSV, 401s).
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -999,11 +1140,14 @@ for media population.
 | O-006 | Hero-grade media | P2/P5 | No 1080p+ cinematic media exists; D-007 hybrid direction compensates. |
 | O-007 | Arabic Company Profile PDF | None (Q11: EN-only shown) | AR slot exists in data; add when supplied. |
 | O-008 | Which legacy `img/` photos are genuine Smart Channels photography vs. stock | P10 gallery population | Owner confirmation needed per image before Gallery use (D-008: candidates only). |
-| O-009 | Contact form backend (service, routing, privacy) | Deployment/integration planning | Q9/D-010: UI modeled, backend deferred. |
-| O-010 | Smart AI provider, privacy architecture, lead routing | Post-P11 integration | D-009. |
+| O-009 | ~~Contact form backend~~ **RESOLVED by D-050**: the local lead system (POST /api/leads + LeadStore) is the backend; remaining decision is the production persistence/notification provider (see O-017). | — | Closed as originally scoped. |
+| O-010 | Digital Employee AI provider (multilingual service, privacy notice, server-side credentials) | Live conversational mode | D-050 supersedes the Smart AI framing; guided intake ships meanwhile. Provider decision matrix in the D-050 report. |
 | O-011 | Production domain & hosting | P19+/deployment | D-010. |
 | O-012 | Client-identifying imagery permissions (e.g., "SMC vibes" office photo, Al Nassr room) | P10 gallery population | Owner to confirm usage rights per photo. |
 | O-013 | Official light-background logo lockup not supplied | Light-theme brand presentation (P4+ polish) | Light theme currently uses the SC mark cropped from the authoritative asset; no lockup fabricated (D-001). |
 | O-014 | ~~Two p.30 client names not legible~~ **RESOLVED** (updated profile, 2026-08-29): "Saleh Al Rajhi Partners" and "HQWS" recorded with logos (D-033). | — | Closed. |
 | O-015 | Hero AI cinematic video + poster (D-027) not yet generated/approved | Final Hero media | Slot architecture ready; generation brief in the Round 3 report; spec in src/content/hero-media.ts. |
-| O-016 | Official LinkedIn / Instagram / X company URLs | Footer social treatment | Records prepared disabled in src/content/social.ts; enabling is a data edit (D-029). |
+| O-016 | Official LinkedIn / Instagram / X / TikTok company URLs | Footer social treatment | Records prepared disabled in src/content/social.ts; enabling is a data edit (D-029/D-050 §39). |
+| O-017 | Production lead persistence + LeadCreated delivery provider (durable store for serverless/multi-instance; email/Slack/webhook notification) | Production lead operations | D-050: local file store + server-log notifier are the honest dev defaults; adapters ready (LeadStore / LeadNotifier). Owner decision — see the D-050 provider decision matrix. |
+| O-018 | ADMIN_PASSWORD (+ optional ADMIN_SESSION_SECRET) provisioning at deploy time | /admin/leads access | D-050 §28: console renders an explicit locked state until set; no default credentials exist. |
+| O-019 | Confirm "Grand House" → grand-mosque-makkah mapping | Selected Projects correctness | D-050 §12: the owner's list says "Grand House"; the closest ledger record is Grand Mosque — Makkah. Featured on that mapping, FLAGGED for explicit confirmation. |
