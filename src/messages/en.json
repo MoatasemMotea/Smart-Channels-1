@@ -168,5 +168,22 @@
     "placeholder": "Your project, in a few sentences",
     "sendSoon": "Send to Smart AI — coming soon",
     "continue": "Continue with our team"
+  },
+  "form": {
+    "title": "Send us an enquiry",
+    "status": "Direct online submission is not yet active — your message is composed in your own email or WhatsApp app and sent from there.",
+    "name": "Full name",
+    "organization": "Organisation",
+    "email": "Email address",
+    "phone": "Phone number",
+    "topic": "Topic",
+    "topicGeneral": "General enquiry",
+    "message": "Your message",
+    "optional": "optional",
+    "errRequired": "This field is required",
+    "errEmail": "Enter a valid email address",
+    "sendEmail": "Review & send by email",
+    "sendWhatsapp": "Send via WhatsApp",
+    "subjectPrefix": "Website enquiry"
   }
 }

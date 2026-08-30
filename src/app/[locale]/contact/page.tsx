@@ -5,6 +5,7 @@ import { getContact, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { PageHero } from "@/components/page/PageHero";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export async function generateMetadata({
   params,
@@ -93,6 +94,15 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               </div>
             ) : null}
           </dl>
+        </div>
+      </MotionSection>
+
+      {/* P13 · D-047: the enquiry form — explicit non-production state,
+          composes into the visitor's own email/WhatsApp app */}
+      <MotionSection reveal="rise" aria-label={t("form.title")}>
+        <div className="mx-auto max-w-360 px-6 pb-24 lg:px-12">
+          <p className="microlabel mb-8 text-accent">{t("form.title")}</p>
+          <ContactForm />
         </div>
       </MotionSection>
     </>

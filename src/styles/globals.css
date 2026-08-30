@@ -2698,6 +2698,37 @@ html[data-motion-tier="full"] .smartai-status-dot { animation: origin-core 3s ea
   opacity: 0.65;
 }
 
+/* ------------------------------------------------------------------ */
+/* P13 · D-047 — enquiry form (explicit non-production integration).   */
+/* ------------------------------------------------------------------ */
+.contact-form { max-width: 52rem; }
+.contact-form .smartai-status { margin-bottom: 1.75rem; }
+.form-grid {
+  display: grid;
+  gap: 1.4rem 2rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+.form-row { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-row-full { grid-column: 1 / -1; }
+.form-label { font-size: 0.875rem; font-weight: 600; }
+.form-optional { color: var(--ink-muted); }
+.form-input {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0.8rem 0.95rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  min-height: 3rem;
+}
+textarea.form-input { resize: vertical; }
+.form-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.form-input[aria-invalid="true"] { border-color: var(--accent); }
+.form-error { font-size: 0.8125rem; color: var(--accent); }
+select.form-input { appearance: auto; }
+
 /* §§4–5 continuation notes: restrained typographic lines BELOW the
    ecosystems — never chips inside the moving rails. */
 .ecosystem-more {
