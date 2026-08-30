@@ -89,6 +89,10 @@
     "clients": {
       "title": "Our Clients",
       "description": "The organisations that trust Smart Channels across the Kingdom and the Gulf."
+    },
+    "smartAi": {
+      "title": "Smart AI",
+      "description": "The upcoming AI consultation experience from Smart Channels."
     }
   },
   "contact": {
@@ -151,5 +155,18 @@
     "overview": "Overview",
     "projectMedia": "Project media",
     "allProjects": "All projects"
+  },
+  "smartai": {
+    "status": "Prototype — no live engine connected",
+    "honesty": "Smart AI is not connected yet. Nothing typed here is sent, stored or processed — when the experience goes live, a clear privacy notice will appear before anything is shared.",
+    "stepsTitle": "How the experience will work",
+    "step1": "Describe your project needs in your own words.",
+    "step2": "Smart AI relates them to Smart Channels' solution families.",
+    "step3": "You are guided toward the right technologies — and our engineers take it from there.",
+    "domains": "Solution domains it will draw on",
+    "composerLabel": "Describe your project needs",
+    "placeholder": "Your project, in a few sentences",
+    "sendSoon": "Send to Smart AI — coming soon",
+    "continue": "Continue with our team"
   }
 }

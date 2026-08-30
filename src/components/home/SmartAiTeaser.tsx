@@ -34,10 +34,9 @@ export async function SmartAiTeaser() {
           {t("home.smartAi.body")}
         </p>
         <p className="mt-8">
-          {/* the dedicated /smart-ai experience arrives at P11 — until then
-              the honest action is a human conversation (no dead routes) */}
+          {/* P11 shipped: the teaser opens the dedicated experience */}
           <Link
-            href="/contact"
+            href="/smart-ai"
             className="inline-block rounded border border-accent px-6 py-3.5 font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
           >
             {t("home.smartAi.cta")} →

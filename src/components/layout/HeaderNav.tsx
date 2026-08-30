@@ -32,6 +32,7 @@ const ANCHOR_SCENES: Record<string, string> = {
 const ANCHOR_ROUTE_ALIASES: Record<string, string> = {
   "/#partners": "/partners",
   "/#clients": "/clients",
+  "/#smart-ai": "/smart-ai",
 };
 
 export function arriveAt(sceneId: string, smooth: boolean) {

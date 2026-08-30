@@ -2619,6 +2619,85 @@ html[data-motion-tier="full"] .project-opening-backdrop .po-c {
 .gallery-lightbox-close:hover,
 .gallery-lightbox-close:focus-visible { border-color: rgba(255, 24, 156, 0.55); color: #fff; }
 
+/* ------------------------------------------------------------------ */
+/* P11 · D-046 — Smart AI experience (honest prototype state, D-009).  */
+/* ------------------------------------------------------------------ */
+.smartai-steps { display: flex; flex-direction: column; max-width: 52rem; }
+.smartai-step {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding-block: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+.smartai-step:last-child { border-bottom: 1px solid var(--line); }
+.smartai-step-index { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+.smartai-domains { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.smartai-domain {
+  display: inline-block;
+  transition:
+    color var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered);
+}
+.smartai-domain:hover { color: var(--accent); border-color: var(--accent); }
+
+.smartai-shell {
+  max-width: 46rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.75rem;
+  background: color-mix(in srgb, var(--ink) 3%, var(--bg));
+}
+.smartai-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  margin-bottom: 1.5rem;
+  color: var(--ink-muted);
+}
+.smartai-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+html[data-motion-tier="full"] .smartai-status-dot { animation: origin-core 3s ease-in-out infinite; }
+.smartai-composer {
+  width: 100%;
+  resize: vertical;
+  min-height: 7rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0.9rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.smartai-composer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.smartai-honesty {
+  margin-top: 0.9rem;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+.smartai-send {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 /* §§4–5 continuation notes: restrained typographic lines BELOW the
    ecosystems — never chips inside the moving rails. */
 .ecosystem-more {

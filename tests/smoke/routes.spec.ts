@@ -14,6 +14,7 @@ const routes = [
   "/partners",
   "/clients",
   "/contact",
+  "/smart-ai",
 ];
 const locales = ["en", "ar"] as const;
 
