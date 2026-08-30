@@ -20,6 +20,7 @@ export async function AboutScene({ locale }: { locale: Locale }) {
 
   return (
     <MotionSection
+      id="about"
       reveal="mask"
       className="border-b border-line"
       aria-label={t("sections.about")}

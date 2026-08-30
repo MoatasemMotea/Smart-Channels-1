@@ -18,6 +18,7 @@ export async function IndustriesMatrix({ locale }: { locale: Locale }) {
 
   return (
     <MotionSection
+      id="industries"
       className="border-b border-line"
       aria-label={t("sections.industries")}
       data-scene="industries"

@@ -8,24 +8,27 @@ import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
 import { ProductsTeaser } from "@/components/home/ProductsStage";
 import { ProjectsWall } from "@/components/home/ProjectsWall";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
-import { SmartAiTeaser } from "@/components/home/SmartAiTeaser";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
 import { FinalCta } from "@/components/home/FinalCta";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { HashArrival } from "@/components/motion/HashArrival";
 
 /**
- * HOMEPAGE — the complete designed journey (P5).
+ * HOMEPAGE — the primary one-page experience (final pre-media
+ * directive §4 · D-050).
  *
- * Approved rhythm (no adjacent section repeats a composition):
- *   Cinematic Hero → Editorial About → Cinematic Saudi Network/Track
- *   Record → Technical Solutions index → Structural Industries matrix →
- *   Evidence Projects wall → Media Gallery preview → Cinematic Smart AI
- *   teaser → Engineered Alliances index → Calm Clients trust field →
- *   Cinematic Final CTA (the signal field returns) → Footer.
+ * Approved journey (no adjacent section repeats a composition):
+ *   Opening → Cinematic Hero → Editorial About → Cinematic Reach →
+ *   Technical Solutions index → Products preview → Structural
+ *   Industries matrix → Selected Projects → Media Gallery preview →
+ *   Engineered Alliances index → Calm Clients trust field →
+ *   Let's Talk → Footer.
  *
- * Every section is data-driven; D-020 keeps the Company Profile
- * source-only (no public document chapter exists).
+ * Header anchors land on the section ids declared here (§5); Smart AI
+ * is no longer a homepage section (§14 — the Digital Employee is a
+ * floating experience). Every section is data-driven; D-020 keeps the
+ * Company Profile source-only (no public document chapter exists).
  */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
@@ -35,6 +38,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
+      <HashArrival />
       <Hero />
 
       <AboutScene locale={locale} />
@@ -43,6 +47,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Solutions — technical ecosystem index (Q-P5-2a) */}
       <MotionSection
+        id="solutions"
         reveal="trace"
         className="border-b border-line"
         aria-label={t("solutions")}
@@ -62,6 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Gallery — approved starter media, editorial masonry (Q-P5-5) */}
       <MotionSection
+        id="gallery"
         reveal="sweep"
         className="border-b border-line"
         aria-label={t("gallery")}
@@ -72,8 +78,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <GalleryPreview />
         </div>
       </MotionSection>
-
-      <SmartAiTeaser />
 
       <AlliancesIndex locale={locale} />
 

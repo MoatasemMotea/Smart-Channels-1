@@ -16,7 +16,13 @@ export async function FinalCta({ locale }: { locale: Locale }) {
   const t = await getTranslations();
 
   return (
-    <MotionSection className="cta-scene" aria-label={t("sections.contact")} data-scene="cta" data-env="dark">
+    <MotionSection
+      id="contact"
+      className="cta-scene"
+      aria-label={t("sections.contact")}
+      data-scene="cta"
+      data-env="dark"
+    >
       <div className="relative mx-auto max-w-360 px-6 py-28 text-center lg:px-12">
         <div aria-hidden="true" className="cta-converge">
           <span /><span /><span /><span /><span /><span />
