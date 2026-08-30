@@ -264,7 +264,7 @@ export function LogoCarousel({
 
       {/* the viewport is direction-isolated: the row itself is physical
           artwork; RTL reverses flow/paging semantics in the engine */}
-      <div ref={viewportRef} className="rail-viewport" dir="ltr">
+      <div ref={viewportRef} className="rail-viewport" dir="ltr" data-cursor="drag">
         <div ref={trackRef} className="rail-track">
           {seq("a")}
           {seq("b")}

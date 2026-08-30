@@ -6,7 +6,10 @@
     "explore": "Explore",
     "learnMore": "Learn more",
     "all": "All",
-    "comingInPhase": "This section receives its designed experience in a later build phase."
+    "comingInPhase": "This section receives its designed experience in a later build phase.",
+    "backToTop": "Back to top",
+    "cursorDrag": "DRAG",
+    "cursorView": "VIEW"
   },
   "nav": {
     "openMenu": "Open menu",

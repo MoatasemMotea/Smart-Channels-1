@@ -1096,8 +1096,8 @@ html[data-opening="running"] .floating-de {
 .de-panel {
   position: fixed;
   inset-inline-end: max(1.25rem, env(safe-area-inset-right));
-  bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 8rem);
-  z-index: 46;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  z-index: 48; /* overlays the floating stack while open */
   display: flex;
   flex-direction: column;
   inline-size: min(24rem, calc(100vw - 2.5rem));
@@ -3276,4 +3276,121 @@ select.form-input { appearance: auto; }
 .admin-transcript {
   margin-top: 1rem;
   max-width: 40rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* D-050 §36 — Back-to-Top: third floating action, post-scroll only.  */
+/* ------------------------------------------------------------------ */
+.floating-top {
+  position: fixed;
+  inset-inline-end: max(1.25rem, env(safe-area-inset-right));
+  bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 8rem);
+  z-index: 46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  translate: 0 8px;
+  transition:
+    opacity var(--dur-control) var(--ease-engineered),
+    translate var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered),
+    color var(--dur-control) var(--ease-engineered);
+}
+[dir="rtl"] .floating-top {
+  inset-inline-end: max(1.25rem, env(safe-area-inset-left));
+}
+.floating-top[data-visible] {
+  opacity: 1;
+  pointer-events: auto;
+  translate: 0 0;
+}
+.floating-top:hover,
+.floating-top:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+html[data-opening="pending"] .floating-top,
+html[data-opening="running"] .floating-top {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* D-050 §38 — custom cursor halo (accompanies the native cursor).    */
+/* Mounted only for fine pointers without reduced motion.             */
+/* ------------------------------------------------------------------ */
+.sc-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-engineered);
+}
+.sc-cursor[data-on] { opacity: 1; }
+.sc-cursor-dot {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--brand-magenta);
+}
+.sc-cursor-ring {
+  position: absolute;
+  left: -16px;
+  top: -16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--brand-magenta) 65%, var(--brand-purple));
+  opacity: 0.55;
+  transition:
+    transform 250ms var(--ease-engineered),
+    opacity 250ms var(--ease-engineered),
+    border-color 250ms var(--ease-engineered);
+}
+.sc-cursor[data-state="link"] .sc-cursor-ring {
+  transform: scale(1.45);
+  opacity: 0.9;
+}
+.sc-cursor[data-state="text"] .sc-cursor-dot,
+.sc-cursor[data-state="text"] .sc-cursor-ring {
+  opacity: 0; /* native caret experience in fields (§38) */
+}
+.sc-cursor[data-state="drag"] .sc-cursor-ring,
+.sc-cursor[data-state="view"] .sc-cursor-ring {
+  transform: scale(2.1);
+  opacity: 1;
+  border-color: var(--brand-magenta);
+}
+.sc-cursor[data-state="drag"] .sc-cursor-dot,
+.sc-cursor[data-state="view"] .sc-cursor-dot { opacity: 0; }
+.sc-cursor-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--brand-magenta);
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 200ms var(--ease-engineered);
+}
+.sc-cursor[data-state="drag"] .sc-cursor-label[data-label="drag"],
+.sc-cursor[data-state="view"] .sc-cursor-label[data-label="view"] {
+  opacity: 1;
 }

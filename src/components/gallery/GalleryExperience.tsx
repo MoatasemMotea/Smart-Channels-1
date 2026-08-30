@@ -196,6 +196,7 @@ export function GalleryExperience() {
             <button
               type="button"
               className="gallery-card"
+              data-cursor="view"
               aria-label={localize(g.alt, locale)}
               onClick={(e) => open(idx, e.currentTarget)}
             >

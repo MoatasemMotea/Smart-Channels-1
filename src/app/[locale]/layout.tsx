@@ -9,6 +9,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { DigitalEmployee } from "@/components/assistant/DigitalEmployee";
+import { BackToTop } from "@/components/layout/BackToTop";
+import { CustomCursor } from "@/components/layout/CustomCursor";
 import { indexingAllowed, SITE_NAME } from "@/lib/seo";
 import "@/styles/globals.css";
 
@@ -60,10 +62,12 @@ export default async function LocaleLayout({
           <Header />
           <main id="main">{children}</main>
           <Footer />
-          {/* floating action stack (§36): Digital Employee above the
-              icon-only WhatsApp action; back-to-top joins the stack */}
+          {/* floating action stack (§36), bottom-up: WhatsApp (icon
+              only) → Digital Employee → Back-to-Top (post-scroll) */}
           <DigitalEmployee />
           <FloatingWhatsApp />
+          <BackToTop />
+          <CustomCursor />
         </NextIntlClientProvider>
       </body>
     </html>
