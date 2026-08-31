@@ -2011,13 +2011,44 @@ html[data-motion-tier="full"] .ss-sweep {
   background: rgba(255, 255, 255, 0.03);
   aspect-ratio: 4 / 3;
 }
+/* D-052 — owner photography in the slots: cover crops toward the
+   record's focal point; contain rests the whole device on a light
+   plate (mixed source backgrounds stay consistent behind one frame) */
+.product-slot-media img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: transform 600ms var(--ease-cinematic);
+}
+.product-slot-media[data-fit="contain"] img {
+  object-fit: contain;
+  background: #eef0f3;
+  padding: 0.9rem;
+}
 .product-slot-filled .product-slot-media {
-  border-color: rgba(255, 24, 156, 0.35);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 .product-slot-filled a:hover .product-slot-media,
 .product-slot-filled a:focus-visible .product-slot-media {
   border-color: var(--brand-magenta);
   box-shadow: 0 0 28px rgba(255, 24, 156, 0.14);
+}
+/* §8 controlled hover depth — the product stays readable */
+html:not([data-motion-tier="static"]) .product-slot-filled a:hover .product-slot-media img,
+html:not([data-motion-tier="static"]) .product-slot-filled a:focus-visible .product-slot-media img {
+  transform: scale(1.035);
+}
+/* §8 reveal: imagery settles 1.04 → 1.00 behind the slot entrance;
+   FULL only — LITE keeps the simple slot fade, STATIC shows complete */
+html[data-motion-tier="full"] .reveal.is-visible[data-scene="products"] .product-slot-media img,
+html[data-motion-tier="full"] .arrive[data-scene="products"] .product-slot-media img {
+  /* backwards fill: releases the property after settling so the hover
+     depth transition regains control */
+  animation: product-media-settle 900ms var(--ease-cinematic) backwards;
+}
+@keyframes product-media-settle {
+  from { transform: scale(1.04); }
 }
 .product-slot-media-empty {
   display: flex;
@@ -2104,10 +2135,20 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
   inline-size: 10.5rem;
   text-align: center;
 }
+/* D-052: mixed-background photography sits in a consistent framed
+   window on the stage; contain-fit sources rest on a light plate */
 .stage-pedestal img {
   inline-size: 100%;
-  block-size: auto;
+  block-size: 8.5rem;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.5));
+}
+.stage-pedestal[data-fit="contain"] img {
+  object-fit: contain;
+  background: #eef0f3;
+  padding: 0.6rem;
 }
 .stage-product-name {
   margin-top: 0.9rem;
@@ -3366,6 +3407,13 @@ select.form-input { appearance: auto; }
 }
 .product-card:hover { transform: translateY(-3px); border-color: rgba(255, 24, 156, 0.4); }
 .product-card-photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+/* D-052 art direction: contain-fit photography (low-res or must-not-
+   crop devices) rests whole on a light plate, both themes */
+.product-card-photo[data-fit="contain"] img {
+  object-fit: contain;
+  background: #eef0f3;
+  padding: 1.1rem;
+}
 .product-card-motif {
   position: relative;
   height: 7.5rem;

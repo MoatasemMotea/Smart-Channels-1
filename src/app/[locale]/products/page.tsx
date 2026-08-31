@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
-import { getPublishedProducts, localize } from "@/lib/content";
+import { getFeaturedProducts, getPublishedProducts, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { ProductCatalog } from "@/components/products/ProductCatalog";
@@ -39,6 +39,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   setRequestLocale(raw);
   const t = await getTranslations();
   const products = getPublishedProducts();
+  const featured = getFeaturedProducts();
 
   return (
     <>
@@ -62,16 +63,22 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
             <div className="stage-beam stage-beam-a" aria-hidden="true" />
             <div className="stage-beam stage-beam-b" aria-hidden="true" />
             <div className="stage-ring" aria-hidden="true" />
-            {products.length > 0 ? (
+            {/* D-052: the four owner-featured, image-backed categories
+                ride the stage; the complete index lives below */}
+            {featured.length > 0 ? (
               <ul className="stage-rail">
-                {products.map((p) => (
-                  <li key={p.id} className="stage-pedestal">
+                {featured.map((p) => (
+                  <li key={p.id} className="stage-pedestal" data-fit={p.image?.fit ?? "cover"}>
                     {p.image ? (
                       // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media
-                      <img src={p.image.src} alt="" loading="lazy" />
+                      <img
+                        src={p.image.src}
+                        alt={localize(p.image.alt, locale)}
+                        loading="lazy"
+                        style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
+                      />
                     ) : null}
                     <p className="stage-product-name">{localize(p.name, locale)}</p>
-                    <p className="stage-product-importance">{localize(p.importance, locale)}</p>
                   </li>
                 ))}
               </ul>

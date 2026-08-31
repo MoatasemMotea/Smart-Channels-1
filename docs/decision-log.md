@@ -1195,6 +1195,71 @@ sources). See the round report.
 
 ---
 
+## Products cinematic media integration (recorded 2026-08-31)
+
+**D-052 — Owner Products round** (baseline `4e4d7ae` — the owner's
+four image files committed to the repo; directive of 2026-08-31).
+
+**Categories (§2, binding):** the 22 approved product categories
+populate products.ts verbatim — Switch, Access Points, Router, Laptop,
+Multi Charger, T60, SFP, Firewall, Core Switch, Monitor, PC, UPS,
+Printers, NVR, Hard Disk, Decoder, Face Recognition Terminals, Camera,
+Tablet, HDMI Extender, AC Adapter, Media Converter. A
+capability/category presentation — NO models, manufacturers,
+specifications, prices, stock or invented descriptions
+(`summary`/`importance` stay absent until approved; unit test enforces
+absence). Arabic names render via arPolicy "latin" — approved Arabic
+category terminology is open item **PRODUCT-AR-NAMES** (§14: flag,
+never invent specialized terms).
+
+**Imagery (binding mapping, manifest at
+media-source/images/products/MAPPING.md):** 01→Switch, 02→Access
+Points (NEW approved replacement), 03→Camera, 04→Firewall. Sources
+archived untouched (SHA-256 manifest); delivery = WebP derivatives
+under public/media/products/ (metadata-stripped, aspect preserved,
+NEVER upscaled): 01 stays 500×270 native (low-res — presented
+`contain` on a light plate so the device is whole, never cropped or
+enlarged), 02 1600w, 03 1365w native portrait, 04 1600w. Rights
+status: **OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE CONFIRMED BEFORE
+FINAL LAUNCH** (**PRODUCT-MEDIA-RIGHTS**); no license invented, no
+attribution added. **PRODUCT-MEDIA-01:** the Firewall visual is a
+TEMPORARY conceptual cybersecurity image (flagged `provisional` in
+data) — never presented as a specific appliance; replace via pure
+data/derivative swap.
+
+**Architecture:** the D-034/D-048 architecture absorbed the round
+through data — no replacement. ProductImage record adds data-driven
+art direction (`fit` cover/contain, `focus`, `provisional`);
+`featuredOrder` carries the owner's homepage order (Switch, Access
+Points, Camera, Firewall); accessors sort by it. Homepage preview:
+the four editorial moments in consistent frames harmonizing the mixed
+source backgrounds; §8 motion (FULL: 1.04→1.00 settle behind the slot
+entrance + controlled hover depth; LITE: slot fades; STATIC:
+complete imagery, no motion dependency); anchors land on /products
+category cards (`id = slug`). /products: cinematic stage carries the
+four featured (framed windows, contain-plate for the switch); the
+complete 22-category index below — photos only where approved, the
+designed motif for the other 18 (never blank); absent copy simply
+does not render. Explore Our Products → /products preserved.
+
+**Validation/tests:** validate-content enforces the exact image
+mapping, public-only paths, file existence, featured set, and
+22-record count; unit invariant asserts names/mapping/order/
+provisional flag/no-copy; new products-media smoke spec (delivery
+availability, archive privacy, homepage preview order+mapping+no
+commerce language, 22-card index, AR non-mirroring). Repo Playwright
+90/90. The opening spec's logo-hold assertion was rebuilt to measure
+the actual continuous visible window at rAF cadence (its expect.poll
+could detect readability late and under-measure the D-050 hold —
+harness fix; product behavior verified correct at ≈1.4 s).
+
+**Performance:** initial /en unchanged at 0.97 MB with ZERO product
+image bytes (lazy below-fold); images load on section approach;
+explicit dimensions on all slot images (no CLS); EN↔AR and
+dark↔light switches keep all four images intact.
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1219,3 +1284,7 @@ sources). See the round report.
 | O-018 | ADMIN_PASSWORD (+ optional ADMIN_SESSION_SECRET) provisioning at deploy time | /admin/leads access | D-050 §28: console renders an explicit locked state until set; no default credentials exist. |
 | O-019 | Confirm "Grand House" → grand-mosque-makkah mapping | Selected Projects correctness | D-050 §12: the owner's list says "Grand House"; the closest ledger record is Grand Mosque — Makkah. Featured on that mapping, FLAGGED for explicit confirmation. |
 | O-020 | **REQUIRED PRE-LAUNCH MEDIA REPLACEMENT:** Replace Security Technology Solutions video 03 before final launch because visible third-party text appears inside the footage. | Final launch | Owner decision 2026-08-30 (D-051 flag acknowledged): current video 03 stays temporarily, UNMODIFIED (no blur/crop/regenerate). The owner supplies a clean approved replacement in the final media/refinement round — then: drop the new source into media-source/video/solutions/, regenerate the delivery derivative + poster under public/media/solutions/, keep the same record paths or update src/content/solutions.ts. Mapping 03 → security-solutions is unchanged. |
+| PRODUCT-MEDIA-01 | Firewall currently uses temporary conceptual cybersecurity imagery — replace with an approved physical Firewall product image when supplied. | Final refinement | D-052: flagged `provisional` in data; swap = new source in media-source/images/products/ + regenerated derivative + record edit. Never presented as a specific appliance meanwhile. |
+| PRODUCT-MEDIA-RIGHTS | Publication/licensing rights for the four owner-supplied Product images must be confirmed before final public launch unless already proven by a verified source/license. | Final launch | D-052: recorded as OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE CONFIRMED BEFORE FINAL LAUNCH in media-source/images/products/MAPPING.md. No license invented; no attribution added. |
+| PRODUCT-AR-NAMES | Approved Arabic names for the 22 product categories | AR polish (non-blocking — approved EN names render via arPolicy latin) | D-052 §14: specialized terminology never invented; owner to approve Arabic terms (or confirm Latin presentation) at final refinement. |
+| PRODUCT-MEDIA-02 | 01-switch.jpg is low-resolution (500×270) | Final refinement (presented safely via contain-plate meanwhile) | D-052: never upscaled/AI-enhanced; a higher-resolution owner photograph is recommended. |

@@ -52,14 +52,18 @@ export async function ProductsTeaser() {
               <li key={p.id} className="product-slot product-slot-filled">
                 <Link href={`/products#${p.slug}`} className="block">
                   {p.image ? (
-                    <div className="product-slot-media">
+                    /* fit/focus are data-driven art direction (D-052):
+                       cover crops toward the record's focal point;
+                       contain presents the whole device on a light
+                       plate (low-res source — never upscaled/cropped) */
+                    <div className="product-slot-media" data-fit={p.image.fit ?? "cover"}>
                       <Image
                         src={p.image.src}
                         alt={localize(p.image.alt, locale)}
                         width={p.image.width ?? 640}
                         height={p.image.height ?? 480}
-                        className="h-auto w-full"
-                        sizes="(max-width: 768px) 50vw, 20vw"
+                        sizes="(max-width: 768px) 50vw, 22vw"
+                        style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
                       />
                     </div>
                   ) : (
@@ -68,9 +72,6 @@ export async function ProductsTeaser() {
                   <p className="mt-4 font-display text-base font-semibold">
                     {localize(p.name, locale)}
                   </p>
-                  {p.category ? (
-                    <p className="microlabel mt-1">{localize(p.category, locale)}</p>
-                  ) : null}
                 </Link>
               </li>
             ) : (

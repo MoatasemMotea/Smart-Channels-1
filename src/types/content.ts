@@ -315,22 +315,43 @@ export interface ProfileDocument {
  * Arabic (the schema's nameAr/summaryAr/importanceAr). Optional fields
  * stay ABSENT until owner-approved — no placeholders, no invention.
  */
+/**
+ * Product imagery record (Products media integration · D-052). Extends
+ * MediaRef with presentation art direction so responsive/theme behavior
+ * is data-driven — replacing an image is a pure data edit.
+ */
+export interface ProductImage extends MediaRef {
+  /** cover (default) crops via `focus`; contain presents the full
+      product on a light plate (for photography that must not crop the
+      physical device). */
+  fit?: "cover" | "contain";
+  /** object-position focal point for cover crops. */
+  focus?: string;
+  /** TEMPORARY editorial visual pending an owner-approved product
+      photograph (PRODUCT-MEDIA-01) — the UI must never imply a
+      specific appliance for a provisional image. */
+  provisional?: boolean;
+}
+
 export interface CatalogProduct {
   id: string;
-  /** Future /products/[slug] detail route. */
+  /** Future /products/[slug] detail route; also the index anchor. */
   slug: string;
+  /** The approved category/product name — the ONLY required copy. */
   name: LocalizedText;
-  /** Short supporting copy. */
-  summary: LocalizedText;
-  /** Why it matters / use case (owner-supplied). */
-  importance: LocalizedText;
+  /** Short supporting copy — ONLY when owner-approved (optional). */
+  summary?: LocalizedText;
+  /** Why it matters / use case — ONLY when owner-supplied (optional). */
+  importance?: LocalizedText;
   /** Owner-approved category wording only. */
   category?: LocalizedText;
   /** Primary product photograph under /public (owner-supplied). */
-  image?: MediaRef;
+  image?: ProductImage;
   /** Additional owner-supplied imagery. */
   gallery?: MediaRef[];
   featured: boolean;
+  /** Owner display order within the featured preview (D-052 §3). */
+  featuredOrder?: number;
   /** A-004 pattern: false = excluded from ALL public rendering. */
   published: boolean;
   sortOrder: number;

@@ -73,13 +73,22 @@ export function ProductCatalog() {
 
       <ul className="product-grid">
         {visible.map((p) => (
-          <li key={p.id} className="product-card">
+          <li key={p.id} id={p.slug} className="product-card">
             {p.image ? (
-              <div className="product-card-photo">
+              <div className="product-card-photo" data-fit={p.image.fit ?? "cover"}>
                 {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media */}
-                <img src={p.image.src} alt={localize(p.name, locale)} loading="lazy" />
+                <img
+                  src={p.image.src}
+                  alt={localize(p.image.alt, locale)}
+                  loading="lazy"
+                  decoding="async"
+                  width={p.image.width}
+                  height={p.image.height}
+                  style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
+                />
               </div>
             ) : (
+              /* designed media-pending motif — never a blank placeholder */
               <div className="product-card-motif" aria-hidden="true">
                 <span />
               </div>
@@ -89,8 +98,13 @@ export function ProductCatalog() {
                 <p className="microlabel text-accent">{localize(p.category, locale)}</p>
               ) : null}
               <h3 className="product-card-name font-display">{localize(p.name, locale)}</h3>
-              <p className="product-card-summary">{localize(p.summary, locale)}</p>
-              <p className="product-card-importance">{localize(p.importance, locale)}</p>
+              {/* approved copy only — absent fields simply do not render */}
+              {p.summary ? (
+                <p className="product-card-summary">{localize(p.summary, locale)}</p>
+              ) : null}
+              {p.importance ? (
+                <p className="product-card-importance">{localize(p.importance, locale)}</p>
+              ) : null}
             </div>
           </li>
         ))}

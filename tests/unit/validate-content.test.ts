@@ -3,6 +3,7 @@ import { stats } from "../../src/content/stats";
 import { solutionFamilies } from "../../src/content/solutions";
 import { industries } from "../../src/content/industries";
 import { projects } from "../../src/content/projects";
+import { products } from "../../src/content/products";
 import { galleryItems } from "../../src/content/gallery";
 import {
   getFeaturedIndustries,
@@ -53,6 +54,34 @@ describe("approved business data invariants", () => {
       expect(f.media?.poster).toMatch(/^\/media\/solutions\/posters\//);
       // portrait sources stay portrait — never forced to 16:9 (§10)
       expect(f.media!.orientation === "portrait").toBe(f.media!.height > f.media!.width);
+    }
+  });
+
+  it("carries exactly the 22 approved product categories with the owner image mapping (D-052)", () => {
+    expect(products.map((p) => p.name.en)).toEqual([
+      "Switch", "Access Points", "Router", "Laptop", "Multi Charger", "T60",
+      "SFP", "Firewall", "Core Switch", "Monitor", "PC", "UPS", "Printers",
+      "NVR", "Hard Disk", "Decoder", "Face Recognition Terminals", "Camera",
+      "Tablet", "HDMI Extender", "AC Adapter", "Media Converter",
+    ]);
+    const withImage = Object.fromEntries(
+      products.filter((p) => p.image).map((p) => [p.slug, p.image!.src]),
+    );
+    expect(withImage).toEqual({
+      switch: "/media/products/01-switch.webp",
+      "access-points": "/media/products/02-access-points.webp",
+      camera: "/media/products/03-camera.webp",
+      firewall: "/media/products/04-firewall.webp",
+    });
+    expect(products.filter((p) => p.featured).map((p) => p.slug).sort()).toEqual(
+      ["access-points", "camera", "firewall", "switch"],
+    );
+    // the temporary Firewall visual stays explicitly provisional (PRODUCT-MEDIA-01)
+    expect(products.find((p) => p.slug === "firewall")?.image?.provisional).toBe(true);
+    // no invented copy: category records carry no unapproved summaries/specs
+    for (const p of products) {
+      expect(p.summary).toBeUndefined();
+      expect(p.importance).toBeUndefined();
     }
   });
 

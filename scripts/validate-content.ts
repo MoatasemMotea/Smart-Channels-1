@@ -128,6 +128,35 @@ for (const g of galleryItems) {
 }
 for (const d of documents) checkPath(d.src, `document ${d.locale}`, true);
 
+/* ---- D-052 Products media: owner mapping + integrity ----------------- */
+const PRODUCT_IMAGE_MAPPING: Record<string, string> = {
+  switch: "/media/products/01-switch.webp",
+  "access-points": "/media/products/02-access-points.webp",
+  camera: "/media/products/03-camera.webp",
+  firewall: "/media/products/04-firewall.webp",
+};
+{
+  if (products.length !== 22) errors.push(`products: expected the 22 approved categories, got ${products.length}`);
+  const featured = products.filter((p) => p.featured).map((p) => p.slug).sort();
+  const expectedFeatured = Object.keys(PRODUCT_IMAGE_MAPPING).sort();
+  if (JSON.stringify(featured) !== JSON.stringify(expectedFeatured))
+    errors.push(`products: featured set must be exactly ${expectedFeatured.join(", ")} (got ${featured.join(", ")})`);
+  for (const p of products) {
+    const expected = PRODUCT_IMAGE_MAPPING[p.slug];
+    if (expected) {
+      if (p.image?.src !== expected)
+        errors.push(`product ${p.id}: image mapping violates the owner manifest (got ${p.image?.src})`);
+    } else if (p.image) {
+      errors.push(`product ${p.id}: carries an image with no owner-approved mapping`);
+    }
+    if (p.image) {
+      if (p.image.src.startsWith("/media-source"))
+        errors.push(`product ${p.id}: images must never be served from media-source/`);
+      checkPath(p.image.src, `product ${p.id} image`, p.published);
+    }
+  }
+}
+
 /* ---- D-020: Company Profile is source-only, never publicly served ---- */
 import { readdirSync, statSync } from "node:fs";
 function findPdfs(dir: string, acc: string[] = []): string[] {
@@ -156,8 +185,8 @@ import { products } from "../src/content/products";
     slugs.add(pr.slug);
     if (pr.image) checkPath(pr.image.src, `product ${pr.id} image`, pr.published);
     for (const g of pr.gallery ?? []) checkPath(g.src, `product ${pr.id} gallery`, pr.published);
-    if (pr.published && !pr.image)
-      warnings.push(`product ${pr.id}: published without an image (stage renders text-only)`);
+    // D-052: image-pending categories are BY DESIGN (designed motif
+    // renders) — no warning; the mapping block above polices imagery.
   }
 }
 

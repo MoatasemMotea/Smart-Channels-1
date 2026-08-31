@@ -141,7 +141,10 @@ export function getPublishedProducts() {
 }
 
 export function getFeaturedProducts() {
-  return getPublishedProducts().filter((p) => p.featured);
+  // D-052 §3: the owner's featured display order, not catalogue order
+  return getPublishedProducts()
+    .filter((p) => p.featured)
+    .sort((a, b) => (a.featuredOrder ?? a.sortOrder) - (b.featuredOrder ?? b.sortOrder));
 }
 
 export function getSocialLinks() {
