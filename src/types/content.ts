@@ -321,10 +321,14 @@ export interface ProfileDocument {
  * is data-driven — replacing an image is a pure data edit.
  */
 export interface ProductImage extends MediaRef {
-  /** cover (default) crops via `focus`; contain presents the full
-      product on a light plate (for photography that must not crop the
-      physical device). */
+  /** cover (default) crops via `focus`; contain presents the whole
+      product on a plate (for cutouts, studio renders, and sources that
+      must not be cropped — e.g. low-resolution originals). */
   fit?: "cover" | "contain";
+  /** Ground behind a contain-fit product, matched to the SOURCE's own
+      background so the card reads as one studio surface. Never
+      recolors the product itself (D-052 §12). */
+  plate?: "light" | "white" | "dark";
   /** object-position focal point for cover crops. */
   focus?: string;
   /** TEMPORARY editorial visual pending an owner-approved product

@@ -133,14 +133,24 @@ const PRODUCT_IMAGE_MAPPING: Record<string, string> = {
   switch: "/media/products/01-switch.webp",
   "access-points": "/media/products/02-access-points.webp",
   camera: "/media/products/03-camera.webp",
-  firewall: "/media/products/04-firewall.webp",
+  firewall: "/media/products/firewall-interim.webp",
+  laptop: "/media/products/laptop.webp",
+  "core-switch": "/media/products/core-switch.webp",
+  sfp: "/media/products/sfp.webp",
+  tablet: "/media/products/tablet.webp",
+  printers: "/media/products/printers.webp",
+  // Multi Charger and T60 intentionally SHARE one combined photograph
+  "multi-charger": "/media/products/multi-charger-t60.webp",
+  t60: "/media/products/multi-charger-t60.webp",
+  nvr: "/media/products/nvr.webp",
 };
+/* the homepage preview stays at exactly these four (D-052 §8) */
+const PRODUCT_FEATURED = ["access-points", "camera", "firewall", "switch"];
 {
   if (products.length !== 22) errors.push(`products: expected the 22 approved categories, got ${products.length}`);
   const featured = products.filter((p) => p.featured).map((p) => p.slug).sort();
-  const expectedFeatured = Object.keys(PRODUCT_IMAGE_MAPPING).sort();
-  if (JSON.stringify(featured) !== JSON.stringify(expectedFeatured))
-    errors.push(`products: featured set must be exactly ${expectedFeatured.join(", ")} (got ${featured.join(", ")})`);
+  if (JSON.stringify(featured) !== JSON.stringify(PRODUCT_FEATURED))
+    errors.push(`products: featured set must be exactly ${PRODUCT_FEATURED.join(", ")} (got ${featured.join(", ")})`);
   for (const p of products) {
     const expected = PRODUCT_IMAGE_MAPPING[p.slug];
     if (expected) {

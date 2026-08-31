@@ -56,7 +56,11 @@ export async function ProductsTeaser() {
                        cover crops toward the record's focal point;
                        contain presents the whole device on a light
                        plate (low-res source — never upscaled/cropped) */
-                    <div className="product-slot-media" data-fit={p.image.fit ?? "cover"}>
+                    <div
+                      className="product-slot-media"
+                      data-fit={p.image.fit ?? "cover"}
+                      data-plate={p.image.plate}
+                    >
                       <Image
                         src={p.image.src}
                         alt={localize(p.image.alt, locale)}

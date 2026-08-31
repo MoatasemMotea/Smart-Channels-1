@@ -68,7 +68,12 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
             {featured.length > 0 ? (
               <ul className="stage-rail">
                 {featured.map((p) => (
-                  <li key={p.id} className="stage-pedestal" data-fit={p.image?.fit ?? "cover"}>
+                  <li
+                    key={p.id}
+                    className="stage-pedestal"
+                    data-fit={p.image?.fit ?? "cover"}
+                    data-plate={p.image?.plate}
+                  >
                     {p.image ? (
                       // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media
                       <img

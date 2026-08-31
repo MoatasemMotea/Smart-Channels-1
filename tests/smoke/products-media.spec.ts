@@ -5,14 +5,35 @@ import { expect, test } from "@playwright/test";
  * Owner mapping, delivery availability, archive privacy, homepage
  * preview, 22-category index, no invented commerce content.
  */
-const DELIVERY = [
+const FEATURED = [
   "/media/products/01-switch.webp",
   "/media/products/02-access-points.webp",
   "/media/products/03-camera.webp",
-  "/media/products/04-firewall.webp",
+  "/media/products/firewall-interim.webp",
+];
+const DELIVERY = [
+  ...FEATURED,
+  "/media/products/laptop.webp",
+  "/media/products/core-switch.webp",
+  "/media/products/sfp.webp",
+  "/media/products/tablet.webp",
+  "/media/products/printers.webp",
+  "/media/products/multi-charger-t60.webp",
+  "/media/products/nvr.webp",
+];
+/* the ten categories that keep the designed media-pending state */
+const FALLBACK = [
+  "router", "monitor", "pc", "ups", "hard-disk", "decoder",
+  "face-recognition-terminals", "hdmi-extender", "ac-adapter", "media-converter",
+];
+/* second-round files the owner held back — must never be published */
+const HELD = [
+  "/media-source/images/Point of contact.jpg",
+  "/media-source/images/Router.jpg",
+  "/media-source/images/UPS.jpg",
 ];
 
-test("all four product delivery images are publicly served", async ({ request }) => {
+test("all eleven product delivery images are publicly served", async ({ request }) => {
   for (const p of DELIVERY) {
     const res = await request.head(p);
     expect(res.status(), p).toBe(200);
@@ -20,10 +41,10 @@ test("all four product delivery images are publicly served", async ({ request })
 });
 
 test("the product source archive is never publicly reachable", async ({ request }) => {
-  const res = await request.get("/media-source/images/products/01-switch.jpg", {
-    maxRedirects: 0,
-  });
-  expect([307, 308, 404]).toContain(res.status());
+  for (const p of ["/media-source/images/products/01-switch.jpg", ...HELD]) {
+    const res = await request.get(p, { maxRedirects: 0 });
+    expect([307, 308, 404], p).toContain(res.status());
+  }
 });
 
 test("homepage preview: exactly the four featured categories with mapped images", async ({
@@ -43,7 +64,9 @@ test("homepage preview: exactly the four featured categories with mapped images"
     })),
   );
   expect(slots.map((s) => s.name)).toEqual(["Switch", "Access Points", "Camera", "Firewall"]);
-  expect(slots.every((s, i) => s.img.includes(encodeURIComponent(DELIVERY[i]!)) || s.img.includes(DELIVERY[i]!))).toBe(true);
+  expect(slots.every((s, i) => s.img.includes(encodeURIComponent(FEATURED[i]!)) || s.img.includes(FEATURED[i]!))).toBe(true);
+  // §8: the homepage stays at FOUR — never a catalogue
+  expect(slots).toHaveLength(4);
   expect(slots.map((s) => s.href)).toEqual([
     "/en/products#switch",
     "/en/products#access-points",
@@ -68,7 +91,20 @@ test("/products: complete 22-category index, images only where approved", async 
   );
   expect(cards).toHaveLength(22);
   const withPhoto = cards.filter((c) => c.hasPhoto).map((c) => c.id).sort();
-  expect(withPhoto).toEqual(["access-points", "camera", "firewall", "switch"]);
+  expect(withPhoto).toEqual([
+    "access-points", "camera", "core-switch", "firewall", "laptop",
+    "multi-charger", "nvr", "printers", "sfp", "switch", "t60", "tablet",
+  ]);
+  // the remaining ten keep the designed media-pending motif
+  expect(cards.filter((c) => c.hasMotif).map((c) => c.id).sort()).toEqual([...FALLBACK].sort());
+  // Multi Charger and T60 present the SAME shared source
+  const shared = await page.evaluate(() =>
+    ["multi-charger", "t60"].map(
+      (id) => document.querySelector<HTMLImageElement>(`#${id} img`)?.getAttribute("src") ?? "",
+    ),
+  );
+  expect(shared[0]).toBe(shared[1]);
+  expect(shared[0]).toContain("multi-charger-t60");
   for (const c of cards) {
     expect(c.hasPhoto || c.hasMotif, c.id).toBe(true); // never a blank placeholder
   }

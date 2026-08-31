@@ -75,7 +75,11 @@ export function ProductCatalog() {
         {visible.map((p) => (
           <li key={p.id} id={p.slug} className="product-card">
             {p.image ? (
-              <div className="product-card-photo" data-fit={p.image.fit ?? "cover"}>
+              <div
+                className="product-card-photo"
+                data-fit={p.image.fit ?? "cover"}
+                data-plate={p.image.plate}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media */}
                 <img
                   src={p.image.src}

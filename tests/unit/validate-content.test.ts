@@ -71,8 +71,27 @@ describe("approved business data invariants", () => {
       switch: "/media/products/01-switch.webp",
       "access-points": "/media/products/02-access-points.webp",
       camera: "/media/products/03-camera.webp",
-      firewall: "/media/products/04-firewall.webp",
+      firewall: "/media/products/firewall-interim.webp",
+      laptop: "/media/products/laptop.webp",
+      "core-switch": "/media/products/core-switch.webp",
+      sfp: "/media/products/sfp.webp",
+      tablet: "/media/products/tablet.webp",
+      printers: "/media/products/printers.webp",
+      "multi-charger": "/media/products/multi-charger-t60.webp",
+      t60: "/media/products/multi-charger-t60.webp",
+      nvr: "/media/products/nvr.webp",
     });
+    // owner decision: ONE combined photograph serves both records —
+    // never duplicated, never split into fabricated separate media
+    expect(products.find((p) => p.slug === "multi-charger")?.image?.src).toBe(
+      products.find((p) => p.slug === "t60")?.image?.src,
+    );
+    // the ten categories awaiting approved imagery keep the designed
+    // media-pending state — no borrowed or invented visuals
+    expect(products.filter((p) => !p.image).map((p) => p.slug)).toEqual([
+      "router", "monitor", "pc", "ups", "hard-disk", "decoder",
+      "face-recognition-terminals", "hdmi-extender", "ac-adapter", "media-converter",
+    ]);
     expect(products.filter((p) => p.featured).map((p) => p.slug).sort()).toEqual(
       ["access-points", "camera", "firewall", "switch"],
     );

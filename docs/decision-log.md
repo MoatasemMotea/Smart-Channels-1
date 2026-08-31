@@ -1260,6 +1260,84 @@ dark↔light switches keep all four images intact.
 
 ---
 
+## Products media — second owner asset set (recorded 2026-08-31)
+
+**D-053 — Second Products media integration** (audit accepted; owner
+decision message the same day; baseline `aee014b` — 29 owner files
+uploaded to media-source/images/).
+
+**Owner-approved integrations (8 new + 1 replacement).** Laptop →
+laptop.jpg · Core Switch → core-switch.webp · SFP → sfp.jpg · Tablet →
+tablet.jpg · Printers → printers.jpg (Printers1.jpg, the stronger of
+the two) · **Multi Charger AND T60 → one shared combined photograph**
+(multi-charger-t60.png — referenced twice, never duplicated or split)
+· NVR → nvr.png · **Firewall → firewall-interim.jpg**, replacing the
+superseded conceptual Security-screen visual (retained unused at
+`04-firewall-conceptual-superseded.jpg`).
+
+**Explicit owner decisions honoured.** (a) The visible HIKVISION
+branding in the NVR photograph is ACCEPTED — never removed, blurred,
+cropped out, recoloured or regenerated. (b) The Firewall visual is
+INTERIM: real data-centre hardware, not an appliance — the record
+stays flagged `provisional` and **PRODUCT-MEDIA-01 remains OPEN**.
+(c) Six categories with supplied-but-rejected media (Router, UPS,
+Monitor, PC, HDMI Extender, Face Recognition Terminals) and four with
+none (Hard Disk, Decoder, AC Adapter, Media Converter) keep the
+designed media-pending state — nothing sourced, generated or borrowed.
+(d) The 14 held files stay archived and unpublished; **Point of
+contact.jpg (identifiable person) must never be published**, and none
+of the held imagery may ever be presented as Gallery/project evidence.
+
+**Result:** 22 categories unchanged; **12 now carry approved imagery**
+(Switch, Access Points, Camera, Firewall, Laptop, Core Switch, SFP,
+Tablet, Printers, Multi Charger, T60, NVR — 11 distinct files); 10
+keep the fallback motif. The homepage preview stays at exactly FOUR
+featured (§8) with the Firewall visual swapped in place; /products
+carries the full 12-photo / 10-motif index.
+
+**Art direction (data-driven, D-052 architecture extended).** New
+`plate` field on ProductImage grounds contain-fit sources on a surface
+matched to the SOURCE's own background — **verified by sampling corner
+pixels, not by eye** (a small preview had misread the NVR background as
+black; it is white). White plate: Switch, Multi Charger/T60, NVR.
+Light plate: Core Switch (a genuine transparent cutout — a cover crop
+would clip the chassis). Cover + focal point: the photographic sources.
+The Firewall focal point is 50% 62% — a portrait source into a
+landscape window crops vertically, and 62% favours the rack faces and
+cabling over the blank corridor wall.
+
+**Defect found and fixed during QA (deployment-relevant).** Replacing
+the Firewall image's bytes under its existing delivery path served a
+STALE optimized variant (the old landscape crop) from the Next image
+cache. Root-caused by comparing served bytes, disk bytes and the
+element's natural dimensions. Fix: the interim visual gets its own
+delivery path (`firewall-interim.webp`). **Rule for future media
+swaps: change the path, not just the bytes** — image-optimizer, CDN and
+browser caches key on the URL.
+
+**Optimization.** WebP derivatives, metadata-stripped, aspect ratios
+preserved, **never upscaled**, no AI enhancement/regeneration, no
+product manipulation, no branding edits: firewall-interim 1200×1804
+(243 KB) · laptop 1200×1800 (29 KB) · sfp 1600×1065 (86 KB) · tablet
+1600×1067 (38 KB) · printers 1600×1066 (70 KB) · core-switch 900×600
+native, alpha preserved (12 KB) · multi-charger-t60 500×500 native
+(18 KB) · nvr 800×800 native (10 KB).
+
+**Verification.** typecheck/lint/validate/unit clean (validation and
+unit invariants now police the 12-way mapping, the shared MC/T60
+source, the exact 10 fallback categories and the four-featured limit);
+repo Playwright **90/90**; Products QA matrix **28/28** — homepage
+four-only, Firewall replacement, 22/12/10 index split, source-matched
+plates, shared media, EN/AR (photography never mirrored, branding
+never flipped), Light/Dark, STATIC/reduced-motion (all 12 complete),
+mobile/tablet/zoom widths with zero overflow, keyboard, zero broken
+images, zero console/hydration errors, archive never publicly
+reachable. **Performance unchanged: initial /en 0.97 MB with ZERO
+product images eagerly loaded** (lazy below-fold, explicit dimensions,
+no CLS).
+
+---
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1284,7 +1362,9 @@ dark↔light switches keep all four images intact.
 | O-018 | ADMIN_PASSWORD (+ optional ADMIN_SESSION_SECRET) provisioning at deploy time | /admin/leads access | D-050 §28: console renders an explicit locked state until set; no default credentials exist. |
 | O-019 | Confirm "Grand House" → grand-mosque-makkah mapping | Selected Projects correctness | D-050 §12: the owner's list says "Grand House"; the closest ledger record is Grand Mosque — Makkah. Featured on that mapping, FLAGGED for explicit confirmation. |
 | O-020 | **REQUIRED PRE-LAUNCH MEDIA REPLACEMENT:** Replace Security Technology Solutions video 03 before final launch because visible third-party text appears inside the footage. | Final launch | Owner decision 2026-08-30 (D-051 flag acknowledged): current video 03 stays temporarily, UNMODIFIED (no blur/crop/regenerate). The owner supplies a clean approved replacement in the final media/refinement round — then: drop the new source into media-source/video/solutions/, regenerate the delivery derivative + poster under public/media/solutions/, keep the same record paths or update src/content/solutions.ts. Mapping 03 → security-solutions is unchanged. |
-| PRODUCT-MEDIA-01 | Firewall currently uses temporary conceptual cybersecurity imagery — replace with an approved physical Firewall product image when supplied. | Final refinement | D-052: flagged `provisional` in data; swap = new source in media-source/images/products/ + regenerated derivative + record edit. Never presented as a specific appliance meanwhile. |
-| PRODUCT-MEDIA-RIGHTS | Publication/licensing rights for the four owner-supplied Product images must be confirmed before final public launch unless already proven by a verified source/license. | Final launch | D-052: recorded as OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE CONFIRMED BEFORE FINAL LAUNCH in media-source/images/products/MAPPING.md. No license invented; no attribution added. |
+| PRODUCT-MEDIA-01 | **STILL OPEN** — Firewall uses INTERIM generic data-centre imagery (upgraded from the conceptual visual at D-053); a true approved Firewall appliance photograph is still required. | Final refinement | Flagged `provisional` in data and never presented as a specific appliance. Swap = new source in media-source/images/products/ + regenerated derivative on a NEW delivery path (D-053: reusing a path serves stale cached variants) + record edit. |
+| PRODUCT-MEDIA-RIGHTS | Publication/licensing rights for **all eleven** owner-supplied Product images must be confirmed before final public launch unless already proven by a verified source/license. | Final launch | D-052/D-053: recorded as OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE CONFIRMED BEFORE FINAL LAUNCH in media-source/images/products/MAPPING.md. No license invented; no attribution added. Several second-set files have stock-photography characteristics. |
 | PRODUCT-AR-NAMES | Approved Arabic names for the 22 product categories | AR polish (non-blocking — approved EN names render via arPolicy latin) | D-052 §14: specialized terminology never invented; owner to approve Arabic terms (or confirm Latin presentation) at final refinement. |
-| PRODUCT-MEDIA-02 | 01-switch.jpg is low-resolution (500×270) | Final refinement (presented safely via contain-plate meanwhile) | D-052: never upscaled/AI-enhanced; a higher-resolution owner photograph is recommended. |
+| PRODUCT-MEDIA-02 | Low-resolution sources: 01-switch.jpg (500×270) and multi-charger-t60.png (500×500) | Final refinement (both presented whole on plates meanwhile) | D-052/D-053: never upscaled or AI-enhanced; higher-resolution owner photographs are recommended. |
+| PRODUCT-MEDIA-03 | Ten categories still without approved imagery — **Router, UPS, Monitor, PC, HDMI Extender, Face Recognition Terminals** (supplied media rejected for cause at D-053) and **Hard Disk, Decoder, AC Adapter, Media Converter** (never supplied) | Full Products imagery | Each keeps the designed media-pending motif; adding one later is a pure data edit. Rejection reasons per category are recorded in media-source/images/products/MAPPING.md. |
+| PRODUCT-MEDIA-HELD | 14 second-set files held from Product use; **Point of contact.jpg must remain unpublished** (identifiable person, legible institutional emblem) | — | D-053: the infrastructure/technical images may be considered for a future owner-authorized Solutions-support round; none may ever be presented as Gallery/project evidence. |
