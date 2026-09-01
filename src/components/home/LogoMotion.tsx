@@ -78,6 +78,11 @@ export function LogoCarousel({
   const pausesRef = useRef(new Set<string>());
   const resumeTimer = useRef(0);
   const tweenRef = useRef<{ from: number; to: number; start: number } | null>(null);
+  /* D-054 §27: the rail's loop is not permanent — it stops whenever the
+     row is paused (offscreen, hidden tab, hover, focus, manual hold) and
+     is woken by whatever resumes it. Nothing spins for a row nobody can
+     see. */
+  const wakeRef = useRef<(() => void) | null>(null);
   const autoOn = tier === "full" || tier === "lite";
 
   useEffect(() => {
@@ -120,7 +125,10 @@ export function LogoCarousel({
     const holdThenResume = () => {
       pauses.add("manual");
       window.clearTimeout(resumeTimer.current);
-      resumeTimer.current = window.setTimeout(() => pauses.delete("manual"), RESUME_DELAY);
+      resumeTimer.current = window.setTimeout(() => {
+        pauses.delete("manual");
+        wake();
+      }, RESUME_DELAY);
     };
 
     // continuous loop: auto-flow + eased arrow tweens share one clock
@@ -140,24 +148,44 @@ export function LogoCarousel({
         xRef.current += speed * dt;
         apply();
       }
+      // nothing to advance and nothing pending: stop scheduling
+      if (!tweenRef.current && (!autoOn || pauses.size > 0)) {
+        raf = 0;
+        return;
+      }
       raf = requestAnimationFrame(loop);
     };
+    const wake = () => {
+      if (!raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    wakeRef.current = wake;
     raf = requestAnimationFrame(loop);
 
     // §17/§21: offscreen and hidden-tab discipline
     const io = new IntersectionObserver(
       (es) => {
         for (const e of es) {
-          if (e.isIntersecting) pauses.delete("offscreen");
-          else pauses.add("offscreen");
+          if (e.isIntersecting) {
+            pauses.delete("offscreen");
+            wake();
+          } else {
+            pauses.add("offscreen");
+          }
         }
       },
       { threshold: 0.05 },
     );
     io.observe(viewport);
     const onVis = () => {
-      if (document.visibilityState === "visible") pauses.delete("hidden");
-      else pauses.add("hidden");
+      if (document.visibilityState === "visible") {
+        pauses.delete("hidden");
+        wake();
+      } else {
+        pauses.add("hidden");
+      }
     };
     document.addEventListener("visibilitychange", onVis);
 
@@ -165,11 +193,17 @@ export function LogoCarousel({
     const onEnter = (e: PointerEvent) => {
       if (e.pointerType === "mouse") pauses.add("hover");
     };
-    const onLeave = () => pauses.delete("hover");
+    const onLeave = () => {
+      pauses.delete("hover");
+      wake();
+    };
     viewport.addEventListener("pointerenter", onEnter);
     viewport.addEventListener("pointerleave", onLeave);
     viewport.addEventListener("focusin", () => pauses.add("focus"));
-    viewport.addEventListener("focusout", () => pauses.delete("focus"));
+    viewport.addEventListener("focusout", () => {
+      pauses.delete("focus");
+      wake();
+    });
 
     // drag / swipe: the rail follows the pointer 1:1, then resumes
     let dragging = false;
@@ -191,6 +225,7 @@ export function LogoCarousel({
       // moving the pointer along the row carries the row with it
       xRef.current = dragStartOffset + (rtl ? dx : -dx);
       apply();
+      wake();
     };
     const onUp = () => {
       if (!dragging) return;
@@ -213,7 +248,8 @@ export function LogoCarousel({
     viewport.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
+      wakeRef.current = null;
       window.clearTimeout(resumeTimer.current);
       ro.disconnect();
       io.disconnect();
@@ -249,10 +285,11 @@ export function LogoCarousel({
     }
     pausesRef.current.add("manual");
     window.clearTimeout(resumeTimer.current);
-    resumeTimer.current = window.setTimeout(
-      () => pausesRef.current.delete("manual"),
-      RESUME_DELAY,
-    );
+    resumeTimer.current = window.setTimeout(() => {
+      pausesRef.current.delete("manual");
+      wakeRef.current?.();
+    }, RESUME_DELAY);
+    wakeRef.current?.(); // the tween needs the loop running
   };
 
   const seq = (copy: "a" | "b") => (

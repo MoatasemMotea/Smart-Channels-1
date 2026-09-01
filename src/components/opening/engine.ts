@@ -156,20 +156,28 @@ export class OpeningEngine {
   run(): void {
     this.start = performance.now();
     this.last = this.start;
-    const loop = (now: number) => {
+    // D-054 §27: an invisible field schedules NOTHING. The loop used to
+    // keep requesting frames while skipping the work, so the hero field
+    // cost 60 empty frames a second for the whole life of the page even
+    // when it was far offscreen. setVisible(true) restarts it.
+    this.loop = (now: number) => {
       if (this.destroyed) return;
       const dt = Math.min(48, now - this.last);
       this.last = now;
-      if (this.visible) {
-        const frameStart = performance.now();
-        this.step(now, dt / 1000);
-        this.frameTimes.push(performance.now() - frameStart);
-        this.monitor();
+      if (!this.visible) {
+        this.raf = 0;
+        return;
       }
-      this.raf = requestAnimationFrame(loop);
+      const frameStart = performance.now();
+      this.step(now, dt / 1000);
+      this.frameTimes.push(performance.now() - frameStart);
+      this.monitor();
+      this.raf = requestAnimationFrame(this.loop!);
     };
-    this.raf = requestAnimationFrame(loop);
+    this.raf = requestAnimationFrame(this.loop);
   }
+
+  private loop: ((now: number) => void) | null = null;
 
   /** Jump straight to the finished hero state (skip / auto-skip). */
   skip(): void {
@@ -183,7 +191,12 @@ export class OpeningEngine {
   }
 
   setVisible(v: boolean): void {
+    const was = this.visible;
     this.visible = v;
+    if (v && !was && !this.destroyed && !this.raf && this.loop) {
+      this.last = performance.now(); // no giant catch-up step on wake
+      this.raf = requestAnimationFrame(this.loop);
+    }
   }
 
   resize(): void {

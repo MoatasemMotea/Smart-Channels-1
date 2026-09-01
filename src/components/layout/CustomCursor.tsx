@@ -71,6 +71,7 @@ export function CustomCursor() {
     let magnetsStale = true;
     const markStale = () => {
       magnetsStale = true;
+      wake();
     };
     const measure = () => {
       magnets = [...document.querySelectorAll<HTMLElement>(".magnetic")].map((m) => {
@@ -89,8 +90,9 @@ export function CustomCursor() {
       magnetsStale = false;
     };
 
-    const stepMagnets = () => {
+    const stepMagnets = (): boolean => {
       if (magnetsStale) measure();
+      let moving = false;
       for (const m of magnets) {
         const withinX = Math.abs(tx - m.cx) - m.w / 2;
         const withinY = Math.abs(ty - m.cy) - m.h / 2;
@@ -111,16 +113,32 @@ export function CustomCursor() {
           m.dy = 0;
         } else {
           m.el.style.transform = `translate(${m.dx.toFixed(2)}px, ${m.dy.toFixed(2)}px)`;
+          moving = true;
         }
+        if (near) moving = true;
       }
+      return moving;
     };
 
+    /* The loop sleeps when nothing is moving (D-054 §27): once the halo
+       has caught up with the pointer and every magnet has settled, the
+       next frame is not scheduled. Any pointer movement wakes it. */
+    let idleFrames = 0;
     const step = () => {
       x += (tx - x) * 0.22;
       y += (ty - y) * 0.22;
       el.style.transform = `translate(${x}px, ${y}px)`;
-      stepMagnets();
+      const magnetsMoving = stepMagnets();
+      const settled = Math.abs(tx - x) < 0.15 && Math.abs(ty - y) < 0.15 && !magnetsMoving;
+      idleFrames = settled ? idleFrames + 1 : 0;
+      if (idleFrames > 8) {
+        raf = 0; // asleep; onMove restarts it
+        return;
+      }
       raf = requestAnimationFrame(step);
+    };
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(step);
     };
 
     const stateFor = (target: Element | null): string => {
@@ -144,10 +162,12 @@ export function CustomCursor() {
       const s = stateFor(e.target as Element | null);
       if (s) el.dataset.state = s;
       else delete el.dataset.state;
+      wake();
     };
     const onLeave = () => {
       shown = false;
       delete el.dataset.on;
+      wake(); // let the magnets release before the loop sleeps again
     };
 
     document.addEventListener("pointermove", onMove, { passive: true });
@@ -160,7 +180,7 @@ export function CustomCursor() {
       document.documentElement.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("scroll", markStale);
       window.removeEventListener("resize", markStale);
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       for (const m of magnets) m.el.style.transform = "";
     };
   }, [active]);

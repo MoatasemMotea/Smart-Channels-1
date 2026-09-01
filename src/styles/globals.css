@@ -19,7 +19,12 @@
 :root {
   /* brand constants (sampled from the authoritative logo) */
   --brand-magenta: #ff189c;
-  --brand-magenta-deep: #d80f7e; /* AA-weighted accent for light ground */
+  /* AA-weighted accent for the light ground. Deepened for V2 (D-054 §5):
+     the continuous canvas introduced a sunken surface tier (#f2f2ee), and
+     the previous value fell to 4.36:1 against it. This clears AA on every
+     canvas tier — 5.71 on white, 5.46 on the canvas, 5.09 on the sunken
+     tier — and reads as the same brand magenta. */
+  --brand-magenta-deep: #c50d73;
   --brand-purple: #8d3492;
 
   /* dark environment (default) */
@@ -85,7 +90,7 @@
   --line: rgba(20, 20, 22, 0.12);
   --accent: var(--brand-magenta-deep);
   --accent-ink: #fafaf8;
-  --accent-soft: rgba(216, 15, 126, 0.1);
+  --accent-soft: rgba(197, 13, 115, 0.1);
   --atmos: rgba(141, 52, 146, 0.04);
   --field-line: rgba(20, 20, 22, 0.1);
   --field-node: #6e6e6b;
@@ -102,10 +107,10 @@
   --canvas-shadow: 0 24px 60px rgba(20, 20, 22, 0.1);
 
   --signal: var(--brand-magenta-deep);
-  --signal-soft: rgba(216, 15, 126, 0.3);
-  --signal-faint: rgba(216, 15, 126, 0.1);
-  --signal-trace: linear-gradient(90deg, transparent, rgba(216, 15, 126, 0.5), transparent);
-  --signal-node: rgba(216, 15, 126, 0.7);
+  --signal-soft: rgba(197, 13, 115, 0.3);
+  --signal-faint: rgba(197, 13, 115, 0.1);
+  --signal-trace: linear-gradient(90deg, transparent, rgba(197, 13, 115, 0.5), transparent);
+  --signal-node: rgba(197, 13, 115, 0.72);
   --motif-line: rgba(20, 20, 22, 0.06);
   --motif-line-strong: rgba(20, 20, 22, 0.11);
 
@@ -926,7 +931,7 @@ main > *:not(.hero-scene):first-child {
   --map-particle-alt: 106 40 110;
   --map-dust: 96 96 106;
   --map-node: 20 20 22;
-  --map-signal: 216 15 126;
+  --map-signal: 197 13 115;
   --map-ring: 20 20 22;
   --map-wash-alpha: 0.05;
   --map-signal-scale: 1.55;
@@ -1062,11 +1067,11 @@ a:focus-visible > .tx-link,
   background: var(--canvas-sunken);
 }
 [data-theme="light"] .project-moment {
-  --moment-wash-a: rgba(216, 15, 126, 0.07);
+  --moment-wash-a: rgba(197, 13, 115, 0.07);
   --moment-wash-b: rgba(106, 40, 110, 0.06);
-  --moment-beam: rgba(216, 15, 126, 0.34);
-  --moment-node: rgba(216, 15, 126, 0.72);
-  --moment-node-glow: rgba(216, 15, 126, 0.26);
+  --moment-beam: rgba(197, 13, 115, 0.34);
+  --moment-node: rgba(197, 13, 115, 0.72);
+  --moment-node-glow: rgba(197, 13, 115, 0.26);
 }
 /* an approved photograph is the ground: the moment commits to dark in
    BOTH themes so the image reads (never dimmed to fit a palette) */
@@ -2331,7 +2336,7 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
   --rail-cell-shadow: 0 10px 26px rgba(20, 20, 22, 0.08);
   --rail-cell-shadow-hover:
     0 16px 34px rgba(20, 20, 22, 0.12),
-    0 0 0 1px rgba(216, 15, 126, 0.12);
+    0 0 0 1px rgba(197, 13, 115, 0.12);
   --rail-nav-bg: var(--canvas-raised);
   --rail-nav-edge: rgba(20, 20, 22, 0.12);
   --rail-nav-ink: var(--ink);
