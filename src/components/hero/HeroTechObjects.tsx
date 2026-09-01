@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type { CSSProperties, JSX } from "react";
 import { heroObjects, type HeroObjectMotif } from "@/content/hero-objects";
 
 /**
@@ -11,7 +11,39 @@ import { heroObjects, type HeroObjectMotif } from "@/content/hero-objects";
  * bootstrap) renders the objects perfectly still. Line-art motifs are
  * programmatic placeholders — each slot is media-ready for an
  * owner-approved asset (see hero-objects.ts).
+ *
+ * V2 §8 (D-054) — TECHNOLOGY SIGNAL FIELD. Two things make the layer read
+ * as a field rather than a decoration:
+ *
+ * 1. NOTHING IS SYNCHRONISED. Every object gets its own drift period and
+ *    a negative start offset, derived deterministically from its slot so
+ *    the server and client agree. No two objects ever share a phase.
+ * 2. THE FIELD HAS REAL DEPTH. The deepest objects paint UNDER the
+ *    scrims — inside the photographic atmosphere of the city — while the
+ *    nearest paint in front of the whole scene. The architecture is still
+ *    the hero: the objects stay small, unlit and clear of the headline.
+ *
+ * No HUD, no readouts, no invented metrics.
  */
+
+/* deterministic per-slot timing: same numbers on the server and the
+   client, no two objects in phase */
+const DRIFT_BASE: Record<1 | 2 | 3, number> = { 1: 44, 2: 58, 3: 74 };
+const LAYER: Record<1 | 2 | 3, "near" | "mid" | "far"> = {
+  1: "near",
+  2: "mid",
+  3: "far",
+};
+function timing(i: number, depth: 1 | 2 | 3) {
+  const spread = 0.78 + ((i * 37) % 45) / 100; // 0.78 … 1.22
+  const drift = DRIFT_BASE[depth] * spread;
+  return {
+    "--drift-dur": `${drift.toFixed(1)}s`,
+    "--drift-delay": `-${((i * 53) % 97).toFixed(1)}s`,
+    "--twinkle-dur": `${(9 + ((i * 29) % 13)).toFixed(1)}s`,
+    "--twinkle-delay": `-${((i * 41) % 17).toFixed(1)}s`,
+  } as CSSProperties;
+}
 
 const S = {
   fill: "none",
@@ -84,16 +116,18 @@ const MOTIFS: Record<HeroObjectMotif, JSX.Element> = {
 export function HeroTechObjects() {
   return (
     <div className="hero-objects" aria-hidden="true">
-      {heroObjects.map((o) => (
+      {heroObjects.map((o, i) => (
         <span
           key={o.id}
           className="hero-object"
           data-depth={o.depth}
+          data-layer={LAYER[o.depth]}
           data-desktop-only={o.desktopOnly ? "" : undefined}
           style={{
             insetInlineStart: `${o.inlineStart}%`,
             top: `${o.top}%`,
             width: `clamp(26px, ${o.size}vw, 58px)`,
+            ...timing(i, o.depth),
           }}
         >
           <span className="hero-object-drift">

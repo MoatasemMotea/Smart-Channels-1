@@ -544,7 +544,9 @@ html[data-opening="revealing"] .hero-accent-word {
 .hero-objects {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  /* deliberately NOT a stacking context: the objects themselves take
+     their z-order among the hero's scrims and content (D-054 §8) */
+  z-index: auto;
   pointer-events: none;
   overflow: hidden;
 }
@@ -554,6 +556,12 @@ html[data-opening="revealing"] .hero-accent-word {
   aspect-ratio: 1;
   color: rgba(235, 238, 246, 0.5);
 }
+/* D-054 §8: real depth — the far objects sit UNDER the scrims, inside the
+   photographic atmosphere; the near ones read in front of the scene. The
+   architecture stays the hero: nothing grows, glows or gains a readout. */
+.hero-object[data-layer="far"] { z-index: 0; }
+.hero-object[data-layer="mid"] { z-index: 1; }
+.hero-object[data-layer="near"] { z-index: 3; }
 .hero-object[data-depth="1"] { opacity: 0.85; }
 .hero-object[data-depth="2"] { opacity: 0.6; scale: 0.88; }
 .hero-object[data-depth="3"] { opacity: 0.4; scale: 0.74; filter: blur(0.4px); }
@@ -572,15 +580,23 @@ html[data-opening="revealing"] .hero-accent-word {
 @media (max-width: 47.99rem) {
   .hero-object[data-desktop-only] { display: none; }
 }
-/* slow orbital drift — depth picks period and radius; never on STATIC */
+/* Slow drift — never on STATIC. D-054 §8: each depth has its OWN path,
+   and each object its own period and negative start offset (set inline
+   from the slot), so the field never pulses in unison. */
+html:not([data-motion-tier="static"]) .hero-object .hero-object-drift {
+  animation-duration: var(--drift-dur, 52s);
+  animation-delay: var(--drift-delay, 0s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
 html:not([data-motion-tier="static"]) .hero-object[data-depth="1"] .hero-object-drift {
-  animation: hero-object-orbit-a 44s linear infinite;
+  animation-name: hero-object-orbit-a;
 }
 html:not([data-motion-tier="static"]) .hero-object[data-depth="2"] .hero-object-drift {
-  animation: hero-object-orbit-b 58s linear infinite;
+  animation-name: hero-object-orbit-b;
 }
 html:not([data-motion-tier="static"]) .hero-object[data-depth="3"] .hero-object-drift {
-  animation: hero-object-orbit-a 74s linear infinite reverse;
+  animation-name: hero-object-orbit-c;
 }
 @keyframes hero-object-orbit-a {
   0% { transform: translate(0, 0); }
@@ -596,6 +612,25 @@ html:not([data-motion-tier="static"]) .hero-object[data-depth="3"] .hero-object-
   75% { transform: translate(7px, 6px); }
   100% { transform: translate(0, 0); }
 }
+@keyframes hero-object-orbit-c {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(-11px, -5px); }
+  66% { transform: translate(6px, 8px); }
+  100% { transform: translate(0, 0); }
+}
+/* star-like presence (FULL only): a slow, unsynchronised breath in
+   luminosity — the object is never redrawn, only more or less present */
+html[data-motion-tier="full"] .hero-object {
+  animation: hero-object-breathe var(--twinkle-dur, 11s) var(--ease-cinematic)
+    var(--twinkle-delay, 0s) infinite;
+}
+@keyframes hero-object-breathe {
+  0%, 100% { opacity: var(--obj-opacity, 0.6); }
+  50% { opacity: calc(var(--obj-opacity, 0.6) * 1.28); }
+}
+.hero-object[data-depth="1"] { --obj-opacity: 0.72; }
+.hero-object[data-depth="2"] { --obj-opacity: 0.52; }
+.hero-object[data-depth="3"] { --obj-opacity: 0.34; }
 
 /* ------------------------------------------------------------------ */
 /* D-041 — Riyadh photographic hero scene (owner-approved media).      */
