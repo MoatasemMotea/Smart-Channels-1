@@ -2193,8 +2193,33 @@ html[data-motion-tier="full"] .arrive[data-scene="products"] .product-slot-media
      depth transition regains control */
   animation: product-media-settle 900ms var(--ease-cinematic) backwards;
 }
+/* D-054 §12: the slot's settle IS its mask reveal — the image is opened
+   by the scan rather than appearing behind it. `backwards` fill means the
+   clip is released when the animation ends, so a slot is never left
+   hidden and the hover depth transition still regains control. */
 @keyframes product-media-settle {
-  from { transform: scale(1.04); }
+  from {
+    transform: scale(1.04);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    transform: scale(1);
+    clip-path: inset(0);
+  }
+}
+html[dir="rtl"][data-motion-tier="full"] .reveal.is-visible[data-scene="products"] .product-slot-media img,
+html[dir="rtl"][data-motion-tier="full"] .arrive[data-scene="products"] .product-slot-media img {
+  animation-name: product-media-settle-rtl;
+}
+@keyframes product-media-settle-rtl {
+  from {
+    transform: scale(1.04);
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    transform: scale(1);
+    clip-path: inset(0);
+  }
 }
 .product-slot-media-empty {
   display: flex;
@@ -4034,13 +4059,17 @@ html[data-motion-tier="full"] .scan-frame.is-visible::after {
 }
 /* the scan does not pass over a finished image — it OPENS it (§12:
    quiet → thin scan → mask reveal → settle → one edge pulse → rest).
-   FULL tier only; LITE/STATIC show the media outright. Mirrors the
-   established .media-reveal contract. */
-html[data-motion-tier="full"] .scan-frame :is(img, video) {
+   FULL tier only; LITE/STATIC show the media outright.
+
+   The pre-state is tied to the element that actually receives
+   `.is-visible`, so an image is only ever hidden while its own arrival is
+   still pending — if the observer never runs, nothing is hidden. The
+   homepage's four featured slots get the same mask through their own
+   settle animation below, which owns those images. */
+html[data-motion-tier="full"] .product-card:not(.is-visible) .scan-frame :is(img, video) {
   clip-path: inset(0 100% 0 0);
 }
-html[data-motion-tier="full"] .is-visible .scan-frame :is(img, video),
-html[data-motion-tier="full"] .scan-frame.is-visible :is(img, video) {
+html[data-motion-tier="full"] .product-card.is-visible .scan-frame :is(img, video) {
   animation: scan-reveal 1250ms var(--ease-cinematic) both;
 }
 @keyframes scan-reveal {
@@ -4048,11 +4077,10 @@ html[data-motion-tier="full"] .scan-frame.is-visible :is(img, video) {
   to { clip-path: inset(0); }
 }
 [dir="rtl"] .scan-frame::after { inset-inline-start: auto; inset-inline-end: -30%; }
-html[dir="rtl"][data-motion-tier="full"] .scan-frame :is(img, video) {
+html[dir="rtl"][data-motion-tier="full"] .product-card:not(.is-visible) .scan-frame :is(img, video) {
   clip-path: inset(0 0 0 100%);
 }
-html[dir="rtl"][data-motion-tier="full"] .is-visible .scan-frame :is(img, video),
-html[dir="rtl"][data-motion-tier="full"] .scan-frame.is-visible :is(img, video) {
+html[dir="rtl"][data-motion-tier="full"] .product-card.is-visible .scan-frame :is(img, video) {
   animation-name: scan-reveal-rtl;
 }
 @keyframes scan-reveal-rtl {
