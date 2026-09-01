@@ -3524,45 +3524,47 @@ select.form-input { appearance: auto; }
   line-height: 1.7;
 }
 /* §27 — click-to-load Google map: nothing external until asked for */
+/* D-054 §19: the map is on the page, as a surface of the canvas. */
 .location-map {
-  border: 1px solid var(--line);
+  border: 1px solid var(--canvas-edge);
   border-radius: 10px;
   overflow: hidden;
+  background: var(--canvas-media);
+  box-shadow: var(--canvas-shadow);
+}
+.location-map {
+  position: relative;
 }
 .location-map iframe {
+  position: relative;
   display: block;
   inline-size: 100%;
   aspect-ratio: 4 / 3;
   border: 0;
 }
-.location-map-idle {
+/* the ground behind the embed: the approved address, never a blank box */
+.location-map-ground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 4 / 3;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  padding: 1.75rem;
   text-align: center;
-  border-style: dashed;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  background:
+    repeating-linear-gradient(0deg, var(--motif-line) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, var(--motif-line) 0 1px, transparent 1px 34px);
 }
-.location-map-load {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  padding: 0.8rem 1.4rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+.location-map-pin {
+  font-size: 1.25rem;
   color: var(--accent);
-  transition: background-color var(--dur-control) var(--ease-engineered), color var(--dur-control) var(--ease-engineered);
 }
-.location-map-load:hover,
-.location-map-load:focus-visible {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-.location-map-pin { font-size: 1.1rem; }
 
 /* ------------------------------------------------------------------ */
 /* Products catalogue (D-048) — media-ready cards, designed motif      */
@@ -4086,8 +4088,9 @@ html[data-motion-tier="full"] .is-visible .edge-pulse::before {
 /* ---- 5. MAGNETIC: selective, restrained attraction (§14) ------------ */
 /* Applied only to major controls; driven by CustomCursor, disabled for
    coarse pointers and reduced motion. */
+/* The lean itself is driven frame-by-frame by CustomCursor, so no CSS
+   transition here — a transition would fight the loop and lag it. */
 .magnetic {
-  transition: transform 380ms var(--ease-engineered);
   will-change: transform;
 }
 @media (pointer: coarse) {

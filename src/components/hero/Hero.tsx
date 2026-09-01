@@ -90,7 +90,7 @@ export async function Hero() {
           <div className="hero-stage mt-8 flex flex-wrap gap-4" data-stage="6">
             <Link
               href="/projects"
-              className="rounded bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink"
+              className="magnetic rounded bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink"
             >
               {t("ctaProjects")}&nbsp;&nbsp;<span aria-hidden="true">→</span>
             </Link>

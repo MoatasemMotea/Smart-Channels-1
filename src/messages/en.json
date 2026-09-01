@@ -196,8 +196,6 @@
     "errPhone": "Enter a valid phone number",
     "errConsent": "Please confirm consent so we can contact you",
     "infoTitle": "Contact information",
-    "mapLoad": "View map",
-    "mapHint": "The map loads from Google Maps only when you choose to view it.",
     "mapTitle": "Smart Channels — location map"
   },
   "assistant": {

@@ -47,7 +47,7 @@ export async function Header() {
       {cta ? (
         <Link
           href={cta.href}
-          className="hidden whitespace-nowrap rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
+          className="magnetic hidden whitespace-nowrap rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
         >
           {localize(cta.label, locale)}
         </Link>

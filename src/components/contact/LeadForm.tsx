@@ -214,7 +214,7 @@ export function LeadForm() {
         <button
           type="submit"
           disabled={phase === "sending"}
-          className="rounded bg-accent px-7 py-3.5 text-sm font-semibold text-accent-ink disabled:opacity-60"
+          className="magnetic rounded bg-accent px-7 py-3.5 text-sm font-semibold text-accent-ink disabled:opacity-60"
         >
           {phase === "sending" ? t("sending") : t("send")}
           &nbsp;&nbsp;<span aria-hidden="true">→</span>
