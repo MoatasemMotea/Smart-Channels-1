@@ -1511,9 +1511,33 @@ html[data-opening="running"] .floating-de {
 
 /* ABOUT (Q-P5-1): editorial split; the field image enters through a
    masked editorial reveal once the section becomes visible. */
+/* D-054 §13 — restrained THREE-LAYER image depth. An offset ground plate
+   carries the weight, the frame is a raised surface of the canvas, and
+   the image keeps its own inner edge. No drop-shadow cliché, no motion:
+   depth here is composition, not animation. */
 .media-frame {
-  border: 1px solid var(--line);
+  position: relative;
+  border: 1px solid var(--canvas-edge);
   padding: 0.5rem;
+  background: var(--canvas-raised);
+  box-shadow: var(--canvas-shadow);
+}
+.media-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 1.15rem -1.15rem -1.15rem 1.15rem;
+  background: var(--canvas-glass);
+  border: 1px solid var(--canvas-edge);
+  pointer-events: none;
+}
+[dir="rtl"] .media-frame::before {
+  inset: 1.15rem 1.15rem -1.15rem -1.15rem;
+}
+.media-frame img,
+.media-frame video {
+  display: block;
+  box-shadow: inset 0 0 0 1px var(--canvas-edge);
 }
 .media-reveal {
   overflow: hidden;
@@ -2342,6 +2366,7 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
   padding-inline-end: 0.9rem;
 }
 .rail-cell {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2365,6 +2390,26 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
   transform: translateY(-3px) scale(1.02);
   border-color: var(--signal-soft);
   box-shadow: var(--rail-cell-shadow-hover);
+}
+/* D-054 §§17–18: activation is ONE node on the cell the visitor is
+   actually reading — never a flash across the whole row, and never a
+   change to the mark itself. Logo clarity outranks animation. */
+.rail-cell::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.6rem;
+  top: 0.6rem;
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: 9999px;
+  background: var(--signal-node);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-control) var(--ease-engineered);
+}
+.rail-cell:hover::after,
+.rail-cell:focus-within::after {
+  opacity: 1;
 }
 /* the light plate is the logo's ground — original colors stay intact
    (a third of the approved marks are near-black glyphs) */
@@ -3904,6 +3949,36 @@ html:not([data-motion-tier="static"]) .seam.is-visible::before {
 }
 [dir="rtl"] .seam::before { --seam-origin: 100% 50%; }
 
+/* D-054 §6: consecutive boundaries never repeat the same device. */
+.seam[data-seam="converge"]::before,
+[dir="rtl"] .seam[data-seam="converge"]::before {
+  --seam-origin: 50% 50%;
+}
+/* a single node lands on the rule, and the light leaves from it */
+.seam[data-seam="node"] {
+  --seam-origin: 50% 50%;
+}
+.seam[data-seam="node"]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-start: calc(50% - 2.5px);
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: 9999px;
+  background: var(--signal-node);
+  opacity: 0;
+  pointer-events: none;
+}
+html:not([data-motion-tier="static"]) .seam[data-seam="node"].is-visible::after {
+  animation: seam-node 1200ms var(--ease-cinematic) both;
+}
+@keyframes seam-node {
+  0% { transform: scale(0.4); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
 /* ---- 2. SIGNAL NODE: a chapter announces itself with one pulse ------ */
 .signal-node {
   position: relative;
@@ -3950,9 +4025,37 @@ html[data-motion-tier="full"] .scan-frame.is-visible::after {
   85% { opacity: 1; }
   100% { transform: translateX(460%); opacity: 0; }
 }
+/* the scan does not pass over a finished image — it OPENS it (§12:
+   quiet → thin scan → mask reveal → settle → one edge pulse → rest).
+   FULL tier only; LITE/STATIC show the media outright. Mirrors the
+   established .media-reveal contract. */
+html[data-motion-tier="full"] .scan-frame :is(img, video) {
+  clip-path: inset(0 100% 0 0);
+}
+html[data-motion-tier="full"] .is-visible .scan-frame :is(img, video),
+html[data-motion-tier="full"] .scan-frame.is-visible :is(img, video) {
+  animation: scan-reveal 1250ms var(--ease-cinematic) both;
+}
+@keyframes scan-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0); }
+}
 [dir="rtl"] .scan-frame::after { inset-inline-start: auto; inset-inline-end: -30%; }
-[dir="rtl"] .scan-frame.is-visible::after,
-[dir="rtl"] .is-visible .scan-frame::after { animation-name: scan-sweep-rtl; }
+html[dir="rtl"][data-motion-tier="full"] .scan-frame :is(img, video) {
+  clip-path: inset(0 0 0 100%);
+}
+html[dir="rtl"][data-motion-tier="full"] .is-visible .scan-frame :is(img, video),
+html[dir="rtl"][data-motion-tier="full"] .scan-frame.is-visible :is(img, video) {
+  animation-name: scan-reveal-rtl;
+}
+@keyframes scan-reveal-rtl {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0); }
+}
+html[dir="rtl"][data-motion-tier="full"] .scan-frame.is-visible::after,
+html[dir="rtl"][data-motion-tier="full"] .is-visible .scan-frame::after {
+  animation-name: scan-sweep-rtl;
+}
 @keyframes scan-sweep-rtl {
   0% { transform: translateX(0); opacity: 0; }
   15% { opacity: 1; }
@@ -3991,3 +4094,66 @@ html[data-motion-tier="full"] .is-visible .edge-pulse::before {
   .magnetic { transform: none !important; }
 }
 html[data-motion-tier="static"] .magnetic { transform: none !important; }
+
+
+/* ------------------------------------------------------------------ */
+/* D-054 §§4, 6 — CONNECTED ARRIVAL. A row of related items is read in
+   sequence, not flashed: each rises a moment after the one before it and
+   its top rule draws from the reading edge, so the eye is carried along
+   the row. One shot, tier-guarded, never a loop.                       */
+/* ------------------------------------------------------------------ */
+.stagger-item {
+  position: relative;
+}
+html:not([data-motion-tier="static"]) .reveal .stagger-item,
+html:not([data-motion-tier="static"]) .arrive .stagger-item {
+  opacity: 0;
+}
+html:not([data-motion-tier="static"]) .reveal.is-visible .stagger-item,
+html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item {
+  animation: stagger-rise 620ms var(--ease-cinematic) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes stagger-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* the rule that carries the eye along the row */
+.stagger-rule {
+  border-top: 0;
+}
+.stagger-rule::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--line);
+  transform-origin: left center;
+}
+[dir="rtl"] .stagger-rule::before {
+  transform-origin: right center;
+}
+html:not([data-motion-tier="static"]) .reveal .stagger-rule::before,
+html:not([data-motion-tier="static"]) .arrive .stagger-rule::before {
+  transform: scaleX(0);
+}
+html:not([data-motion-tier="static"]) .reveal.is-visible .stagger-rule::before,
+html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
+  animation: stagger-rule-draw 700ms var(--ease-cinematic) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes stagger-rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

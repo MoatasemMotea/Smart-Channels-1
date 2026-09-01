@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/types/content";
@@ -27,7 +28,10 @@ export async function AboutScene({ locale }: { locale: Locale }) {
       aria-label={t("sections.about")}
       data-scene="about"
     >
-      <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
+      {/* D-054 §10: the chapter breathes — a wider vertical measure and a
+          calmer rhythm between the editorial column, the media and the
+          capability row. */}
+      <div className="mx-auto max-w-360 px-6 py-24 lg:px-12 lg:py-32">
         <div className="grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-16">
           <div>
             <SectionHeading index={t("sections.about")}>
@@ -75,9 +79,16 @@ export async function AboutScene({ locale }: { locale: Locale }) {
           </figure>
         </div>
 
-        <ul className="mt-16 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {company.capabilities.map((c) => (
-            <li key={c.id} className="border-t border-line pt-4">
+        {/* the capability row is READ along its length: each column rises a
+            moment after the one before it and its rule draws from the
+            reading edge (D-054 §§4, 6) */}
+        <ul className="mt-20 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {company.capabilities.map((c, i) => (
+            <li
+              key={c.id}
+              className="stagger-item stagger-rule pt-4"
+              style={{ "--i": i } as CSSProperties}
+            >
               <p className="font-display text-lg font-semibold">{localize(c.name, locale)}</p>
               <p className="mt-2 text-sm leading-7 text-ink-muted">
                 {localize(c.description, locale)}

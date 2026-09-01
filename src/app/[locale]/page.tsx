@@ -44,7 +44,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <AboutScene locale={locale} />
 
-      <SectionSeam />
+      <SectionSeam variant="converge" />
 
       <NetworkScene />
 
@@ -66,11 +66,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <ProductsTeaser />
 
-      <SectionSeam />
+      <SectionSeam variant="trace" />
 
       <IndustriesMatrix locale={locale} />
 
-      <SectionSeam />
+      <SectionSeam variant="node" />
 
       <SelectedProjects locale={locale} />
 
@@ -88,13 +88,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
-      <SectionSeam />
+      <SectionSeam variant="converge" />
 
       <AlliancesIndex locale={locale} />
 
       <ClientsField locale={locale} />
 
-      <SectionSeam />
+      <SectionSeam variant="trace" />
 
       <LetsTalk />
     </>
