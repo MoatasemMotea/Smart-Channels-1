@@ -1338,6 +1338,155 @@ no CLS).
 
 ---
 
+## Visual Experience System V2 (recorded 2026-09-01)
+
+**D-054 — the site becomes one connected premium experience.** Owner
+directive "SMART CHANNELS — VISUAL EXPERIENCE SYSTEM V2 MASTER
+IMPLEMENTATION DIRECTIVE" (37 sections, OWNER APPROVED — EXECUTION
+AUTHORIZED). Explicitly **not a rebuild**: every decision below is a
+refactor, extension or composition of an existing approved system.
+Baseline `a3ea632`. Benchmarks (sela.sa, blinkexperience.com,
+blackorangelive.com) informed QUALITY ONLY — no layout, animation, code,
+identity, typography or asset was taken from any of them.
+
+**Stage A found no architectural conflict.** The theme system was already
+a clean token architecture; the white→black→white alternation came from
+seven scene classes hard-committing `#0a0a0c` plus local dark ink tokens,
+not from a structural flaw. The separately reported carousel blank-tail
+bug **did not reproduce** (copy width 8134px against a 1344px viewport,
+two copies tracked, zero gap under 12× paging stress across en/ar ×
+dark/light × 1440/1920/2560). No page progress indicator existed, and
+none was added (§30).
+
+**1. CONTINUOUS WHITE CANVAS (§5).** The site is one architectural canvas.
+Depth comes from a surface hierarchy — `--canvas`, `--canvas-raised`,
+`--canvas-sunken`, `--canvas-media`, `--canvas-edge`, `--canvas-glass`,
+`--canvas-shadow` — defined for BOTH themes, not from flipping a section
+to black. Reach, Products, Let's Talk and the Selected Projects moments
+moved onto it. **The hero keeps its night-Riyadh dark ground by design**:
+ARRIVAL is a deliberate chapter, not an alternation. A project moment
+commits to dark only when an approved photograph is its ground — the
+photograph brings its own darkness, and until then the moment is an
+editorial moment on the canvas (§15; no media invented, no chapter
+faked).
+
+**2. GLOBAL SIGNAL LANGUAGE (§3).** One recurring DNA, never one literal
+permanent line: `--signal` / `--signal-soft` / `--signal-faint` /
+`--signal-trace` / `--signal-node` tokens, plus five primitives —
+`.seam` (a boundary crossed once by light), `.signal-node`,
+`.scan-frame`, `.edge-pulse`, `.magnetic`. All are tier-guarded and
+carry RTL variants.
+
+**3. ABSOLUTE MOTION RULE (§4).** Every motion reveals, connects,
+transitions or responds. Concretely: chapter boundaries are crossed
+(seam), rows are read along their length (connected arrival), product
+media is opened by its scan rather than decorated by it, controls
+respond to approach. Nothing loops for its own sake; nothing glows.
+
+**4. THE SAUDI MAP REMAINS (§9) — and is drawn in the theme's ink.** The
+map is non-negotiable and stays. Rather than keeping a black box on a
+white page, the engine and the static SVG now read `--map-*` tokens:
+the Kingdom is luminous on the dark canvas and **charcoal on the white
+one**. Same geography, same story, one map — never a second artwork, and
+never a mirrored one (the canvas draws in screen space, the static frame
+keeps its `dir="ltr"` isolation). A theme change repaints the settled
+frame once; the story never replays. **No route was invented**: the
+national routes and hollow regional-reach markers are exactly the
+approved source-backed geography they always were.
+
+**5. HERO TECHNOLOGY SIGNAL FIELD (§8).** The objects became a field
+without a byte of new runtime JavaScript: per-slot drift periods and
+negative start offsets (deterministic, server and client agree) so
+nothing is ever in phase; a distinct path per depth; the deepest objects
+painting UNDER the hero scrims and the nearest in front of the scene; and
+a slow unsynchronised luminosity breath on FULL only. **The architecture
+remains the hero** — the objects stay small, stay clear of the headline,
+and carry no HUD, readouts or invented metrics.
+
+**6. RESTRAINED IMAGE DEPTH (§13).** One three-layer treatment, applied
+through the existing `.media-frame`: an offset ground plate, a raised
+frame surface, and the image with its own inner edge. Composition, not
+animation — nothing in it moves.
+
+**7. SELECTIVE MAGNETIC INTERACTION (§14).** Three controls, and only
+three, lean toward an approaching pointer: the hero's primary CTA, the
+header's Let's Talk, the lead form's Send Message. Capped at 7px, zero
+beyond 84px, settling to exactly zero on leave. It runs inside the
+cursor's existing rAF loop, is gated to fine pointers with motion
+enabled, and **nothing depends on it** — with it off every control is in
+the same place. This is not a cursor-dependent site.
+
+**8. GOOGLE MAP DIRECTLY VISIBLE (§19).** The "View map" gate is removed;
+the embed renders as part of the contact composition and stays lazy.
+Behind it sits a designed ground carrying the approved address, so a
+blocked or unreachable embed never leaves a blank rectangle. Still no API
+key, no credentials, no fabricated coordinates.
+
+**9. DELIVERY ARCHITECTURE UNCHANGED AND STILL HONEST (§20).** Reviewed,
+not altered: leads are durably stored, the `LeadNotifier` boundary is
+architected and unconnected, and the UI claims only what is true ("your
+enquiry has been recorded"). **No provider was chosen and no credential
+exists in the repository** — O-017 stays open.
+
+**10. NO PAGE PROGRESS INDICATOR (§30).** None existed; none was built.
+
+**11. PERFORMANCE RULES (§27).** No GSAP, no Lenis, no Three.js — no
+dependency at all was added; the whole system is CSS plus the observers
+and loops that already existed. Three loops that were spinning unused
+frames now stop: the hero ambient field (which had been requesting frames
+forever while skipping the work offscreen), both logo rails (which paused
+their motion but not their loop), and the cursor loop. Standing rule: a
+loop that cannot be seen must not be scheduled.
+
+**Contrast correction.** The canvas introduced a sunken surface tier, and
+the AA-weighted light accent fell to 4.36:1 against it on the
+regional-reach legend and the "Explore Project" links. It is deepened
+from `#d80f7e` to `#c50d73` — 5.71 on white, 5.46 on the canvas, 5.09 on
+the sunken tier — with the light signal tokens following it. §5's "never
+compromise contrast" is a hard constraint, not a preference.
+
+**Two defects found by visual QA and fixed.** (a) The generic scan-reveal
+pre-state hid the four featured product photographs outright, because the
+homepage slots are owned by a more specific settle animation, so the
+reveal never ran and the clipped pre-state simply stayed; the pre-state is
+now tied to the element that actually receives `.is-visible`, and the
+slots carry the mask in their own keyframes. (b) The RTL scan sweep was
+losing to its LTR rule on specificity and swept the wrong way in Arabic.
+
+**Verification.** Build, lint and typecheck clean; 9 unit tests; **90/90**
+repo Playwright smoke tests. The §32 matrix — desktop and mobile × EN and
+AR × Light and Dark, eight combinations, every named chapter — audits
+**clean** on section presence, non-empty layout, horizontal overflow,
+console/page errors and WCAG AA text contrast. True 200% zoom (720×450 at
+2×) has no horizontal overflow; the 201px seen under CSS `zoom` is that
+property's known fixed-element artifact. Theme and locale round-trips
+preserve state and never replay the opening. The only mirrored artwork in
+Arabic is the four rail chevrons — direction indicators; no logo,
+photograph or map is mirrored.
+
+**Before → after (§33), measured against a build of baseline `a3ea632`.**
+
+| | baseline | V2 | delta |
+|---|---|---|---|
+| Homepage transfer | 1348.8 KB | 1352.6 KB | +3.8 KB |
+| JS (gzip, all chunks) | 251.4 KB | 251.9 KB | +0.5 KB |
+| CSS (gzip) | 20.3 KB | 22.3 KB | +2.0 KB |
+| Images / fonts | 792.8 / 254.6 KB | unchanged | 0 |
+| Requests · DOM nodes | 36 · 1107 | 36 · 1113 | 0 · +6 |
+| Dependencies | — | — | none added |
+| rAF at rest, hero in view | 196 / 2s | 47 / 2s | −76% |
+| rAF at rest, Reach | 480 / 2s | **0** | −100% |
+| rAF at rest, contact | 484 / 2s | **0** | −100% |
+| CLS | 0 | 0 | — |
+
+**Nothing was closed silently (§34).** O-016 through O-020 and every
+PRODUCT-MEDIA item remain exactly as they were; O-020 in particular is
+untouched — Solutions video 03 was not modified, blurred, cropped or
+replaced. No business fact, project, product, client, partner, statistic,
+location, certification, service, image or video was invented in this
+round.
+
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1367,4 +1516,5 @@ no CLS).
 | PRODUCT-AR-NAMES | Approved Arabic names for the 22 product categories | AR polish (non-blocking — approved EN names render via arPolicy latin) | D-052 §14: specialized terminology never invented; owner to approve Arabic terms (or confirm Latin presentation) at final refinement. |
 | PRODUCT-MEDIA-02 | Low-resolution sources: 01-switch.jpg (500×270) and multi-charger-t60.png (500×500) | Final refinement (both presented whole on plates meanwhile) | D-052/D-053: never upscaled or AI-enhanced; higher-resolution owner photographs are recommended. |
 | PRODUCT-MEDIA-03 | Ten categories still without approved imagery — **Router, UPS, Monitor, PC, HDMI Extender, Face Recognition Terminals** (supplied media rejected for cause at D-053) and **Hard Disk, Decoder, AC Adapter, Media Converter** (never supplied) | Full Products imagery | Each keeps the designed media-pending motif; adding one later is a pure data edit. Rejection reasons per category are recorded in media-source/images/products/MAPPING.md. |
+| V2-MAP-EMBED | The Google Maps embed on the contact chapter could not be visually confirmed from the build environment — its egress policy blocks google.com. | Final launch check | D-054 §19: markup, laziness and the removal of the "View map" gate are verified; the rendered map needs one look on a normal network. The designed address ground behind it means a blocked embed is never a blank rectangle. |
 | PRODUCT-MEDIA-HELD | 14 second-set files held from Product use; **Point of contact.jpg must remain unpublished** (identifiable person, legible institutional emblem) | — | D-053: the infrastructure/technical images may be considered for a future owner-authorized Solutions-support round; none may ever be presented as Gallery/project evidence. |
