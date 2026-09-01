@@ -130,6 +130,53 @@ export class NetworkEngine {
   private regionalFired = false;
   private rnd = mulberry32(72026);
 
+  /* D-054 §9: the Kingdom is drawn in the CANVAS ink of the active theme —
+     luminous on the dark canvas, CHARCOAL on the white one. Values come
+     from CSS tokens on .network-scene so the map can never fall out of
+     step with the theme system; the fallbacks are the dark-canvas voice. */
+  private pal = {
+    particle: "226 226 229",
+    particleAlt: "141 52 146",
+    dust: "180 180 190",
+    node: "233 233 236",
+    signal: "255 24 156",
+    ring: "226 226 229",
+    washAlpha: 0.035,
+    /* the signal reads at a different strength against white than against
+       black; the theme scales it rather than the geometry changing */
+    signalScale: 1,
+  };
+
+  private readPalette(): void {
+    const cs = getComputedStyle(this.canvas);
+    const read = (name: string, fallback: string) => {
+      const v = cs.getPropertyValue(name).trim();
+      return v.length > 0 ? v : fallback;
+    };
+    this.pal = {
+      particle: read("--map-particle", "226 226 229"),
+      particleAlt: read("--map-particle-alt", "141 52 146"),
+      dust: read("--map-dust", "180 180 190"),
+      node: read("--map-node", "233 233 236"),
+      signal: read("--map-signal", "255 24 156"),
+      ring: read("--map-ring", "226 226 229"),
+      washAlpha: Number(read("--map-wash-alpha", "0.035")) || 0.035,
+      signalScale: Number(read("--map-signal-scale", "1")) || 1,
+    };
+  }
+
+  /** Signal alpha for the active canvas, clamped to a legible maximum. */
+  private sig(a: number): number {
+    return Math.min(1, a * this.pal.signalScale);
+  }
+
+  /** Theme changed: re-read the ink and repaint a settled frame (§9). */
+  refreshPalette(): void {
+    this.readPalette();
+    if (this.done) this.drawFrame(true);
+  }
+
+
   constructor(
     private canvas: HTMLCanvasElement,
     locations: MapLocation[],
@@ -150,6 +197,7 @@ export class NetworkEngine {
     });
     this.hq = this.nodes.find((n) => n.hq) ?? null;
     this.regions = opts.regions ?? [];
+    this.readPalette();
     this.resize();
     this.buildParticles();
   }
@@ -332,7 +380,7 @@ export class NetworkEngine {
       const dx = (d.x + Math.sin(d.ph + t / 9000) * 0.012) * this.width;
       const dy = (d.y + Math.cos(d.ph * 1.3 + t / 11000) * 0.01) * this.height;
       const a = 0.1 * emerge * (0.6 + 0.4 * Math.sin(d.ph + t / 1600));
-      ctx.fillStyle = `rgba(180,180,190,${Math.max(0, a)})`;
+      ctx.fillStyle = `rgb(${this.pal.dust} / ${Math.max(0, a)})`;
       ctx.beginPath();
       ctx.arc(dx, dy, d.s, 0, Math.PI * 2);
       ctx.fill();
@@ -341,9 +389,9 @@ export class NetworkEngine {
       const sp = clamp01(t / (tl.emergeEnd + 500));
       const sx = this.width * (-0.2 + 1.4 * easeCinematic(sp));
       const grad = ctx.createLinearGradient(sx - 120, 0, sx + 120, 0);
-      grad.addColorStop(0, "rgba(226,226,229,0)");
-      grad.addColorStop(0.5, "rgba(226,226,229,0.035)");
-      grad.addColorStop(1, "rgba(226,226,229,0)");
+      grad.addColorStop(0, `rgb(${this.pal.particle} / 0)`);
+      grad.addColorStop(0.5, `rgb(${this.pal.particle} / ${this.pal.washAlpha})`);
+      grad.addColorStop(1, `rgb(${this.pal.particle} / 0)`);
       ctx.fillStyle = grad;
       ctx.fillRect(sx - 120, 0, 240, this.height);
     }
@@ -358,7 +406,9 @@ export class NetworkEngine {
         if (bornP <= 0) continue;
         const tw = final ? 0.9 : 0.78 + 0.22 * Math.sin(p.tw + time * 1.6);
         const a = Math.min(1, layerAlpha * emerge * bornP * tw);
-        ctx.fillStyle = p.purple ? `rgba(141,52,146,${a})` : `rgba(226,226,229,${a})`;
+        ctx.fillStyle = p.purple
+          ? `rgb(${this.pal.particleAlt} / ${a})`
+          : `rgb(${this.pal.particle} / ${a})`;
         ctx.beginPath();
         ctx.arc(final ? p.tx : p.x, final ? p.ty : p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -388,8 +438,8 @@ export class NetworkEngine {
         const settled = travel >= 1;
         // the drawn portion of the quadratic curve
         ctx.strokeStyle = settled
-          ? "rgba(255,24,156,0.22)"
-          : `rgba(255,24,156,${0.5 - 0.24 * tp})`;
+          ? `rgb(${this.pal.signal} / ${this.sig(0.22)})`
+          : `rgb(${this.pal.signal} / ${this.sig(0.5 - 0.24 * tp)})`;
         ctx.lineWidth = settled ? 1 : 1.25;
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
@@ -408,12 +458,12 @@ export class NetworkEngine {
           const u = tp;
           const hx = (1 - u) * (1 - u) * hq.x + 2 * (1 - u) * u * cx + u * u * n.x;
           const hy = (1 - u) * (1 - u) * hq.y + 2 * (1 - u) * u * cy + u * u * n.y;
-          ctx.fillStyle = "rgba(255,24,156,0.95)";
+          ctx.fillStyle = `rgb(${this.pal.signal} / ${this.sig(0.95)})`;
           ctx.beginPath();
           ctx.arc(hx, hy, 2.3, 0, Math.PI * 2);
           ctx.fill();
           if (this.tier === "full") {
-            ctx.fillStyle = "rgba(255,24,156,0.18)";
+            ctx.fillStyle = `rgb(${this.pal.signal} / ${this.sig(0.18)})`;
             ctx.beginPath();
             ctx.arc(hx, hy, 6.5, 0, Math.PI * 2);
             ctx.fill();
@@ -423,11 +473,11 @@ export class NetworkEngine {
         const nodeP = clamp01((t - (t0 + tl.routeTravel)) / 340);
         if (nodeP > 0) {
           const na = easeEngineered(nodeP);
-          ctx.fillStyle = `rgba(233,233,236,${0.92 * na})`;
+          ctx.fillStyle = `rgb(${this.pal.node} / ${0.92 * na})`;
           ctx.beginPath();
           ctx.arc(n.x, n.y, 2.6, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = `rgba(233,233,236,${0.15 * na * (final ? 1 : 1 + 0.4 * (1 - nodeP))})`;
+          ctx.fillStyle = `rgb(${this.pal.node} / ${0.15 * na * (final ? 1 : 1 + 0.4 * (1 - nodeP))})`;
           ctx.beginPath();
           ctx.arc(n.x, n.y, 8 + 5 * (1 - nodeP), 0, Math.PI * 2);
           ctx.fill();
@@ -439,22 +489,22 @@ export class NetworkEngine {
       const ig = clamp01((t - tl.riyadh) / 700);
       if (ig > 0) {
         const sweep = easeCinematic(ig);
-        ctx.strokeStyle = `rgba(255,24,156,${0.9 * easeEngineered(ig)})`;
+        ctx.strokeStyle = `rgb(${this.pal.signal} / ${this.sig(0.9 * easeEngineered(ig))})`;
         ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.arc(hq.x, hq.y, 11, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * sweep);
         ctx.stroke();
-        ctx.strokeStyle = "rgba(255,24,156,0.26)";
+        ctx.strokeStyle = `rgb(${this.pal.signal} / ${this.sig(0.26)})`;
         ctx.beginPath();
         ctx.arc(hq.x, hq.y, 18, 0, Math.PI * 2);
         ctx.stroke();
         const pulse = final ? 1 : 1 + 0.45 * Math.abs(Math.sin((t - tl.riyadh) / 620));
-        ctx.fillStyle = "rgba(255,24,156,0.95)";
+        ctx.fillStyle = `rgb(${this.pal.signal} / ${this.sig(0.95)})`;
         ctx.beginPath();
         ctx.arc(hq.x, hq.y, 3.4 * pulse, 0, Math.PI * 2);
         ctx.fill();
         if (this.tier === "full") {
-          ctx.fillStyle = "rgba(255,24,156,0.1)";
+          ctx.fillStyle = `rgb(${this.pal.signal} / ${this.sig(0.1)})`;
           ctx.beginPath();
           ctx.arc(hq.x, hq.y, 30, 0, Math.PI * 2);
           ctx.fill();
@@ -493,7 +543,9 @@ export class NetworkEngine {
       const cx = (ax + nx) / 2 + (-dy / len) * bow;
       const cy = (ay + ny) / 2 + (dx / len) * bow;
       const settled = travel >= 1;
-      ctx.strokeStyle = settled ? "rgba(255,24,156,0.18)" : `rgba(255,24,156,${0.4 - 0.2 * tp})`;
+      ctx.strokeStyle = settled
+        ? `rgb(${this.pal.signal} / ${this.sig(0.18)})`
+        : `rgb(${this.pal.signal} / ${this.sig(0.4 - 0.2 * tp)})`;
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice
       ctx.beginPath();
@@ -511,12 +563,12 @@ export class NetworkEngine {
       const ringP = clamp01((t - (t0 + 700)) / 320);
       if (ringP > 0) {
         const a = easeEngineered(ringP);
-        ctx.strokeStyle = `rgba(226,226,229,${0.65 * a})`;
+        ctx.strokeStyle = `rgb(${this.pal.ring} / ${0.65 * a})`;
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.arc(nx, ny, 4.4, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.strokeStyle = `rgba(255,24,156,${0.3 * a})`;
+        ctx.strokeStyle = `rgb(${this.pal.signal} / ${this.sig(0.3 * a)})`;
         ctx.beginPath();
         ctx.arc(nx, ny, 8.5, 0, Math.PI * 2);
         ctx.stroke();

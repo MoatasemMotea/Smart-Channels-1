@@ -30,7 +30,6 @@ export async function ProductsTeaser() {
       className="products-scene border-b border-line"
       aria-label={t("sections.products")}
       data-scene="products"
-      data-env="dark"
       id="products"
     >
       <div className="relative mx-auto max-w-360 px-6 py-24 text-center lg:px-12">
@@ -57,7 +56,7 @@ export async function ProductsTeaser() {
                        contain presents the whole device on a light
                        plate (low-res source — never upscaled/cropped) */
                     <div
-                      className="product-slot-media"
+                      className="product-slot-media scan-frame edge-pulse"
                       data-fit={p.image.fit ?? "cover"}
                       data-plate={p.image.plate}
                     >

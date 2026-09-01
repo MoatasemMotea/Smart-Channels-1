@@ -36,7 +36,6 @@ export async function SelectedProjects({ locale }: { locale: Locale }) {
       className="border-b border-line"
       aria-label={t("sections.projects")}
       data-scene="projects"
-      data-env="dark"
     >
       <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
         <SectionHeading>{t("sections.projects")}</SectionHeading>
@@ -45,7 +44,16 @@ export async function SelectedProjects({ locale }: { locale: Locale }) {
         {featured.map((p, i) => {
           const visual = p.media?.find((m) => m.type === "image");
           return (
-            <li key={p.id} className="project-moment" data-moment={i % 2 ? "end" : "start"}>
+            <li
+              key={p.id}
+              className="project-moment"
+              data-moment={i % 2 ? "end" : "start"}
+              /* D-054 §5: only a moment whose approved photograph is the
+                 ground commits to the dark environment; the rest live on
+                 the continuous canvas */
+              data-ground={visual ? "photo" : "field"}
+              data-env={visual ? "dark" : undefined}
+            >
               {/* media-ready ground: approved project media when it
                   exists, engineered signal field until then */}
               <div className="project-moment-ground" aria-hidden="true">

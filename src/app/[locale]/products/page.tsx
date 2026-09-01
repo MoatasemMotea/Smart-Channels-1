@@ -46,7 +46,6 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
       <section
         className="products-scene border-b border-line"
         aria-label={t("pages.products.title")}
-        data-env="dark"
       >
         <div className="relative mx-auto max-w-360 px-6 pb-24 pt-16 text-center lg:px-12">
           <p className="microlabel text-accent">{t("sections.products")}</p>

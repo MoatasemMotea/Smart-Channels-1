@@ -37,6 +37,27 @@
   --field-line: rgba(255, 255, 255, 0.1);
   --field-node: #c9c9ce;
 
+  /* ---- V2 CONTINUOUS CANVAS (D-054 §5) --------------------------- */
+  /* One environment with tonal depth instead of section-level
+     background switching. Scenes pick a tier; they never hard-code a
+     colour, so Light and Dark each stay internally coherent. */
+  --canvas: #0a0a0c;          /* the page ground */
+  --canvas-raised: #101015;   /* a chapter that lifts off the ground */
+  --canvas-sunken: #07070a;   /* a chapter that recedes */
+  --canvas-media: #08090c;    /* ground behind full-bleed media */
+  --canvas-edge: rgba(255, 255, 255, 0.07);  /* hairline seams */
+  --canvas-glass: rgba(255, 255, 255, 0.04); /* subtle glass fill */
+  --canvas-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+
+  /* ---- V2 GLOBAL SIGNAL LANGUAGE (D-054 §3) ---------------------- */
+  --signal: var(--brand-magenta);
+  --signal-soft: rgba(255, 24, 156, 0.32);
+  --signal-faint: rgba(255, 24, 156, 0.12);
+  --signal-trace: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.55), transparent);
+  --signal-node: rgba(255, 24, 156, 0.75);
+  --motif-line: rgba(226, 226, 229, 0.05);   /* engineered linework */
+  --motif-line-strong: rgba(226, 226, 229, 0.09);
+
   /* type roles (D-014 — Candidate A locked) */
   --font-display: "Archivo", "Noto Kufi Arabic", system-ui, sans-serif;
   --font-body: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
@@ -68,6 +89,25 @@
   --atmos: rgba(141, 52, 146, 0.04);
   --field-line: rgba(20, 20, 22, 0.1);
   --field-node: #6e6e6b;
+
+  /* V2 canvas — a premium off-white architectural environment whose
+     depth comes from tone, hairlines and shadow, not from flipping
+     whole sections to black (D-054 §5). */
+  --canvas: #fafaf8;
+  --canvas-raised: #ffffff;
+  --canvas-sunken: #f2f2ee;
+  --canvas-media: #ecece7;
+  --canvas-edge: rgba(20, 20, 22, 0.09);
+  --canvas-glass: rgba(20, 20, 22, 0.028);
+  --canvas-shadow: 0 24px 60px rgba(20, 20, 22, 0.1);
+
+  --signal: var(--brand-magenta-deep);
+  --signal-soft: rgba(216, 15, 126, 0.3);
+  --signal-faint: rgba(216, 15, 126, 0.1);
+  --signal-trace: linear-gradient(90deg, transparent, rgba(216, 15, 126, 0.5), transparent);
+  --signal-node: rgba(216, 15, 126, 0.7);
+  --motif-line: rgba(20, 20, 22, 0.06);
+  --motif-line-strong: rgba(20, 20, 22, 0.11);
 
   color-scheme: light;
 }
@@ -821,19 +861,43 @@ main > *:not(.hero-scene):first-child {
 /* National network scene (Revision 2 §§3–9): the Saudi/Gulf cinematic */
 /* moment. Dark-committed in BOTH themes (D-019) with local tokens.    */
 /* ------------------------------------------------------------------ */
+/* D-054 §5/§9: the Reach chapter now lives ON the canvas — the map is
+   drawn in charcoal/ink tokens instead of the section flipping to
+   black. Depth comes from a sunken tier + brand atmosphere. */
 .network-scene {
   position: relative;
   background:
-    radial-gradient(70% 55% at 62% 38%, rgba(141, 52, 146, 0.1), transparent 72%),
-    #0a0a0c;
-  color: #f5f5f4;
-  --bg: #0a0a0c;
-  --ink: #f5f5f4;
-  --ink-muted: #b4b4b1;
-  --line: rgba(255, 255, 255, 0.1);
-  --accent: #ff189c;
-  --accent-ink: #0a0a0c;
+    radial-gradient(70% 55% at 62% 38%, var(--atmos), transparent 72%),
+    var(--canvas-sunken);
   overflow: hidden;
+
+  /* MAP INK (D-054 §9). The engine and the static SVG read these tokens,
+     so the Kingdom is luminous on the dark canvas and CHARCOAL on the
+     white one — the same geography, never a second map. */
+  --map-particle: 226 226 229;
+  --map-particle-alt: 141 52 146;
+  --map-dust: 180 180 190;
+  --map-node: 233 233 236;
+  --map-signal: 255 24 156;
+  --map-ring: 226 226 229;
+  --map-wash-alpha: 0.035;
+  --map-signal-scale: 1;
+  --map-grid: rgba(226, 226, 229, 0.024);
+  --map-grid-soft: rgba(226, 226, 229, 0.02);
+  --map-vignette: rgba(6, 6, 7, 0.5);
+}
+[data-theme="light"] .network-scene {
+  --map-particle: 26 26 30;
+  --map-particle-alt: 106 40 110;
+  --map-dust: 96 96 106;
+  --map-node: 20 20 22;
+  --map-signal: 216 15 126;
+  --map-ring: 20 20 22;
+  --map-wash-alpha: 0.05;
+  --map-signal-scale: 1.55;
+  --map-grid: rgba(20, 20, 22, 0.035);
+  --map-grid-soft: rgba(20, 20, 22, 0.028);
+  --map-vignette: rgba(20, 20, 22, 0.06);
 }
 .network-stage {
   position: relative;
@@ -939,6 +1003,10 @@ a:focus-visible > .tx-link,
   padding: 0;
   list-style: none;
 }
+/* D-054 §5/§15: the Selected Projects moments are CINEMATIC SCALE, not a
+   black interruption. They now sit on the continuous canvas and alternate
+   surface tone for rhythm; only a moment carrying an approved photograph
+   commits to the dark ground (the image brings its own darkness). */
 .project-moment {
   position: relative;
   display: flex;
@@ -946,6 +1014,29 @@ a:focus-visible > .tx-link,
   min-block-size: clamp(360px, 62svh, 640px);
   overflow: hidden;
   border-top: 1px solid var(--line);
+  background: var(--canvas-raised);
+  color: var(--ink);
+
+  --moment-wash-a: rgba(255, 24, 156, 0.12);
+  --moment-wash-b: rgba(141, 52, 146, 0.14);
+  --moment-beam: rgba(255, 24, 156, 0.4);
+  --moment-node: rgba(255, 24, 156, 0.65);
+  --moment-node-glow: rgba(255, 24, 156, 0.45);
+}
+.project-moment:nth-child(even) {
+  background: var(--canvas-sunken);
+}
+[data-theme="light"] .project-moment {
+  --moment-wash-a: rgba(216, 15, 126, 0.07);
+  --moment-wash-b: rgba(106, 40, 110, 0.06);
+  --moment-beam: rgba(216, 15, 126, 0.34);
+  --moment-node: rgba(216, 15, 126, 0.72);
+  --moment-node-glow: rgba(216, 15, 126, 0.26);
+}
+/* an approved photograph is the ground: the moment commits to dark in
+   BOTH themes so the image reads (never dimmed to fit a palette) */
+.project-moment[data-ground="photo"],
+[data-theme="light"] .project-moment[data-ground="photo"] {
   background: #0a0a0c;
   color: #f5f5f4;
 }
@@ -962,13 +1053,13 @@ a:focus-visible > .tx-link,
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 90% at 78% 30%, rgba(255, 24, 156, 0.12), transparent 70%),
-    radial-gradient(50% 80% at 20% 85%, rgba(141, 52, 146, 0.14), transparent 70%);
+    radial-gradient(60% 90% at 78% 30%, var(--moment-wash-a), transparent 70%),
+    radial-gradient(50% 80% at 20% 85%, var(--moment-wash-b), transparent 70%);
 }
 .project-moment[data-moment="end"] .project-moment-field {
   background:
-    radial-gradient(60% 90% at 22% 30%, rgba(255, 24, 156, 0.12), transparent 70%),
-    radial-gradient(50% 80% at 80% 85%, rgba(141, 52, 146, 0.14), transparent 70%);
+    radial-gradient(60% 90% at 22% 30%, var(--moment-wash-a), transparent 70%),
+    radial-gradient(50% 80% at 80% 85%, var(--moment-wash-b), transparent 70%);
 }
 .project-moment-beam {
   position: absolute;
@@ -976,7 +1067,7 @@ a:focus-visible > .tx-link,
   top: 58%;
   inline-size: 120%;
   block-size: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, var(--moment-beam), transparent);
 }
 .project-moment-node {
   position: absolute;
@@ -985,8 +1076,8 @@ a:focus-visible > .tx-link,
   inline-size: 8px;
   block-size: 8px;
   border-radius: 9999px;
-  background: rgba(255, 24, 156, 0.65);
-  box-shadow: 0 0 22px rgba(255, 24, 156, 0.45);
+  background: var(--moment-node);
+  box-shadow: 0 0 22px var(--moment-node-glow);
 }
 .project-moment[data-moment="end"] .project-moment-node {
   inset-inline-end: auto;
@@ -1252,7 +1343,9 @@ html[data-opening="running"] .floating-de {
 /* §10 — regional-reach legend (no city names, D-042). */
 .network-regional-legend {
   position: absolute;
-  inset-inline-end: 2%;
+  /* clear of the floating action stack, which occupies the inline-end
+     gutter at every viewport (D-054 §9) */
+  inset-inline-start: 2%;
   bottom: 0;
   opacity: 0;
   transition: opacity 600ms var(--ease-cinematic);
@@ -1269,8 +1362,8 @@ html[data-opening="running"] .floating-de {
   inset: -2% 0;
   pointer-events: none;
   background:
-    repeating-linear-gradient(0deg, rgba(226, 226, 229, 0.024) 0 1px, transparent 1px 72px),
-    repeating-linear-gradient(90deg, rgba(226, 226, 229, 0.02) 0 1px, transparent 1px 92px);
+    repeating-linear-gradient(0deg, var(--map-grid) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(90deg, var(--map-grid-soft) 0 1px, transparent 1px 92px);
   mask-image: radial-gradient(75% 70% at 50% 46%, black 30%, transparent 78%);
 }
 .network-stage::after {
@@ -1278,7 +1371,7 @@ html[data-opening="running"] .floating-de {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(90% 85% at 50% 50%, transparent 55%, rgba(6, 6, 7, 0.5) 100%);
+  background: radial-gradient(90% 85% at 50% 50%, transparent 55%, var(--map-vignette) 100%);
 }
 
 /* §§7–9 — hero cinematic media slot: full-bleed under the living field,
@@ -1491,8 +1584,8 @@ html[data-motion-tier="static"] .ss-item-expand {
   position: relative;
   overflow: hidden;
   border-radius: 14px;
-  border: 1px solid var(--line);
-  background: #08090c;
+  border: 1px solid var(--canvas-edge);
+  background: var(--canvas-media);
   aspect-ratio: 16 / 10;
   min-block-size: 300px;
 }
@@ -1814,18 +1907,14 @@ html[data-motion-tier="full"] .ss-sweep {
 [dir="rtl"] .gallery-caption { line-height: 1.8; }
 
 /* LET'S TALK / CTA scene — dark committed signal ground. */
+/* D-054 §5/§21: the narrative convergence point sits on the canvas —
+   the signal language converges here instead of the section going
+   black. */
 .cta-scene {
   position: relative;
   background:
-    radial-gradient(60% 60% at 50% 42%, rgba(141, 52, 146, 0.12), transparent 70%),
-    #0a0a0c;
-  color: #f5f5f4;
-  --bg: #0a0a0c;
-  --ink: #f5f5f4;
-  --ink-muted: #b4b4b1;
-  --line: rgba(255, 255, 255, 0.1);
-  --accent: #ff189c;
-  --accent-ink: #0a0a0c;
+    radial-gradient(60% 60% at 50% 42%, var(--atmos), transparent 70%),
+    var(--canvas-sunken);
   overflow: hidden;
 }
 .cta-converge span {
@@ -1966,19 +2055,15 @@ html[data-motion-tier="full"] .ss-sweep {
 .arrive:focus { outline: none; } /* focus lands programmatically; links inside stay outlined */
 
 /* §4 — PRODUCTS cinematic stage: environment, lighting, platform. */
+/* D-054 §5: the Products chapter lifts off the canvas rather than
+   inverting it; the stage light reads as brand atmosphere in either
+   theme. */
 .products-scene {
   position: relative;
   background:
-    radial-gradient(55% 45% at 50% 78%, rgba(255, 24, 156, 0.1), transparent 70%),
-    radial-gradient(70% 55% at 50% 30%, rgba(141, 52, 146, 0.1), transparent 72%),
-    #0a0a0c;
-  color: #f5f5f4;
-  --bg: #0a0a0c;
-  --ink: #f5f5f4;
-  --ink-muted: #b4b4b1;
-  --line: rgba(255, 255, 255, 0.1);
-  --accent: #ff189c;
-  --accent-ink: #0a0a0c;
+    radial-gradient(55% 45% at 50% 78%, var(--signal-faint), transparent 70%),
+    radial-gradient(70% 55% at 50% 30%, var(--atmos), transparent 72%),
+    var(--canvas-raised);
   overflow: hidden;
 }
 .products-stage {
@@ -2007,8 +2092,8 @@ html[data-motion-tier="full"] .ss-sweep {
   position: relative;
   overflow: hidden;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--canvas-edge);
+  background: var(--canvas-glass);
   aspect-ratio: 4 / 3;
 }
 /* D-052 — owner photography in the slots: cover crops toward the
@@ -2023,7 +2108,8 @@ html[data-motion-tier="full"] .ss-sweep {
 }
 .product-slot-media[data-fit="contain"] img { padding: 0.9rem; }
 .product-slot-filled .product-slot-media {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--canvas-edge);
+  box-shadow: var(--canvas-shadow);
 }
 .product-slot-filled a:hover .product-slot-media,
 .product-slot-filled a:focus-visible .product-slot-media {
@@ -2079,8 +2165,8 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
   position: absolute;
   inset: 40% -10% 0;
   background:
-    repeating-linear-gradient(0deg, rgba(226, 226, 229, 0.05) 0 1px, transparent 1px 44px),
-    repeating-linear-gradient(90deg, rgba(226, 226, 229, 0.04) 0 1px, transparent 1px 60px);
+    repeating-linear-gradient(0deg, var(--motif-line) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(90deg, var(--motif-line) 0 1px, transparent 1px 60px);
   transform: perspective(700px) rotateX(58deg);
   transform-origin: 50% 100%;
   mask-image: radial-gradient(70% 90% at 50% 60%, black 35%, transparent 78%);
@@ -2138,8 +2224,8 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
   block-size: 8.5rem;
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.5));
+  border: 1px solid var(--canvas-edge);
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.28));
 }
 .stage-pedestal[data-fit="contain"] img { padding: 0.6rem; }
 .stage-product-name {
@@ -2161,6 +2247,36 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
 /* never recolored/mirrored/distorted), arrow controls, drag/swipe,    */
 /* under-rail signal line. RTL reverses flow semantics only.           */
 /* ------------------------------------------------------------------ */
+/* rail surface tokens (D-054 §§5, 17–18) */
+.logo-rail {
+  --rail-cell-bg: linear-gradient(180deg, #151b30 0%, #0b0e1b 100%);
+  --rail-cell-edge: rgba(146, 160, 214, 0.16);
+  --rail-cell-edge-client: rgba(120, 150, 220, 0.18);
+  --rail-cell-edge-client-hover: rgba(95, 123, 220, 0.5);
+  --rail-cell-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 26px rgba(0, 0, 0, 0.35);
+  --rail-cell-shadow-hover:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 34px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(255, 24, 156, 0.14);
+  --rail-nav-bg: rgba(11, 14, 27, 0.82);
+  --rail-nav-edge: rgba(146, 160, 214, 0.28);
+  --rail-nav-ink: #e8eaf4;
+}
+[data-theme="light"] .logo-rail {
+  --rail-cell-bg: var(--canvas-raised);
+  --rail-cell-edge: rgba(20, 20, 22, 0.1);
+  --rail-cell-edge-client: rgba(20, 20, 22, 0.08);
+  --rail-cell-edge-client-hover: rgba(95, 123, 220, 0.45);
+  --rail-cell-shadow: 0 10px 26px rgba(20, 20, 22, 0.08);
+  --rail-cell-shadow-hover:
+    0 16px 34px rgba(20, 20, 22, 0.12),
+    0 0 0 1px rgba(216, 15, 126, 0.12);
+  --rail-nav-bg: var(--canvas-raised);
+  --rail-nav-edge: rgba(20, 20, 22, 0.12);
+  --rail-nav-ink: var(--ink);
+}
 .logo-rail {
   position: relative;
   margin-top: 2.5rem;
@@ -2198,12 +2314,13 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
   min-inline-size: 11.5rem;
   padding: 0.7rem 1rem;
   border-radius: 12px;
-  /* dark glass — committed dark in BOTH themes, like the hero */
-  background: linear-gradient(180deg, #151b30 0%, #0b0e1b 100%);
-  border: 1px solid rgba(146, 160, 214, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 26px rgba(0, 0, 0, 0.35);
+  /* D-054 §5/§17: the cell is a SURFACE of the active canvas — dark glass
+     on the dark canvas, a raised paper card on the white one. The logo
+     plate below never changes, so every approved mark keeps its original
+     colours and geometry in both themes. */
+  background: var(--rail-cell-bg);
+  border: 1px solid var(--rail-cell-edge);
+  box-shadow: var(--rail-cell-shadow);
   transition:
     transform var(--dur-control) var(--ease-engineered),
     border-color var(--dur-control) var(--ease-engineered),
@@ -2211,11 +2328,8 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
 }
 .rail-cell:hover {
   transform: translateY(-3px) scale(1.02);
-  border-color: rgba(255, 24, 156, 0.42);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 16px 34px rgba(0, 0, 0, 0.45),
-    0 0 22px rgba(255, 24, 156, 0.14);
+  border-color: var(--signal-soft);
+  box-shadow: var(--rail-cell-shadow-hover);
 }
 /* the light plate is the logo's ground — original colors stay intact
    (a third of the approved marks are near-black glyphs) */
@@ -2241,14 +2355,11 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
 .client-rail-cell {
   block-size: 5rem;
   min-inline-size: 10.25rem;
-  border-color: rgba(120, 150, 220, 0.18);
+  border-color: var(--rail-cell-edge-client);
 }
 .client-rail-cell:hover {
-  border-color: rgba(95, 123, 220, 0.5);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 16px 34px rgba(0, 0, 0, 0.45),
-    0 0 22px rgba(95, 123, 220, 0.16);
+  border-color: var(--rail-cell-edge-client-hover);
+  box-shadow: var(--rail-cell-shadow-hover);
 }
 .client-rail-cell .rail-plate { block-size: 3rem; min-inline-size: 7.25rem; }
 .client-rail-cell .rail-plate img { max-block-size: 1.85rem; }
@@ -2265,9 +2376,9 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
   inline-size: 2.75rem;
   block-size: 2.75rem;
   border-radius: 50%;
-  background: rgba(11, 14, 27, 0.82);
-  border: 1px solid rgba(146, 160, 214, 0.28);
-  color: #e8eaf4;
+  background: var(--rail-nav-bg);
+  border: 1px solid var(--rail-nav-edge);
+  color: var(--rail-nav-ink);
   transition:
     border-color var(--dur-control) var(--ease-engineered),
     color var(--dur-control) var(--ease-engineered),
@@ -3415,14 +3526,14 @@ select.form-input { appearance: auto; }
 .product-card-motif {
   position: relative;
   height: 7.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--canvas-edge);
 }
 .product-card-motif span {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 90% at 50% 100%, rgba(255, 24, 156, 0.14), transparent 70%),
-    repeating-linear-gradient(90deg, rgba(226, 226, 229, 0.04) 0 1px, transparent 1px 42px);
+    radial-gradient(60% 90% at 50% 100%, var(--signal-faint), transparent 70%),
+    repeating-linear-gradient(90deg, var(--motif-line) 0 1px, transparent 1px 42px);
 }
 .product-card-body { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.3rem 1.4rem 1.4rem; }
 .product-card-name { font-size: 1.25rem; font-weight: 700; }
@@ -3722,3 +3833,126 @@ html[data-opening="running"] .floating-top {
 .sc-cursor[data-state="view"] .sc-cursor-label[data-label="view"] {
   opacity: 1;
 }
+
+/* ==================================================================== */
+/* D-054 — VISUAL EXPERIENCE SYSTEM V2                                  */
+/* Global Signal Language primitives + section-to-section continuity.   */
+/* Every rule here must REVEAL, CONNECT, TRANSITION or RESPOND (§4).    */
+/* ==================================================================== */
+
+/* ---- 1. SEAM: adjacent chapters relate instead of butting together -- */
+/* A hairline that carries a travelling signal node across the boundary
+   as the next chapter arrives. One-shot on reveal — never a loop. */
+.seam {
+  position: relative;
+  block-size: 0;
+  border-top: 1px solid var(--canvas-edge);
+}
+.seam::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--signal-trace);
+  transform: scaleX(0);
+  transform-origin: var(--seam-origin, 0% 50%);
+  opacity: 0;
+}
+html:not([data-motion-tier="static"]) .seam.is-visible::before {
+  animation: seam-trace 1400ms var(--ease-cinematic) both;
+}
+@keyframes seam-trace {
+  0% { transform: scaleX(0); opacity: 0; }
+  22% { opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0.55; }
+}
+[dir="rtl"] .seam::before { --seam-origin: 100% 50%; }
+
+/* ---- 2. SIGNAL NODE: a chapter announces itself with one pulse ------ */
+.signal-node {
+  position: relative;
+  display: inline-block;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 9999px;
+  background: var(--signal-node);
+}
+html[data-motion-tier="full"] .is-visible .signal-node::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 1px solid var(--signal-soft);
+  animation: node-propagate 1800ms var(--ease-cinematic) 200ms 2;
+}
+@keyframes node-propagate {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(3.4); opacity: 0; }
+}
+
+/* ---- 3. SCANNER: a thin signal sweeps a frame, once, on reveal ------ */
+/* Products (§12) and any media frame that should feel "read" by the
+   system rather than merely faded in. */
+.scan-frame { position: relative; overflow: hidden; }
+.scan-frame::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -30%;
+  inline-size: 28%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--signal-faint) 45%, var(--signal-soft) 50%, var(--signal-faint) 55%, transparent);
+  opacity: 0;
+}
+html[data-motion-tier="full"] .is-visible .scan-frame::after,
+html[data-motion-tier="full"] .scan-frame.is-visible::after {
+  animation: scan-sweep 1250ms var(--ease-cinematic) both;
+}
+@keyframes scan-sweep {
+  0% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(460%); opacity: 0; }
+}
+[dir="rtl"] .scan-frame::after { inset-inline-start: auto; inset-inline-end: -30%; }
+[dir="rtl"] .scan-frame.is-visible::after,
+[dir="rtl"] .is-visible .scan-frame::after { animation-name: scan-sweep-rtl; }
+@keyframes scan-sweep-rtl {
+  0% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(-460%); opacity: 0; }
+}
+
+/* ---- 4. EDGE PULSE: a frame RESPONDS once it has been revealed ------ */
+.edge-pulse { position: relative; }
+.edge-pulse::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid var(--signal);
+  opacity: 0;
+  pointer-events: none;
+}
+html[data-motion-tier="full"] .is-visible .edge-pulse::before {
+  animation: edge-pulse 900ms var(--ease-engineered) 1150ms both;
+}
+@keyframes edge-pulse {
+  0% { opacity: 0; }
+  35% { opacity: 0.65; }
+  100% { opacity: 0; }
+}
+
+/* ---- 5. MAGNETIC: selective, restrained attraction (§14) ------------ */
+/* Applied only to major controls; driven by CustomCursor, disabled for
+   coarse pointers and reduced motion. */
+.magnetic {
+  transition: transform 380ms var(--ease-engineered);
+  will-change: transform;
+}
+@media (pointer: coarse) {
+  .magnetic { transform: none !important; }
+}
+html[data-motion-tier="static"] .magnetic { transform: none !important; }

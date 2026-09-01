@@ -13,6 +13,7 @@ import { LetsTalk } from "@/components/home/LetsTalk";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { HashArrival } from "@/components/motion/HashArrival";
+import { SectionSeam } from "@/components/motion/SectionSeam";
 
 /**
  * HOMEPAGE — the primary one-page experience (final pre-media
@@ -43,6 +44,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <AboutScene locale={locale} />
 
+      <SectionSeam />
+
       <NetworkScene />
 
       {/* Solutions — cinematic media showcase (D-050 Solutions
@@ -63,7 +66,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <ProductsTeaser />
 
+      <SectionSeam />
+
       <IndustriesMatrix locale={locale} />
+
+      <SectionSeam />
 
       <SelectedProjects locale={locale} />
 
@@ -81,9 +88,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
+      <SectionSeam />
+
       <AlliancesIndex locale={locale} />
 
       <ClientsField locale={locale} />
+
+      <SectionSeam />
 
       <LetsTalk />
     </>

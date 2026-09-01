@@ -27,7 +27,6 @@ export async function LetsTalk() {
       className="cta-scene"
       aria-label={t("sections.contact")}
       data-scene="cta"
-      data-env="dark"
     >
       <div className="relative mx-auto max-w-360 px-6 py-24 lg:px-12">
         <div aria-hidden="true" className="cta-converge">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/types/content";
 import { getPublishedProducts, localize } from "@/lib/content";
@@ -35,6 +35,28 @@ export function ProductCatalog() {
     return [...seen.keys()];
   }, [products, locale]);
   const [filter, setFilter] = useState<string>("all");
+  const gridRef = useRef<HTMLUListElement>(null);
+
+  /* D-054 §12: each card is "read" by the system ONCE as it arrives —
+     a thin signal scan, then a single edge pulse. Never a loop, never
+     all cards animating at once. */
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (document.documentElement.getAttribute("data-motion-tier") !== "full") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "-8% 0px -8% 0px" },
+    );
+    for (const card of grid.querySelectorAll(".product-card")) io.observe(card);
+    return () => io.disconnect();
+  }, [filter]);
 
   if (products.length === 0) return null;
 
@@ -71,12 +93,12 @@ export function ProductCatalog() {
         </div>
       ) : null}
 
-      <ul className="product-grid">
+      <ul ref={gridRef} className="product-grid">
         {visible.map((p) => (
           <li key={p.id} id={p.slug} className="product-card">
             {p.image ? (
               <div
-                className="product-card-photo"
+                className="product-card-photo scan-frame edge-pulse"
                 data-fit={p.image.fit ?? "cover"}
                 data-plate={p.image.plate}
               >

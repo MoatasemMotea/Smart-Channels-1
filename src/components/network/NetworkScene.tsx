@@ -141,9 +141,18 @@ export function NetworkScene() {
     document.addEventListener("visibilitychange", onVisibility);
     const onResize = () => engine.resize();
     window.addEventListener("resize", onResize);
+    // D-054 §9: Light↔Dark swaps the map ink. A settled canvas has stopped
+    // rendering (§19), so the theme change repaints its final frame once —
+    // no loop restarts, no story replay.
+    const themeObs = new MutationObserver(() => engine.refreshPalette());
+    themeObs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
     return () => {
       io.disconnect();
+      themeObs.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
       engine.destroy();
@@ -182,7 +191,6 @@ export function NetworkScene() {
       className="network-scene border-b border-line"
       aria-label={t("sections.trackRecord")}
       data-scene="track-record"
-      data-env="dark"
     >
       <div className="relative mx-auto max-w-360 px-6 py-20 lg:px-12">
         {/* D-050 §8: no visible "Track Record" heading — the reach title
@@ -212,8 +220,10 @@ export function NetworkScene() {
             <svg viewBox={`0 0 ${W} ${H}`} role="presentation" focusable="false">
               <polygon
                 points={outlinePts}
-                fill="rgba(226,226,229,0.05)"
-                stroke="rgba(226,226,229,0.55)"
+                style={{
+                  fill: "rgb(var(--map-particle) / 0.05)",
+                  stroke: "rgb(var(--map-particle) / 0.55)",
+                }}
                 strokeWidth="1.4"
                 strokeDasharray="5 7"
                 strokeLinejoin="round"
@@ -228,7 +238,7 @@ export function NetworkScene() {
                         y1={hqNode.y}
                         x2={n.x}
                         y2={n.y}
-                        stroke="rgba(255,24,156,0.24)"
+                        style={{ stroke: "rgb(var(--map-signal) / 0.24)" }}
                         strokeWidth="1"
                       />
                     ))
@@ -240,22 +250,49 @@ export function NetworkScene() {
                     y1={r.ay}
                     x2={r.x}
                     y2={r.y}
-                    stroke="rgba(255,24,156,0.2)"
+                    style={{ stroke: "rgb(var(--map-signal) / 0.2)" }}
                     strokeWidth="1"
                     strokeDasharray="3 5"
                   />
-                  <circle cx={r.x} cy={r.y} r="4.2" fill="none" stroke="rgba(226,226,229,0.6)" strokeWidth="1.2" />
+                  <circle
+                    cx={r.x}
+                    cy={r.y}
+                    r="4.2"
+                    fill="none"
+                    style={{ stroke: "rgb(var(--map-ring) / 0.6)" }}
+                    strokeWidth="1.2"
+                  />
                 </g>
               ))}
               {nodePts.map((n) =>
                 n.hq ? (
                   <g key={n.id}>
                     <circle cx={n.x} cy={n.y} r="4.5" fill="var(--accent)" />
-                    <circle cx={n.x} cy={n.y} r="13" fill="none" stroke="rgba(255,24,156,0.5)" strokeWidth="1.6" />
-                    <circle cx={n.x} cy={n.y} r="22" fill="none" stroke="rgba(255,24,156,0.2)" strokeWidth="1" />
+                    <circle
+                      cx={n.x}
+                      cy={n.y}
+                      r="13"
+                      fill="none"
+                      style={{ stroke: "rgb(var(--map-signal) / 0.5)" }}
+                      strokeWidth="1.6"
+                    />
+                    <circle
+                      cx={n.x}
+                      cy={n.y}
+                      r="22"
+                      fill="none"
+                      style={{ stroke: "rgb(var(--map-signal) / 0.2)" }}
+                      strokeWidth="1"
+                    />
                   </g>
                 ) : (
-                  <circle key={n.id} cx={n.x} cy={n.y} r="3.4" fill="rgba(233,233,236,0.95)" />
+                  <circle
+                    key={n.id}
+                    cx={n.x}
+                    cy={n.y}
+                    r="3.4"
+                    style={{ fill: "rgb(var(--map-node) / 0.95)" }}
+                  />
                 ),
               )}
             </svg>
