@@ -11,7 +11,7 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { DigitalEmployee } from "@/components/assistant/DigitalEmployee";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { CustomCursor } from "@/components/layout/CustomCursor";
-import { indexingAllowed, SITE_NAME } from "@/lib/seo";
+import { indexingAllowed, organizationSchema, SITE_NAME } from "@/lib/seo";
 import "@/styles/globals.css";
 
 export function generateStaticParams() {
@@ -44,6 +44,17 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "common" });
+  const tFooter = await getTranslations({ locale, namespace: "footer" });
+
+  /* Organization structured data (D-055). Emitted only when the
+     authorized production deployment allows indexing — a noindex
+     preview has no reason to publish an identity graph (Q-P3-11). */
+  const orgSchema = indexingAllowed()
+    ? JSON.stringify(organizationSchema({ locale, name: tFooter("brandName") })).replace(
+        /</g,
+        "\\u003c",
+      )
+    : null;
 
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static">
@@ -52,6 +63,9 @@ export default async function LocaleLayout({
             readable-identity beat — never fetched ad hoc mid-sequence */}
         <link rel="preload" as="image" href="/brand/logo-dark.png" fetchPriority="high" />
         <ThemeAndTierScript />
+        {orgSchema && (
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgSchema }} />
+        )}
       </head>
       <body className="bg-bg text-ink">
         <NextIntlClientProvider>

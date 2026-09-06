@@ -1487,6 +1487,73 @@ location, certification, service, image or video was invented in this
 round.
 
 
+## LinkedIn activation + Organization schema (recorded 2026-09-06)
+
+**D-055 — the first social account goes live, and the site gets its first
+structured data.** Owner directive "D-055 — LinkedIn Activation +
+Organization Schema". Baseline `49b5b3d`. Scope was explicitly bounded to
+these two things; no media, no map, no motion system, no React component
+and no dependency was touched.
+
+**1. LinkedIn enabled as a TEMPORARY personal profile.** The owner
+supplied `https://www.linkedin.com/in/smart-channels-514a80372/`. That is
+a member profile (`/in/`), not a company page (`/company/`). It is
+recorded in `src/content/social.ts` with `enabled: true`, so the footer
+treatment built at D-029 renders it — one icon, nothing else. Instagram,
+X and TikTok stay exactly as they were: `url: null`, `enabled: false`.
+The record carries an inline TEMPORARY note pointing at O-016.
+
+**2. Organization JSON-LD (first structured data in the project).** Built
+in `src/lib/seo.ts` alongside the existing metadata helpers — same
+pure-function shape as `pageMetadata()`, no new pattern, no new
+dependency — and injected in `src/app/[locale]/layout.tsx`. It is
+locale-aware: the brand name comes from the same `footer.brandName`
+message the footer renders, and the address is localized through the
+same `getContact()` accessor the footer's contact column uses.
+
+**Nothing in it is invented.** Emitted fields are `name`, `logo`,
+`address`, `telephone`, `email` — every one of them already approved
+content (D-011, Company Profile p. 31). Fields whose data does not exist
+were **omitted rather than filled**: no `url` (no production domain is
+approved — D-010/O-011), no `PostalAddress` breakdown (the approved
+address is authored as one localized line; splitting it would invent
+structure), no founding date, no employee count, no coordinates. The
+logo stays site-relative for the same reason a domain cannot be written.
+
+**3. `sameAs` is wired but deliberately empty — so the field is absent.**
+`sameAs` is derived from `getSocialLinks()` as the single source of
+truth, then filtered to organization profiles only. On an Organization,
+`sameAs` asserts "this URL is another official page of THIS ENTITY"; a
+member profile is a different entity (a Person), so listing it would be
+a false identity claim to search engines even though the company
+operates the account. The LinkedIn URL therefore renders in the footer
+but does not enter the graph, and since it is the only enabled record,
+`sameAs` comes out empty and is dropped from the JSON-LD entirely — an
+empty `sameAs` is worse than no `sameAs`.
+
+The exclusion is **not a hand-maintained blocklist of URLs**. It reads
+each platform's own URL grammar (`ORGANIZATION_PROFILE_PATH` in
+`src/lib/seo.ts`): LinkedIn organizations live under `/company/`,
+`/showcase/` or `/school/`, so `/in/<slug>` is filtered out by shape, and
+any future URL is judged the same way. Instagram, X and TikTok share one
+handle namespace between people and organizations, so their URLs carry
+no signal and pass through unfiltered. Reversing the rule is deleting one
+line. When the official company page is created, flipping the URL in
+`src/content/social.ts` fills `sameAs` automatically — **a data edit,
+zero engineering**, exactly as D-029 promised.
+
+**4. Gated behind the indexing switch.** The JSON-LD is emitted only when
+`indexingAllowed()` is true, matching `robots.ts` and `pageMetadata()`: a
+noindex preview deployment has no reason to publish an identity graph
+(Q-P3-11).
+
+**Nothing was closed silently.** O-016 stays **open** — see its updated
+note. O-011 (production domain) is unchanged and is what keeps `url` out
+of the schema. Every other open item is untouched. No business fact,
+project, product, client, partner, statistic, location, certification,
+service, image or video was invented in this round.
+
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1506,7 +1573,7 @@ round.
 | O-013 | Official light-background logo lockup not supplied | Light-theme brand presentation (P4+ polish) | Light theme currently uses the SC mark cropped from the authoritative asset; no lockup fabricated (D-001). |
 | O-014 | ~~Two p.30 client names not legible~~ **RESOLVED** (updated profile, 2026-08-29): "Saleh Al Rajhi Partners" and "HQWS" recorded with logos (D-033). | — | Closed. |
 | O-015 | Hero AI cinematic video + poster (D-027) not yet generated/approved | Final Hero media | Slot architecture ready; generation brief in the Round 3 report; spec in src/content/hero-media.ts. |
-| O-016 | Official LinkedIn / Instagram / X / TikTok company URLs | Footer social treatment | Records prepared disabled in src/content/social.ts; enabling is a data edit (D-029/D-050 §39). |
+| O-016 | **STILL OPEN** — Official **company** LinkedIn page, plus Instagram / X / TikTok company URLs | Organization `sameAs`; full footer social treatment | D-055: LinkedIn is live TEMPORARILY on a personal profile (`/in/`, not `/company/`) — it renders in the footer but is excluded from Organization `sameAs`, which is therefore empty and omitted from the JSON-LD. Instagram / X / TikTok remain prepared-and-disabled in src/content/social.ts. Closing this item = create the official company page, replace the URL, and supply the remaining three; each is a data edit that fills the footer and `sameAs` automatically (D-029/D-050 §39/D-055). |
 | O-017 | Production lead persistence + LeadCreated delivery provider (durable store for serverless/multi-instance; email/Slack/webhook notification) | Production lead operations | D-050: local file store + server-log notifier are the honest dev defaults; adapters ready (LeadStore / LeadNotifier). Owner decision — see the D-050 provider decision matrix. |
 | O-018 | ADMIN_PASSWORD (+ optional ADMIN_SESSION_SECRET) provisioning at deploy time | /admin/leads access | D-050 §28: console renders an explicit locked state until set; no default credentials exist. |
 | O-019 | Confirm "Grand House" → grand-mosque-makkah mapping | Selected Projects correctness | D-050 §12: the owner's list says "Grand House"; the closest ledger record is Grand Mosque — Makkah. Featured on that mapping, FLAGGED for explicit confirmation. |

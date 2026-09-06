@@ -11,9 +11,12 @@ import type { SocialLink } from "@/types/content";
  */
 export const socialLinks: SocialLink[] = [
   {
+    /* TEMPORARY: personal profile (/in/), not a company page (/company/).
+       Excluded from Organization sameAs. Replace when the official
+       company page is created — see O-016. */
     platform: "linkedin",
-    url: null, // official URL pending owner input
-    enabled: false,
+    url: "https://www.linkedin.com/in/smart-channels-514a80372/",
+    enabled: true,
     label: { en: "Smart Channels on LinkedIn", ar: "Smart Channels على لينكدإن" },
     order: 1,
   },
