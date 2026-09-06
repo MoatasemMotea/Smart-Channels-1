@@ -80,7 +80,18 @@
   color-scheme: dark;
 }
 
+/* D-057 §4 — product platform tokens live at the theme root so the
+   homepage stage and the /products catalogue share one treatment.
+   Brand pink, deepened on the light canvas to hold contrast. */
+:root {
+  --platform-ring: rgba(255, 24, 156, 0.62);
+  --platform-glow: rgba(255, 24, 156, 0.34);
+  --platform-bloom: rgba(255, 24, 156, 0.20);
+}
 [data-theme="light"] {
+  --platform-ring: rgba(197, 13, 115, 0.55);
+  --platform-glow: rgba(197, 13, 115, 0.26);
+  --platform-bloom: rgba(197, 13, 115, 0.15);
   --bg: #fafaf8;
   --bg-deep: #f1f1ee;
   --surface: #ffffff;
@@ -2123,22 +2134,12 @@ html[data-motion-tier="full"] .ss-sweep {
    inverting it; the stage light reads as brand atmosphere in either
    theme. */
 .products-scene {
-  /* brand pink for the platform ring/glow, deepened on the light canvas
-     to hold contrast (same correction as the D-054 signal tokens) */
-  --platform-ring: rgba(255, 24, 156, 0.62);
-  --platform-glow: rgba(255, 24, 156, 0.34);
-  --platform-bloom: rgba(255, 24, 156, 0.20);
   position: relative;
   background:
     radial-gradient(55% 45% at 50% 78%, var(--signal-faint), transparent 70%),
     radial-gradient(70% 55% at 50% 30%, var(--atmos), transparent 72%),
     var(--canvas-raised);
   overflow: hidden;
-}
-[data-theme="light"] .products-scene {
-  --platform-ring: rgba(197, 13, 115, 0.55);
-  --platform-glow: rgba(197, 13, 115, 0.26);
-  --platform-bloom: rgba(197, 13, 115, 0.15);
 }
 .products-stage {
   position: relative;
@@ -2166,12 +2167,15 @@ html[data-motion-tier="full"] .ss-sweep {
 /* D-056 — the lit elliptical platform. It lives on a wrapper because
    .product-slot-media clips its own overflow; the ellipse peeks out
    below the card so the product reads as standing on it. */
-.product-slot-stage {
+.product-slot-stage,
+.product-card-stage {
   position: relative;
 }
 /* room for the platform between the card and the product name */
-.product-slot-filled .product-slot-stage { margin-bottom: 1.1rem; }
-.product-slot-filled .product-slot-stage::after {
+.product-slot-filled .product-slot-stage,
+.product-card[data-media="yes"] .product-card-stage { margin-bottom: 1.1rem; }
+.product-slot-filled .product-slot-stage::after,
+.product-card[data-media="yes"] .product-card-stage::after {
   content: "";
   position: absolute;
   inset-inline: 6%;
@@ -2192,7 +2196,8 @@ html[data-motion-tier="full"] .ss-sweep {
     transform var(--dur-control) var(--ease-engineered),
     box-shadow var(--dur-control) var(--ease-engineered);
 }
-.product-slot-media {
+.product-slot-media,
+.product-card-photo {
   position: relative;
   /* paints above the platform ellipse, so only the arc that extends
      past the card shows and the product reads as standing on it */
@@ -2226,7 +2231,9 @@ html[data-motion-tier="full"] .ss-sweep {
    touch reach the same state through :focus-visible; the mark itself is
    never resized or rotated. */
 .product-slot-filled a:hover .product-slot-media,
-.product-slot-filled a:focus-visible .product-slot-media {
+.product-slot-filled a:focus-visible .product-slot-media,
+.product-card:hover .product-card-photo,
+.product-card:focus-visible .product-card-photo {
   transform: translateY(-6px);
   border-color: var(--platform-ring);
   box-shadow:
@@ -2235,7 +2242,9 @@ html[data-motion-tier="full"] .ss-sweep {
 }
 /* the platform answers the lift: a touch brighter and a touch wider */
 .product-slot-filled a:hover .product-slot-stage::after,
-.product-slot-filled a:focus-visible .product-slot-stage::after {
+.product-slot-filled a:focus-visible .product-slot-stage::after,
+.product-card[data-media="yes"]:hover .product-card-stage::after,
+.product-card[data-media="yes"]:focus-visible .product-card-stage::after {
   transform: scaleX(1.06);
   box-shadow: 0 0 32px var(--platform-glow);
 }
@@ -2243,18 +2252,30 @@ html[data-motion-tier="full"] .ss-sweep {
    ring colour and the halo stay — the state is still unmistakable. */
 @media (prefers-reduced-motion: reduce) {
   .product-slot-media,
-  .product-slot-filled .product-slot-stage::after { transition: none; }
+  .product-card-photo,
+  .product-slot-filled .product-slot-stage::after,
+  .product-card[data-media="yes"] .product-card-stage::after { transition: none; }
   .product-slot-filled a:hover .product-slot-media,
-  .product-slot-filled a:focus-visible .product-slot-media { transform: none; }
+  .product-slot-filled a:focus-visible .product-slot-media,
+  .product-card:hover .product-card-photo,
+  .product-card:focus-visible .product-card-photo { transform: none; }
   .product-slot-filled a:hover .product-slot-stage::after,
-  .product-slot-filled a:focus-visible .product-slot-stage::after { transform: none; }
+  .product-slot-filled a:focus-visible .product-slot-stage::after,
+  .product-card[data-media="yes"]:hover .product-card-stage::after,
+  .product-card[data-media="yes"]:focus-visible .product-card-stage::after { transform: none; }
 }
 html[data-motion-tier="static"] .product-slot-media,
-html[data-motion-tier="static"] .product-slot-filled .product-slot-stage::after { transition: none; }
+html[data-motion-tier="static"] .product-card-photo,
+html[data-motion-tier="static"] .product-slot-filled .product-slot-stage::after,
+html[data-motion-tier="static"] .product-card[data-media="yes"] .product-card-stage::after { transition: none; }
 html[data-motion-tier="static"] .product-slot-filled a:hover .product-slot-media,
-html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-media { transform: none; }
+html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-media,
+html[data-motion-tier="static"] .product-card:hover .product-card-photo,
+html[data-motion-tier="static"] .product-card:focus-visible .product-card-photo { transform: none; }
 html[data-motion-tier="static"] .product-slot-filled a:hover .product-slot-stage::after,
-html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-stage::after { transform: none; }
+html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-stage::after,
+html[data-motion-tier="static"] .product-card[data-media="yes"]:hover .product-card-stage::after,
+html[data-motion-tier="static"] .product-card[data-media="yes"]:focus-visible .product-card-stage::after { transform: none; }
 /* §8 reveal: imagery settles 1.04 → 1.00 behind the slot entrance;
    FULL only — LITE keeps the simple slot fade, STATIC shows complete */
 html[data-motion-tier="full"] .reveal.is-visible[data-scene="products"] .product-slot-media img,
@@ -3615,27 +3636,22 @@ select.form-input { appearance: auto; }
 /* Products catalogue (D-048) — media-ready cards, designed motif      */
 /* ground until owner imagery lands.                                   */
 /* ------------------------------------------------------------------ */
+/* D-057 §4 — the catalogue uses the SAME grid and the SAME product
+   treatment as the homepage stage: one rhythm across the site. */
 .product-grid {
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
-@media (min-width: 720px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1200px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 48rem) {
+  .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; }
+}
+/* the dark attached card is gone — the mark stands on the canvas and
+   the name sits centred beneath it, exactly as on the homepage */
 .product-card {
-  border-radius: 14px;
-  overflow: hidden;
-  background: linear-gradient(180deg, #131a2e 0%, #0a0c17 100%);
-  border: 1px solid rgba(146, 160, 214, 0.16);
-  color: #f5f5f4;
-  --ink: #f5f5f4;
-  --ink-muted: #b4b4b1;
-  --accent: #ff189c;
-  transition:
-    transform var(--dur-control) var(--ease-engineered),
-    border-color var(--dur-control) var(--ease-engineered);
+  text-align: center;
 }
-.product-card:hover { transform: translateY(-3px); border-color: rgba(255, 24, 156, 0.4); }
+.product-card:focus-visible { outline: none; }
 .product-card-photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 /* D-052 art direction: contain-fit sources (cutouts, studio renders,
    low-resolution originals) rest WHOLE on a plate matched to the
@@ -3652,8 +3668,7 @@ select.form-input { appearance: auto; }
 [data-plate="dark"] { --product-plate: #0d0f14; }
 .product-card-motif {
   position: relative;
-  height: 7.5rem;
-  border-bottom: 1px solid var(--canvas-edge);
+  aspect-ratio: 4 / 3;
 }
 .product-card-motif span {
   position: absolute;
@@ -3662,8 +3677,14 @@ select.form-input { appearance: auto; }
     radial-gradient(60% 90% at 50% 100%, var(--signal-faint), transparent 70%),
     repeating-linear-gradient(90deg, var(--motif-line) 0 1px, transparent 1px 42px);
 }
-.product-card-body { display: flex; flex-direction: column; gap: 0.55rem; padding: 1.3rem 1.4rem 1.4rem; }
-.product-card-name { font-size: 1.25rem; font-weight: 700; }
+.product-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.product-card-name { font-size: 1rem; font-weight: 600; }
 .product-card-summary { font-size: 0.875rem; line-height: 1.7; color: var(--ink-muted); }
 .product-card-importance { font-size: 0.875rem; line-height: 1.7; }
 

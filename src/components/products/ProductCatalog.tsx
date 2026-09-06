@@ -95,30 +95,43 @@ export function ProductCatalog() {
 
       <ul ref={gridRef} className="product-grid">
         {visible.map((p) => (
-          <li key={p.id} id={p.slug} className="product-card">
-            {p.image ? (
-              <div
-                className="product-card-photo scan-frame edge-pulse"
-                data-fit={p.image.fit ?? "cover"}
-                data-plate={p.image.plate}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media */}
-                <img
-                  src={p.image.src}
-                  alt={localize(p.image.alt, locale)}
-                  loading="lazy"
-                  decoding="async"
-                  width={p.image.width}
-                  height={p.image.height}
-                  style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
-                />
-              </div>
-            ) : (
-              /* designed media-pending motif — never a blank placeholder */
-              <div className="product-card-motif" aria-hidden="true">
-                <span />
-              </div>
-            )}
+          /* D-057 §4: one product treatment across the site — the card is
+             frameless, the media stands on the lit platform, and the name
+             is centred beneath it. Focusable so a keyboard reaches the
+             catalogue and gets the same state hover gives. */
+          <li
+            key={p.id}
+            id={p.slug}
+            className="product-card"
+            data-media={p.image ? "yes" : "no"}
+            /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- the card itself carries the product hover/focus state, so a keyboard must be able to land on it */
+            tabIndex={0}
+          >
+            <div className="product-card-stage">
+              {p.image ? (
+                <div
+                  className="product-card-photo scan-frame edge-pulse"
+                  data-fit={p.image.fit ?? "cover"}
+                  data-plate={p.image.plate}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media */}
+                  <img
+                    src={p.image.src}
+                    alt={localize(p.image.alt, locale)}
+                    loading="lazy"
+                    decoding="async"
+                    width={p.image.width}
+                    height={p.image.height}
+                    style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
+                  />
+                </div>
+              ) : (
+                /* designed media-pending motif — never a blank placeholder */
+                <div className="product-card-photo product-card-motif" aria-hidden="true">
+                  <span />
+                </div>
+              )}
+            </div>
             <div className="product-card-body">
               {p.category ? (
                 <p className="microlabel text-accent">{localize(p.category, locale)}</p>
