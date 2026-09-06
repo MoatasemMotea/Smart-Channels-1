@@ -32,7 +32,7 @@ export async function ProductsTeaser() {
       data-scene="products"
       id="products"
     >
-      <div className="relative mx-auto max-w-360 px-6 py-24 text-center lg:px-12">
+      <div className="relative mx-auto max-w-360 px-6 py-16 text-center lg:px-12">
         <p className="microlabel text-accent">{t("sections.products")}</p>
         <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl font-bold md:text-5xl">
           {t("home.products.title")}
@@ -55,19 +55,25 @@ export async function ProductsTeaser() {
                        cover crops toward the record's focal point;
                        contain presents the whole device on a light
                        plate (low-res source — never upscaled/cropped) */
-                    <div
-                      className="product-slot-media scan-frame edge-pulse"
-                      data-fit={p.image.fit ?? "cover"}
-                      data-plate={p.image.plate}
-                    >
-                      <Image
-                        src={p.image.src}
-                        alt={localize(p.image.alt, locale)}
-                        width={p.image.width ?? 640}
-                        height={p.image.height ?? 480}
-                        sizes="(max-width: 768px) 50vw, 22vw"
-                        style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
-                      />
+                    /* D-056: the stage wrapper carries the lit elliptical
+                       platform the product stands on — the media box itself
+                       clips its own overflow, so the platform cannot live
+                       inside it */
+                    <div className="product-slot-stage">
+                      <div
+                        className="product-slot-media scan-frame edge-pulse"
+                        data-fit={p.image.fit ?? "cover"}
+                        data-plate={p.image.plate}
+                      >
+                        <Image
+                          src={p.image.src}
+                          alt={localize(p.image.alt, locale)}
+                          width={p.image.width ?? 640}
+                          height={p.image.height ?? 480}
+                          sizes="(max-width: 768px) 50vw, 22vw"
+                          style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
+                        />
+                      </div>
                     </div>
                   ) : (
                     <div className="product-slot-media product-slot-media-empty" aria-hidden="true" />

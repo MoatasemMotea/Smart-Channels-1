@@ -47,7 +47,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
       data-scene="partners"
       id="partners"
     >
-      <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
+      <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
           <SectionHeading>{t("sections.partners")}</SectionHeading>
           <p className="rail-head-echo" dir={otherDir} aria-hidden="true">
@@ -58,9 +58,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
           logos={logos.filter((l) => l.src)}
           rtl={locale === "ar"}
           kind="alliance"
-          speed={30}
-          prevLabel={t("carousel.prev")}
-          nextLabel={t("carousel.next")}
+          label={t("sections.partners")}
         />
         {/* continuation note BELOW the ecosystem, never inside the rail */}
         <p className="ecosystem-more microlabel">{t("home.morePartners")}</p>
@@ -86,7 +84,7 @@ export async function ClientsField({ locale }: { locale: Locale }) {
       data-scene="clients"
       id="clients"
     >
-      <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
+      <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
           <SectionHeading>{t("sections.clients")}</SectionHeading>
           <p className="rail-head-echo" dir={otherDir} aria-hidden="true">
@@ -98,9 +96,7 @@ export async function ClientsField({ locale }: { locale: Locale }) {
           logos={logos.filter((l) => l.src)}
           rtl={locale === "ar"}
           kind="client"
-          speed={22}
-          prevLabel={t("carousel.prev")}
-          nextLabel={t("carousel.next")}
+          label={t("sections.clients")}
         />
         <p className="ecosystem-more microlabel">{t("home.moreClients")}</p>
       </div>

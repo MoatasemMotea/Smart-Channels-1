@@ -2123,12 +2123,22 @@ html[data-motion-tier="full"] .ss-sweep {
    inverting it; the stage light reads as brand atmosphere in either
    theme. */
 .products-scene {
+  /* brand pink for the platform ring/glow, deepened on the light canvas
+     to hold contrast (same correction as the D-054 signal tokens) */
+  --platform-ring: rgba(255, 24, 156, 0.62);
+  --platform-glow: rgba(255, 24, 156, 0.34);
+  --platform-bloom: rgba(255, 24, 156, 0.20);
   position: relative;
   background:
     radial-gradient(55% 45% at 50% 78%, var(--signal-faint), transparent 70%),
     radial-gradient(70% 55% at 50% 30%, var(--atmos), transparent 72%),
     var(--canvas-raised);
   overflow: hidden;
+}
+[data-theme="light"] .products-scene {
+  --platform-ring: rgba(197, 13, 115, 0.55);
+  --platform-glow: rgba(197, 13, 115, 0.26);
+  --platform-bloom: rgba(197, 13, 115, 0.15);
 }
 .products-stage {
   position: relative;
@@ -2141,7 +2151,8 @@ html[data-motion-tier="full"] .ss-sweep {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-  margin-top: 3rem;
+  /* D-056 §4: tightened vertical rhythm across the three sections */
+  margin-top: 2.25rem;
 }
 @media (min-width: 48rem) {
   .products-slots {
@@ -2152,13 +2163,49 @@ html[data-motion-tier="full"] .ss-sweep {
 .product-slot {
   text-align: start;
 }
+/* D-056 — the lit elliptical platform. It lives on a wrapper because
+   .product-slot-media clips its own overflow; the ellipse peeks out
+   below the card so the product reads as standing on it. */
+.product-slot-stage {
+  position: relative;
+}
+/* room for the platform between the card and the product name */
+.product-slot-filled .product-slot-stage { margin-bottom: 1.1rem; }
+.product-slot-filled .product-slot-stage::after {
+  content: "";
+  position: absolute;
+  inset-inline: 6%;
+  bottom: -1.15rem;
+  block-size: 2.3rem;
+  border-radius: 50%;
+  border: 1px solid var(--platform-ring);
+  background: radial-gradient(
+    58% 66% at 50% 40%,
+    var(--platform-glow),
+    transparent 76%
+  );
+  box-shadow:
+    0 0 30px var(--platform-bloom),
+    inset 0 -6px 18px var(--platform-bloom);
+  pointer-events: none;
+  transition:
+    transform var(--dur-control) var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered);
+}
 .product-slot-media {
   position: relative;
+  /* paints above the platform ellipse, so only the arc that extends
+     past the card shows and the product reads as standing on it */
+  z-index: 1;
   overflow: hidden;
   border-radius: 6px;
   border: 1px solid var(--canvas-edge);
   background: var(--canvas-glass);
   aspect-ratio: 4 / 3;
+  transition:
+    transform var(--dur-control) var(--ease-engineered),
+    box-shadow var(--dur-control) var(--ease-engineered),
+    border-color var(--dur-control) var(--ease-engineered);
 }
 /* D-052 — owner photography in the slots: cover crops toward the
    record's focal point; contain rests the whole device on a light
@@ -2175,16 +2222,39 @@ html[data-motion-tier="full"] .ss-sweep {
   border-color: var(--canvas-edge);
   box-shadow: var(--canvas-shadow);
 }
+/* D-056 hover/focus — a small lift and a quiet pink halo. Keyboard and
+   touch reach the same state through :focus-visible; the mark itself is
+   never resized or rotated. */
 .product-slot-filled a:hover .product-slot-media,
 .product-slot-filled a:focus-visible .product-slot-media {
-  border-color: var(--brand-magenta);
-  box-shadow: 0 0 28px rgba(255, 24, 156, 0.14);
+  transform: translateY(-6px);
+  border-color: var(--platform-ring);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.26),
+    0 0 22px var(--platform-glow);
 }
-/* §8 controlled hover depth — the product stays readable */
-html:not([data-motion-tier="static"]) .product-slot-filled a:hover .product-slot-media img,
-html:not([data-motion-tier="static"]) .product-slot-filled a:focus-visible .product-slot-media img {
-  transform: scale(1.035);
+/* the platform answers the lift: a touch brighter and a touch wider */
+.product-slot-filled a:hover .product-slot-stage::after,
+.product-slot-filled a:focus-visible .product-slot-stage::after {
+  transform: scaleX(1.06);
+  box-shadow: 0 0 32px var(--platform-glow);
 }
+/* NO MOTION: the lift and the platform's widening are dropped, but the
+   ring colour and the halo stay — the state is still unmistakable. */
+@media (prefers-reduced-motion: reduce) {
+  .product-slot-media,
+  .product-slot-filled .product-slot-stage::after { transition: none; }
+  .product-slot-filled a:hover .product-slot-media,
+  .product-slot-filled a:focus-visible .product-slot-media { transform: none; }
+  .product-slot-filled a:hover .product-slot-stage::after,
+  .product-slot-filled a:focus-visible .product-slot-stage::after { transform: none; }
+}
+html[data-motion-tier="static"] .product-slot-media,
+html[data-motion-tier="static"] .product-slot-filled .product-slot-stage::after { transition: none; }
+html[data-motion-tier="static"] .product-slot-filled a:hover .product-slot-media,
+html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-media { transform: none; }
+html[data-motion-tier="static"] .product-slot-filled a:hover .product-slot-stage::after,
+html[data-motion-tier="static"] .product-slot-filled a:focus-visible .product-slot-stage::after { transform: none; }
 /* §8 reveal: imagery settles 1.04 → 1.00 behind the slot entrance;
    FULL only — LITE keeps the simple slot fade, STATIC shows complete */
 html[data-motion-tier="full"] .reveal.is-visible[data-scene="products"] .product-slot-media img,
@@ -2330,151 +2400,100 @@ html[data-motion-tier="static"] .product-slot { animation: none !important; }
 }
 
 /* ------------------------------------------------------------------ */
-/* D-042 — cinematic logo carousels (reference-locked family).         */
-/* One seamless auto-flowing rail per ecosystem: dark glass cells, a   */
-/* compact light plate preserving each mark's original color (D-033 —  */
-/* never recolored/mirrored/distorted), arrow controls, drag/swipe,    */
-/* under-rail signal line. RTL reverses flow semantics only.           */
+/* D-056 — logo marquees (Technology Alliances + Our Clients).          */
+/* NO frame, tile or plate: every approved mark sits directly on the    */
+/* section canvas in its original colours (D-033 — never recolored,     */
+/* mirrored or distorted). Motion is CSS only, a single transform on    */
+/* the track; the two ecosystems flow against each other and both flip  */
+/* with the reading direction. Pauses on hover/focus; no motion at all  */
+/* under reduced-motion or the STATIC tier.                             */
 /* ------------------------------------------------------------------ */
-/* rail surface tokens (D-054 §§5, 17–18) */
+/* The .rail-nav round is ALSO the gallery lightbox's arrow treatment
+   (GalleryExperience.tsx). The logo rails no longer render arrows, but
+   the rule and these tokens stay exactly as they were so the lightbox
+   renders identically — D-056 does not touch the gallery. */
 .logo-rail {
-  --rail-cell-bg: linear-gradient(180deg, #151b30 0%, #0b0e1b 100%);
-  --rail-cell-edge: rgba(146, 160, 214, 0.16);
-  --rail-cell-edge-client: rgba(120, 150, 220, 0.18);
-  --rail-cell-edge-client-hover: rgba(95, 123, 220, 0.5);
-  --rail-cell-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 26px rgba(0, 0, 0, 0.35);
-  --rail-cell-shadow-hover:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 16px 34px rgba(0, 0, 0, 0.45),
-    0 0 22px rgba(255, 24, 156, 0.14);
   --rail-nav-bg: rgba(11, 14, 27, 0.82);
   --rail-nav-edge: rgba(146, 160, 214, 0.28);
   --rail-nav-ink: #e8eaf4;
+  /* one full loop of a copy. Deliberately long: these rails carry 41
+     and 27 marks, so a ~30 s loop would sweep them past at ~250 px/s —
+     unreadable. These values hold the calm ~45–50 px/s the brief asks
+     for, which is ~25–30 s for a mark to cross a desktop viewport. */
+  --rail-duration: 140s;
+  position: relative;
+  margin-top: 1.75rem;
 }
 [data-theme="light"] .logo-rail {
-  --rail-cell-bg: var(--canvas-raised);
-  --rail-cell-edge: rgba(20, 20, 22, 0.1);
-  --rail-cell-edge-client: rgba(20, 20, 22, 0.08);
-  --rail-cell-edge-client-hover: rgba(95, 123, 220, 0.45);
-  --rail-cell-shadow: 0 10px 26px rgba(20, 20, 22, 0.08);
-  --rail-cell-shadow-hover:
-    0 16px 34px rgba(20, 20, 22, 0.12),
-    0 0 0 1px rgba(197, 13, 115, 0.12);
   --rail-nav-bg: var(--canvas-raised);
   --rail-nav-edge: rgba(20, 20, 22, 0.12);
   --rail-nav-ink: var(--ink);
 }
-.logo-rail {
-  position: relative;
-  margin-top: 2.5rem;
-}
+.logo-rail-client { --rail-duration: 100s; }
 .rail-viewport {
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
-  cursor: grab;
   padding-block: 0.5rem;
-  mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+  /* soft fade into the canvas at both ends of the strip */
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
 }
-.rail-viewport:active { cursor: grabbing; }
-/* no-JS baseline (no motion-tier attribute was ever set): a native
-   horizontally scrollable strip, single copy, no controls */
-html:not([data-motion-tier]) .rail-viewport { overflow-x: auto; mask-image: none; }
-html:not([data-motion-tier]) .rail-copy-b,
-html:not([data-motion-tier]) .rail-nav { display: none; }
+.rail-viewport:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 .rail-track {
   display: flex;
   width: max-content;
   will-change: transform;
+  /* the track holds two identical copies, so travelling exactly -50%
+     lands copy B precisely where copy A began — no visible jump */
+  animation: rail-flow var(--rail-duration) linear infinite;
 }
+.rail-track[data-flow="reverse"] { animation-direction: reverse; }
+@keyframes rail-flow {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+/* the visitor is reading a mark — hold the strip still */
+.logo-rail:hover .rail-track,
+.logo-rail:focus-within .rail-track { animation-play-state: paused; }
 .rail-copy {
   display: flex;
-  align-items: stretch;
-  gap: 0.9rem;
-  padding-inline-end: 0.9rem;
+  align-items: center;
+  gap: 2.5rem;
+  padding-inline-end: 2.5rem;
 }
+/* D-056: the cell and the plate are pure LAYOUT now — every frame
+   surface (glass background, border, shadow, radius, hover lift and
+   signal node) is gone, so the mark itself is the only thing on the
+   canvas. Sizing is kept so the strip holds an even rhythm. */
 .rail-cell {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  block-size: 5.6rem;
-  min-inline-size: 11.5rem;
-  padding: 0.7rem 1rem;
-  border-radius: 12px;
-  /* D-054 §5/§17: the cell is a SURFACE of the active canvas — dark glass
-     on the dark canvas, a raised paper card on the white one. The logo
-     plate below never changes, so every approved mark keeps its original
-     colours and geometry in both themes. */
-  background: var(--rail-cell-bg);
-  border: 1px solid var(--rail-cell-edge);
-  box-shadow: var(--rail-cell-shadow);
-  transition:
-    transform var(--dur-control) var(--ease-engineered),
-    border-color var(--dur-control) var(--ease-engineered),
-    box-shadow var(--dur-control) var(--ease-engineered);
+  block-size: 4rem;
 }
-.rail-cell:hover {
-  transform: translateY(-3px) scale(1.02);
-  border-color: var(--signal-soft);
-  box-shadow: var(--rail-cell-shadow-hover);
-}
-/* D-054 §§17–18: activation is ONE node on the cell the visitor is
-   actually reading — never a flash across the whole row, and never a
-   change to the mark itself. Logo clarity outranks animation. */
-.rail-cell::after {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0.6rem;
-  top: 0.6rem;
-  inline-size: 5px;
-  block-size: 5px;
-  border-radius: 9999px;
-  background: var(--signal-node);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--dur-control) var(--ease-engineered);
-}
-.rail-cell:hover::after,
-.rail-cell:focus-within::after {
-  opacity: 1;
-}
-/* the light plate is the logo's ground — original colors stay intact
-   (a third of the approved marks are near-black glyphs) */
 .rail-plate {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fdfdfc;
-  border-radius: 8px;
-  block-size: 3.4rem;
-  min-inline-size: 8.25rem;
-  padding: 0.5rem 1rem;
+  block-size: 100%;
 }
 .rail-plate img {
-  max-block-size: 2.1rem;
-  max-inline-size: 8.5rem;
+  max-block-size: 2.4rem;
+  max-inline-size: 9.5rem;
   inline-size: auto;
   block-size: auto;
   object-fit: contain;
   user-select: none;
 }
-/* Clients — same family, calmer voice: shorter cells, cooler edge */
-.client-rail-cell {
-  block-size: 5rem;
-  min-inline-size: 10.25rem;
-  border-color: var(--rail-cell-edge-client);
-}
-.client-rail-cell:hover {
-  border-color: var(--rail-cell-edge-client-hover);
-  box-shadow: var(--rail-cell-shadow-hover);
-}
-.client-rail-cell .rail-plate { block-size: 3rem; min-inline-size: 7.25rem; }
-.client-rail-cell .rail-plate img { max-block-size: 1.85rem; }
+/* Clients — same family, calmer voice: slightly smaller marks */
+.client-rail-cell { block-size: 3.6rem; }
+.client-rail-cell .rail-plate img { max-block-size: 2.1rem; max-inline-size: 8.5rem; }
 
-/* arrow controls: dark glass rounds floating at the rail edges */
+/* round control — retained for the gallery lightbox arrows only */
 .rail-nav {
   position: absolute;
   top: 50%;
@@ -2503,8 +2522,6 @@ html:not([data-motion-tier]) .rail-nav { display: none; }
   color: #ffffff;
 }
 .rail-nav svg { inline-size: 1rem; block-size: 1rem; }
-.rail-nav-prev { inset-inline-start: -0.5rem; }
-.rail-nav-next { inset-inline-end: -0.5rem; }
 /* chevrons follow reading direction (icons, not artwork) */
 [dir="rtl"] .rail-nav svg { transform: scaleX(-1); }
 
@@ -2541,20 +2558,6 @@ html[data-motion-tier="full"] .logo-rail-client .rail-underline::after {
   from { inset-inline-start: -20%; }
   to { inset-inline-start: 102%; }
 }
-/* alliances: one slow light pass across the viewport (FULL) */
-.rail-sweep {
-  position: absolute;
-  inset-block: 0;
-  inline-size: 22%;
-  inset-inline-start: -25%;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 24, 156, 0.06), transparent);
-  animation: rail-sweep 9s var(--ease-cinematic) infinite;
-}
-@keyframes rail-sweep {
-  0%, 55% { inset-inline-start: -25%; }
-  85%, 100% { inset-inline-start: 105%; }
-}
 
 /* section head: locale title + counterpart-language echo (approved
    section names only) */
@@ -2564,7 +2567,7 @@ html[data-motion-tier="full"] .logo-rail-client .rail-underline::after {
   display: inline-block;
   inline-size: fit-content;
   margin-top: -1.4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   color: var(--accent);
   font-weight: 600;
   font-size: 0.9375rem;
@@ -2572,16 +2575,28 @@ html[data-motion-tier="full"] .logo-rail-client .rail-underline::after {
 .rail-head { display: flex; flex-direction: column; align-items: flex-start; }
 [dir="rtl"] .rail-head { align-items: flex-start; }
 
-/* touch-size discipline on small screens */
+/* smaller marks and a tighter rhythm on small screens */
 @media (max-width: 640px) {
-  .rail-cell { block-size: 4.7rem; min-inline-size: 9.25rem; }
-  .rail-plate { block-size: 2.9rem; min-inline-size: 6.5rem; }
-  .rail-plate img { max-block-size: 1.7rem; max-inline-size: 6.75rem; }
-  .client-rail-cell { block-size: 4.3rem; min-inline-size: 8.5rem; }
+  .rail-cell { block-size: 3.2rem; }
+  .rail-plate img { max-block-size: 1.9rem; max-inline-size: 7rem; }
+  .client-rail-cell { block-size: 3rem; }
+  .client-rail-cell .rail-plate img { max-block-size: 1.7rem; max-inline-size: 6.5rem; }
+  .rail-copy { gap: 1.75rem; padding-inline-end: 1.75rem; }
   .rail-nav { inline-size: 2.5rem; block-size: 2.5rem; }
-  .rail-nav-prev { inset-inline-start: 0.25rem; }
-  .rail-nav-next { inset-inline-end: 0.25rem; }
 }
+
+/* NO MOTION: reduced-motion preference, and the project's STATIC tier
+   (which resolveMotionTier() already returns for that preference, for
+   Save-Data and when JS never runs). The rail becomes a plain, fully
+   readable scrollable strip — one copy, no edge fade, nothing moving. */
+@media (prefers-reduced-motion: reduce) {
+  .rail-track { animation: none; }
+  .rail-copy-b { display: none; }
+  .rail-viewport { overflow-x: auto; mask-image: none; }
+}
+html[data-motion-tier="static"] .rail-track { animation: none; }
+html[data-motion-tier="static"] .rail-copy-b { display: none; }
+html[data-motion-tier="static"] .rail-viewport { overflow-x: auto; mask-image: none; }
 
 /* ------------------------------------------------------------------ */
 /* P6 · D-043 — inner-page experience system.                          */
@@ -3655,7 +3670,7 @@ select.form-input { appearance: auto; }
 /* §§4–5 continuation notes: restrained typographic lines BELOW the
    ecosystems — never chips inside the moving rails. */
 .ecosystem-more {
-  margin-top: 1.75rem;
+  margin-top: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.9rem;

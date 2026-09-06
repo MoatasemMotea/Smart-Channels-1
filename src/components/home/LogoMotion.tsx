@@ -1,30 +1,25 @@
-"use client";
-
-import { useEffect, useRef, useSyncExternalStore } from "react";
-
 /**
- * Cinematic logo carousels (D-042 · reference-locked presentation).
+ * Logo marquees — Technology Alliances + Our Clients (D-056).
  *
- * One premium horizontal rail per ecosystem — dark glass cells on a
- * single seamless row with arrow controls, drag/swipe, and slow
- * continuous auto-flow:
- * - Technology Alliances ≈ 30 px/s with a periodic signal sweep;
- * - Our Clients ≈ 22 px/s — the same design family, calmer voice.
+ * One continuously flowing horizontal strip per ecosystem, with NO
+ * frame, tile or plate around the marks: each approved logo is placed
+ * directly on the section canvas in its original colours and geometry —
+ * never recolored, mirrored, stretched, cropped or distorted (D-033).
  *
- * Legibility contract: ~30% of the approved marks are near-black
- * glyphs, and recoloring is forbidden (D-033), so every cell is a dark
- * glass frame carrying a compact light plate that preserves each
- * logo's original color, geometry and proportions — never recolored,
- * mirrored, stretched, cropped or distorted.
+ * Motion is CSS ONLY — a single `transform` animation on the track, no
+ * JavaScript, no rAF, no layout- or paint-animated properties. The
+ * track carries two identical copies of the sequence and travels
+ * exactly one copy-width (-50% of the track), so the loop closes with
+ * no visible jump. The duplicate copy is aria-hidden so a screen reader
+ * announces every company exactly once.
  *
- * Motion engine: rAF-driven offset over a duplicated sequence,
- * wrapping at one copy-width — physically continuous, no restart, no
- * gap. Interaction pauses the flow (hover/focus immediately; arrows,
- * drag, swipe and horizontal wheel schedule a ~4 s resume). RTL
- * reverses FLOW and paging direction only. Rails pause offscreen and
- * when the tab hides. STATIC renders the identical rail without
- * auto-flow (arrows still work, instantly); with no JS at all the
- * rail is a native horizontally scrollable strip.
+ * Direction: the two ecosystems flow AGAINST each other, and both flip
+ * with the reading direction so Arabic reads correctly.
+ *
+ * The flow pauses on :hover and :focus-within. Under
+ * prefers-reduced-motion (and the project's STATIC motion tier) there
+ * is no motion at all: the rail becomes a plain, fully readable
+ * scrollable strip with a single copy and no edge fade.
  */
 export interface RailLogo {
   id: string;
@@ -32,265 +27,22 @@ export interface RailLogo {
   src: string;
 }
 
-function subscribeTier(cb: () => void) {
-  const obs = new MutationObserver(cb);
-  obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-motion-tier"] });
-  return () => obs.disconnect();
-}
-const getTier = () => document.documentElement.getAttribute("data-motion-tier") ?? "static";
-const useTier = () => useSyncExternalStore(subscribeTier, getTier, () => "static");
-
-const RESUME_DELAY = 4000; // ms after a manual interaction (§8: 3–5 s)
-
 export function LogoCarousel({
   logos,
   rtl,
   kind,
-  speed,
-  prevLabel,
-  nextLabel,
+  label,
 }: {
   logos: RailLogo[];
   rtl: boolean;
   kind: "alliance" | "client";
-  speed: number; // auto-flow, px/s
-  prevLabel: string;
-  nextLabel: string;
+  /** Accessible name for the scrollable/pausable rail region. */
+  label: string;
 }) {
-  const tier = useTier();
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  // motion state lives in refs — the rAF loop never re-renders React.
-  // §35 continuity: the offset survives locale/theme switches (which
-  // remount the tree) via a per-rail sessionStorage mirror, so the
-  // rail resumes where it was instead of resetting.
-  const xRef = useRef(0); // 0..copyWidth, in flow direction
-  useEffect(() => {
-    try {
-      const saved = Number(sessionStorage.getItem(`sc-rail-${kind}`));
-      if (Number.isFinite(saved) && saved > 0) xRef.current = saved;
-    } catch {
-      /* storage unavailable — start from 0 */
-    }
-  }, [kind]);
-  const copyWRef = useRef(0);
-  const pausesRef = useRef(new Set<string>());
-  const resumeTimer = useRef(0);
-  const tweenRef = useRef<{ from: number; to: number; start: number } | null>(null);
-  /* D-054 §27: the rail's loop is not permanent — it stops whenever the
-     row is paused (offscreen, hidden tab, hover, focus, manual hold) and
-     is woken by whatever resumes it. Nothing spins for a row nobody can
-     see. */
-  const wakeRef = useRef<(() => void) | null>(null);
-  const autoOn = tier === "full" || tier === "lite";
-
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    const track = trackRef.current;
-    if (!viewport || !track) return;
-    const copyA = track.firstElementChild as HTMLElement | null;
-    if (!copyA) return;
-
-    const pauses = pausesRef.current;
-    const measure = () => {
-      copyWRef.current = copyA.getBoundingClientRect().width;
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(copyA);
-    copyA.querySelectorAll("img").forEach((img) => {
-      if (!img.complete) img.addEventListener("load", measure, { once: true });
-    });
-
-    // x grows in the FLOW direction; RTL flips the applied sign AND
-    // pre-shifts by one copy width (D-050 §35): the duplicated copies
-    // extend rightward from the track origin, so a bare +x shift left
-    // an uncovered region at the viewport's left edge in RTL — x−w
-    // keeps both edges seamlessly covered for every x in [0, w).
-    const apply = () => {
-      const w = copyWRef.current;
-      if (w < 10) return;
-      let x = xRef.current;
-      x = ((x % w) + w) % w;
-      xRef.current = x;
-      track.style.transform = `translateX(${rtl ? x - w : -x}px)`;
-      try {
-        sessionStorage.setItem(`sc-rail-${kind}`, String(x));
-      } catch {
-        /* continuity mirror only */
-      }
-    };
-
-    const holdThenResume = () => {
-      pauses.add("manual");
-      window.clearTimeout(resumeTimer.current);
-      resumeTimer.current = window.setTimeout(() => {
-        pauses.delete("manual");
-        wake();
-      }, RESUME_DELAY);
-    };
-
-    // continuous loop: auto-flow + eased arrow tweens share one clock
-    let raf = 0;
-    let last = performance.now();
-    const loop = (now: number) => {
-      const dt = Math.min(64, now - last) / 1000;
-      last = now;
-      const tween = tweenRef.current;
-      if (tween) {
-        const p = Math.min(1, (now - tween.start) / 480);
-        const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
-        xRef.current = tween.from + (tween.to - tween.from) * e;
-        if (p >= 1) tweenRef.current = null;
-        apply();
-      } else if (autoOn && pauses.size === 0) {
-        xRef.current += speed * dt;
-        apply();
-      }
-      // nothing to advance and nothing pending: stop scheduling
-      if (!tweenRef.current && (!autoOn || pauses.size > 0)) {
-        raf = 0;
-        return;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    const wake = () => {
-      if (!raf) {
-        last = performance.now();
-        raf = requestAnimationFrame(loop);
-      }
-    };
-    wakeRef.current = wake;
-    raf = requestAnimationFrame(loop);
-
-    // §17/§21: offscreen and hidden-tab discipline
-    const io = new IntersectionObserver(
-      (es) => {
-        for (const e of es) {
-          if (e.isIntersecting) {
-            pauses.delete("offscreen");
-            wake();
-          } else {
-            pauses.add("offscreen");
-          }
-        }
-      },
-      { threshold: 0.05 },
-    );
-    io.observe(viewport);
-    const onVis = () => {
-      if (document.visibilityState === "visible") {
-        pauses.delete("hidden");
-        wake();
-      } else {
-        pauses.add("hidden");
-      }
-    };
-    document.addEventListener("visibilitychange", onVis);
-
-    // hover (mouse) and keyboard focus pause the flow in place
-    const onEnter = (e: PointerEvent) => {
-      if (e.pointerType === "mouse") pauses.add("hover");
-    };
-    const onLeave = () => {
-      pauses.delete("hover");
-      wake();
-    };
-    viewport.addEventListener("pointerenter", onEnter);
-    viewport.addEventListener("pointerleave", onLeave);
-    viewport.addEventListener("focusin", () => pauses.add("focus"));
-    viewport.addEventListener("focusout", () => {
-      pauses.delete("focus");
-      wake();
-    });
-
-    // drag / swipe: the rail follows the pointer 1:1, then resumes
-    let dragging = false;
-    let dragStartX = 0;
-    let dragStartOffset = 0;
-    const onDown = (e: PointerEvent) => {
-      if (e.pointerType === "mouse" && e.button !== 0) return;
-      dragging = true;
-      dragStartX = e.clientX;
-      dragStartOffset = xRef.current;
-      tweenRef.current = null;
-      pauses.add("manual");
-      window.clearTimeout(resumeTimer.current);
-      viewport.setPointerCapture(e.pointerId);
-    };
-    const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
-      const dx = e.clientX - dragStartX;
-      // moving the pointer along the row carries the row with it
-      xRef.current = dragStartOffset + (rtl ? dx : -dx);
-      apply();
-      wake();
-    };
-    const onUp = () => {
-      if (!dragging) return;
-      dragging = false;
-      holdThenResume();
-    };
-    viewport.addEventListener("pointerdown", onDown);
-    viewport.addEventListener("pointermove", onMove);
-    viewport.addEventListener("pointerup", onUp);
-    viewport.addEventListener("pointercancel", onUp);
-
-    // trackpad: horizontal wheel gestures steer the rail
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      xRef.current += rtl ? -e.deltaX : e.deltaX;
-      apply();
-      holdThenResume();
-    };
-    viewport.addEventListener("wheel", onWheel, { passive: false });
-
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      wakeRef.current = null;
-      window.clearTimeout(resumeTimer.current);
-      ro.disconnect();
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
-      viewport.removeEventListener("pointerenter", onEnter);
-      viewport.removeEventListener("pointerleave", onLeave);
-      viewport.removeEventListener("pointerdown", onDown);
-      viewport.removeEventListener("pointermove", onMove);
-      viewport.removeEventListener("pointerup", onUp);
-      viewport.removeEventListener("pointercancel", onUp);
-      viewport.removeEventListener("wheel", onWheel);
-    };
-  }, [rtl, speed, autoOn, logos.length, kind]);
-
-  // arrows page the rail by ~60% of the viewport, eased; never a reset
-  const page = (dir: 1 | -1) => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-    const dist = viewport.clientWidth * 0.6 * dir;
-    const from = xRef.current;
-    if (tier === "static") {
-      xRef.current = from + dist;
-      const track = trackRef.current;
-      const w = copyWRef.current;
-      if (track && w > 10) {
-        const x = (((xRef.current % w) + w) % w);
-        xRef.current = x;
-        // same RTL coverage rule as apply() above (§35)
-        track.style.transform = `translateX(${rtl ? x - w : -x}px)`;
-      }
-    } else {
-      tweenRef.current = { from, to: from + dist, start: performance.now() };
-    }
-    pausesRef.current.add("manual");
-    window.clearTimeout(resumeTimer.current);
-    resumeTimer.current = window.setTimeout(() => {
-      pausesRef.current.delete("manual");
-      wakeRef.current?.();
-    }, RESUME_DELAY);
-    wakeRef.current?.(); // the tween needs the loop running
-  };
+  /* Alliances and Clients travel in opposite directions, and the whole
+     pairing mirrors in Arabic — the viewport itself stays direction-
+     isolated because the row is physical artwork, not text. */
+  const reversed = (kind === "client") !== rtl;
 
   const seq = (copy: "a" | "b") => (
     <ul className={`rail-copy rail-copy-${copy}`} aria-hidden={copy === "b" || undefined}>
@@ -309,40 +61,18 @@ export function LogoCarousel({
 
   return (
     <div className={`logo-rail logo-rail-${kind}`}>
-      <button
-        type="button"
-        className="rail-nav rail-nav-prev"
-        aria-label={prevLabel}
-        onClick={() => page(-1)}
-      >
-        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-          <path d="M10.5 3 5.5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
-      {/* the viewport is direction-isolated: the row itself is physical
-          artwork; RTL reverses flow/paging semantics in the engine */}
-      <div ref={viewportRef} className="rail-viewport" dir="ltr" data-cursor="drag">
-        <div ref={trackRef} className="rail-track">
+      {/* Focusable on purpose: under reduced motion this strip becomes a
+          horizontally scrollable region, and WCAG 2.1.1 requires that
+          scroll to be reachable from the keyboard. Focus also pauses the
+          flow, which is the only way a keyboard user can hold a mark
+          still — there is nothing else focusable inside the rail. */}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- named, keyboard-scrollable region */}
+      <div className="rail-viewport" dir="ltr" tabIndex={0} role="group" aria-label={label}>
+        <div className="rail-track" data-flow={reversed ? "reverse" : "forward"}>
           {seq("a")}
           {seq("b")}
         </div>
-        {kind === "alliance" && tier === "full" ? (
-          <div className="rail-sweep" aria-hidden="true" />
-        ) : null}
       </div>
-
-      <button
-        type="button"
-        className="rail-nav rail-nav-next"
-        aria-label={nextLabel}
-        onClick={() => page(1)}
-      >
-        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-          <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
       <div className="rail-underline" aria-hidden="true" />
     </div>
   );

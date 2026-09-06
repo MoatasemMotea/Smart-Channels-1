@@ -56,9 +56,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
             logos={logos.filter((l) => l.src)}
             rtl={locale === "ar"}
             kind="client"
-            speed={22}
-            prevLabel={t("carousel.prev")}
-            nextLabel={t("carousel.next")}
+            label={t("sections.clients")}
           />
           <p className="ecosystem-more microlabel">{t("home.moreClients")}</p>
         </div>

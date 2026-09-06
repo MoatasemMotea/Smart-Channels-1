@@ -57,9 +57,7 @@ export default async function PartnersPage({ params }: { params: Promise<{ local
             logos={logos.filter((l) => l.src)}
             rtl={locale === "ar"}
             kind="alliance"
-            speed={30}
-            prevLabel={t("carousel.prev")}
-            nextLabel={t("carousel.next")}
+            label={t("sections.partners")}
           />
           <p className="ecosystem-more microlabel">{t("home.morePartners")}</p>
         </div>
