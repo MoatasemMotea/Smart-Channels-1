@@ -22,3 +22,6 @@ next-env.d.ts
 
 # local lead store (D-050) — never committed
 .data/
+
+# owner drop-box for raw product photography — never committed
+/incoming-products/
