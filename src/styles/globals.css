@@ -2161,8 +2161,11 @@ html[data-motion-tier="full"] .ss-sweep {
     gap: 1.25rem;
   }
 }
+/* D-058 §5: the product name is CENTRED beneath its card — the same on
+   the homepage stage and in the /products catalogue, and never edge
+   aligned in either reading direction. */
 .product-slot {
-  text-align: start;
+  text-align: center;
 }
 /* D-056 — the lit elliptical platform. It lives on a wrapper because
    .product-slot-media clips its own overflow; the ellipse peeks out
