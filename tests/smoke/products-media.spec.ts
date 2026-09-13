@@ -55,20 +55,22 @@ test("the product source archive is never publicly reachable", async ({ request 
   }
 });
 
-test("/products: the nine categories as tiles, no counters", async ({ page }) => {
+test("/products: renders the first category (networking) exactly as its own page, no counters", async ({ page }) => {
+  // D-063: the nine-tile index is gone — /products IS the first category by `order`
   await page.goto("/en/products", { waitUntil: "networkidle" });
-  const tiles = await page.locator(".catalog-tile").evaluateAll((els) =>
-    els.map((a) => (a as HTMLAnchorElement).getAttribute("href")),
-  );
-  expect(tiles).toEqual([
-    "/en/products/networking", "/en/products/fiber", "/en/products/cybersecurity",
-    "/en/products/surveillance", "/en/products/av", "/en/products/computing",
-    "/en/products/storage", "/en/products/communication", "/en/products/environmental",
-  ]);
+  await expect(page.locator(".catalog-tile")).toHaveCount(0);
   await expect(page.locator("h1")).toHaveCount(1);
-  const text = await page.evaluate(() => document.querySelector("main")?.textContent ?? "");
+  await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
+  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
+  await expect(page).toHaveTitle(/Products/); // generic metadata, not the category's
+  const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
   expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i); // no counters anywhere
   expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
+  // the two routes render the same tree
+  await page.goto("/en/products/networking", { waitUntil: "networkidle" });
+  const own = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
+  expect(own).toBe(text);
 });
 
 test("/products/networking: fifteen cards, no model numbers, never a store", async ({ page }) => {

@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
-import { getProductCards, getProductCategories, getProductCategoryBySlug } from "@/lib/content";
+import { getProductCategories, getProductCategoryBySlug } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
-import { MotionSection } from "@/components/motion/MotionSection";
-import { PageHero } from "@/components/page/PageHero";
-import { CategorySidebar } from "@/components/products/CategorySidebar";
-import { CategoryCards } from "@/components/products/CategoryCards";
+import { CategoryCatalog } from "@/components/products/CategoryCatalog";
 
 /* nine categories × two locales = eighteen static routes (D-059 §3) */
 export function generateStaticParams() {
@@ -35,10 +32,10 @@ export async function generateMetadata({
 }
 
 /**
- * PRODUCT CATEGORY page (D-059 · D-061): a side list of the nine
- * categories (sticky on desktop, a horizontal strip on small screens —
- * the only category navigation since D-061) and the card grid (the brand
- * filter row was removed at D-062). Unknown slugs fall through to the branded not-found boundary.
+ * PRODUCT CATEGORY page (D-059 · D-061 · D-063): resolves the slug and
+ * hands it to CategoryCatalog — the side list of the nine categories and
+ * the card grid, shared with /products since D-063. Unknown slugs fall
+ * through to the branded not-found boundary.
  */
 export default async function ProductCategoryPage({
   params,
@@ -50,35 +47,6 @@ export default async function ProductCategoryPage({
   setRequestLocale(raw);
   const cat = getProductCategoryBySlug(category);
   if (!cat) notFound();
-  const t = await getTranslations();
-  const ar = locale === "ar";
-  const categories = getProductCategories();
 
-  const side = categories.map((c) => ({
-    slug: c.slug,
-    label: ar ? c.shortAr : c.shortEn,
-    href: `/products/${c.slug}`,
-  }));
-  const cards = getProductCards(cat.slug).map((k, i) => ({
-    key: `${k.typeEn}|${k.brand}|${i}`,
-    name: ar ? k.typeAr : k.typeEn,
-    brand: k.brand,
-    image: k.image,
-    alt: ar ? k.typeAr : k.typeEn,
-  }));
-
-  return (
-    <>
-      <PageHero motif="grid" overline={t("sections.products")} title={ar ? cat.fullAr : cat.fullEn} />
-
-      <MotionSection reveal="rise" className="border-b border-line" aria-label={ar ? cat.fullAr : cat.fullEn}>
-        <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
-          <div className="catalog-layout">
-            <CategorySidebar items={side} current={cat.slug} ariaLabel={t("catalog.categoriesNav")} />
-            <CategoryCards cards={cards} />
-          </div>
-        </div>
-      </MotionSection>
-    </>
-  );
+  return <CategoryCatalog locale={locale} category={cat} />;
 }

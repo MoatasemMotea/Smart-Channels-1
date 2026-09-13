@@ -3933,42 +3933,10 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 /* Logical properties throughout, so RTL needs no overrides. Colours   */
 /* are theme tokens only; brand line is full ink at .72 (≥ 4.5:1).     */
 /* ------------------------------------------------------------------ */
-.catalog-side-link:focus-visible,
-.catalog-tile:focus-visible {
+.catalog-side-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
-
-/* index: the nine category tiles */
-.catalog-tiles {
-  display: grid;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
-.catalog-tile {
-  display: block;
-  padding: 1.4rem 1.5rem 1.5rem;
-  border: 1px solid var(--canvas-edge);
-  border-radius: 12px;
-  background: var(--canvas-glass);
-  transition:
-    border-color var(--dur-control) var(--ease-engineered),
-    transform var(--dur-control) var(--ease-engineered),
-    box-shadow var(--dur-control) var(--ease-engineered);
-}
-.catalog-tile:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--canvas-shadow); }
-.catalog-tile-short {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.catalog-tile-full { display: block; margin-top: 0.45rem; font-size: 1.15rem; font-weight: 700; color: var(--ink); }
 
 /* category page: side list + brands + grid */
 .catalog-layout { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
@@ -4020,9 +3988,6 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 .catalog-card-brand { margin-top: 0.15rem; font-size: 0.85rem; font-weight: 400; color: var(--ink); opacity: 0.72; }
 
 @media (prefers-reduced-motion: reduce) {
-  .catalog-tile, .catalog-side-link { transition: none; }
-  .catalog-tile:hover { transform: none; }
+  .catalog-side-link { transition: none; }
 }
-html[data-motion-tier="static"] .catalog-tile,
 html[data-motion-tier="static"] .catalog-side-link { transition: none; }
-html[data-motion-tier="static"] .catalog-tile:hover { transform: none; }
