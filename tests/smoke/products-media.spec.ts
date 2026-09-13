@@ -129,12 +129,13 @@ test("/products/networking: fifteen cards, brand toggle filters and releases, no
   await expect(page.locator(".catalog-card")).toHaveCount(15);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
   await expect(page.locator('.catalog-bar-link[aria-current="page"]')).toHaveText("Networking");
-  // image follows the TYPE: all five Switches cards share one file
-  const switches = await page.locator(".catalog-card", { hasText: /^Switches/ }).locator("img").evaluateAll((els) =>
-    els.map((i) => (i as HTMLImageElement).getAttribute("src")),
-  );
-  expect(new Set(switches).size).toBe(1);
-  expect(switches[0]).toContain("switch-2026.webp");
+  // D-060: the catalogue is unlinked from imagery — all five Switches
+  // cards show the same neutral placeholder, and NO <img> survives inside
+  // any card on the page (catches a stray image in any other type too)
+  const switches = page.locator(".catalog-card", { hasText: /^Switches/ });
+  await expect(switches).toHaveCount(5);
+  await expect(switches.locator("[data-empty] svg")).toHaveCount(5);
+  await expect(page.locator(".catalog-card img")).toHaveCount(0);
   // a type without a photograph shows the placeholder, never nothing
   await expect(page.locator(".catalog-card", { hasText: "Wi-Fi Extenders" }).locator("[data-empty] svg")).toHaveCount(1);
   // brand toggle

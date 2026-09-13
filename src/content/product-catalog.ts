@@ -12,12 +12,14 @@
  * for why, and for the condition under which they merge.
  *
  * IMAGERY follows the PRODUCT TYPE, not the brand: every "Switches"
- * card shares switches' photograph. Files are owner-supplied delivery
- * assets already under public/media/products/ (D-058). A type without
- * a photograph renders the neutral placeholder — nothing is generated,
- * downloaded or invented. There is deliberately NO locked manifest
- * here: adding a photograph later is a one-field data edit, and the
- * validator only checks that each referenced file exists on disk.
+ * card shares switches' photograph. D-060: the catalogue is currently
+ * UNLINKED from all imagery — every type's `image` is "" and every card
+ * renders the neutral placeholder — pending a new photography batch
+ * (specification and intake path in docs/product-images.md). Nothing is
+ * generated, downloaded or invented. There is deliberately NO locked
+ * manifest here: linking a photograph is a one-field data edit on the
+ * type's row, and the validator only checks that a referenced file
+ * exists on disk.
  */
 export type CategorySlug =
   | "networking"
@@ -75,47 +77,47 @@ type TypeRow = {
 
 const TYPES: TypeRow[] = [
   /* ---- networking (15 cards) ---- */
-  { category: "networking", typeEn: "5G Routers", typeAr: "راوترات 5G", image: "router-2026.webp", brands: ["Huawei"] },
-  { category: "networking", typeEn: "Core Switches", typeAr: "محوّلات أساسية", image: "core-switch-2026.webp", brands: ["Cisco", "TP-Link"] },
-  { category: "networking", typeEn: "Switches", typeAr: "محوّلات شبكة", image: "switch-2026.webp", brands: ["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"] },
+  { category: "networking", typeEn: "5G Routers", typeAr: "راوترات 5G", image: "", brands: ["Huawei"] },
+  { category: "networking", typeEn: "Core Switches", typeAr: "محوّلات أساسية", image: "", brands: ["Cisco", "TP-Link"] },
+  { category: "networking", typeEn: "Switches", typeAr: "محوّلات شبكة", image: "", brands: ["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"] },
   { category: "networking", typeEn: "Wi-Fi Extenders", typeAr: "مقويات إشارة", image: "", brands: ["TP-Link"] },
-  { category: "networking", typeEn: "Access Points", typeAr: "نقاط وصول لاسلكية", image: "access-points-2026.webp", brands: ["Aruba", "EDiMax", "Huawei", "Linksys", "Ubiquiti"] },
-  { category: "networking", typeEn: "Point-to-Point", typeAr: "وصلات نقطة لنقطة", image: "p2p-2026.webp", brands: ["UPOE"] },
+  { category: "networking", typeEn: "Access Points", typeAr: "نقاط وصول لاسلكية", image: "", brands: ["Aruba", "EDiMax", "Huawei", "Linksys", "Ubiquiti"] },
+  { category: "networking", typeEn: "Point-to-Point", typeAr: "وصلات نقطة لنقطة", image: "", brands: ["UPOE"] },
   /* ---- fiber (9 cards) ---- */
-  { category: "fiber", typeEn: "Media Converters", typeAr: "محوّلات وسائط", image: "media-converter-2026.webp", brands: ["D-Link", "Planet", "TP-Link", "TRENDnet", "Vivotek"] },
-  { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "hdmi-extender-2026.webp", brands: [""] },
-  { category: "fiber", typeEn: "SFP Modules", typeAr: "وحدات SFP", image: "sfp.webp", brands: ["Alcatel-Lucent", "Cisco", "Huawei"] },
+  { category: "fiber", typeEn: "Media Converters", typeAr: "محوّلات وسائط", image: "", brands: ["D-Link", "Planet", "TP-Link", "TRENDnet", "Vivotek"] },
+  { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "", brands: [""] },
+  { category: "fiber", typeEn: "SFP Modules", typeAr: "وحدات SFP", image: "", brands: ["Alcatel-Lucent", "Cisco", "Huawei"] },
   /* ---- cybersecurity (1 card) ---- */
-  { category: "cybersecurity", typeEn: "Firewalls", typeAr: "جدران حماية", image: "firewall-2026.webp", brands: ["Fortinet"] },
+  { category: "cybersecurity", typeEn: "Firewalls", typeAr: "جدران حماية", image: "", brands: ["Fortinet"] },
   /* ---- surveillance (7 cards) ---- */
-  { category: "surveillance", typeEn: "Face Recognition Terminals", typeAr: "أجهزة التعرّف على الوجه", image: "access-control-2026.webp", brands: ["Hikvision"] },
+  { category: "surveillance", typeEn: "Face Recognition Terminals", typeAr: "أجهزة التعرّف على الوجه", image: "", brands: ["Hikvision"] },
   { category: "surveillance", typeEn: "Camera Mounts", typeAr: "حوامل كاميرات", image: "", brands: [""] },
-  { category: "surveillance", typeEn: "CCTV Cameras", typeAr: "كاميرات مراقبة", image: "cameras-2026.webp", brands: ["EZVIZ", "Hikvision"] },
-  { category: "surveillance", typeEn: "NVRs", typeAr: "مسجّلات شبكية", image: "nvr-2026.webp", brands: ["Hikvision"] },
+  { category: "surveillance", typeEn: "CCTV Cameras", typeAr: "كاميرات مراقبة", image: "", brands: ["EZVIZ", "Hikvision"] },
+  { category: "surveillance", typeEn: "NVRs", typeAr: "مسجّلات شبكية", image: "", brands: ["Hikvision"] },
   { category: "surveillance", typeEn: "Decoders", typeAr: "وحدات فك ترميز", image: "", brands: ["Digibird", "Hikvision"] },
   /* ---- av (9 cards) ---- */
   { category: "av", typeEn: "Display Remotes", typeAr: "أجهزة تحكّم شاشات", image: "", brands: [""] },
   { category: "av", typeEn: "Video Wall Displays", typeAr: "شاشات فيديو وول", image: "", brands: ["Hikvision", "Samsung"] },
   { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "", brands: ["UGREEN"] },
   { category: "av", typeEn: "Y-Splitters", typeAr: "موزّعات Y", image: "", brands: [""] },
-  { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extender-2026.webp", brands: [""] },
+  { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "", brands: [""] },
   { category: "av", typeEn: "Video Wall Controllers", typeAr: "وحدات تحكّم فيديو وول", image: "", brands: ["Jupiter"] },
   { category: "av", typeEn: "HD Cables", typeAr: "وصلات HD", image: "", brands: [""] },
   { category: "av", typeEn: "VGA Cables", typeAr: "وصلات VGA", image: "", brands: [""] },
   /* ---- computing (21 cards) ---- */
-  { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablet-2026.webp", brands: ["Lenovo"] },
-  { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "pc-2026.webp", brands: ["Dell", "Egeira", "HP"] },
+  { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "", brands: ["Lenovo"] },
+  { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "", brands: ["Dell", "Egeira", "HP"] },
   { category: "computing", typeEn: "Monitors", typeAr: "شاشات", image: "", brands: ["ArrQW", "Dell", "Egeira", "HP", "LG", "Majesty"] },
-  { category: "computing", typeEn: "Printers", typeAr: "طابعات", image: "printers-2026.webp", brands: ["Canon", "Epson", "HP"] },
+  { category: "computing", typeEn: "Printers", typeAr: "طابعات", image: "", brands: ["Canon", "Epson", "HP"] },
   { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "", brands: ["MIXIE", "PULI"] },
-  { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptop-2026.webp", brands: ["Asus", "Dell", "Lenovo"] },
+  { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "", brands: ["Asus", "Dell", "Lenovo"] },
   { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "", brands: ["Dell", "MIXIE", "PULI"] },
   /* ---- storage (7 cards) ---- */
   { category: "storage", typeEn: "Hard Drives", typeAr: "أقراص تخزين", image: "", brands: ["Dell", "Hikvision", "Seagate", "Western Digital"] },
   { category: "storage", typeEn: "Flash Memory", typeAr: "ذاكرات فلاش", image: "", brands: ["Hikvision", "NEO HOME", "SanDisk"] },
   /* ---- communication (2 cards) ---- */
-  { category: "communication", typeEn: "PTT Radios", typeAr: "أجهزة اتصال لاسلكي PTT", image: "t60-2026.webp", brands: ["Kirisun"] },
-  { category: "communication", typeEn: "Multi-Bay Chargers", typeAr: "شواحن متعددة القنوات", image: "multi-charger-2026.webp", brands: ["Kirisun"] },
+  { category: "communication", typeEn: "PTT Radios", typeAr: "أجهزة اتصال لاسلكي PTT", image: "", brands: ["Kirisun"] },
+  { category: "communication", typeEn: "Multi-Bay Chargers", typeAr: "شواحن متعددة القنوات", image: "", brands: ["Kirisun"] },
   /* ---- environmental (2 cards) ---- */
   { category: "environmental", typeEn: "People Counting Sensors", typeAr: "حساسات عدّ وتحليل", image: "", brands: ["Xovis"] },
   { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "", brands: [""] },

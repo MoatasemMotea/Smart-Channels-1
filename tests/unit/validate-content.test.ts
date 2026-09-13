@@ -72,6 +72,9 @@ describe("approved business data invariants", () => {
     const byType = new Map<string, Set<string>>();
     for (const k of productCards) byType.set(k.typeEn, (byType.get(k.typeEn) ?? new Set()).add(k.image));
     for (const [, imgs] of byType) expect(imgs.size).toBe(1);
+    // D-060 — مؤقت: الكتالوج مفرّغ من الصور بانتظار دفعة جديدة.
+    // يُحذف هذا التأكيد وحده عند وصول أول صورة. القاعدة أعلاه تبقى.
+    for (const k of productCards) expect(k.image).toBe("");
     // no (category + type + brand) repeats
     expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}|${k.brand}`)).size).toBe(73);
     // no model number ever leaks into a name or brand
