@@ -74,7 +74,7 @@ export default async function ProductCategoryPage({
       <MotionSection reveal="rise" className="border-b border-line" aria-label={ar ? cat.fullAr : cat.fullEn}>
         <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
           <div className="catalog-layout">
-            <CategorySidebar items={side} current={cat.slug} ariaLabel={t("inner.categories")} />
+            <CategorySidebar items={side} current={cat.slug} ariaLabel={t("catalog.categoriesNav")} />
             <CategoryCards cards={cards} brandsLabel={t("catalog.brands")} />
           </div>
         </div>
