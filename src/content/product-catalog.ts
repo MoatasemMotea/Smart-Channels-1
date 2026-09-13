@@ -3,6 +3,9 @@
  *
  * The owner's 2026-09-13 directive: NINE categories and SEVENTY-THREE
  * cards, transcribed verbatim — no record added, invented or inferred.
+ * D-064 (same day) removed five av types by directive — Video Wall
+ * Controllers, Y-Splitters, Display Remotes, HD Cables, VGA Cables —
+ * leaving 31 types / 68 cards.
  * A card is a (category, product type, brand) triple; the brand may be
  * empty, which means "no brand shown", never a placeholder.
  *
@@ -64,7 +67,7 @@ export const productCategories: ProductCategory[] = [
 /**
  * One row per product TYPE: its category, names, the shared photograph
  * (owner mapping table, D-059 §2 — "" where none exists yet) and the
- * brands that expand into cards. The 73 cards are derived below, so a
+ * brands that expand into cards. The 68 cards are derived below, so a
  * type's image lives in exactly one place.
  */
 type TypeRow = {
@@ -95,15 +98,10 @@ const TYPES: TypeRow[] = [
   { category: "surveillance", typeEn: "CCTV Cameras", typeAr: "كاميرات مراقبة", image: "", brands: ["EZVIZ", "Hikvision"] },
   { category: "surveillance", typeEn: "NVRs", typeAr: "مسجّلات شبكية", image: "", brands: ["Hikvision"] },
   { category: "surveillance", typeEn: "Decoders", typeAr: "وحدات فك ترميز", image: "", brands: ["Digibird", "Hikvision"] },
-  /* ---- av (9 cards) ---- */
-  { category: "av", typeEn: "Display Remotes", typeAr: "أجهزة تحكّم شاشات", image: "", brands: [""] },
+  /* ---- av (4 cards) ---- */
   { category: "av", typeEn: "Video Wall Displays", typeAr: "شاشات فيديو وول", image: "", brands: ["Hikvision", "Samsung"] },
   { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "", brands: ["UGREEN"] },
-  { category: "av", typeEn: "Y-Splitters", typeAr: "موزّعات Y", image: "", brands: [""] },
   { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "", brands: [""] },
-  { category: "av", typeEn: "Video Wall Controllers", typeAr: "وحدات تحكّم فيديو وول", image: "", brands: ["Jupiter"] },
-  { category: "av", typeEn: "HD Cables", typeAr: "وصلات HD", image: "", brands: [""] },
-  { category: "av", typeEn: "VGA Cables", typeAr: "وصلات VGA", image: "", brands: [""] },
   /* ---- computing (21 cards) ---- */
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "", brands: ["Lenovo"] },
   { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "", brands: ["Dell", "Egeira", "HP"] },
@@ -123,7 +121,7 @@ const TYPES: TypeRow[] = [
   { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "", brands: [""] },
 ];
 
-/** The 73 cards, in category order then as listed by the owner. */
+/** The 68 cards, in category order then as listed by the owner (D-064 removed five av types). */
 export const productCards: ProductCard[] = TYPES.flatMap((t) =>
   t.brands.map((brand) => ({
     category: t.category,
