@@ -55,39 +55,6 @@ test("the product source archive is never publicly reachable", async ({ request 
   }
 });
 
-test("homepage preview: exactly the four featured categories with mapped images", async ({
-  page,
-}) => {
-  await page.goto("/en", { waitUntil: "networkidle" });
-  await page.keyboard.press("Escape");
-  await page.evaluate(() =>
-    document.getElementById("products")?.scrollIntoView({ behavior: "instant", block: "center" }),
-  );
-  await page.waitForTimeout(800);
-  const slots = await page.evaluate(() =>
-    [...document.querySelectorAll(".product-slot-filled")].map((li) => ({
-      name: li.querySelector("p")?.textContent?.trim(),
-      img: li.querySelector("img")?.getAttribute("src") ?? "",
-      href: li.querySelector("a")?.getAttribute("href") ?? "",
-    })),
-  );
-  expect(slots.map((s) => s.name)).toEqual(["Firewall", "Core Switch", "Laptop", "Cameras"]);
-  expect(slots.every((s, i) => s.img.includes(encodeURIComponent(FEATURED[i]!)) || s.img.includes(FEATURED[i]!))).toBe(true);
-  // §8: the homepage stays at FOUR — never a catalogue
-  expect(slots).toHaveLength(4);
-  expect(slots.map((s) => s.href)).toEqual([
-    "/en/products#firewall",
-    "/en/products#core-switch",
-    "/en/products#laptop",
-    "/en/products#camera",
-  ]);
-  const section = await page.evaluate(
-    () => document.querySelector('[data-scene="products"]')?.textContent ?? "",
-  );
-  // §6: never e-commerce — no prices, no cart language
-  expect(section).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
-});
-
 test("/products: the nine categories as tiles, no counters", async ({ page }) => {
   await page.goto("/en/products", { waitUntil: "networkidle" });
   const tiles = await page.locator(".catalog-tile").evaluateAll((els) =>
@@ -104,7 +71,7 @@ test("/products: the nine categories as tiles, no counters", async ({ page }) =>
   expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
 });
 
-test("/products/networking: fifteen cards, brand toggle filters and releases, no model numbers", async ({ page }) => {
+test("/products/networking: fifteen cards, no model numbers, never a store", async ({ page }) => {
   await page.goto("/en/products/networking", { waitUntil: "networkidle" });
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
   await expect(page.locator(".catalog-card")).toHaveCount(15);
@@ -118,17 +85,14 @@ test("/products/networking: fifteen cards, brand toggle filters and releases, no
   await expect(page.locator(".catalog-card img")).toHaveCount(0);
   // a type without a photograph shows the placeholder, never nothing
   await expect(page.locator(".catalog-card", { hasText: "Wi-Fi Extenders" }).locator("[data-empty] svg")).toHaveCount(1);
-  // brand toggle
-  const cisco = page.locator(".catalog-brand", { hasText: "Cisco" });
-  await cisco.click();
-  await expect(cisco).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".catalog-card")).toHaveCount(2);
-  await cisco.click();
-  await expect(cisco).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator(".catalog-card")).toHaveCount(15);
-  const text = await page.evaluate(() => document.querySelector("main")?.textContent ?? "");
+  // innerText, not textContent: adjacent card lines ("Switches" + "Aruba") would otherwise
+  // concatenate into "sAr" and trip the SAR guard below
+  const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
   expect(text).not.toMatch(/DS-K1T673DX/);
   expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i);
+  // D-062: the "never a store" guard moved here from the deleted homepage stage test —
+  // the catalogue is where the risk of commerce language lives now
+  expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
   const broken = await page.evaluate(() =>
     [...document.querySelectorAll<HTMLImageElement>(".catalog-card img")].filter((i) => i.complete && i.naturalWidth === 0).length,
   );
@@ -141,6 +105,8 @@ test("AR /products/networking: same fifteen cards, Arabic names, RTL, nothing mi
   await expect(page.locator("h1")).toHaveText("الشبكات والاتصال");
   await expect(page.locator(".catalog-card")).toHaveCount(15);
   await expect(page.locator(".catalog-card-name").first()).toHaveText("راوترات 5G");
+  const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
+  expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart|ريال|سعر|اشترِ|أضف إلى السلة/i); // never a store, in Arabic too
   const mirrored = await page.evaluate(() =>
     [...document.querySelectorAll(".catalog-card img")].some((i) => getComputedStyle(i).transform.includes("-1")),
   );

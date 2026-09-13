@@ -1640,6 +1640,48 @@ category. `CategorySidebar` was already a `<nav aria-label>` landmark
 (`inner.categories`), so no landmark was lost.
 
 
+## Products preview removed from the homepage; category page simplified (recorded 2026-09-13)
+
+**D-062.** Owner directive "D-062 — تبسيط صفحة التصنيف + إزالة المنتجات
+من الرئيسية".
+
+**Part one — the brand filter row is gone.** `CategoryCards` is a plain
+server-rendered grid again: no filter state, no toggles, no
+`brandsLabel`. The brand remains as the quiet second line under each
+card — text, not a control. Brand-only CSS is deleted; `.catalog-brand`
+was struck from the three grouped selectors it shared with the side
+list and tiles, which keep every other member. `catalog.brands` had one
+consumer and is deleted. `CategorySidebar` is untouched.
+
+**Part two — `ProductsStage.tsx` is deleted** with its import and call
+site on the homepage and all of its CSS (`.products-scene`,
+`.products-stage`, `.products-slots`, `.product-slot*`, `.stage-*`, the
+`[data-scene="products"]` reveal rules, their keyframes, and the
+theme/RTL overrides that lived outside the main block — none used by
+any other component; the two stage members of the shared
+`[data-fit="contain"] img` group were struck, the `.product-card-photo`
+member kept). The `SectionSeam variant="trace"` that followed it is also
+removed: Solutions already reveals as `trace` and ends on `border-b`, so
+a trace seam directly after it separated without distinguishing. The
+homepage journey is now Solutions → Industries; both seam states were
+captured at the junction before this was settled (gap 1 px with the
+seam, 0 px without — the `border-b` hairline is the divider either way).
+
+The `/products#<slug>` anchors had a single source — the stage's card
+links — and had pointed at nothing since D-059; they are gone with it.
+`--platform-*` tokens stay in `:root`: the orphaned `ProductCatalog`
+CSS still reads them.
+
+**What now reads `products.ts`.** After this change no rendering path
+uses `products.ts` or any of the 29 files in `public/media/products/`
+— the four featured photographs no longer appear anywhere.
+`getFeaturedProducts()` has no consumer and is marked dead in place;
+`getPublishedProducts()` is read only by the orphaned `ProductCatalog`;
+the validator's D-052/D-058 block and the unit test still guard the
+data. **Nothing is deleted here, by decision** — see the updated
+`D059-DUAL-SOURCE` for why and for the closing condition.
+
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1671,6 +1713,8 @@ category. `CategorySidebar` was already a `<nav aria-label>` landmark
 | PRODUCT-MEDIA-03 | Ten categories still without approved imagery — **Router, UPS, Monitor, PC, HDMI Extender, Face Recognition Terminals** (supplied media rejected for cause at D-053) and **Hard Disk, Decoder, AC Adapter, Media Converter** (never supplied) | Full Products imagery | Each keeps the designed media-pending motif; adding one later is a pure data edit. Rejection reasons per category are recorded in media-source/images/products/MAPPING.md. |
 | V2-MAP-EMBED | The Google Maps embed on the contact chapter could not be visually confirmed from the build environment — its egress policy blocks google.com. | Final launch check | D-054 §19: markup, laziness and the removal of the "View map" gate are verified; the rendered map needs one look on a normal network. The designed address ground behind it means a blocked embed is never a blank rectangle. |
 | PRODUCT-MEDIA-HELD | 14 second-set files held from Product use; **Point of contact.jpg must remain unpublished** (identifiable person, legible institutional emblem) | — | D-053: the infrastructure/technical images may be considered for a future owner-authorized Solutions-support round; none may ever be presented as Gallery/project evidence. |
-| D059-DUAL-SOURCE | **Declared technical debt:** two product data models co-exist — `products.ts` (24 records, drives the homepage stage) and `product-catalog.ts` (9 categories / 73 cards, drives /products). | Nothing today; clarity tomorrow | D-059 §1: kept apart on purpose so neither owner decision is silently overridden. **Retires when the fate of `ProductsStage.tsx` is decided** — at that point the stage either reads the catalogue or goes, and `products.ts` is merged or removed. |
+| D059-DUAL-SOURCE | **Updated at D-062:** no longer "two product sources rendered" — now **one source rendered** (`product-catalog.ts`, 9 categories / 73 cards, currently image-less per D-060) **and one source preserved, unrendered** (`products.ts`, 24 records with a locked manifest mapping 19 photographs to 19 products, still green in the validator and unit test). | Nothing rendered today; a clean deletion tomorrow | Owner decision 2026-09-13: `products.ts` is kept because it is the most precise record we hold of which photograph belongs to which product, and `product-catalog.ts` has no images yet. **Closing sequence:** the new photography batch arrives and is linked type-by-type → the catalogue is self-sufficient → THEN `products.ts`, its 29 delivery files, the validator manifest block (lines 131–187), the D-058 unit test, `getPublishedProducts`/`getFeaturedProducts` and the orphaned `ProductCatalog.tsx` are deleted together in one dedicated task. |
 | D059-SITEMAP | The eighteen `/products/[category]` routes are NOT in `sitemap.ts`. | Discoverability once indexing opens | Owner decision 2026-09-13: `sitemap.ts` still points at `https://example.invalid` and indexing is closed behind `NEXT_PUBLIC_ALLOW_INDEXING`; listing eighteen routes under a placeholder domain adds debt. **Add them when the production domain is approved (D-010 / O-011).** |
 | D061-LOST-COVERAGE | The D-059 smoke test "category strip: hover reveals after a delay, leaving closes, Escape closes, focus opens" was deleted with the strip. It covered, verbatim: **(1)** immediately after `hover`, `aria-expanded="false"` (the 110 ms open guard), then `"true"` within the timeout; **(2)** the panel `toBeVisible`; **(3)** the panel lists the category's unique types in order — 5G Routers · Core Switches · Switches · Wi-Fi Extenders · Access Points · Point-to-Point; **(4)** moving the pointer away → `"false"` (the 220 ms deferred close); **(5)** `focus` → `"true"` at once; **(6)** `Escape` → `"false"`. | Nothing today | This coverage lapsed with the strip. **Reinstate it if any hover-reveal behaviour returns anywhere** — the six checks are the contract for a panel that must not flicker, must be reachable without a pointer, and must close on Escape. |
+| D062-LOST-COVERAGE | The smoke test "homepage preview: exactly the four featured categories with mapped images" was deleted with `ProductsStage`. It covered, verbatim: **(1)** the four slot names in order — Firewall · Core Switch · Laptop · Cameras; **(2)** each slot's `<img src>` matching its `FEATURED` delivery file; **(3)** exactly FOUR slots — "the homepage stays at four, never a catalogue"; **(4)** the four anchors `/en/products#firewall` · `#core-switch` · `#laptop` · `#camera`; **(5)** no commerce language (`$|SAR|price|buy now|add to cart`) inside the section. | Nothing today | (1)–(4) lapsed with the stage. **(5) is an architectural principle — the site is not a store — and was moved, not lost:** the same regex now guards `/products/networking` (EN) and `/ar/products/networking` (with Arabic terms), because the catalogue is where the risk of slipping into commerce language lives now. `/products` already carried it since D-059. |
+| D062-DEAD-MESSAGES | `home.products.title` · `.sub` · `.explore` · `.cta` (EN + AR) have had no consumer since D-062 (the stage) and D-059 (the old /products page). | Nothing | Owner decision 2026-09-13: **kept**. Four polished bilingual strings for a homepage products section; a dead key costs nothing in the bundle, re-writing Arabic copy costs. **Delete only if two consecutive reviews pass with no use.** Review 1: pending. |

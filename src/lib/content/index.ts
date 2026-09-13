@@ -141,6 +141,8 @@ export function getPublishedProducts() {
   return products.filter((p) => p.published).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
+// D-062 — بلا مستهلك منذ حذف ProductsStage.
+// تُحذف مع products.ts عند إغلاق D059-DUAL-SOURCE.
 export function getFeaturedProducts() {
   // D-052 §3: the owner's featured display order, not catalogue order
   return getPublishedProducts()

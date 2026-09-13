@@ -37,8 +37,8 @@ export async function generateMetadata({
 /**
  * PRODUCT CATEGORY page (D-059 · D-061): a side list of the nine
  * categories (sticky on desktop, a horizontal strip on small screens —
- * the only category navigation since D-061), a brand filter row and
- * the card grid. Unknown slugs fall through to the branded not-found boundary.
+ * the only category navigation since D-061) and the card grid (the brand
+ * filter row was removed at D-062). Unknown slugs fall through to the branded not-found boundary.
  */
 export default async function ProductCategoryPage({
   params,
@@ -75,7 +75,7 @@ export default async function ProductCategoryPage({
         <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
           <div className="catalog-layout">
             <CategorySidebar items={side} current={cat.slug} ariaLabel={t("catalog.categoriesNav")} />
-            <CategoryCards cards={cards} brandsLabel={t("catalog.brands")} />
+            <CategoryCards cards={cards} />
           </div>
         </div>
       </MotionSection>

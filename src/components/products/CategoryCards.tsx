@@ -1,21 +1,15 @@
-"use client";
-
-import { useState } from "react";
-
 /**
- * CATEGORY CARD GRID with a brand filter row (D-059 §4).
+ * CATEGORY CARD GRID (D-059 · D-062).
  *
  * A card is a product type + (optional) brand. The photograph follows
  * the TYPE, so five "Switches" cards share one image; a type with no
  * photograph yet shows the neutral placeholder — a grey field with an
  * inline SVG, nothing generated or borrowed.
  *
- * Brands are toggles: press one to keep only its cards, press it again
- * to release the filter. Nothing here shows a model number and nothing
- * anywhere shows a count.
- *
- * Localised strings arrive from the server page; this component owns
- * only the filter state.
+ * D-062 removed the brand filter row and its state: this is a plain
+ * server-rendered grid. The brand still appears as the quiet second
+ * line under each card — text, not a control. Nothing here shows a
+ * model number and nothing anywhere shows a count.
  */
 export interface CardView {
   key: string;
@@ -36,55 +30,25 @@ function PlaceholderIcon() {
   );
 }
 
-export function CategoryCards({
-  cards,
-  brandsLabel,
-}: {
-  cards: CardView[];
-  brandsLabel: string;
-}) {
-  const [active, setActive] = useState<string | null>(null);
-  const brands = [...new Set(cards.map((c) => c.brand).filter(Boolean))].sort((a, b) =>
-    a.localeCompare(b, "en", { sensitivity: "base" }),
-  );
-  const visible = active ? cards.filter((c) => c.brand === active) : cards;
-
+export function CategoryCards({ cards }: { cards: CardView[] }) {
   return (
-    <div>
-      {brands.length > 0 ? (
-        <div className="catalog-brands" role="group" aria-label={brandsLabel}>
-          {brands.map((b) => (
-            <button
-              key={b}
-              type="button"
-              className="catalog-brand"
-              aria-pressed={active === b}
-              onClick={() => setActive((cur) => (cur === b ? null : b))}
-            >
-              {b}
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      <ul className="catalog-grid">
-        {visible.map((c) => (
-          <li key={c.key} className="catalog-card">
-            {c.image ? (
-              <div className="catalog-card-media">
-                {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media, CSS-sized */}
-                <img src={`/media/products/${c.image}`} alt={c.alt} loading="lazy" decoding="async" />
-              </div>
-            ) : (
-              <div className="catalog-card-media" data-empty="" aria-hidden="true">
-                <PlaceholderIcon />
-              </div>
-            )}
-            <p className="catalog-card-name">{c.name}</p>
-            {c.brand ? <p className="catalog-card-brand">{c.brand}</p> : null}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="catalog-grid">
+      {cards.map((c) => (
+        <li key={c.key} className="catalog-card">
+          {c.image ? (
+            <div className="catalog-card-media">
+              {/* eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media, CSS-sized */}
+              <img src={`/media/products/${c.image}`} alt={c.alt} loading="lazy" decoding="async" />
+            </div>
+          ) : (
+            <div className="catalog-card-media" data-empty="" aria-hidden="true">
+              <PlaceholderIcon />
+            </div>
+          )}
+          <p className="catalog-card-name">{c.name}</p>
+          {c.brand ? <p className="catalog-card-brand">{c.brand}</p> : null}
+        </li>
+      ))}
+    </ul>
   );
 }

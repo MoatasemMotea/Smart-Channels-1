@@ -5,7 +5,6 @@ import { NetworkScene } from "@/components/network/NetworkScene";
 import { AboutScene } from "@/components/home/AboutScene";
 import { SolutionsShowcase } from "@/components/home/SolutionsShowcase";
 import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
-import { ProductsTeaser } from "@/components/home/ProductsStage";
 import { SelectedProjects } from "@/components/home/SelectedProjects";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
@@ -21,7 +20,7 @@ import { SectionSeam } from "@/components/motion/SectionSeam";
  *
  * Approved journey (no adjacent section repeats a composition):
  *   Opening → Cinematic Hero → Editorial About → Cinematic Reach →
- *   Technical Solutions index → Products preview → Structural
+ *   Technical Solutions index → Structural
  *   Industries matrix → Selected Projects → Media Gallery preview →
  *   Engineered Alliances index → Calm Clients trust field →
  *   Let's Talk → Footer.
@@ -50,7 +49,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Solutions — cinematic media showcase (D-050 Solutions
           integration): the reach/evidence system resolves into tangible
-          technology media, then hands off toward the Products stage */}
+          technology media (the Products preview that followed it was removed at D-062) */}
       <MotionSection
         id="solutions"
         reveal="trace"
@@ -64,10 +63,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </MotionSection>
 
-      <ProductsTeaser />
-
-      <SectionSeam variant="trace" />
-
+      {/* D-062: no seam here — Solutions already reveals as `trace` and ends
+          on border-b; a trace seam after it separated without distinguishing */}
       <IndustriesMatrix locale={locale} />
 
       <SectionSeam variant="node" />
