@@ -1609,6 +1609,37 @@ smoke tests that asserted its DOM were rewritten for the new pages.
 **Nothing was closed silently.** Two new open items below.
 
 
+## Category strip removed (recorded 2026-09-13)
+
+**D-061 — the horizontal category strip and its hover-reveal panel are
+deleted; the side list is the only category navigation.** Owner
+directive "D-061 — حذف شريط التصنيفات الأفقي".
+
+`CategoryBar.tsx` is removed together with its two call sites, its
+strip-only CSS, the `catalog.viewAll` message, and the dead code that
+fed the panel (the per-category `types` computation on both pages and
+the index page's `getProductCards` import — the accessor itself stays in
+use on the category page). The three grouped selectors that the strip
+shared with the side list, tiles and brand toggles (`:focus-visible`,
+`prefers-reduced-motion`, STATIC tier) keep every other member; only the
+strip's two class names were struck from them.
+
+**The vertical scrollbar beside the strip is gone with it — root cause,
+measured:** `.catalog-bar-list` set `overflow-x: auto`, which makes
+`overflow-y` compute to `auto`; its nine `position:absolute` panels
+extended ~223 px (EN) / ~247 px (AR) below the list box and
+`visibility:hidden` hides paint but not scrollable overflow, so
+`scrollHeight` 331/362 against `clientHeight` 52/54 produced a
+scrollbar in both locales (left-hand in RTL). The cause lived entirely
+inside the strip; no general rule was touched. After removal
+`.catalog-side-list` measures equal client/scroll heights in both
+locales and no other vertical scroll container exists on the page.
+
+The index page's navigation is its nine tiles, each a link to its
+category. `CategorySidebar` was already a `<nav aria-label>` landmark
+(`inner.categories`), so no landmark was lost.
+
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1642,3 +1673,4 @@ smoke tests that asserted its DOM were rewritten for the new pages.
 | PRODUCT-MEDIA-HELD | 14 second-set files held from Product use; **Point of contact.jpg must remain unpublished** (identifiable person, legible institutional emblem) | — | D-053: the infrastructure/technical images may be considered for a future owner-authorized Solutions-support round; none may ever be presented as Gallery/project evidence. |
 | D059-DUAL-SOURCE | **Declared technical debt:** two product data models co-exist — `products.ts` (24 records, drives the homepage stage) and `product-catalog.ts` (9 categories / 73 cards, drives /products). | Nothing today; clarity tomorrow | D-059 §1: kept apart on purpose so neither owner decision is silently overridden. **Retires when the fate of `ProductsStage.tsx` is decided** — at that point the stage either reads the catalogue or goes, and `products.ts` is merged or removed. |
 | D059-SITEMAP | The eighteen `/products/[category]` routes are NOT in `sitemap.ts`. | Discoverability once indexing opens | Owner decision 2026-09-13: `sitemap.ts` still points at `https://example.invalid` and indexing is closed behind `NEXT_PUBLIC_ALLOW_INDEXING`; listing eighteen routes under a placeholder domain adds debt. **Add them when the production domain is approved (D-010 / O-011).** |
+| D061-LOST-COVERAGE | The D-059 smoke test "category strip: hover reveals after a delay, leaving closes, Escape closes, focus opens" was deleted with the strip. It covered, verbatim: **(1)** immediately after `hover`, `aria-expanded="false"` (the 110 ms open guard), then `"true"` within the timeout; **(2)** the panel `toBeVisible`; **(3)** the panel lists the category's unique types in order — 5G Routers · Core Switches · Switches · Wi-Fi Extenders · Access Points · Point-to-Point; **(4)** moving the pointer away → `"false"` (the 220 ms deferred close); **(5)** `focus` → `"true"` at once; **(6)** `Escape` → `"false"`. | Nothing today | This coverage lapsed with the strip. **Reinstate it if any hover-reveal behaviour returns anywhere** — the six checks are the contract for a panel that must not flicker, must be reachable without a pointer, and must close on Escape. |

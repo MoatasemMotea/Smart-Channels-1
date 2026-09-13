@@ -7,7 +7,6 @@ import { pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { PageHero } from "@/components/page/PageHero";
-import { CategoryBar } from "@/components/products/CategoryBar";
 import { CategorySidebar } from "@/components/products/CategorySidebar";
 import { CategoryCards } from "@/components/products/CategoryCards";
 
@@ -36,9 +35,10 @@ export async function generateMetadata({
 }
 
 /**
- * PRODUCT CATEGORY page (D-059): the category strip, a side list of the
- * nine categories (sticky on desktop), a brand filter row and the card
- * grid. Unknown slugs fall through to the branded not-found boundary.
+ * PRODUCT CATEGORY page (D-059 · D-061): a side list of the nine
+ * categories (sticky on desktop, a horizontal strip on small screens —
+ * the only category navigation since D-061), a brand filter row and
+ * the card grid. Unknown slugs fall through to the branded not-found boundary.
  */
 export default async function ProductCategoryPage({
   params,
@@ -53,15 +53,7 @@ export default async function ProductCategoryPage({
   const t = await getTranslations();
   const ar = locale === "ar";
   const categories = getProductCategories();
-  const all = getProductCards();
 
-  const bar = categories.map((c) => ({
-    slug: c.slug,
-    label: ar ? c.shortAr : c.shortEn,
-    full: ar ? c.fullAr : c.fullEn,
-    href: `/products/${c.slug}`,
-    types: [...new Set(all.filter((k) => k.category === c.slug).map((k) => (ar ? k.typeAr : k.typeEn)))],
-  }));
   const side = categories.map((c) => ({
     slug: c.slug,
     label: ar ? c.shortAr : c.shortEn,
@@ -78,13 +70,6 @@ export default async function ProductCategoryPage({
   return (
     <>
       <PageHero motif="grid" overline={t("sections.products")} title={ar ? cat.fullAr : cat.fullEn} />
-
-      <CategoryBar
-        categories={bar}
-        current={cat.slug}
-        viewAllLabel={t("catalog.viewAll")}
-        ariaLabel={t("catalog.categoriesNav")}
-      />
 
       <MotionSection reveal="rise" className="border-b border-line" aria-label={ar ? cat.fullAr : cat.fullEn}>
         <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">

@@ -88,7 +88,7 @@ test("homepage preview: exactly the four featured categories with mapped images"
   expect(section).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
 });
 
-test("/products: the nine categories as tiles, the strip above them, no counters", async ({ page }) => {
+test("/products: the nine categories as tiles, no counters", async ({ page }) => {
   await page.goto("/en/products", { waitUntil: "networkidle" });
   const tiles = await page.locator(".catalog-tile").evaluateAll((els) =>
     els.map((a) => (a as HTMLAnchorElement).getAttribute("href")),
@@ -98,29 +98,10 @@ test("/products: the nine categories as tiles, the strip above them, no counters
     "/en/products/surveillance", "/en/products/av", "/en/products/computing",
     "/en/products/storage", "/en/products/communication", "/en/products/environmental",
   ]);
-  await expect(page.locator(".catalog-bar-link")).toHaveCount(9);
   await expect(page.locator("h1")).toHaveCount(1);
   const text = await page.evaluate(() => document.querySelector("main")?.textContent ?? "");
   expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i); // no counters anywhere
   expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
-});
-
-test("category strip: hover reveals after a delay, leaving closes, Escape closes, focus opens", async ({ page }) => {
-  await page.goto("/en/products", { waitUntil: "networkidle" });
-  const first = page.locator(".catalog-bar-link").first();
-  const panel = page.locator("#catalog-panel-networking");
-  await first.hover();
-  await expect(first).toHaveAttribute("aria-expanded", "false"); // not yet — 110 ms guard
-  await expect(first).toHaveAttribute("aria-expanded", "true", { timeout: 1500 });
-  await expect(panel).toBeVisible();
-  // the panel lists the unique types of the category
-  await expect(panel.locator("li")).toHaveText(["5G Routers", "Core Switches", "Switches", "Wi-Fi Extenders", "Access Points", "Point-to-Point"]);
-  await page.mouse.move(5, 5);
-  await expect(first).toHaveAttribute("aria-expanded", "false", { timeout: 1500 });
-  await first.focus();
-  await expect(first).toHaveAttribute("aria-expanded", "true");
-  await page.keyboard.press("Escape");
-  await expect(first).toHaveAttribute("aria-expanded", "false");
 });
 
 test("/products/networking: fifteen cards, brand toggle filters and releases, no model numbers", async ({ page }) => {
@@ -128,7 +109,6 @@ test("/products/networking: fifteen cards, brand toggle filters and releases, no
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
   await expect(page.locator(".catalog-card")).toHaveCount(15);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
-  await expect(page.locator('.catalog-bar-link[aria-current="page"]')).toHaveText("Networking");
   // D-060: the catalogue is unlinked from imagery — all five Switches
   // cards show the same neutral placeholder, and NO <img> survives inside
   // any card on the page (catches a stray image in any other type too)

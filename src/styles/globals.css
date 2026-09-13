@@ -4235,81 +4235,16 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 
 
 /* ------------------------------------------------------------------ */
-/* D-059 — categorised product catalogue (/products, /products/[cat]) */
+/* D-059/D-061 — categorised product catalogue (/products, /products/[cat]) */
 /* Logical properties throughout, so RTL needs no overrides. Colours   */
 /* are theme tokens only; brand line is full ink at .72 (≥ 4.5:1).     */
 /* ------------------------------------------------------------------ */
-.catalog-bar {
-  position: relative;
-  z-index: 5;
-  border-bottom: 1px solid var(--line);
-  background: var(--canvas-raised);
-}
-.catalog-bar-list {
-  display: flex;
-  gap: 0.25rem;
-  margin: 0 auto;
-  padding: 0.35rem 1.5rem;
-  max-inline-size: 90rem;
-  list-style: none;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-.catalog-bar-item { position: relative; flex: 0 0 auto; }
-.catalog-bar-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.7rem 0.95rem;
-  border-radius: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  white-space: nowrap;
-  transition:
-    color var(--dur-control) var(--ease-engineered),
-    background-color var(--dur-control) var(--ease-engineered);
-}
-.catalog-bar-link:hover,
-.catalog-bar-link[aria-expanded="true"] { color: var(--ink); background: var(--canvas-glass); }
-.catalog-bar-link[aria-current="page"] { color: var(--accent); }
-.catalog-bar-link:focus-visible,
 .catalog-side-link:focus-visible,
 .catalog-tile:focus-visible,
-.catalog-brand:focus-visible,
-.catalog-panel-all:focus-visible {
+.catalog-brand:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
-/* reveal panel: 110 ms open / 220 ms close are driven by the component;
-   the CSS only fades. Hidden panels leave the tab order and the a11y tree. */
-.catalog-panel {
-  position: absolute;
-  inset-inline-start: 0;
-  top: calc(100% + 0.35rem);
-  z-index: 30;
-  min-inline-size: 15rem;
-  max-inline-size: 22rem;
-  padding: 0.9rem 1rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
-  box-shadow: var(--canvas-shadow);
-  opacity: 0;
-  translate: 0 -4px;
-  visibility: hidden;
-  transition:
-    opacity var(--dur-micro) var(--ease-engineered),
-    translate var(--dur-micro) var(--ease-engineered),
-    visibility 0s linear var(--dur-micro);
-}
-.catalog-panel[data-open] { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
-.catalog-bar-item:last-child .catalog-panel { inset-inline-start: auto; inset-inline-end: 0; }
-.catalog-panel ul { display: flex; flex-direction: column; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
-.catalog-panel li { font-size: 0.9rem; color: var(--ink); }
-.catalog-panel-all { display: inline-block; margin-top: 0.8rem; color: var(--accent); }
 
 /* index: the nine category tiles */
 .catalog-tiles {
@@ -4412,12 +4347,10 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 .catalog-card-brand { margin-top: 0.15rem; font-size: 0.85rem; font-weight: 400; color: var(--ink); opacity: 0.72; }
 
 @media (prefers-reduced-motion: reduce) {
-  .catalog-panel, .catalog-tile, .catalog-bar-link, .catalog-side-link, .catalog-brand { transition: none; }
+  .catalog-tile, .catalog-side-link, .catalog-brand { transition: none; }
   .catalog-tile:hover { transform: none; }
 }
-html[data-motion-tier="static"] .catalog-panel,
 html[data-motion-tier="static"] .catalog-tile,
-html[data-motion-tier="static"] .catalog-bar-link,
 html[data-motion-tier="static"] .catalog-side-link,
 html[data-motion-tier="static"] .catalog-brand { transition: none; }
 html[data-motion-tier="static"] .catalog-tile:hover { transform: none; }
