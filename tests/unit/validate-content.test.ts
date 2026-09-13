@@ -57,46 +57,64 @@ describe("approved business data invariants", () => {
     }
   });
 
-  it("carries exactly the 22 approved product categories with the owner image mapping (D-052)", () => {
+  it("carries exactly the 24 approved product categories with the owner image mapping (D-058)", () => {
     expect(products.map((p) => p.name.en)).toEqual([
       "Switch", "Access Points", "Router", "Laptop", "Multi Charger", "T60",
       "SFP", "Firewall", "Core Switch", "Monitor", "PC", "UPS", "Printers",
-      "NVR", "Hard Disk", "Decoder", "Face Recognition Terminals", "Camera",
+      "NVR", "Hard Disk", "Decoder", "Face Recognition Terminals", "Cameras",
       "Tablet", "HDMI Extender", "AC Adapter", "Media Converter",
+      // D-058 intake: two categories new to the catalogue, named by file
+      "Access Control", "P2P",
     ]);
     const withImage = Object.fromEntries(
       products.filter((p) => p.image).map((p) => [p.slug, p.image!.src]),
     );
+    // D-058: every owner photograph lives on a NEW -2026 path (D-053),
+    // sfp keeps its D-052 asset (no intake file for it)
     expect(withImage).toEqual({
-      switch: "/media/products/01-switch.webp",
-      "access-points": "/media/products/02-access-points.webp",
-      camera: "/media/products/03-camera.webp",
-      firewall: "/media/products/firewall-interim.webp",
-      laptop: "/media/products/laptop.webp",
-      "core-switch": "/media/products/core-switch.webp",
+      switch: "/media/products/switch-2026.webp",
+      "access-points": "/media/products/access-points-2026.webp",
+      router: "/media/products/router-2026.webp",
+      laptop: "/media/products/laptop-2026.webp",
+      "multi-charger": "/media/products/multi-charger-2026.webp",
+      t60: "/media/products/t60-2026.webp",
       sfp: "/media/products/sfp.webp",
-      tablet: "/media/products/tablet.webp",
-      printers: "/media/products/printers.webp",
-      "multi-charger": "/media/products/multi-charger-t60.webp",
-      t60: "/media/products/multi-charger-t60.webp",
-      nvr: "/media/products/nvr.webp",
+      firewall: "/media/products/firewall-2026.webp",
+      "core-switch": "/media/products/core-switch-2026.webp",
+      pc: "/media/products/pc-2026.webp",
+      ups: "/media/products/ups-2026.webp",
+      printers: "/media/products/printers-2026.webp",
+      nvr: "/media/products/nvr-2026.webp",
+      camera: "/media/products/cameras-2026.webp",
+      tablet: "/media/products/tablet-2026.webp",
+      "hdmi-extender": "/media/products/hdmi-extender-2026.webp",
+      "media-converter": "/media/products/media-converter-2026.webp",
+      "access-control": "/media/products/access-control-2026.webp",
+      p2p: "/media/products/p2p-2026.webp",
     });
-    // owner decision: ONE combined photograph serves both records —
-    // never duplicated, never split into fabricated separate media
-    expect(products.find((p) => p.slug === "multi-charger")?.image?.src).toBe(
+    // D-058: Multi Charger and T60 each carry their OWN photograph now —
+    // the earlier shared file is superseded, not duplicated
+    expect(products.find((p) => p.slug === "multi-charger")?.image?.src).not.toBe(
       products.find((p) => p.slug === "t60")?.image?.src,
     );
-    // the ten categories awaiting approved imagery keep the designed
-    // media-pending state — no borrowed or invented visuals
+    // the five categories still awaiting approved imagery keep the
+    // designed media-pending state — no borrowed or invented visuals
     expect(products.filter((p) => !p.image).map((p) => p.slug)).toEqual([
-      "router", "monitor", "pc", "ups", "hard-disk", "decoder",
-      "face-recognition-terminals", "hdmi-extender", "ac-adapter", "media-converter",
+      "monitor", "hard-disk", "decoder", "face-recognition-terminals", "ac-adapter",
     ]);
     expect(products.filter((p) => p.featured).map((p) => p.slug).sort()).toEqual(
-      ["access-points", "camera", "firewall", "switch"],
+      ["camera", "core-switch", "firewall", "laptop"],
     );
-    // the temporary Firewall visual stays explicitly provisional (PRODUCT-MEDIA-01)
-    expect(products.find((p) => p.slug === "firewall")?.image?.provisional).toBe(true);
+    // D-058 §4: the featured four in the owner's exact order
+    expect(
+      products
+        .filter((p) => p.featured)
+        .sort((x, y) => (x.featuredOrder ?? 99) - (y.featuredOrder ?? 99))
+        .map((p) => p.slug),
+    ).toEqual(["firewall", "core-switch", "laptop", "camera"]);
+    // PRODUCT-MEDIA-01 is closed: the Firewall now carries the owner's own
+    // appliance photograph, so nothing is provisional any more
+    expect(products.find((p) => p.slug === "firewall")?.image?.provisional).toBeFalsy();
     // no invented copy: category records carry no unapproved summaries/specs
     for (const p of products) {
       expect(p.summary).toBeUndefined();

@@ -128,26 +128,45 @@ for (const g of galleryItems) {
 }
 for (const d of documents) checkPath(d.src, `document ${d.locale}`, true);
 
-/* ---- D-052 Products media: owner mapping + integrity ----------------- */
+/* ---- Products media: owner mapping + integrity ----------------------- */
+/* D-058 owner intake (2026-09-13) supersedes the D-052/D-053 manifest:
+   eighteen owner photographs on NEW delivery paths (D-053 — a path is
+   never reused for different bytes), two categories new to the
+   catalogue, and a new featured four. Provenance is binding in
+   media-source/images/products/MAPPING.md. */
 const PRODUCT_IMAGE_MAPPING: Record<string, string> = {
-  switch: "/media/products/01-switch.webp",
-  "access-points": "/media/products/02-access-points.webp",
-  camera: "/media/products/03-camera.webp",
-  firewall: "/media/products/firewall-interim.webp",
-  laptop: "/media/products/laptop.webp",
-  "core-switch": "/media/products/core-switch.webp",
+  switch: "/media/products/switch-2026.webp",
+  "access-points": "/media/products/access-points-2026.webp",
+  router: "/media/products/router-2026.webp",
+  laptop: "/media/products/laptop-2026.webp",
+  // Multi Charger and T60 each carry their OWN photograph now (D-058)
+  "multi-charger": "/media/products/multi-charger-2026.webp",
+  t60: "/media/products/t60-2026.webp",
   sfp: "/media/products/sfp.webp",
-  tablet: "/media/products/tablet.webp",
-  printers: "/media/products/printers.webp",
-  // Multi Charger and T60 intentionally SHARE one combined photograph
-  "multi-charger": "/media/products/multi-charger-t60.webp",
-  t60: "/media/products/multi-charger-t60.webp",
-  nvr: "/media/products/nvr.webp",
+  firewall: "/media/products/firewall-2026.webp",
+  "core-switch": "/media/products/core-switch-2026.webp",
+  pc: "/media/products/pc-2026.webp",
+  ups: "/media/products/ups-2026.webp",
+  printers: "/media/products/printers-2026.webp",
+  nvr: "/media/products/nvr-2026.webp",
+  camera: "/media/products/cameras-2026.webp",
+  tablet: "/media/products/tablet-2026.webp",
+  "hdmi-extender": "/media/products/hdmi-extender-2026.webp",
+  "media-converter": "/media/products/media-converter-2026.webp",
+  "access-control": "/media/products/access-control-2026.webp",
+  p2p: "/media/products/p2p-2026.webp",
 };
-/* the homepage preview stays at exactly these four (D-052 §8) */
-const PRODUCT_FEATURED = ["access-points", "camera", "firewall", "switch"];
+/* the homepage preview is exactly these four, in this order (D-058 §4) */
+const PRODUCT_FEATURED = ["camera", "core-switch", "firewall", "laptop"];
+const PRODUCT_FEATURED_ORDER = ["firewall", "core-switch", "laptop", "camera"];
 {
-  if (products.length !== 22) errors.push(`products: expected the 22 approved categories, got ${products.length}`);
+  if (products.length !== 24) errors.push(`products: expected the 24 approved categories, got ${products.length}`);
+  const inOrder = products
+    .filter((p) => p.featured)
+    .sort((a, b) => (a.featuredOrder ?? 99) - (b.featuredOrder ?? 99))
+    .map((p) => p.slug);
+  if (JSON.stringify(inOrder) !== JSON.stringify(PRODUCT_FEATURED_ORDER))
+    errors.push(`products: featured order must be exactly ${PRODUCT_FEATURED_ORDER.join(" → ")} (got ${inOrder.join(" → ")})`);
   const featured = products.filter((p) => p.featured).map((p) => p.slug).sort();
   if (JSON.stringify(featured) !== JSON.stringify(PRODUCT_FEATURED))
     errors.push(`products: featured set must be exactly ${PRODUCT_FEATURED.join(", ")} (got ${featured.join(", ")})`);

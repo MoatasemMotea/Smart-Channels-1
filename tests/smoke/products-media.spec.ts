@@ -1,30 +1,38 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * D-052 Products media integration — focused regression.
+ * Products media integration — focused regression (D-052 → D-058).
  * Owner mapping, delivery availability, archive privacy, homepage
- * preview, 22-category index, no invented commerce content.
+ * preview, 24-category index, no invented commerce content.
  */
+/* the D-058 §4 featured four, in the owner's exact order */
 const FEATURED = [
-  "/media/products/01-switch.webp",
-  "/media/products/02-access-points.webp",
-  "/media/products/03-camera.webp",
-  "/media/products/firewall-interim.webp",
+  "/media/products/firewall-2026.webp",
+  "/media/products/core-switch-2026.webp",
+  "/media/products/laptop-2026.webp",
+  "/media/products/cameras-2026.webp",
 ];
 const DELIVERY = [
   ...FEATURED,
-  "/media/products/laptop.webp",
-  "/media/products/core-switch.webp",
+  "/media/products/switch-2026.webp",
+  "/media/products/access-points-2026.webp",
+  "/media/products/router-2026.webp",
+  "/media/products/multi-charger-2026.webp",
+  "/media/products/t60-2026.webp",
   "/media/products/sfp.webp",
-  "/media/products/tablet.webp",
-  "/media/products/printers.webp",
-  "/media/products/multi-charger-t60.webp",
-  "/media/products/nvr.webp",
+  "/media/products/pc-2026.webp",
+  "/media/products/ups-2026.webp",
+  "/media/products/printers-2026.webp",
+  "/media/products/nvr-2026.webp",
+  "/media/products/tablet-2026.webp",
+  "/media/products/hdmi-extender-2026.webp",
+  "/media/products/media-converter-2026.webp",
+  "/media/products/access-control-2026.webp",
+  "/media/products/p2p-2026.webp",
 ];
-/* the ten categories that keep the designed media-pending state */
+/* the five categories that keep the designed media-pending state */
 const FALLBACK = [
-  "router", "monitor", "pc", "ups", "hard-disk", "decoder",
-  "face-recognition-terminals", "hdmi-extender", "ac-adapter", "media-converter",
+  "monitor", "hard-disk", "decoder", "face-recognition-terminals", "ac-adapter",
 ];
 /* second-round files the owner held back — must never be published */
 const HELD = [
@@ -33,7 +41,7 @@ const HELD = [
   "/media-source/images/UPS.jpg",
 ];
 
-test("all eleven product delivery images are publicly served", async ({ request }) => {
+test("all nineteen product delivery images are publicly served", async ({ request }) => {
   for (const p of DELIVERY) {
     const res = await request.head(p);
     expect(res.status(), p).toBe(200);
@@ -63,15 +71,15 @@ test("homepage preview: exactly the four featured categories with mapped images"
       href: li.querySelector("a")?.getAttribute("href") ?? "",
     })),
   );
-  expect(slots.map((s) => s.name)).toEqual(["Switch", "Access Points", "Camera", "Firewall"]);
+  expect(slots.map((s) => s.name)).toEqual(["Firewall", "Core Switch", "Laptop", "Cameras"]);
   expect(slots.every((s, i) => s.img.includes(encodeURIComponent(FEATURED[i]!)) || s.img.includes(FEATURED[i]!))).toBe(true);
   // §8: the homepage stays at FOUR — never a catalogue
   expect(slots).toHaveLength(4);
   expect(slots.map((s) => s.href)).toEqual([
-    "/en/products#switch",
-    "/en/products#access-points",
-    "/en/products#camera",
     "/en/products#firewall",
+    "/en/products#core-switch",
+    "/en/products#laptop",
+    "/en/products#camera",
   ]);
   const section = await page.evaluate(
     () => document.querySelector('[data-scene="products"]')?.textContent ?? "",
@@ -80,7 +88,7 @@ test("homepage preview: exactly the four featured categories with mapped images"
   expect(section).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
 });
 
-test("/products: complete 22-category index, images only where approved", async ({ page }) => {
+test("/products: complete 24-category index, images only where approved", async ({ page }) => {
   await page.goto("/en/products", { waitUntil: "networkidle" });
   const cards = await page.evaluate(() =>
     [...document.querySelectorAll(".product-card")].map((c) => ({
@@ -89,22 +97,24 @@ test("/products: complete 22-category index, images only where approved", async 
       hasMotif: Boolean(c.querySelector(".product-card-motif")),
     })),
   );
-  expect(cards).toHaveLength(22);
+  expect(cards).toHaveLength(24);
   const withPhoto = cards.filter((c) => c.hasPhoto).map((c) => c.id).sort();
   expect(withPhoto).toEqual([
-    "access-points", "camera", "core-switch", "firewall", "laptop",
-    "multi-charger", "nvr", "printers", "sfp", "switch", "t60", "tablet",
+    "access-control", "access-points", "camera", "core-switch", "firewall",
+    "hdmi-extender", "laptop", "media-converter", "multi-charger", "nvr", "p2p",
+    "pc", "printers", "router", "sfp", "switch", "t60", "tablet", "ups",
   ]);
-  // the remaining ten keep the designed media-pending motif
+  // the remaining five keep the designed media-pending motif
   expect(cards.filter((c) => c.hasMotif).map((c) => c.id).sort()).toEqual([...FALLBACK].sort());
-  // Multi Charger and T60 present the SAME shared source
-  const shared = await page.evaluate(() =>
+  // D-058: Multi Charger and T60 now present their OWN, distinct photographs
+  const own = await page.evaluate(() =>
     ["multi-charger", "t60"].map(
       (id) => document.querySelector<HTMLImageElement>(`#${id} img`)?.getAttribute("src") ?? "",
     ),
   );
-  expect(shared[0]).toBe(shared[1]);
-  expect(shared[0]).toContain("multi-charger-t60");
+  expect(own[0]).not.toBe(own[1]);
+  expect(own[0]).toContain("multi-charger-2026");
+  expect(own[1]).toContain("t60-2026");
   for (const c of cards) {
     expect(c.hasPhoto || c.hasMotif, c.id).toBe(true); // never a blank placeholder
   }
@@ -119,12 +129,12 @@ test("/products: complete 22-category index, images only where approved", async 
   expect(broken).toBe(0);
 });
 
-test("AR /products renders the same 22 categories, photography not mirrored", async ({
+test("AR /products renders the same 24 categories, photography not mirrored", async ({
   page,
 }) => {
   await page.goto("/ar/products", { waitUntil: "networkidle" });
   const n = await page.evaluate(() => document.querySelectorAll(".product-card").length);
-  expect(n).toBe(22);
+  expect(n).toBe(24);
   const mirrored = await page.evaluate(() =>
     [...document.querySelectorAll(".product-card-photo img")].some((i) =>
       getComputedStyle(i).transform.includes("-1"),

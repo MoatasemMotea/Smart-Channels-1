@@ -1,16 +1,20 @@
 import type { CatalogProduct } from "@/types/content";
 
 /**
- * PRODUCTS (D-034 architecture · D-052 owner population).
+ * PRODUCTS (D-034 architecture · D-052 owner population · D-058 media
+ * intake).
  *
- * The 22 records below are the OWNER-APPROVED product categories
- * (2026-08-31 Products directive §2, names verbatim). This is a
- * capability/category presentation, NOT an e-commerce store: no model
- * numbers, manufacturers, specifications, prices or stock — and none
- * may be added without explicit owner approval.
+ * The records below are the OWNER-APPROVED product categories: the 22
+ * of the 2026-08-31 Products directive §2, plus the two the owner's
+ * 2026-09 photography intake introduced (D-058 §2 — the filename is the
+ * only source of a name, and "Access Control" and "P2P" arrived as
+ * files that matched no existing record). This is a capability/category
+ * presentation, NOT an e-commerce store: no model numbers,
+ * manufacturers, specifications, prices or stock — and none may be
+ * added without explicit owner approval.
  *
- * IMAGERY: only the four owner-supplied photographs are mapped
- * (media-source/images/products/MAPPING.md — binding). Categories
+ * IMAGERY: every mapped photograph is OWNER-SUPPLIED (provenance in
+ * media-source/images/products/MAPPING.md — binding). Categories
  * without approved imagery render the designed media-pending motif;
  * adding a photograph later = fill `image` on the record (pure data,
  * no component changes). `summary`/`importance` stay ABSENT until the
@@ -20,26 +24,27 @@ import type { CatalogProduct } from "@/types/content";
  * — approved Arabic category terminology is an OPEN ITEM
  * (PRODUCT-AR-NAMES); nothing specialized is invented (§14).
  *
- * RIGHTS: the four images are OWNER-SUPPLIED — PUBLICATION RIGHTS TO
- * BE CONFIRMED BEFORE FINAL LAUNCH (PRODUCT-MEDIA-RIGHTS).
+ * RIGHTS: all images are OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE
+ * CONFIRMED BEFORE FINAL LAUNCH (PRODUCT-MEDIA-RIGHTS).
+ *
+ * DELIVERY PATHS are never reused for different bytes (D-053): the
+ * D-058 set lives at /media/products/<slug>-2026.webp beside the
+ * files it replaced.
  */
 export const products: CatalogProduct[] = [
   {
     id: "switch",
     slug: "switch",
     name: { en: "Switch", arPolicy: "latin" },
+    /* transparent cut-out (D-058) — presented whole on the card canvas */
     image: {
-      src: "/media/products/01-switch.webp",
-      width: 500,
-      height: 270,
-      // low-res source presented whole on a plate matched to its own
-      // white studio background — never upscaled, never cropped (§12)
+      src: "/media/products/switch-2026.webp",
+      width: 1200,
+      height: 353,
       fit: "contain",
-      plate: "white",
-      alt: { en: "Compact PoE network switch with ethernet and SFP ports", ar: "محوّل شبكة مدمج بمنافذ إيثرنت وSFP" }, // AR authored (D-006) — owner review pending
+      alt: { en: "Rack-mount network switch with 48 ethernet ports and SFP uplinks, front view", ar: "محوّل شبكة بحجم الرف بـ48 منفذ إيثرنت ووصلات SFP، منظور أمامي" }, // AR authored (D-006) — owner review pending
     },
-    featured: true,
-    featuredOrder: 1,
+    featured: false,
     published: true,
     sortOrder: 1,
   },
@@ -47,16 +52,15 @@ export const products: CatalogProduct[] = [
     id: "access-points",
     slug: "access-points",
     name: { en: "Access Points", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/02-access-points.webp",
-      width: 1600,
-      height: 1067,
-      fit: "cover",
-      focus: "62% 30%",
-      alt: { en: "Compact white wireless device mounted on an interior wall", ar: "جهاز لاسلكي أبيض مثبّت على جدار داخلي" }, // AR authored (D-006) — owner review pending
+      src: "/media/products/access-points-2026.webp",
+      width: 1200,
+      height: 820,
+      fit: "contain",
+      alt: { en: "Ceiling-mount wireless access point, a white disc with a blue status ring", ar: "نقطة وصول لاسلكية سقفية، قرص أبيض بحلقة حالة زرقاء" }, // AR authored (D-006) — owner review pending
     },
-    featured: true,
-    featuredOrder: 2,
+    featured: false,
     published: true,
     sortOrder: 2,
   },
@@ -64,6 +68,14 @@ export const products: CatalogProduct[] = [
     id: "router",
     slug: "router",
     name: { en: "Router", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/router-2026.webp",
+      width: 1200,
+      height: 436,
+      fit: "contain",
+      alt: { en: "Desktop router with four external antennas and rear ethernet ports", ar: "موجّه مكتبي بأربعة هوائيات خارجية ومنافذ إيثرنت خلفية" }, // AR authored (D-006) — owner review pending
+    },
     featured: false,
     published: true,
     sortOrder: 3,
@@ -72,15 +84,16 @@ export const products: CatalogProduct[] = [
     id: "laptop",
     slug: "laptop",
     name: { en: "Laptop", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/laptop.webp",
+      src: "/media/products/laptop-2026.webp",
       width: 1200,
-      height: 1800,
-      fit: "cover",
-      focus: "58% 56%",
-      alt: { en: "Open laptop on a white pedestal in soft daylight", ar: "حاسوب محمول مفتوح على قاعدة بيضاء بإضاءة نهارية ناعمة" }, // AR authored (D-006) — owner review pending
+      height: 811,
+      fit: "contain",
+      alt: { en: "Open laptop, front three-quarter view", ar: "حاسوب محمول مفتوح بمنظور أمامي ثلاثة أرباع" }, // AR authored (D-006) — owner review pending
     },
-    featured: false,
+    featured: true,
+    featuredOrder: 3,
     published: true,
     sortOrder: 4,
   },
@@ -88,15 +101,14 @@ export const products: CatalogProduct[] = [
     id: "multi-charger",
     slug: "multi-charger",
     name: { en: "Multi Charger", arPolicy: "latin" },
-    /* owner decision: Multi Charger and T60 SHARE this single combined
-       product photograph — no duplicated or fabricated media (§1) */
+    /* transparent cut-out (D-058) — its OWN photograph now; the earlier
+       shared Multi Charger/T60 file is superseded */
     image: {
-      src: "/media/products/multi-charger-t60.webp",
-      width: 500,
-      height: 500,
+      src: "/media/products/multi-charger-2026.webp",
+      width: 1200,
+      height: 552,
       fit: "contain",
-      plate: "white",
-      alt: { en: "Six handheld two-way radios docked in a multi-bay charging station", ar: "ستة أجهزة اتصال لاسلكي محمولة في محطة شحن متعددة المنافذ" }, // AR authored (D-006) — owner review pending
+      alt: { en: "Six-bay charging station with handheld two-way radios docked", ar: "محطة شحن بست فتحات مع أجهزة اتصال لاسلكي محمولة موصولة" }, // AR authored (D-006) — owner review pending
     },
     featured: false,
     published: true,
@@ -106,14 +118,13 @@ export const products: CatalogProduct[] = [
     id: "t60",
     slug: "t60",
     name: { en: "T60", arPolicy: "latin" },
-    /* SAME source as Multi Charger (owner decision — shared media) */
+    /* full-bleed composited scene (D-058) — its OWN photograph now */
     image: {
-      src: "/media/products/multi-charger-t60.webp",
-      width: 500,
-      height: 500,
-      fit: "contain",
-      plate: "white",
-      alt: { en: "Handheld two-way radios shown with their multi-bay charging station", ar: "أجهزة اتصال لاسلكي محمولة مع محطة الشحن متعددة المنافذ" }, // AR authored (D-006) — owner review pending
+      src: "/media/products/t60-2026.webp",
+      width: 1200,
+      height: 675,
+      fit: "cover",
+      alt: { en: "Handheld two-way radios over an aerial city view with call-mode labels", ar: "أجهزة اتصال لاسلكي محمولة فوق منظر جوي لمدينة مع تسميات أوضاع الاتصال" }, // AR authored (D-006) — owner review pending
     },
     featured: false,
     published: true,
@@ -139,27 +150,19 @@ export const products: CatalogProduct[] = [
     id: "firewall",
     slug: "firewall",
     name: { en: "Firewall", arPolicy: "latin" },
-    /* PRODUCT-MEDIA-01 (still OPEN): the owner-approved INTERIM visual
-       is real data-centre hardware, NOT a physical firewall appliance —
-       it stays flagged provisional until a true appliance photograph is
-       supplied (owner decision 2026-08-31). The delivery path is
-       deliberately DISTINCT from the superseded conceptual visual's —
-       reusing a path for different bytes serves stale variants from
-       image/CDN caches. */
+    /* transparent cut-out (D-058). This is the owner's own appliance
+       photograph, so PRODUCT-MEDIA-01 (the interim data-centre visual)
+       is closed by this record; the interim file stays on its old path
+       untouched. */
     image: {
-      src: "/media/products/firewall-interim.webp",
+      src: "/media/products/firewall-2026.webp",
       width: 1200,
-      height: 1804,
-      fit: "cover",
-      // portrait source into a landscape window: the vertical focal
-      // point decides the crop — 62% favours the rack faces and
-      // cabling over the blank corridor wall
-      focus: "50% 62%",
-      provisional: true,
-      alt: { en: "Data-centre aisle lined with equipment cabinets and status indicators", ar: "ممر في مركز بيانات تصطف على جانبيه خزائن المعدات ومؤشرات التشغيل" }, // AR authored (D-006) — owner review pending
+      height: 287,
+      fit: "contain",
+      alt: { en: "Rack-mount firewall appliance with ethernet and SFP ports, front view", ar: "جهاز جدار حماية بحجم الرف بمنافذ إيثرنت وSFP، منظور أمامي" }, // AR authored (D-006) — owner review pending
     },
     featured: true,
-    featuredOrder: 4,
+    featuredOrder: 1,
     published: true,
     sortOrder: 8,
   },
@@ -167,17 +170,16 @@ export const products: CatalogProduct[] = [
     id: "core-switch",
     slug: "core-switch",
     name: { en: "Core Switch", arPolicy: "latin" },
-    /* transparent-background studio cutout — presented whole on a
-       neutral plate; a cover crop would clip the chassis ends (§9) */
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/core-switch.webp",
-      width: 900,
-      height: 600,
+      src: "/media/products/core-switch-2026.webp",
+      width: 1200,
+      height: 326,
       fit: "contain",
-      plate: "light",
-      alt: { en: "Rack-mount core switch with fibre and ethernet port banks", ar: "محوّل أساسي بحجم الرف بمنافذ ألياف وإيثرنت" }, // AR authored (D-006) — owner review pending
+      alt: { en: "Rack-mount core switch with dense fibre port banks, front view", ar: "محوّل أساسي بحجم الرف بصفوف كثيفة من منافذ الألياف، منظور أمامي" }, // AR authored (D-006) — owner review pending
     },
-    featured: false,
+    featured: true,
+    featuredOrder: 2,
     published: true,
     sortOrder: 9,
   },
@@ -193,6 +195,16 @@ export const products: CatalogProduct[] = [
     id: "pc",
     slug: "pc",
     name: { en: "PC", arPolicy: "latin" },
+    /* opaque white studio ground (D-058) — presented whole on a plate
+       matched to its own background, never cropped */
+    image: {
+      src: "/media/products/pc-2026.webp",
+      width: 1200,
+      height: 900,
+      fit: "contain",
+      plate: "white",
+      alt: { en: "Desktop computer tower with two monitors, keyboard and mouse", ar: "حاسوب مكتبي مع شاشتين ولوحة مفاتيح وفأرة" }, // AR authored (D-006) — owner review pending
+    },
     featured: false,
     published: true,
     sortOrder: 11,
@@ -201,6 +213,14 @@ export const products: CatalogProduct[] = [
     id: "ups",
     slug: "ups",
     name: { en: "UPS", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/ups-2026.webp",
+      width: 1198,
+      height: 1200,
+      fit: "contain",
+      alt: { en: "Tower UPS unit with a front status display", ar: "وحدة تغذية غير منقطعة برجية بشاشة حالة أمامية" }, // AR authored (D-006) — owner review pending
+    },
     featured: false,
     published: true,
     sortOrder: 12,
@@ -209,13 +229,13 @@ export const products: CatalogProduct[] = [
     id: "printers",
     slug: "printers",
     name: { en: "Printers", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/printers.webp",
-      width: 1600,
-      height: 1066,
-      fit: "cover",
-      focus: "34% 55%",
-      alt: { en: "Office multifunction printer being operated at a workplace", ar: "طابعة مكتبية متعددة الوظائف أثناء التشغيل في بيئة عمل" }, // AR authored (D-006) — owner review pending
+      src: "/media/products/printers-2026.webp",
+      width: 1200,
+      height: 798,
+      fit: "contain",
+      alt: { en: "Assorted office printers — multifunction, inkjet, label and receipt models", ar: "مجموعة طابعات مكتبية — متعددة الوظائف ونافثة للحبر وطابعات ملصقات وإيصالات" }, // AR authored (D-006) — owner review pending
     },
     featured: false,
     published: true,
@@ -225,18 +245,13 @@ export const products: CatalogProduct[] = [
     id: "nvr",
     slug: "nvr",
     name: { en: "NVR", arPolicy: "latin" },
-    /* owner decision 2026-08-31: the visible manufacturer branding in
-       this photograph is explicitly ACCEPTED and must never be removed,
-       blurred, cropped out or recoloured to hide it. The plate matches
-       the source's own white studio background (verified by sampling,
-       not by eye). */
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/nvr.webp",
-      width: 800,
-      height: 800,
+      src: "/media/products/nvr-2026.webp",
+      width: 1200,
+      height: 405,
       fit: "contain",
-      plate: "white",
-      alt: { en: "Network video recorder unit, front three-quarter view", ar: "جهاز تسجيل فيديو شبكي بمنظور أمامي ثلاثة أرباع" }, // AR authored (D-006) — owner review pending
+      alt: { en: "Network video recorder, front three-quarter view", ar: "جهاز تسجيل فيديو شبكي بمنظور أمامي ثلاثة أرباع" }, // AR authored (D-006) — owner review pending
     },
     featured: false,
     published: true,
@@ -269,17 +284,19 @@ export const products: CatalogProduct[] = [
   {
     id: "camera",
     slug: "camera",
-    name: { en: "Camera", arPolicy: "latin" },
+    /* "Cameras" — the owner's filename and the D-058 §4 featured list
+       both say so; id/slug stay stable so the index anchor keeps working */
+    name: { en: "Cameras", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/03-camera.webp",
-      width: 1365,
-      height: 2048,
-      fit: "cover",
-      focus: "50% 42%",
-      alt: { en: "Fixed and dome surveillance cameras mounted on a pole against a clear sky", ar: "كاميرات مراقبة ثابتة وقبة مثبتة على عمود تحت سماء صافية" }, // AR authored (D-006) — owner review pending
+      src: "/media/products/cameras-2026.webp",
+      width: 1200,
+      height: 892,
+      fit: "contain",
+      alt: { en: "Assorted surveillance cameras — bullet, dome, box, cube and PTZ models", ar: "مجموعة كاميرات مراقبة — أنبوبية وقبة وصندوقية ومكعبة وPTZ" }, // AR authored (D-006) — owner review pending
     },
     featured: true,
-    featuredOrder: 3,
+    featuredOrder: 4,
     published: true,
     sortOrder: 18,
   },
@@ -287,13 +304,13 @@ export const products: CatalogProduct[] = [
     id: "tablet",
     slug: "tablet",
     name: { en: "Tablet", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
     image: {
-      src: "/media/products/tablet.webp",
-      width: 1600,
-      height: 1067,
-      fit: "cover",
-      focus: "45% 48%",
-      alt: { en: "Hand using a stylus on a tablet screen at a desk", ar: "يد تستخدم قلماً رقمياً على شاشة جهاز لوحي على مكتب" }, // AR authored (D-006) — owner review pending
+      src: "/media/products/tablet-2026.webp",
+      width: 1200,
+      height: 800,
+      fit: "contain",
+      alt: { en: "Assorted tablets, some with keyboards and styluses", ar: "مجموعة أجهزة لوحية، بعضها مع لوحات مفاتيح وأقلام رقمية" }, // AR authored (D-006) — owner review pending
     },
     featured: false,
     published: true,
@@ -303,6 +320,14 @@ export const products: CatalogProduct[] = [
     id: "hdmi-extender",
     slug: "hdmi-extender",
     name: { en: "HDMI Extender", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/hdmi-extender-2026.webp",
+      width: 1200,
+      height: 740,
+      fit: "contain",
+      alt: { en: "HDMI extender transmitter and receiver pair with adapters and cables", ar: "زوج موسّع HDMI مرسل ومستقبل مع محوّلات وكابلات" }, // AR authored (D-006) — owner review pending
+    },
     featured: false,
     published: true,
     sortOrder: 20,
@@ -319,8 +344,51 @@ export const products: CatalogProduct[] = [
     id: "media-converter",
     slug: "media-converter",
     name: { en: "Media Converter", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/media-converter-2026.webp",
+      width: 1200,
+      height: 766,
+      fit: "contain",
+      alt: { en: "Assorted fibre media converters with ethernet and SFP ports", ar: "مجموعة محوّلات وسائط ألياف بمنافذ إيثرنت وSFP" }, // AR authored (D-006) — owner review pending
+    },
     featured: false,
     published: true,
     sortOrder: 22,
+  },
+  /* ---- D-058 intake: two categories new to the catalogue. Name and
+     photograph only, exactly as the owner's files say — no summary, no
+     category, nothing inferred. ---- */
+  {
+    id: "access-control",
+    slug: "access-control",
+    name: { en: "Access Control", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/access-control-2026.webp",
+      width: 1200,
+      height: 812,
+      fit: "contain",
+      alt: { en: "Access control set — controller board, magnetic lock, fingerprint terminal, exit button and cards", ar: "طقم تحكم بالدخول — لوحة تحكم وقفل مغناطيسي وجهاز بصمة وزر خروج وبطاقات" }, // AR authored (D-006) — owner review pending
+    },
+    featured: false,
+    published: true,
+    sortOrder: 23,
+  },
+  {
+    id: "p2p",
+    slug: "p2p",
+    name: { en: "P2P", arPolicy: "latin" },
+    /* transparent cut-out (D-058) */
+    image: {
+      src: "/media/products/p2p-2026.webp",
+      width: 1200,
+      height: 800,
+      fit: "contain",
+      alt: { en: "Assorted outdoor wireless antennas and bridge units", ar: "مجموعة هوائيات لاسلكية خارجية ووحدات ربط" }, // AR authored (D-006) — owner review pending
+    },
+    featured: false,
+    published: true,
+    sortOrder: 24,
   },
 ];

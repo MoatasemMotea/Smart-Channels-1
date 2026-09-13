@@ -105,3 +105,51 @@ considered for a future owner-authorized Solutions-support round; they
 must NEVER be presented as Gallery/project evidence. `Printers.jpg`
 (the weaker composition) is retained unused; `Printers1.jpg` was the
 approved choice and is archived here as `printers.jpg`.
+
+## D-058 — owner photography intake (2026-09-13)
+
+Eighteen owner-supplied files arrived in `media-source/images/products-intake/`
+and were transferred here under stable slugs (`git mv` — bytes untouched).
+Delivery derivatives were produced by `scripts/products-intake.ts` on **new**
+paths (`<slug>-2026.webp`, D-053) so nothing is served from a stale cache. The
+filename is the only source of a product name (D-058 §2); the two spelling
+corrections and the two new categories below were confirmed by the owner.
+
+Sixteen of the eighteen are transparent cut-outs; their fully transparent
+margin was trimmed for delivery — empty space only, no product pixel touched.
+
+| owner filename | archived original | delivery asset | delivery | product | treatment |
+|---|---|---|---|---|---|
+| `Acces Points.png` | `access-points-2026.png` | `access-points-2026.webp` | 1200×820 · 54 KB | Access Points | transparent cut-out (margin trimmed) — owner-confirmed spelling fix |
+| `Access control.png` | `access-control-2026.png` | `access-control-2026.webp` | 1200×812 · 151 KB | Access Control | transparent cut-out (margin trimmed) — **NEW category** (no existing record matched) |
+| `Cameras.png` | `cameras-2026.png` | `cameras-2026.webp` | 1200×892 · 164 KB | Cameras | transparent cut-out (margin trimmed) — renames the record's display name from "Camera" (id/slug unchanged) |
+| `Core Switch.png` | `core-switch-2026.png` | `core-switch-2026.webp` | 1200×326 · 75 KB | Core Switch | transparent cut-out (margin trimmed) |
+| `Firewall.png` | `firewall-2026.png` | `firewall-2026.webp` | 1200×287 · 47 KB | Firewall | transparent cut-out (margin trimmed) |
+| `HDMI Extender.png` | `hdmi-extender-2026.png` | `hdmi-extender-2026.webp` | 1200×740 · 160 KB | HDMI Extender | transparent cut-out (margin trimmed) |
+| `Laptop.png` | `laptop-2026.png` | `laptop-2026.webp` | 1200×811 · 62 KB | Laptop | transparent cut-out (margin trimmed) |
+| `Media Covertor.png` | `media-converter-2026.png` | `media-converter-2026.webp` | 1200×766 · 162 KB | Media Converter | transparent cut-out (margin trimmed) — owner-confirmed spelling fix |
+| `Multi Charger.png` | `multi-charger-2026.png` | `multi-charger-2026.webp` | 1200×552 · 61 KB | Multi Charger | transparent cut-out (margin trimmed) |
+| `NVR.png` | `nvr-2026.png` | `nvr-2026.webp` | 1200×405 · 42 KB | NVR | transparent cut-out (margin trimmed) |
+| `P2P.png` | `p2p-2026.png` | `p2p-2026.webp` | 1200×800 · 205 KB | P2P | transparent cut-out (margin trimmed) — **NEW category** (no existing record matched) |
+| `PC.png` | `pc-2026.png` | `pc-2026.webp` | 1200×900 · 52 KB | PC | opaque white studio ground → plate white |
+| `Printers.png` | `printers-2026.png` | `printers-2026.webp` | 1200×798 · 216 KB | Printers | transparent cut-out (margin trimmed) |
+| `Router.png` | `router-2026.png` | `router-2026.webp` | 1200×436 · 41 KB | Router | transparent cut-out (margin trimmed) |
+| `Switch.png` | `switch-2026.png` | `switch-2026.webp` | 1200×353 · 40 KB | Switch | transparent cut-out (margin trimmed) |
+| `T60.jpeg` | `t60-2026.jpg` | `t60-2026.webp` | 1200×675 · 118 KB | T60 | full-bleed composited scene → cover |
+| `Tablet.png` | `tablet-2026.png` | `tablet-2026.webp` | 1200×800 · 171 KB | Tablet | transparent cut-out (margin trimmed) |
+| `UPS.png` | `ups-2026.png` | `ups-2026.webp` | 1198×1200 · 102 KB | UPS | transparent cut-out (margin trimmed) |
+
+**Effects on open items:** PRODUCT-MEDIA-01 is **closed** — `firewall-2026`
+is the owner's own appliance photograph, so the interim data-centre visual is
+no longer mapped (its file stays on its old path, untouched). The shared
+`multi-charger-t60` photograph is superseded: Multi Charger and T60 each have
+their own image now. Still without imagery after this intake: **Monitor**,
+**Hard Disk**, **Decoder**, **Face Recognition Terminals**, **AC Adapter**.
+
+Superseded delivery files left in place on their old paths (D-053 — never
+overwritten, never reused): `01-switch`, `02-access-points`, `03-camera`,
+`firewall-interim`, `laptop`, `multi-charger-t60`, `nvr`, `printers`,
+`tablet`, `core-switch` (all `.webp`). `sfp.webp` remains in use.
+
+RIGHTS: OWNER-SUPPLIED — PUBLICATION RIGHTS TO BE CONFIRMED BEFORE FINAL
+LAUNCH (PRODUCT-MEDIA-RIGHTS), as for every earlier set.
