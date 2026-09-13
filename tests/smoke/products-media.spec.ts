@@ -78,15 +78,24 @@ test("/products/networking: fifteen cards, no model numbers, never a store", asy
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
   await expect(page.locator(".catalog-card")).toHaveCount(15);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
-  // D-060: the catalogue is unlinked from imagery — all five Switches
-  // cards show the same neutral placeholder, and NO <img> survives inside
-  // any card on the page (catches a stray image in any other type too)
+  // D-064: all six networking types carry a photograph — fifteen <img>,
+  // none of them a placeholder, and the image follows the TYPE: the five
+  // Switches cards share one file
+  await expect(page.locator(".catalog-card img")).toHaveCount(15);
+  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(0);
   const switches = page.locator(".catalog-card", { hasText: /^Switches/ });
   await expect(switches).toHaveCount(5);
-  await expect(switches.locator("[data-empty] svg")).toHaveCount(5);
-  await expect(page.locator(".catalog-card img")).toHaveCount(0);
-  // a type without a photograph shows the placeholder, never nothing
-  await expect(page.locator(".catalog-card", { hasText: "Wi-Fi Extenders" }).locator("[data-empty] svg")).toHaveCount(1);
+  const switchSrcs = await switches.locator("img").evaluateAll((els) => [...new Set(els.map((i) => (i as HTMLImageElement).getAttribute("src")))]);
+  expect(switchSrcs).toEqual(["/media/products/switches.webp"]);
+  // every photograph actually decoded — a broken path renders nothing, not a placeholder.
+  // The images are loading="lazy", so each is scrolled into view and decoded first
+  // (on the mobile project most of the grid starts below the fold)
+  const painted = await page.evaluate(async () => {
+    const imgs = [...document.querySelectorAll<HTMLImageElement>(".catalog-card img")];
+    for (const i of imgs) { i.scrollIntoView(); await i.decode().catch(() => undefined); }
+    return imgs.every((i) => i.complete && i.naturalWidth > 0);
+  });
+  expect(painted).toBe(true);
   // innerText, not textContent: adjacent card lines ("Switches" + "Aruba") would otherwise
   // concatenate into "sAr" and trip the SAR guard below
   const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
