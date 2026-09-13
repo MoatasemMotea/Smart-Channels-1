@@ -4,6 +4,7 @@ import { solutionFamilies } from "../../src/content/solutions";
 import { industries } from "../../src/content/industries";
 import { projects } from "../../src/content/projects";
 import { products } from "../../src/content/products";
+import { productCards, productCategories } from "../../src/content/product-catalog";
 import { galleryItems } from "../../src/content/gallery";
 import {
   getFeaturedIndustries,
@@ -55,6 +56,26 @@ describe("approved business data invariants", () => {
       // portrait sources stay portrait — never forced to 16:9 (§10)
       expect(f.media!.orientation === "portrait").toBe(f.media!.height > f.media!.width);
     }
+  });
+
+  it("carries the D-059 categorised catalogue: nine categories, seventy-three cards, image per type", () => {
+    expect(productCategories.map((c) => c.slug)).toEqual([
+      "networking", "fiber", "cybersecurity", "surveillance", "av",
+      "computing", "storage", "communication", "environmental",
+    ]);
+    expect(productCategories.map((c) => c.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(productCards).toHaveLength(73);
+    // cards per category, as the owner listed them
+    const per = Object.fromEntries(productCategories.map((c) => [c.slug, productCards.filter((k) => k.category === c.slug).length]));
+    expect(per).toEqual({ networking: 15, fiber: 9, cybersecurity: 1, surveillance: 7, av: 9, computing: 21, storage: 7, communication: 2, environmental: 2 });
+    // the image follows the TYPE: every card of one type shares one file
+    const byType = new Map<string, Set<string>>();
+    for (const k of productCards) byType.set(k.typeEn, (byType.get(k.typeEn) ?? new Set()).add(k.image));
+    for (const [, imgs] of byType) expect(imgs.size).toBe(1);
+    // no (category + type + brand) repeats
+    expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}|${k.brand}`)).size).toBe(73);
+    // no model number ever leaks into a name or brand
+    for (const k of productCards) expect(`${k.typeEn} ${k.typeAr} ${k.brand}`).not.toMatch(/DS-K1T673DX/);
   });
 
   it("carries exactly the 24 approved product categories with the owner image mapping (D-058)", () => {

@@ -219,6 +219,25 @@ import { products } from "../src/content/products";
   }
 }
 
+/* ---- D-059 categorised catalogue (src/content/product-catalog.ts) ------
+   A SEPARATE model from the 24 records above; those rules stay untouched.
+   Deliberately NO locked image manifest: the owner adds photographs
+   incrementally, so the only image rule is "the file exists on disk". */
+import { productCards, productCategories } from "../src/content/product-catalog";
+{
+  const known = new Set(productCategories.map((c) => c.slug));
+  const seen = new Set<string>();
+  for (const k of productCards) {
+    if (!known.has(k.category)) errors.push(`catalog card "${k.typeEn}" (${k.brand || "no brand"}): unknown category "${k.category}"`);
+    const key = `${k.category}|${k.typeEn}|${k.brand}`;
+    if (seen.has(key)) errors.push(`catalog: duplicate card ${key}`);
+    seen.add(key);
+    if (k.image) checkPath(`/media/products/${k.image}`, `catalog "${k.typeEn}" image`, true);
+  }
+  for (const c of productCategories)
+    if (!productCards.some((k) => k.category === c.slug)) errors.push(`catalog category "${c.slug}": has no cards`);
+}
+
 /* ---- Rev3 §13: social records — no dead links, no invented URLs ---- */
 import { socialLinks } from "../src/content/social";
 for (const l of socialLinks) {

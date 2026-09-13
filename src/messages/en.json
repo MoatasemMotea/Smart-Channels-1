@@ -230,5 +230,10 @@
     "restart": "Start a new enquiry",
     "summaryPrefix": "Enquiry via Digital Employee",
     "transcriptLabel": "Conversation"
+  },
+  "catalog": {
+    "viewAll": "View all",
+    "brands": "Brands",
+    "categoriesNav": "Product categories"
   }
 }

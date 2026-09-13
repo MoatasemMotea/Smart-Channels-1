@@ -1554,6 +1554,61 @@ project, product, client, partner, statistic, location, certification,
 service, image or video was invented in this round.
 
 
+## Categorised product catalogue (recorded 2026-09-13)
+
+**D-059 — /products becomes nine categories and seventy-three cards.**
+Owner directive "D-059 — صفحة المنتجات المصنّفة", followed by three
+decisions after the pre-implementation audit found a real conflict.
+
+**1. A SEPARATE data model, by decision.** `src/content/product-catalog.ts`
+holds `ProductCategory` (9) and `ProductCard` (73: category + product
+type + optional brand). `src/content/products.ts` — the 24
+`CatalogProduct` records — is **untouched**, because the homepage stage
+(`ProductsStage.tsx`, out of scope) still reads it through
+`getFeaturedProducts()`, and its validator rules (lines 131–187) still
+hold. The owner rejected merging both into one file ("the first person
+to open it in a month will not know which is authoritative") and
+rejected touching the stage (a decision not yet taken). New accessors
+`getProductCategories()`, `getProductCategoryBySlug()`,
+`getProductCards(category?)` were ADDED; the existing product accessors
+were not edited by a single line.
+
+**2. Routes.** `/[locale]/products` is the category tile grid;
+`/[locale]/products/[category]` renders a category's cards — nine
+categories × two locales = eighteen static routes via
+`generateStaticParams`; metadata from `fullEn`/`fullAr`; an unknown slug
+falls through `notFound()` to the branded boundary.
+
+**3. Imagery follows the product TYPE, not the brand** — the owner's
+mapping table, applied verbatim: 18 delivery files serve 19 of the 36
+product types (`hdmi-extender-2026` serves both HDMI Extenders and HDMI
+over Fiber Extenders; `access-control-2026` serves Face Recognition
+Terminals; D-052's `sfp.webp` serves SFP Modules). The remaining 17
+types show a neutral inline-SVG placeholder. `ups-2026.webp` is
+deliberately unmapped (the power category was removed by explicit
+decision) and stays on disk. **No locked image manifest** for this
+catalogue, by owner instruction — the validator only checks that each
+referenced file exists, so photographs can be added one field at a time.
+
+**4. Behaviour (§4, as specified).** The category strip reveals a panel
+of unique type names after 110 ms and closes 220 ms after the pointer
+leaves (entering the panel cancels the close); on `(hover: none)` the
+first tap opens and the second follows the link; focus opens, Escape
+closes, `aria-expanded`/`aria-controls` are kept true. The category page
+has a sticky side list (horizontal strip on small screens), a brand row
+of toggles that filter and release, and a `minmax(178px, 1fr)` grid.
+Cards show the image (4:3), the type name at 700 and the brand at 400 /
+.72 — no model number anywhere, no counter anywhere. Logical CSS
+properties give full RTL; reduced motion and the STATIC tier remove
+transitions; focus is visible on every interactive element.
+
+**5. `ProductCatalog.tsx` is now unreferenced by any route** and is left
+in place by owner instruction. No test imports it by name; the two
+smoke tests that asserted its DOM were rewritten for the new pages.
+
+**Nothing was closed silently.** Two new open items below.
+
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |
@@ -1585,3 +1640,5 @@ service, image or video was invented in this round.
 | PRODUCT-MEDIA-03 | Ten categories still without approved imagery — **Router, UPS, Monitor, PC, HDMI Extender, Face Recognition Terminals** (supplied media rejected for cause at D-053) and **Hard Disk, Decoder, AC Adapter, Media Converter** (never supplied) | Full Products imagery | Each keeps the designed media-pending motif; adding one later is a pure data edit. Rejection reasons per category are recorded in media-source/images/products/MAPPING.md. |
 | V2-MAP-EMBED | The Google Maps embed on the contact chapter could not be visually confirmed from the build environment — its egress policy blocks google.com. | Final launch check | D-054 §19: markup, laziness and the removal of the "View map" gate are verified; the rendered map needs one look on a normal network. The designed address ground behind it means a blocked embed is never a blank rectangle. |
 | PRODUCT-MEDIA-HELD | 14 second-set files held from Product use; **Point of contact.jpg must remain unpublished** (identifiable person, legible institutional emblem) | — | D-053: the infrastructure/technical images may be considered for a future owner-authorized Solutions-support round; none may ever be presented as Gallery/project evidence. |
+| D059-DUAL-SOURCE | **Declared technical debt:** two product data models co-exist — `products.ts` (24 records, drives the homepage stage) and `product-catalog.ts` (9 categories / 73 cards, drives /products). | Nothing today; clarity tomorrow | D-059 §1: kept apart on purpose so neither owner decision is silently overridden. **Retires when the fate of `ProductsStage.tsx` is decided** — at that point the stage either reads the catalogue or goes, and `products.ts` is merged or removed. |
+| D059-SITEMAP | The eighteen `/products/[category]` routes are NOT in `sitemap.ts`. | Discoverability once indexing opens | Owner decision 2026-09-13: `sitemap.ts` still points at `https://example.invalid` and indexing is closed behind `NEXT_PUBLIC_ALLOW_INDEXING`; listing eighteen routes under a placeholder domain adds debt. **Add them when the production domain is approved (D-010 / O-011).** |

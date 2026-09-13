@@ -35,6 +35,7 @@ import { socialLinks } from "@/content/social";
 import { gulfRegions } from "@/content/regions";
 import { heroMedia } from "@/content/hero-media";
 import { products } from "@/content/products";
+import { productCards, productCategories, type CategorySlug } from "@/content/product-catalog";
 import { navigation } from "@/content/navigation";
 import { company } from "@/content/company";
 
@@ -145,6 +146,20 @@ export function getFeaturedProducts() {
   return getPublishedProducts()
     .filter((p) => p.featured)
     .sort((a, b) => (a.featuredOrder ?? a.sortOrder) - (b.featuredOrder ?? b.sortOrder));
+}
+
+/* ---- D-059 categorised catalogue — a SEPARATE model from products.ts
+   (which keeps serving the homepage stage); see decision-log D-059 ---- */
+export function getProductCategories() {
+  return [...productCategories].sort(byOrder);
+}
+
+export function getProductCategoryBySlug(slug: string) {
+  return productCategories.find((c) => c.slug === slug);
+}
+
+export function getProductCards(category?: CategorySlug) {
+  return category ? productCards.filter((c) => c.category === category) : productCards;
 }
 
 export function getSocialLinks() {

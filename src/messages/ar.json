@@ -230,5 +230,10 @@
     "restart": "ابدأ استفساراً جديداً",
     "summaryPrefix": "استفسار عبر الموظف الرقمي",
     "transcriptLabel": "المحادثة"
+  },
+  "catalog": {
+    "viewAll": "عرض الكل",
+    "brands": "العلامات التجارية",
+    "categoriesNav": "تصنيفات المنتجات"
   }
 }

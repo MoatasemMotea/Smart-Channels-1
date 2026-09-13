@@ -88,57 +88,85 @@ test("homepage preview: exactly the four featured categories with mapped images"
   expect(section).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
 });
 
-test("/products: complete 24-category index, images only where approved", async ({ page }) => {
+test("/products: the nine categories as tiles, the strip above them, no counters", async ({ page }) => {
   await page.goto("/en/products", { waitUntil: "networkidle" });
-  const cards = await page.evaluate(() =>
-    [...document.querySelectorAll(".product-card")].map((c) => ({
-      id: c.id,
-      hasPhoto: Boolean(c.querySelector(".product-card-photo img")),
-      hasMotif: Boolean(c.querySelector(".product-card-motif")),
-    })),
+  const tiles = await page.locator(".catalog-tile").evaluateAll((els) =>
+    els.map((a) => (a as HTMLAnchorElement).getAttribute("href")),
   );
-  expect(cards).toHaveLength(24);
-  const withPhoto = cards.filter((c) => c.hasPhoto).map((c) => c.id).sort();
-  expect(withPhoto).toEqual([
-    "access-control", "access-points", "camera", "core-switch", "firewall",
-    "hdmi-extender", "laptop", "media-converter", "multi-charger", "nvr", "p2p",
-    "pc", "printers", "router", "sfp", "switch", "t60", "tablet", "ups",
+  expect(tiles).toEqual([
+    "/en/products/networking", "/en/products/fiber", "/en/products/cybersecurity",
+    "/en/products/surveillance", "/en/products/av", "/en/products/computing",
+    "/en/products/storage", "/en/products/communication", "/en/products/environmental",
   ]);
-  // the remaining five keep the designed media-pending motif
-  expect(cards.filter((c) => c.hasMotif).map((c) => c.id).sort()).toEqual([...FALLBACK].sort());
-  // D-058: Multi Charger and T60 now present their OWN, distinct photographs
-  const own = await page.evaluate(() =>
-    ["multi-charger", "t60"].map(
-      (id) => document.querySelector<HTMLImageElement>(`#${id} img`)?.getAttribute("src") ?? "",
-    ),
+  await expect(page.locator(".catalog-bar-link")).toHaveCount(9);
+  await expect(page.locator("h1")).toHaveCount(1);
+  const text = await page.evaluate(() => document.querySelector("main")?.textContent ?? "");
+  expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i); // no counters anywhere
+  expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
+});
+
+test("category strip: hover reveals after a delay, leaving closes, Escape closes, focus opens", async ({ page }) => {
+  await page.goto("/en/products", { waitUntil: "networkidle" });
+  const first = page.locator(".catalog-bar-link").first();
+  const panel = page.locator("#catalog-panel-networking");
+  await first.hover();
+  await expect(first).toHaveAttribute("aria-expanded", "false"); // not yet — 110 ms guard
+  await expect(first).toHaveAttribute("aria-expanded", "true", { timeout: 1500 });
+  await expect(panel).toBeVisible();
+  // the panel lists the unique types of the category
+  await expect(panel.locator("li")).toHaveText(["5G Routers", "Core Switches", "Switches", "Wi-Fi Extenders", "Access Points", "Point-to-Point"]);
+  await page.mouse.move(5, 5);
+  await expect(first).toHaveAttribute("aria-expanded", "false", { timeout: 1500 });
+  await first.focus();
+  await expect(first).toHaveAttribute("aria-expanded", "true");
+  await page.keyboard.press("Escape");
+  await expect(first).toHaveAttribute("aria-expanded", "false");
+});
+
+test("/products/networking: fifteen cards, brand toggle filters and releases, no model numbers", async ({ page }) => {
+  await page.goto("/en/products/networking", { waitUntil: "networkidle" });
+  await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
+  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
+  await expect(page.locator('.catalog-bar-link[aria-current="page"]')).toHaveText("Networking");
+  // image follows the TYPE: all five Switches cards share one file
+  const switches = await page.locator(".catalog-card", { hasText: /^Switches/ }).locator("img").evaluateAll((els) =>
+    els.map((i) => (i as HTMLImageElement).getAttribute("src")),
   );
-  expect(own[0]).not.toBe(own[1]);
-  expect(own[0]).toContain("multi-charger-2026");
-  expect(own[1]).toContain("t60-2026");
-  for (const c of cards) {
-    expect(c.hasPhoto || c.hasMotif, c.id).toBe(true); // never a blank placeholder
-  }
-  // anchor from the homepage preview lands on a real card
-  expect(cards.some((c) => c.id === "switch")).toBe(true);
-  // broken-image guard on the four photos
+  expect(new Set(switches).size).toBe(1);
+  expect(switches[0]).toContain("switch-2026.webp");
+  // a type without a photograph shows the placeholder, never nothing
+  await expect(page.locator(".catalog-card", { hasText: "Wi-Fi Extenders" }).locator("[data-empty] svg")).toHaveCount(1);
+  // brand toggle
+  const cisco = page.locator(".catalog-brand", { hasText: "Cisco" });
+  await cisco.click();
+  await expect(cisco).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".catalog-card")).toHaveCount(2);
+  await cisco.click();
+  await expect(cisco).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  const text = await page.evaluate(() => document.querySelector("main")?.textContent ?? "");
+  expect(text).not.toMatch(/DS-K1T673DX/);
+  expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i);
   const broken = await page.evaluate(() =>
-    [...document.querySelectorAll<HTMLImageElement>(".product-card-photo img")].filter(
-      (i) => i.complete && i.naturalWidth === 0,
-    ).length,
+    [...document.querySelectorAll<HTMLImageElement>(".catalog-card img")].filter((i) => i.complete && i.naturalWidth === 0).length,
   );
   expect(broken).toBe(0);
 });
 
-test("AR /products renders the same 24 categories, photography not mirrored", async ({
-  page,
-}) => {
-  await page.goto("/ar/products", { waitUntil: "networkidle" });
-  const n = await page.evaluate(() => document.querySelectorAll(".product-card").length);
-  expect(n).toBe(24);
+test("AR /products/networking: same fifteen cards, Arabic names, RTL, nothing mirrored", async ({ page }) => {
+  await page.goto("/ar/products/networking", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("h1")).toHaveText("الشبكات والاتصال");
+  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator(".catalog-card-name").first()).toHaveText("راوترات 5G");
   const mirrored = await page.evaluate(() =>
-    [...document.querySelectorAll(".product-card-photo img")].some((i) =>
-      getComputedStyle(i).transform.includes("-1"),
-    ),
+    [...document.querySelectorAll(".catalog-card img")].some((i) => getComputedStyle(i).transform.includes("-1")),
   );
   expect(mirrored).toBe(false);
+});
+
+test("unknown category slug is a 404", async ({ request }) => {
+  const res = await request.get("/en/products/not-a-category");
+  expect(res.status()).toBe(404);
 });

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
-import { getFeaturedProducts, getPublishedProducts, localize } from "@/lib/content";
+import { getProductCards, getProductCategories } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
-import { ProductCatalog } from "@/components/products/ProductCatalog";
+import { PageHero } from "@/components/page/PageHero";
+import { CategoryBar } from "@/components/products/CategoryBar";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -23,93 +24,52 @@ export async function generateMetadata({
 }
 
 /**
- * PRODUCTS route (P5 Visual Correction §3 · D-034).
- *
- * Route-first: this page carries the FULL cinematic product presentation —
- * the dark environmental stage (perspective floor grid, elliptical light
- * platform, controlled beams; pure SVG/CSS, aria-hidden) that the homepage
- * only teases. Published catalogue records land on the platform as depth
- * objects (image + name + importance) with zero redesign; the empty stage
- * is the designed state, not a gap — no invented products, no stock
- * imagery, no placeholder cards. Copy states only approved facts.
+ * PRODUCTS index (D-059) — the nine categories as a tile grid under the
+ * category strip. Each tile carries the short name (as on the strip)
+ * and the full name (as on its page). No counts, no model numbers.
  */
 export default async function ProductsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   const locale = raw as Locale;
   setRequestLocale(raw);
   const t = await getTranslations();
-  const products = getPublishedProducts();
-  const featured = getFeaturedProducts();
+  const ar = locale === "ar";
+  const categories = getProductCategories();
+  const cards = getProductCards();
+
+  const bar = categories.map((c) => ({
+    slug: c.slug,
+    label: ar ? c.shortAr : c.shortEn,
+    full: ar ? c.fullAr : c.fullEn,
+    href: `/products/${c.slug}`,
+    types: [...new Set(cards.filter((k) => k.category === c.slug).map((k) => (ar ? k.typeAr : k.typeEn)))],
+  }));
 
   return (
     <>
-      <section
-        className="products-scene border-b border-line"
-        aria-label={t("pages.products.title")}
-      >
-        <div className="relative mx-auto max-w-360 px-6 pb-24 pt-16 text-center lg:px-12">
-          <p className="microlabel text-accent">{t("sections.products")}</p>
-          <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-bold md:text-6xl">
-            {t("home.products.title")}
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-ink-muted">
-            {t("home.products.sub")}
-          </p>
+      <PageHero
+        motif="grid"
+        overline={t("sections.products")}
+        title={t("pages.products.title")}
+        lede={t("pages.products.description")}
+      />
 
-          {/* the stage: platform + grid + beams — environment, not decoration */}
-          <div className="products-stage">
-            <div className="stage-grid" aria-hidden="true" />
-            <div className="stage-beam stage-beam-a" aria-hidden="true" />
-            <div className="stage-beam stage-beam-b" aria-hidden="true" />
-            <div className="stage-ring" aria-hidden="true" />
-            {/* D-052: the four owner-featured, image-backed categories
-                ride the stage; the complete index lives below */}
-            {featured.length > 0 ? (
-              <ul className="stage-rail">
-                {featured.map((p) => (
-                  <li
-                    key={p.id}
-                    className="stage-pedestal"
-                    data-fit={p.image?.fit ?? "cover"}
-                    data-plate={p.image?.plate}
-                  >
-                    {p.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- owner-supplied catalogue media
-                      <img
-                        src={p.image.src}
-                        alt={localize(p.image.alt, locale)}
-                        loading="lazy"
-                        style={p.image.focus ? { objectPosition: p.image.focus } : undefined}
-                      />
-                    ) : null}
-                    <p className="stage-product-name">{localize(p.name, locale)}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
+      <CategoryBar categories={bar} viewAllLabel={t("catalog.viewAll")} ariaLabel={t("catalog.categoriesNav")} />
 
-          <p className="relative mt-10">
-            <Link
-              href="/#contact"
-              className="inline-block rounded border border-accent px-6 py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-accent-ink focus-visible:bg-accent focus-visible:text-accent-ink"
-            >
-              {t("home.products.cta")}&nbsp;&nbsp;<span aria-hidden="true">→</span>
-            </Link>
-          </p>
+      <MotionSection reveal="rise" className="border-b border-line" aria-label={t("inner.categories")}>
+        <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
+          <ul className="catalog-tiles">
+            {categories.map((c) => (
+              <li key={c.slug}>
+                <Link href={`/products/${c.slug}`} className="catalog-tile">
+                  <span className="catalog-tile-short">{ar ? c.shortAr : c.shortEn}</span>
+                  <span className="catalog-tile-full font-display">{ar ? c.fullAr : c.fullEn}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-      </section>
-
-      {/* catalogue below the stage — full media-ready architecture
-          (filter chips, photo/typographic cards); appears once records
-          publish (D-048) */}
-      {products.length > 0 ? (
-        <MotionSection className="border-b border-line" aria-label={t("pages.products.title")}>
-          <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
-            <ProductCatalog />
-          </div>
-        </MotionSection>
-      ) : null}
+      </MotionSection>
     </>
   );
 }
