@@ -5,7 +5,7 @@
  * cards, transcribed verbatim — no record added, invented or inferred.
  * D-064 (same day) removed five av types by directive — Video Wall
  * Controllers, Y-Splitters, Display Remotes, HD Cables, VGA Cables —
- * leaving 31 types / 68 cards.
+ * then Monitors (computing, six cards) — leaving 30 types / 62 cards.
  * A card is a (category, product type, brand) triple; the brand may be
  * empty, which means "no brand shown", never a placeholder.
  *
@@ -17,11 +17,10 @@
  * IMAGERY follows the PRODUCT TYPE, not the brand: every "Switches"
  * card shares switches' photograph. D-060 unlinked every type; D-064
  * linked 23 owner-supplied photographs (WebP derivatives of the PNG
- * originals archived in media-source/images/products/). Eight types
+ * originals archived in media-source/images/products/). Seven types
  * still render the neutral placeholder: decoders, camera-mounts,
- * hdmi-splitters, monitors, keyboards, mice (no image supplied) and
- * ptt-radios, desktop-pcs (supplied but held — see D-064 in the
- * decision log). Nothing is generated, downloaded or invented. There
+ * hdmi-splitters, keyboards, mice (no image supplied) and ptt-radios,
+ * desktop-pcs (supplied but held — see D-064 in the decision log). Nothing is generated, downloaded or invented. There
  * is deliberately NO locked manifest here: linking a photograph is a
  * one-field data edit on the type's row, and the validator only checks
  * that a referenced file exists on disk.
@@ -69,7 +68,7 @@ export const productCategories: ProductCategory[] = [
 /**
  * One row per product TYPE: its category, names, the shared photograph
  * (owner mapping table, D-059 §2 — "" where none exists yet) and the
- * brands that expand into cards. The 68 cards are derived below, so a
+ * brands that expand into cards. The 62 cards are derived below, so a
  * type's image lives in exactly one place.
  */
 type TypeRow = {
@@ -104,10 +103,9 @@ const TYPES: TypeRow[] = [
   { category: "av", typeEn: "Video Wall Displays", typeAr: "شاشات فيديو وول", image: "video-wall-displays.webp", brands: ["Hikvision", "Samsung"] },
   { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "", brands: ["UGREEN"] },
   { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extenders.webp", brands: [""] },
-  /* ---- computing (21 cards) ---- */
+  /* ---- computing (15 cards) ---- */
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablets.webp", brands: ["Lenovo"] },
   { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "", brands: ["Dell", "Egeira", "HP"] },
-  { category: "computing", typeEn: "Monitors", typeAr: "شاشات", image: "", brands: ["ArrQW", "Dell", "Egeira", "HP", "LG", "Majesty"] },
   { category: "computing", typeEn: "Printers", typeAr: "طابعات", image: "printers-catalog.webp", brands: ["Canon", "Epson", "HP"] },
   { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "", brands: ["MIXIE", "PULI"] },
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },
@@ -123,7 +121,7 @@ const TYPES: TypeRow[] = [
   { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "weather-stations.webp", brands: [""] },
 ];
 
-/** The 68 cards, in category order then as listed by the owner (D-064 removed five av types). */
+/** The 62 cards, in category order then as listed by the owner (D-064 removed five av types and Monitors). */
 export const productCards: ProductCard[] = TYPES.flatMap((t) =>
   t.brands.map((brand) => ({
     category: t.category,
