@@ -60,22 +60,22 @@ describe("approved business data invariants", () => {
     }
   });
 
-  it("carries the D-059 categorised catalogue: nine categories, sixty-two cards (D-064), image per type", () => {
+  it("carries the D-059 categorised catalogue: nine categories, sixty-five cards (D-066), image per type", () => {
     expect(productCategories.map((c) => c.slug)).toEqual([
       "networking", "fiber", "cybersecurity", "surveillance", "av",
       "computing", "storage", "communication", "environmental",
     ]);
     expect(productCategories.map((c) => c.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    expect(productCards).toHaveLength(62);
+    expect(productCards).toHaveLength(65);
     // cards per category, as the owner listed them
     const per = Object.fromEntries(productCategories.map((c) => [c.slug, productCards.filter((k) => k.category === c.slug).length]));
-    expect(per).toEqual({ networking: 15, fiber: 9, cybersecurity: 1, surveillance: 7, av: 4, computing: 15, storage: 7, communication: 2, environmental: 2 });
+    expect(per).toEqual({ networking: 17, fiber: 9, cybersecurity: 1, surveillance: 6, av: 4, computing: 15, storage: 9, communication: 2, environmental: 2 });
     // the image follows the TYPE: every card of one type shares one file
     const byType = new Map<string, Set<string>>();
     for (const k of productCards) byType.set(k.typeEn, (byType.get(k.typeEn) ?? new Set()).add(k.image));
     for (const [, imgs] of byType) expect(imgs.size).toBe(1);
     // no (category + type + brand) repeats
-    expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}|${k.brand}`)).size).toBe(62);
+    expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}|${k.brand}`)).size).toBe(65);
     // no model number ever leaks into a name or brand
     for (const k of productCards) expect(`${k.typeEn} ${k.typeAr} ${k.brand}`).not.toMatch(/DS-K1T673DX/);
   });

@@ -5,7 +5,10 @@
  * cards, transcribed verbatim — no record added, invented or inferred.
  * D-064 (same day) removed five av types by directive — Video Wall
  * Controllers, Y-Splitters, Display Remotes, HD Cables, VGA Cables —
- * then Monitors (computing, six cards) — leaving 30 types / 62 cards.
+ * then Monitors (computing, six cards). D-066 (2026-09-15) removed Camera
+ * Mounts, added PoE Switches, Network Racks, Rack Servers and Storage
+ * Arrays (no brand yet) and renamed the storage category's display names
+ * to "Storage & Servers" (slug unchanged) — 33 types / 65 cards.
  * A card is a (category, product type, brand) triple; the brand may be
  * empty, which means "no brand shown", never a placeholder.
  *
@@ -60,7 +63,7 @@ export const productCategories: ProductCategory[] = [
   { slug: "surveillance", shortEn: "Surveillance", shortAr: "المراقبة والأمن", fullEn: "Surveillance & Security", fullAr: "المراقبة والأمن", order: 4 },
   { slug: "av", shortEn: "AV & Display", shortAr: "العرض والصوتيات", fullEn: "Professional AV & Display", fullAr: "أنظمة العرض والصوتيات", order: 5 },
   { slug: "computing", shortEn: "End-User Devices", shortAr: "أجهزة المستخدم", fullEn: "IT & End-User Computing", fullAr: "أجهزة المستخدم وتقنية المعلومات", order: 6 },
-  { slug: "storage", shortEn: "Data Storage", shortAr: "تخزين البيانات", fullEn: "Data Storage", fullAr: "تخزين البيانات", order: 7 },
+  { slug: "storage", shortEn: "Storage & Servers", shortAr: "التخزين والخوادم", fullEn: "Storage & Servers", fullAr: "التخزين والخوادم", order: 7 },
   { slug: "communication", shortEn: "Two-Way Radio", shortAr: "الاتصال اللاسلكي", fullEn: "Communication Systems", fullAr: "أنظمة الاتصال اللاسلكي", order: 8 },
   { slug: "environmental", shortEn: "Specialized Systems", shortAr: "أنظمة متخصصة", fullEn: "Environmental & Specialized", fullAr: "الأنظمة البيئية والمتخصصة", order: 9 },
 ];
@@ -68,7 +71,7 @@ export const productCategories: ProductCategory[] = [
 /**
  * One row per product TYPE: its category, names, the shared photograph
  * (owner mapping table, D-059 §2 — "" where none exists yet) and the
- * brands that expand into cards. The 62 cards are derived below, so a
+ * brands that expand into cards. The 65 cards are derived below, so a
  * type's image lives in exactly one place.
  */
 type TypeRow = {
@@ -80,22 +83,23 @@ type TypeRow = {
 };
 
 const TYPES: TypeRow[] = [
-  /* ---- networking (15 cards) ---- */
+  /* ---- networking (17 cards) ---- */
   { category: "networking", typeEn: "5G Routers", typeAr: "راوترات 5G", image: "routers-5g.webp", brands: ["Huawei"] },
   { category: "networking", typeEn: "Core Switches", typeAr: "محوّلات أساسية", image: "core-switches.webp", brands: ["Cisco", "TP-Link"] },
   { category: "networking", typeEn: "Switches", typeAr: "محوّلات شبكة", image: "switches.webp", brands: ["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"] },
+  { category: "networking", typeEn: "PoE Switches", typeAr: "محوّلات PoE", image: "", brands: [""] },
   { category: "networking", typeEn: "Wi-Fi Extenders", typeAr: "مقويات إشارة", image: "wifi-extenders.webp", brands: ["TP-Link"] },
   { category: "networking", typeEn: "Access Points", typeAr: "نقاط وصول لاسلكية", image: "access-points.webp", brands: ["Aruba", "EDiMax", "Huawei", "Linksys", "Ubiquiti"] },
   { category: "networking", typeEn: "Point-to-Point", typeAr: "وصلات نقطة لنقطة", image: "point-to-point.webp", brands: ["UPOE"] },
+  { category: "networking", typeEn: "Network Racks", typeAr: "خزائن شبكات", image: "", brands: [""] },
   /* ---- fiber (9 cards) ---- */
   { category: "fiber", typeEn: "Media Converters", typeAr: "محوّلات وسائط", image: "media-converters.webp", brands: ["D-Link", "Planet", "TP-Link", "TRENDnet", "Vivotek"] },
   { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "hdmi-over-fiber.webp", brands: [""] },
   { category: "fiber", typeEn: "SFP Modules", typeAr: "وحدات SFP", image: "sfp-modules.webp", brands: ["Alcatel-Lucent", "Cisco", "Huawei"] },
   /* ---- cybersecurity (1 card) ---- */
   { category: "cybersecurity", typeEn: "Firewalls", typeAr: "جدران حماية", image: "firewalls.webp", brands: ["Fortinet"] },
-  /* ---- surveillance (7 cards) ---- */
+  /* ---- surveillance (6 cards) ---- */
   { category: "surveillance", typeEn: "Face Recognition Terminals", typeAr: "أجهزة التعرّف على الوجه", image: "face-recognition.webp", brands: ["Hikvision"] },
-  { category: "surveillance", typeEn: "Camera Mounts", typeAr: "حوامل كاميرات", image: "", brands: [""] },
   { category: "surveillance", typeEn: "CCTV Cameras", typeAr: "كاميرات مراقبة", image: "cctv-cameras.webp", brands: ["EZVIZ", "Hikvision"] },
   { category: "surveillance", typeEn: "NVRs", typeAr: "مسجّلات شبكية", image: "nvr-catalog.webp", brands: ["Hikvision"] },
   { category: "surveillance", typeEn: "Decoders", typeAr: "وحدات فك ترميز", image: "", brands: ["Digibird", "Hikvision"] },
@@ -110,7 +114,9 @@ const TYPES: TypeRow[] = [
   { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "", brands: ["MIXIE", "PULI"] },
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },
   { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "", brands: ["Dell", "MIXIE", "PULI"] },
-  /* ---- storage (7 cards) ---- */
+  /* ---- storage (9 cards) ---- */
+  { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "", brands: [""] },
+  { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "", brands: [""] },
   { category: "storage", typeEn: "Hard Drives", typeAr: "أقراص تخزين", image: "hard-drives.webp", brands: ["Dell", "Hikvision", "Seagate", "Western Digital"] },
   { category: "storage", typeEn: "Flash Memory", typeAr: "ذاكرات فلاش", image: "flash-memory.webp", brands: ["Hikvision", "NEO HOME", "SanDisk"] },
   /* ---- communication (2 cards) ---- */
@@ -121,7 +127,7 @@ const TYPES: TypeRow[] = [
   { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "weather-stations.webp", brands: [""] },
 ];
 
-/** The 62 cards, in category order then as listed by the owner (D-064 removed five av types and Monitors). */
+/** The 65 cards, in category order then as listed by the owner (D-064 removed five av types and Monitors; D-066 removed Camera Mounts and added four brandless types). */
 export const productCards: ProductCard[] = TYPES.flatMap((t) =>
   t.brands.map((brand) => ({
     category: t.category,

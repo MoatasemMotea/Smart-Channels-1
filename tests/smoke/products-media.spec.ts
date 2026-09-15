@@ -61,7 +61,7 @@ test("/products: renders the first category (networking) exactly as its own page
   await expect(page.locator(".catalog-tile")).toHaveCount(0);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
-  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator(".catalog-card")).toHaveCount(17);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
   await expect(page).toHaveTitle(/Products/); // generic metadata, not the category's
   const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
@@ -73,16 +73,18 @@ test("/products: renders the first category (networking) exactly as its own page
   expect(own).toBe(text);
 });
 
-test("/products/networking: fifteen cards, no model numbers, never a store", async ({ page }) => {
+test("/products/networking: seventeen cards, no model numbers, never a store", async ({ page }) => {
   await page.goto("/en/products/networking", { waitUntil: "networkidle" });
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
-  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator(".catalog-card")).toHaveCount(17);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
-  // D-064: all six networking types carry a photograph — fifteen <img>,
+  // D-064/D-066: all eight networking types carry a photograph — seventeen <img>,
   // none of them a placeholder, and the image follows the TYPE: the five
   // Switches cards share one file
+  // D-066 part 1 (interim): PoE Switches and Network Racks exist without a photograph
+  // until part 2 links the approved derivatives — then 17 <img> and 0 placeholders
   await expect(page.locator(".catalog-card img")).toHaveCount(15);
-  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(0);
+  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(2);
   const switches = page.locator(".catalog-card", { hasText: /^Switches/ });
   await expect(switches).toHaveCount(5);
   const switchSrcs = await switches.locator("img").evaluateAll((els) => [...new Set(els.map((i) => (i as HTMLImageElement).getAttribute("src")))]);
@@ -110,11 +112,11 @@ test("/products/networking: fifteen cards, no model numbers, never a store", asy
   expect(broken).toBe(0);
 });
 
-test("AR /products/networking: same fifteen cards, Arabic names, RTL, nothing mirrored", async ({ page }) => {
+test("AR /products/networking: same seventeen cards, Arabic names, RTL, nothing mirrored", async ({ page }) => {
   await page.goto("/ar/products/networking", { waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator("h1")).toHaveText("الشبكات والاتصال");
-  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  await expect(page.locator(".catalog-card")).toHaveCount(17);
   await expect(page.locator(".catalog-card-name").first()).toHaveText("راوترات 5G");
   const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
   expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart|ريال|سعر|اشترِ|أضف إلى السلة/i); // never a store, in Arabic too
