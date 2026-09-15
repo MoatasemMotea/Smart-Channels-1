@@ -4,7 +4,7 @@ SRC="$(cd "$(dirname "$0")/.." && pwd)/media-source/images"
 DEST="$SRC/products-intake"
 
 NAMES=(
-  routers-5g core-switches switches access-points point-to-point wifi-extenders
+  routers-5g core-switches switches poe-switches network-racks rack-servers storage-arrays access-points point-to-point wifi-extenders
   media-converters hdmi-over-fiber sfp-modules
   firewalls
   cctv-cameras nvr decoders face-recognition camera-mounts
