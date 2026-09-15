@@ -20,10 +20,10 @@
  * IMAGERY follows the PRODUCT TYPE, not the brand: every "Switches"
  * card shares switches' photograph. D-060 unlinked every type; D-064
  * linked 23 owner-supplied photographs (WebP derivatives of the PNG
- * originals archived in media-source/images/products/). Seven types
- * still render the neutral placeholder: decoders, camera-mounts,
- * hdmi-splitters, keyboards, mice (no image supplied) and ptt-radios,
- * desktop-pcs (supplied but held — see D-064 in the decision log). Nothing is generated, downloaded or invented. There
+ * originals archived in media-source/images/products/); D-066 linked
+ * six more. Four types still render the neutral placeholder — keyboards,
+ * mice (supplied, held for a baked light haze), desktop-pcs and
+ * ptt-radios (supplied, held — see D-064/D-066 in the decision log). Nothing is generated, downloaded or invented. There
  * is deliberately NO locked manifest here: linking a photograph is a
  * one-field data edit on the type's row, and the validator only checks
  * that a referenced file exists on disk.
@@ -87,11 +87,11 @@ const TYPES: TypeRow[] = [
   { category: "networking", typeEn: "5G Routers", typeAr: "راوترات 5G", image: "routers-5g.webp", brands: ["Huawei"] },
   { category: "networking", typeEn: "Core Switches", typeAr: "محوّلات أساسية", image: "core-switches.webp", brands: ["Cisco", "TP-Link"] },
   { category: "networking", typeEn: "Switches", typeAr: "محوّلات شبكة", image: "switches.webp", brands: ["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"] },
-  { category: "networking", typeEn: "PoE Switches", typeAr: "محوّلات PoE", image: "", brands: [""] },
+  { category: "networking", typeEn: "PoE Switches", typeAr: "محوّلات PoE", image: "poe-switches.webp", brands: [""] },
   { category: "networking", typeEn: "Wi-Fi Extenders", typeAr: "مقويات إشارة", image: "wifi-extenders.webp", brands: ["TP-Link"] },
   { category: "networking", typeEn: "Access Points", typeAr: "نقاط وصول لاسلكية", image: "access-points.webp", brands: ["Aruba", "EDiMax", "Huawei", "Linksys", "Ubiquiti"] },
   { category: "networking", typeEn: "Point-to-Point", typeAr: "وصلات نقطة لنقطة", image: "point-to-point.webp", brands: ["UPOE"] },
-  { category: "networking", typeEn: "Network Racks", typeAr: "خزائن شبكات", image: "", brands: [""] },
+  { category: "networking", typeEn: "Network Racks", typeAr: "خزائن شبكات", image: "network-racks.webp", brands: [""] },
   /* ---- fiber (9 cards) ---- */
   { category: "fiber", typeEn: "Media Converters", typeAr: "محوّلات وسائط", image: "media-converters.webp", brands: ["D-Link", "Planet", "TP-Link", "TRENDnet", "Vivotek"] },
   { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "hdmi-over-fiber.webp", brands: [""] },
@@ -102,10 +102,10 @@ const TYPES: TypeRow[] = [
   { category: "surveillance", typeEn: "Face Recognition Terminals", typeAr: "أجهزة التعرّف على الوجه", image: "face-recognition.webp", brands: ["Hikvision"] },
   { category: "surveillance", typeEn: "CCTV Cameras", typeAr: "كاميرات مراقبة", image: "cctv-cameras.webp", brands: ["EZVIZ", "Hikvision"] },
   { category: "surveillance", typeEn: "NVRs", typeAr: "مسجّلات شبكية", image: "nvr-catalog.webp", brands: ["Hikvision"] },
-  { category: "surveillance", typeEn: "Decoders", typeAr: "وحدات فك ترميز", image: "", brands: ["Digibird", "Hikvision"] },
+  { category: "surveillance", typeEn: "Decoders", typeAr: "وحدات فك ترميز", image: "decoders.webp", brands: ["Digibird", "Hikvision"] },
   /* ---- av (4 cards) ---- */
   { category: "av", typeEn: "Video Wall Displays", typeAr: "شاشات فيديو وول", image: "video-wall-displays.webp", brands: ["Hikvision", "Samsung"] },
-  { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "", brands: ["UGREEN"] },
+  { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "hdmi-splitters.webp", brands: ["UGREEN"] },
   { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extenders.webp", brands: [""] },
   /* ---- computing (15 cards) ---- */
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablets.webp", brands: ["Lenovo"] },
@@ -115,8 +115,8 @@ const TYPES: TypeRow[] = [
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },
   { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "", brands: ["Dell", "MIXIE", "PULI"] },
   /* ---- storage (9 cards) ---- */
-  { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "", brands: [""] },
-  { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "", brands: [""] },
+  { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "rack-servers.webp", brands: [""] },
+  { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "storage-arrays.webp", brands: [""] },
   { category: "storage", typeEn: "Hard Drives", typeAr: "أقراص تخزين", image: "hard-drives.webp", brands: ["Dell", "Hikvision", "Seagate", "Western Digital"] },
   { category: "storage", typeEn: "Flash Memory", typeAr: "ذاكرات فلاش", image: "flash-memory.webp", brands: ["Hikvision", "NEO HOME", "SanDisk"] },
   /* ---- communication (2 cards) ---- */

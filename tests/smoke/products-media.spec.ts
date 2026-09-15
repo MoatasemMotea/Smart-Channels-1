@@ -81,10 +81,8 @@ test("/products/networking: seventeen cards, no model numbers, never a store", a
   // D-064/D-066: all eight networking types carry a photograph — seventeen <img>,
   // none of them a placeholder, and the image follows the TYPE: the five
   // Switches cards share one file
-  // D-066 part 1 (interim): PoE Switches and Network Racks exist without a photograph
-  // until part 2 links the approved derivatives — then 17 <img> and 0 placeholders
-  await expect(page.locator(".catalog-card img")).toHaveCount(15);
-  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(2);
+  await expect(page.locator(".catalog-card img")).toHaveCount(17);
+  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(0);
   const switches = page.locator(".catalog-card", { hasText: /^Switches/ });
   await expect(switches).toHaveCount(5);
   const switchSrcs = await switches.locator("img").evaluateAll((els) => [...new Set(els.map((i) => (i as HTMLImageElement).getAttribute("src")))]);
@@ -110,6 +108,28 @@ test("/products/networking: seventeen cards, no model numbers, never a store", a
     [...document.querySelectorAll<HTMLImageElement>(".catalog-card img")].filter((i) => i.complete && i.naturalWidth === 0).length,
   );
   expect(broken).toBe(0);
+});
+
+test("/products/computing: three types photographed, three held on the placeholder (D-066)", async ({ page }) => {
+  await page.goto("/en/products/computing", { waitUntil: "networkidle" });
+  await expect(page.locator(".catalog-card")).toHaveCount(15);
+  // laptops (3) + tablets (1) + printers (3) carry photographs; desktop-pcs (3), keyboards (3), mice (2) are held
+  await expect(page.locator(".catalog-card img")).toHaveCount(7);
+  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(8);
+  for (const held of ["Desktop PCs", "Keyboards", "Mice"])
+    await expect(page.locator(".catalog-card", { hasText: held }).locator("[data-empty] svg").first()).toBeVisible();
+});
+
+test("/products/storage: renamed to Storage & Servers, four types, all photographed (D-066)", async ({ page }) => {
+  await page.goto("/en/products/storage", { waitUntil: "networkidle" });
+  await expect(page.locator("h1")).toHaveText("Storage & Servers");
+  await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Storage & Servers");
+  await expect(page.locator(".catalog-card")).toHaveCount(9);
+  await expect(page.locator(".catalog-card img")).toHaveCount(9);
+  await expect(page.locator(".catalog-card-name").first()).toHaveText("Rack Servers"); // owner order: servers first
+  await page.goto("/ar/products/storage", { waitUntil: "networkidle" });
+  await expect(page.locator("h1")).toHaveText("التخزين والخوادم");
+  await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("التخزين والخوادم");
 });
 
 test("AR /products/networking: same seventeen cards, Arabic names, RTL, nothing mirrored", async ({ page }) => {

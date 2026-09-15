@@ -1,12 +1,12 @@
-# Product catalogue imagery — intake sheet (D-060)
+# Product catalogue imagery — intake sheet (D-060 · D-064 · D-066)
 
 The categorised catalogue (`src/content/product-catalog.ts`, D-059) is
-currently **unlinked from all imagery**: every product type's `image` is
-`""` and every card renders the neutral placeholder. This sheet is the
-working list for the next photography batch. Fill the last column as
-files arrive; linking a photograph is then a one-field edit on the
-type's row in `TYPES` (the image follows the TYPE, never the brand — all
-cards of one type share one file).
+linked type by type as photographs arrive: the image follows the TYPE,
+never the brand — all cards of one type share one file. This sheet is
+the working list. The last column names the delivery file under
+`public/media/products/` for every linked type, or says why a supplied
+file is held; an empty cell means nothing has been supplied yet.
+Linking a photograph is a one-field edit on the type's row in `TYPES`.
 
 ## Specification
 
@@ -29,42 +29,39 @@ paths (D-053) — a path is never reused for different bytes.
 
 | # | Category | النوع | Type | File |
 |---|---|---|---|---|
-| 1 | Networking | راوترات 5G | 5G Routers | |
-| 2 | Networking | محوّلات أساسية | Core Switches | |
-| 3 | Networking | محوّلات شبكة | Switches | |
-| 4 | Networking | مقويات إشارة | Wi-Fi Extenders | |
-| 5 | Networking | نقاط وصول لاسلكية | Access Points | |
-| 6 | Networking | وصلات نقطة لنقطة | Point-to-Point | |
-| 7 | Fiber Optics | محوّلات وسائط | Media Converters | |
-| 8 | Fiber Optics | موسّعات HDMI عبر الألياف | HDMI over Fiber Extenders | |
-| 9 | Fiber Optics | وحدات SFP | SFP Modules | |
-| 10 | Cybersecurity | جدران حماية | Firewalls | |
-| 11 | Surveillance | أجهزة التعرّف على الوجه | Face Recognition Terminals | |
-| 12 | Surveillance | حوامل كاميرات | Camera Mounts | |
-| 13 | Surveillance | كاميرات مراقبة | CCTV Cameras | |
-| 14 | Surveillance | مسجّلات شبكية | NVRs | |
-| 15 | Surveillance | وحدات فك ترميز | Decoders | |
-| 16 | AV & Display | أجهزة تحكّم شاشات | Display Remotes | |
-| 17 | AV & Display | شاشات فيديو وول | Video Wall Displays | |
-| 18 | AV & Display | موزّعات HDMI | HDMI Splitters | |
-| 19 | AV & Display | موزّعات Y | Y-Splitters | |
-| 20 | AV & Display | موسّعات HDMI | HDMI Extenders | |
-| 21 | AV & Display | وحدات تحكّم فيديو وول | Video Wall Controllers | |
-| 22 | AV & Display | وصلات HD | HD Cables | |
-| 23 | AV & Display | وصلات VGA | VGA Cables | |
-| 24 | End-User Devices | أجهزة لوحية | Tablets | |
-| 25 | End-User Devices | أجهزة مكتبية | Desktop PCs | |
-| 26 | End-User Devices | شاشات | Monitors | |
-| 27 | End-User Devices | طابعات | Printers | |
-| 28 | End-User Devices | فأرات | Mice | |
-| 29 | End-User Devices | لابتوب | Laptops | |
-| 30 | End-User Devices | لوحات مفاتيح | Keyboards | |
-| 31 | Data Storage | أقراص تخزين | Hard Drives | |
-| 32 | Data Storage | ذاكرات فلاش | Flash Memory | |
-| 33 | Two-Way Radio | أجهزة اتصال لاسلكي PTT | PTT Radios | |
-| 34 | Two-Way Radio | شواحن متعددة القنوات | Multi-Bay Chargers | |
-| 35 | Specialized Systems | حساسات عدّ وتحليل | People Counting Sensors | |
-| 36 | Specialized Systems | محطات رصد جوي | Weather Stations | |
+| 1 | Networking | راوترات 5G | 5G Routers | `routers-5g.webp` |
+| 2 | Networking | محوّلات أساسية | Core Switches | `core-switches.webp` |
+| 3 | Networking | محوّلات شبكة | Switches | `switches.webp` |
+| 4 | Networking | محوّلات PoE | PoE Switches | `poe-switches.webp` |
+| 5 | Networking | مقويات إشارة | Wi-Fi Extenders | `wifi-extenders.webp` |
+| 6 | Networking | نقاط وصول لاسلكية | Access Points | `access-points.webp` |
+| 7 | Networking | وصلات نقطة لنقطة | Point-to-Point | `point-to-point.webp` |
+| 8 | Networking | خزائن شبكات | Network Racks | `network-racks.webp` |
+| 9 | Fiber Optics | محوّلات وسائط | Media Converters | `media-converters.webp` |
+| 10 | Fiber Optics | موسّعات HDMI عبر الألياف | HDMI over Fiber Extenders | `hdmi-over-fiber.webp` |
+| 11 | Fiber Optics | وحدات SFP | SFP Modules | `sfp-modules.webp` |
+| 12 | Cybersecurity | جدران حماية | Firewalls | `firewalls.webp` |
+| 13 | Surveillance | أجهزة التعرّف على الوجه | Face Recognition Terminals | `face-recognition.webp` |
+| 14 | Surveillance | كاميرات مراقبة | CCTV Cameras | `cctv-cameras.webp` |
+| 15 | Surveillance | مسجّلات شبكية | NVRs | `nvr-catalog.webp` |
+| 16 | Surveillance | وحدات فك ترميز | Decoders | `decoders.webp` |
+| 17 | AV & Display | شاشات فيديو وول | Video Wall Displays | `video-wall-displays.webp` |
+| 18 | AV & Display | موزّعات HDMI | HDMI Splitters | `hdmi-splitters.webp` |
+| 19 | AV & Display | موسّعات HDMI | HDMI Extenders | `hdmi-extenders.webp` |
+| 20 | End-User Devices | أجهزة لوحية | Tablets | `tablets.webp` |
+| 21 | End-User Devices | أجهزة مكتبية | Desktop PCs | held — baked white ground (D-064) |
+| 22 | End-User Devices | طابعات | Printers | `printers-catalog.webp` |
+| 23 | End-User Devices | فأرات | Mice | held — baked light haze (D-066) |
+| 24 | End-User Devices | لابتوب | Laptops | `laptops.webp` |
+| 25 | End-User Devices | لوحات مفاتيح | Keyboards | held — baked light haze (D-066) |
+| 26 | Storage & Servers | خوادم | Rack Servers | `rack-servers.webp` |
+| 27 | Storage & Servers | مصفوفات تخزين | Storage Arrays | `storage-arrays.webp` |
+| 28 | Storage & Servers | أقراص تخزين | Hard Drives | `hard-drives.webp` |
+| 29 | Storage & Servers | ذاكرات فلاش | Flash Memory | `flash-memory.webp` |
+| 30 | Two-Way Radio | أجهزة اتصال لاسلكي PTT | PTT Radios | held — marketing scene, JPEG (D-064) |
+| 31 | Two-Way Radio | شواحن متعددة القنوات | Multi-Bay Chargers | `multi-bay-chargers.webp` |
+| 32 | Specialized Systems | حساسات عدّ وتحليل | People Counting Sensors | `people-counting-sensors.webp` |
+| 33 | Specialized Systems | محطات رصد جوي | Weather Stations | `weather-stations.webp` |
 
 ## Files already on disk (D-058) — kept, currently unlinked
 
