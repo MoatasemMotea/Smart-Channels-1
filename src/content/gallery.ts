@@ -7,6 +7,7 @@ import type { GalleryItem } from "@/types/content";
  *  1. put the original file in /media-source/ (photos or video);
  *  2. run `npm run media` to generate optimized derivatives + posters;
  *  3. add one entry below (set `published: true` only when approved);
+ *     a video MUST name its `poster` explicitly and be ≤ 8 MB (D-065);
  *  4. build. No component changes, ever.
  *
  * `published: false` = staged privately: excluded from all public
@@ -25,7 +26,10 @@ export const galleryItems: GalleryItem[] = [
     id: "video-event-network-build-2025",
     type: "video",
     src: "/media/gallery/event-network-build-2025.mp4",
-    published: true, // approved starter set (Q-P5-5, 2026-08-29)
+    poster: "/media/posters/event-network-build-2025.jpg",
+    // D-065: held — 14.09 MB exceeds the 8 MB video limit. Re-published
+    // when the re-encoded file lands on a NEW path (D065-VIDEO-REENCODE).
+    published: false, // approved starter set (Q-P5-5, 2026-08-29); held at D-065
     alt: {
       en: "Event site build and fiber network work at a Riyadh event, 2025",
       ar: "أعمال تجهيز الموقع وشبكة الألياف في فعالية بالرياض، 2025",
@@ -39,6 +43,7 @@ export const galleryItems: GalleryItem[] = [
     id: "video-event-environment-night",
     type: "video",
     src: "/media/gallery/event-environment-night.mp4",
+    poster: "/media/posters/event-environment-night.jpg",
     published: true, // approved starter set (Q-P5-5, 2026-08-29)
     alt: {
       en: "Night event environment with branded displays",
@@ -50,6 +55,7 @@ export const galleryItems: GalleryItem[] = [
     id: "video-hospitality-walkway-night",
     type: "video",
     src: "/media/gallery/hospitality-walkway-night.mp4",
+    poster: "/media/posters/hospitality-walkway-night.jpg",
     published: true, // approved starter set (Q-P5-5, 2026-08-29)
     alt: {
       en: "Night hospitality walkway environment",

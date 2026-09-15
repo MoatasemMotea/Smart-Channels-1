@@ -233,5 +233,14 @@
   },
   "catalog": {
     "categoriesNav": "Product categories"
+  },
+  "gallery": {
+    "carousel": {
+      "label": "Gallery carousel",
+      "prev": "Previous item",
+      "next": "Next item",
+      "mute": "Mute video",
+      "unmute": "Unmute video"
+    }
   }
 }

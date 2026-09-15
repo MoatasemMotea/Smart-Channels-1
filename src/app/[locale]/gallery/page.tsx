@@ -22,8 +22,8 @@ export async function generateMetadata({
 }
 
 /**
- * GALLERY (P10 · D-045) — the complete system: editorial masonry with
- * category filtering + FLIP reflow, poster-first media cards, and an
+ * GALLERY (P10 · D-045 · D-065) — the complete system: category
+ * filtering, the 3D cover carousel of poster-first media cards, and an
  * accessible lightbox (see GalleryExperience). Renders ONLY published
  * approved records — the system is complete at any collection size and
  * future population is a pure data edit.

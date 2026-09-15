@@ -273,6 +273,28 @@ for (const g of galleryItems) if (g.published) checkAr(g.alt, `gallery ${g.id} a
 for (const n of navigation) checkAr(n.label, `nav ${n.id}`);
 for (const c of galleryCategories) checkAr(c.label, `gallery category ${c.id}`);
 
+/* ---- D-065 gallery video discipline ---- */
+/* every video record names its poster explicitly (the carousel and the
+   lightbox read `poster`, nothing is derived by convention any more);
+   a PUBLISHED video is at most 8 MB; at most five published videos. */
+const MAX_VIDEO_BYTES = 8 * 1024 * 1024;
+const MAX_PUBLISHED_VIDEOS = 5;
+let publishedVideos = 0;
+for (const g of galleryItems) {
+  if (g.type !== "video") continue;
+  if (!g.poster) errors.push(`gallery ${g.id}: video without an explicit poster (D-065)`);
+  if (!g.published) continue;
+  publishedVideos++;
+  const abs = join(root, "public", g.src);
+  if (existsSync(abs)) {
+    const mb = statSync(abs).size / (1024 * 1024);
+    if (statSync(abs).size > MAX_VIDEO_BYTES)
+      errors.push(`gallery ${g.id}: published video is ${mb.toFixed(2)} MB — the limit is 8 MB (D-065)`);
+  }
+}
+if (publishedVideos > MAX_PUBLISHED_VIDEOS)
+  errors.push(`gallery: ${publishedVideos} published videos — the limit is ${MAX_PUBLISHED_VIDEOS} (D-065)`);
+
 /* ---- geographic evidence locations (K-13 / D-5 / Amendment 2) ---- */
 checkUnique(locations.map((l) => l.id), "locations");
 const hqCount = locations.filter((l) => l.kind === "hq").length;

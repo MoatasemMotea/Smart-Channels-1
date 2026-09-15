@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { statSync } from "node:fs";
+import { join } from "node:path";
 import { stats } from "../../src/content/stats";
 import { solutionFamilies } from "../../src/content/solutions";
 import { industries } from "../../src/content/industries";
@@ -162,6 +164,19 @@ describe("publish filtering (A-004 / Amendment 3)", () => {
     // nothing unpublished may ever leak through the accessor
     const publicIds = new Set(published.map((g) => g.id));
     for (const g of galleryItems) if (!g.published) expect(publicIds.has(g.id)).toBe(false);
+  });
+
+  it("keeps the D-065 gallery video discipline: explicit posters, ≤ 8 MB when published, ≤ 5 published videos", () => {
+    const videos = galleryItems.filter((g) => g.type === "video");
+    for (const v of videos) expect(v.poster, `${v.id} names its poster`).toMatch(/^\/media\/posters\/.+\.jpg$/);
+    const published = videos.filter((v) => v.published);
+    expect(published.length).toBeLessThanOrEqual(5);
+    for (const v of published) {
+      const bytes = statSync(join(process.cwd(), "public", v.src)).size;
+      expect(bytes, `${v.id} is ${(bytes / 1048576).toFixed(2)} MB`).toBeLessThanOrEqual(8 * 1024 * 1024);
+    }
+    // the 14 MB build video is held until its re-encoded file lands (D065-VIDEO-REENCODE)
+    expect(galleryItems.find((g) => g.id === "video-event-network-build-2025")?.published).toBe(false);
   });
 
   it("filters hidden projects out of public access", () => {

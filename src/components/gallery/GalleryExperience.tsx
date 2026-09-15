@@ -1,39 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { GalleryItem, Locale } from "@/types/content";
 import { getGalleryCategories, getPublishedGalleryItems, localize } from "@/lib/content";
+import { GalleryCarousel } from "@/components/gallery/GalleryCarousel";
 
 /**
- * GALLERY SYSTEM (P10 · D-045).
+ * GALLERY SYSTEM (P10 · D-045 · D-065).
  *
- * - Editorial masonry (CSS columns) rendering ONLY published records —
- *   the system is complete at any collection size; population is
- *   forever a data edit (A-004/Amendment 3).
  * - Category filter: "All" + only categories that actually hold
- *   published items (empty filters can never exist).
- * - FLIP reflow on filter (FULL tier): surviving cards glide to their
- *   new positions; entering cards fade up. LITE/STATIC reflow
- *   instantly.
- * - Accessible lightbox: native <dialog> (modal focus containment),
- *   Escape closes, arrow keys + on-screen arrows step (direction-aware
- *   in RTL), touch/pointer swipe, focus returns to the opening card.
- * - Video discipline: poster-first cards (play badge); playback happens
- *   in the lightbox with controls, muted-autoplay on open (§20 —
- *   nothing autoplays with sound). STATIC/no-JS: server-rendered
- *   poster grid remains (the page renders items server-side too).
+ *   published items (empty filters can never exist). Changing the
+ *   filter re-centres the carousel on its first item.
+ * - D-065: the editorial masonry (and its FLIP reflow) is replaced by
+ *   the 3D cover carousel (GalleryCarousel) — poster-first video cards
+ *   that play muted only in the centre. The page still renders items
+ *   server-side, so STATIC/no-JS shows the first ring in place.
+ * - Accessible lightbox, unchanged from D-045: native <dialog> (modal
+ *   focus containment), Escape closes, arrow keys + on-screen arrows
+ *   step (direction-aware in RTL), touch/pointer swipe, focus returns
+ *   to the opening card. Opened by a click on the centre card, so a
+ *   video plays WITH sound there (the click is the permission); the
+ *   card-mode video is always muted. Posters are explicit data (D-065),
+ *   nothing is derived by convention here any more.
  */
-const posterOf = (item: GalleryItem) =>
-  item.poster ?? `/media/posters/${item.src.split("/").pop()!.replace(/\.\w+$/, "")}.jpg`;
-
-function subscribeTier(cb: () => void) {
-  const obs = new MutationObserver(cb);
-  obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-motion-tier"] });
-  return () => obs.disconnect();
-}
-const getTier = () => document.documentElement.getAttribute("data-motion-tier") ?? "static";
-
 export function GalleryExperience() {
   const locale = useLocale() as Locale;
   const t = useTranslations();
@@ -42,52 +32,17 @@ export function GalleryExperience() {
     items.some((i) => i.category === c.id),
   );
   const [filter, setFilter] = useState<string>("all");
+  const [index, setIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const gridRef = useRef<HTMLUListElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
-  const rectsRef = useRef(new Map<string, DOMRect>());
 
   const visible = filter === "all" ? items : items.filter((i) => i.category === filter);
 
-  // FLIP: capture positions before a filter change…
   const applyFilter = (next: string) => {
-    const grid = gridRef.current;
-    rectsRef.current.clear();
-    if (grid && getTier() === "full") {
-      grid.querySelectorAll<HTMLElement>("[data-flip-id]").forEach((el) => {
-        rectsRef.current.set(el.dataset.flipId!, el.getBoundingClientRect());
-      });
-    }
     setFilter(next);
+    setIndex(0);
   };
-
-  // …and play the deltas after the reflow commits
-  useLayoutEffect(() => {
-    const grid = gridRef.current;
-    if (!grid || rectsRef.current.size === 0) return;
-    const prev = rectsRef.current;
-    rectsRef.current = new Map();
-    grid.querySelectorAll<HTMLElement>("[data-flip-id]").forEach((el) => {
-      const before = prev.get(el.dataset.flipId!);
-      const after = el.getBoundingClientRect();
-      if (before) {
-        const dx = before.left - after.left;
-        const dy = before.top - after.top;
-        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-          el.animate(
-            [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
-            { duration: 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
-          );
-        }
-      } else {
-        el.animate(
-          [{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "none" }],
-          { duration: 380, easing: "ease-out" },
-        );
-      }
-    });
-  }, [visible]);
 
   // lightbox open/close via the native dialog for real modal semantics
   const open = (idx: number, opener: HTMLElement) => {
@@ -189,41 +144,8 @@ export function GalleryExperience() {
         ))}
       </div>
 
-      {/* editorial masonry */}
-      <ul ref={gridRef} className="gallery-masonry">
-        {visible.map((g, idx) => (
-          <li key={g.id} data-flip-id={g.id} className="gallery-masonry-item">
-            <button
-              type="button"
-              className="gallery-card"
-              data-cursor="view"
-              aria-label={localize(g.alt, locale)}
-              onClick={(e) => open(idx, e.currentTarget)}
-            >
-              <span className="gallery-card-media">
-                {/* poster-first, always — playback belongs to the lightbox */}
-                {/* eslint-disable-next-line @next/next/no-img-element -- approved published media, CSS-sized */}
-                <img
-                  src={g.type === "video" ? posterOf(g) : g.src}
-                  alt=""
-                  loading="lazy"
-                />
-                {g.type === "video" ? (
-                  <span className="gallery-play-badge" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" focusable="false">
-                      <path d="M5 3.5v9l8-4.5z" fill="currentColor" />
-                    </svg>
-                  </span>
-                ) : null}
-              </span>
-              <span className="gallery-card-caption">
-                <span>{localize(g.alt, locale)}</span>
-                {meta(g) ? <span className="microlabel">{meta(g)}</span> : null}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/* D-065: the 3D cover carousel — the centre card opens the lightbox */}
+      <GalleryCarousel items={visible} index={index} onIndexChange={setIndex} onOpen={open} />
 
       {/* accessible lightbox */}
       <dialog
@@ -235,13 +157,13 @@ export function GalleryExperience() {
           <div className="gallery-lightbox-body">
             <div className="gallery-lightbox-stage">
               {current.type === "video" ? (
+                // eslint-disable-next-line jsx-a11y/media-has-caption -- D-065: opened by a click, so it plays with sound; ambient field footage without speech, no caption track exists
                 <video
                   key={current.id}
                   src={current.src}
-                  poster={posterOf(current)}
+                  poster={current.poster}
                   controls
                   autoPlay
-                  muted
                   playsInline
                   aria-label={localize(current.alt, locale)}
                 />
