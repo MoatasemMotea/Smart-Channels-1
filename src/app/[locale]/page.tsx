@@ -6,7 +6,7 @@ import { AboutScene } from "@/components/home/AboutScene";
 import { SolutionsShowcase } from "@/components/home/SolutionsShowcase";
 import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
 import { SelectedProjects } from "@/components/home/SelectedProjects";
-import { GalleryPreview } from "@/components/home/GalleryPreview";
+import { GallerySection } from "@/components/home/GallerySection";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
 import { LetsTalk } from "@/components/home/LetsTalk";
 import { MotionSection } from "@/components/motion/MotionSection";
@@ -71,7 +71,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <SelectedProjects locale={locale} />
 
-      {/* Gallery — approved starter media, editorial masonry (Q-P5-5) */}
+      {/* Gallery — approved starter media in the D-065 cover carousel; this section IS the gallery since D-067 */}
       <MotionSection
         id="gallery"
         reveal="sweep"
@@ -81,7 +81,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       >
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
           <SectionHeading>{t("gallery")}</SectionHeading>
-          <GalleryPreview />
+          <GallerySection />
         </div>
       </MotionSection>
 

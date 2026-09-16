@@ -39,7 +39,6 @@ const ANCHOR_ROUTE_ALIASES: Record<string, string> = {
   "/#about": "/company",
   "/#solutions": "/solutions",
   "/#industries": "/industries",
-  "/#gallery": "/gallery",
   "/#partners": "/partners",
   "/#clients": "/clients",
 };

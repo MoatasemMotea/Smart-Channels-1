@@ -1950,37 +1950,6 @@ html[data-motion-tier="full"] .ss-sweep {
 .project-entry-scope { margin-top: 0.45rem; }
 [dir="rtl"] .project-entry-scope { line-height: 1.9; }
 
-/* GALLERY (Q-P5-5): editorial masonry preview. */
-.gallery-masonry {
-  columns: 1;
-  column-gap: 1.25rem;
-}
-@media (min-width: 640px) { .gallery-masonry { columns: 2; } }
-@media (min-width: 1024px) { .gallery-masonry { columns: 3; } }
-.gallery-tile {
-  break-inside: avoid;
-  margin-block-end: 1.25rem;
-  border: 1px solid var(--line);
-}
-.gallery-tile video,
-.gallery-tile img {
-  display: block;
-  width: 100%;
-  height: auto;
-  /* editorial rhythm: portrait phone footage is cropped into balanced
-     tiles rather than towering at full 9:16 */
-  max-height: 460px;
-  object-fit: cover;
-}
-.gallery-caption {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.7rem 0.85rem 0.85rem;
-  color: var(--ink-muted);
-}
-[dir="rtl"] .gallery-caption { line-height: 1.8; }
-
 /* LET'S TALK / CTA scene — dark committed signal ground. */
 /* D-054 §5/§21: the narrative convergence point sits on the canvas —
    the signal language converges here instead of the section going
@@ -3091,13 +3060,6 @@ html[data-motion-tier="full"] .project-opening-backdrop .po-c {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
-/* editorial masonry — CSS columns, cards never split */
-.gallery-masonry {
-  columns: 1;
-  column-gap: 1.5rem;
-}
-@media (min-width: 640px) { .gallery-masonry { columns: 2; } }
-@media (min-width: 1100px) { .gallery-masonry { columns: 3; } }
 .gallery-play-badge {
   position: absolute;
   inset-inline-end: 0.8rem;

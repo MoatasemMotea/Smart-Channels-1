@@ -11,7 +11,6 @@ const routes = [
   "/projects/grand-mosque-makkah",
   "/projects/king-abdullah-sports-city",
   "/industries",
-  "/gallery",
   "/company",
   "/partners",
   "/clients",
