@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { GalleryItem, Locale } from "@/types/content";
 import { localize } from "@/lib/content";
@@ -93,6 +93,42 @@ export function GalleryLightbox({
 
   const current = index !== null ? items[index] : null;
 
+  // D-070 follow-up: the media fills its box by ORIENTATION, not at its
+  // natural size — `data-orientation` comes from the real dimensions
+  // (naturalWidth/Height on load for an image, videoWidth/Height on
+  // loadedmetadata for a video) with the poster's dimensions as the stand-in
+  // until the video metadata arrives. CSS sizes landscape by width and
+  // portrait by height (see .gallery-lightbox-stage [data-orientation]).
+  const mediaRef = useRef<HTMLImageElement | HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = mediaRef.current;
+    if (!el || !current) return;
+    const apply = (w: number, h: number) => {
+      if (w > 0 && h > 0) el.setAttribute("data-orientation", w >= h ? "landscape" : "portrait");
+    };
+    if (el instanceof HTMLImageElement) {
+      const onLoad = () => apply(el.naturalWidth, el.naturalHeight);
+      if (el.complete) onLoad();
+      el.addEventListener("load", onLoad);
+      return () => el.removeEventListener("load", onLoad);
+    }
+    const onMeta = () => apply(el.videoWidth, el.videoHeight);
+    let cancelled = false;
+    if (el.videoWidth) onMeta();
+    else if (current.poster) {
+      const poster = new Image();
+      poster.onload = () => {
+        if (!cancelled && !el.videoWidth) apply(poster.naturalWidth, poster.naturalHeight);
+      };
+      poster.src = current.poster;
+    }
+    el.addEventListener("loadedmetadata", onMeta);
+    return () => {
+      cancelled = true;
+      el.removeEventListener("loadedmetadata", onMeta);
+    };
+  }, [current]);
+
   return (
     <>
       {/* accessible lightbox */}
@@ -108,6 +144,7 @@ export function GalleryLightbox({
                 // eslint-disable-next-line jsx-a11y/media-has-caption -- D-065: opened by a click, so it plays with sound; ambient field footage without speech, no caption track exists
                 <video
                   key={current.id}
+                  ref={mediaRef as RefObject<HTMLVideoElement | null>}
                   src={current.src}
                   poster={current.poster}
                   controls
@@ -117,7 +154,12 @@ export function GalleryLightbox({
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element -- approved published media
-                <img key={current.id} src={current.src} alt={localize(current.alt, locale)} />
+                <img
+                  key={current.id}
+                  ref={mediaRef as RefObject<HTMLImageElement | null>}
+                  src={current.src}
+                  alt={localize(current.alt, locale)}
+                />
               )}
               <div className="gallery-lightbox-below">
                 <div className="gallery-lightbox-caption">

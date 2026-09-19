@@ -3322,6 +3322,11 @@ html[data-motion-tier="static"][dir="rtl"] .gcar-card { transform: translate(50%
   border-radius: 8px;
   background: #050608;
 }
+/* D-070 follow-up: fill the box by orientation (data-orientation is set from
+   the real dimensions by GalleryLightbox) — landscape is bound by width,
+   portrait by height; the max-* above stay as guards */
+.gallery-lightbox-stage [data-orientation="landscape"] { width: min(92vw, 1400px); height: auto; }
+.gallery-lightbox-stage [data-orientation="portrait"] { height: min(84dvh, calc(100dvh - 2 * var(--lb-stack))); width: auto; }
 /* caption (and the small-screen arrow row) hang under the media, as wide as
    the media, without taking part in the centring */
 .gallery-lightbox-below {
@@ -3369,6 +3374,7 @@ html[data-motion-tier="static"][dir="rtl"] .gcar-card { transform: translate(50%
   .gallery-lightbox { --lb-stack: 8rem; } /* caption + arrow row */
   .gallery-lightbox-stage img,
   .gallery-lightbox-stage video { max-width: 100vw; border-radius: 0; }
+  .gallery-lightbox-stage [data-orientation="landscape"] { width: 100vw; } /* no side margin */
   .gallery-lightbox-caption p { font-size: 0.875rem; }
   .gallery-lightbox-nav-row {
     display: flex;

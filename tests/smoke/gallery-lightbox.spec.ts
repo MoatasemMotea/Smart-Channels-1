@@ -12,8 +12,15 @@ import { expect, test, type Page } from "@playwright/test";
  * the arrows are symmetric about the screen centre (≥ 641 px) or a centred
  * row under the caption (390), and the media is entirely on screen.
  *
+ * Follow-up (owner decision on D-070's deviation 2): the media fills its
+ * box by ORIENTATION — `data-orientation` from the real dimensions, then
+ * landscape is bound by the width cap (min(92vw, 1400px); 100vw at ≤ 640)
+ * and portrait by the height cap — so a landscape image is no longer drawn
+ * at its natural size, and neither case gets a letter-box.
+ *
  * The test browser has no H.264 decoder, so the <video> box takes the
- * poster's dimensions (464×848 — the same portrait aspect as the clip).
+ * poster's dimensions (464×848 — the same portrait aspect as the clip),
+ * which is also where the orientation comes from until metadata arrives.
  */
 const CASES = [
   { w: 1440, h: 900 },
@@ -79,8 +86,23 @@ for (const { w, h } of CASES) {
             rowDisplay: getComputedStyle(d.querySelector(".gallery-lightbox-nav-row")!).display,
             captionAlign: getComputedStyle(d.querySelector(".gallery-lightbox-caption")!).textAlign,
             ratio: media.tagName === "IMG" ? (media as HTMLImageElement).naturalWidth / (media as HTMLImageElement).naturalHeight : 464 / 848,
+            orientation: media.getAttribute("data-orientation"),
           };
         });
+        // orientation from the real dimensions; the box is FILLED by it (no natural-size rendering, no letter-box)
+        const stack = w <= 640 ? 128 : 80; // --lb-stack: 8rem / 5rem
+        const capW = w <= 640 ? w : Math.min(0.92 * w, 1400);
+        const capH = Math.min(0.84 * h, h - 2 * stack);
+        if (kind === "image") {
+          expect(g.orientation).toBe("landscape");
+          // bound by the width cap (≥ 90 % of it) unless the height cap binds first
+          const widthBound = g.media!.width >= 0.9 * capW;
+          const heightBound = Math.abs(g.media!.height - capH) <= 1;
+          expect(widthBound || heightBound).toBe(true);
+        } else {
+          expect(g.orientation).toBe("portrait");
+          expect(Math.abs(g.media!.height - capH)).toBeLessThanOrEqual(1); // = the height cap
+        }
         // the dialog fills the screen
         expect(g.dialog).toMatchObject({ x: 0, y: 0, width: w, height: h });
         // media centre = screen centre (±1 px), wholly on screen, aspect kept
@@ -139,6 +161,6 @@ test("1440 en: a click on the empty stage (the dialog itself) still closes the l
   await page.setViewportSize({ width: 1440, height: 900 });
   await gotoGallery(page, "en");
   const dialog = await openOn(page, "en", "image");
-  await page.mouse.click(120, 800); // outside the media, the caption and the arrows
+  await page.mouse.click(12, 884); // the bottom-left corner: outside the media, the caption and the arrows
   await expect(dialog).not.toHaveAttribute("open", "");
 });
