@@ -17,7 +17,10 @@ import { localize } from "@/lib/content";
  * (owner decision D-065 §3). Only `transform` and `opacity` animate.
  *
  * Video discipline: the centre video plays muted (playsInline, loop,
- * preload=metadata, poster mandatory); leaving the centre pauses,
+ * preload=metadata, poster mandatory) — but only while the carousel is
+ * in the viewport (IntersectionObserver, threshold 0.5, D067-OFFSCREEN-
+ * PLAY): off screen it stays paused, so a homepage load at scroll 0
+ * fetches metadata at most and plays nothing. Leaving the centre pauses,
  * rewinds and re-mutes it. The speaker button toggles mute in place
  * without opening the lightbox. Clicking the card opens the lightbox
  * (with sound — the click is the browser's permission). No autoplay
@@ -46,6 +49,7 @@ export function GalleryCarousel({
   const videoRefs = useRef(new Map<string, HTMLVideoElement>());
   const swipe = useRef<{ x: number; t: number } | null>(null);
   const lock = useRef(0);
+  const [inView, setInView] = useState(false);
   // the speaker toggle is remembered for the index it was pressed on, so a
   // step re-mutes by definition (no state write inside the effect)
   const [unmutedAt, setUnmutedAt] = useState<number | null>(null);
@@ -63,20 +67,22 @@ export function GalleryCarousel({
     return d;
   };
 
-  // centre video plays muted; everything else is parked at the start, muted
+  // centre video plays muted while the ring is in view; off screen it pauses
+  // where it is; everything else is parked at the start, muted
   useEffect(() => {
     for (const [id, v] of videoRefs.current) {
       const i = items.findIndex((it) => it.id === id);
       if (i === index) {
         v.muted = true;
-        v.play().catch(() => undefined); // codec/network failures show the poster
+        if (inView) v.play().catch(() => undefined); // codec/network failures show the poster
+        else v.pause();
       } else {
         v.pause();
         try { v.currentTime = 0; } catch { /* not seekable yet */ }
         v.muted = true;
       }
     }
-  }, [index, items]);
+  }, [index, items, inView]);
 
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -89,6 +95,15 @@ export function GalleryCarousel({
   // keyboard, swipe and horizontal wheel — registered imperatively on the
   // region element, which itself carries no JSX interaction handlers
   const regionRef = useRef<HTMLDivElement>(null);
+
+  // viewport gate for playback (threshold 0.5 of the ring)
+  useEffect(() => {
+    const el = regionRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setInView(!!e && e.isIntersecting), { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const stepRef = useRef(step);
   useEffect(() => {
     stepRef.current = step;

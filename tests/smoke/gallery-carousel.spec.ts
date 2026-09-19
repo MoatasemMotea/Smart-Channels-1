@@ -243,3 +243,30 @@ test("/gallery is gone: 404 in both locales, no redirect", async ({ request }) =
     expect(res.status(), loc).toBe(404);
   }
 });
+
+test("D067-OFFSCREEN-PLAY: the centre video stays idle until the section scrolls into view", async ({ page }) => {
+  // 1) real files, scroll 0: paused, never played, no more than metadata fetched, not loading
+  await page.goto("/en", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => { const s = document.documentElement.getAttribute("data-opening"); return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === ""); }, null, { timeout: 10000 });
+  await page.waitForTimeout(1500);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  const idle = await page.locator('.gcar-card[data-pos="0"] video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, played: v.played.length, t: v.currentTime, readyState: v.readyState, networkState: v.networkState, preload: v.preload }));
+  expect(idle.paused).toBe(true);
+  expect(idle.played).toBe(0);
+  expect(idle.t).toBe(0);
+  expect(idle.preload).toBe("metadata");
+  expect(idle.readyState).toBeLessThanOrEqual(1); // ≤ HAVE_METADATA
+  expect(idle.networkState).not.toBe(2); // not NETWORK_LOADING
+  // 2) decodable stand-in, scroll 0: still paused; then into view: playing
+  await serveDecodableVideos(page);
+  await page.goto("/en", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => { const s = document.documentElement.getAttribute("data-opening"); return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === ""); }, null, { timeout: 10000 });
+  await page.waitForTimeout(1500);
+  const video = page.locator('.gcar-card[data-pos="0"] video');
+  expect(await video.evaluate((v: HTMLVideoElement) => v.paused && v.played.length === 0)).toBe(true);
+  await page.locator("#gallery").scrollIntoViewIfNeeded();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused), { timeout: 8000 }).toBe(false);
+  // leaving the viewport pauses it again
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused), { timeout: 4000 }).toBe(true);
+});
