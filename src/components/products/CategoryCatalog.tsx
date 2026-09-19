@@ -27,9 +27,9 @@ export async function CategoryCatalog({ locale, category: cat }: { locale: Local
     href: `/products/${c.slug}`,
   }));
   const cards = getProductCards(cat.slug).map((k, i) => ({
-    key: `${k.typeEn}|${k.brand}|${i}`,
+    key: `${k.category}|${k.typeEn}`,
     name: ar ? k.typeAr : k.typeEn,
-    brand: k.brand,
+    brands: k.brands,
     image: k.image,
     alt: ar ? k.typeAr : k.typeEn,
   }));

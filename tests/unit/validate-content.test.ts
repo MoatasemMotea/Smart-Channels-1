@@ -60,24 +60,29 @@ describe("approved business data invariants", () => {
     }
   });
 
-  it("carries the D-059 categorised catalogue: nine categories, sixty-five cards (D-066), image per type", () => {
+  it("carries the D-059 categorised catalogue: nine categories, thirty-three cards — one per type (D-068)", () => {
     expect(productCategories.map((c) => c.slug)).toEqual([
       "networking", "fiber", "cybersecurity", "surveillance", "av",
       "computing", "storage", "communication", "environmental",
     ]);
     expect(productCategories.map((c) => c.order)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    expect(productCards).toHaveLength(65);
-    // cards per category, as the owner listed them
+    expect(productCards).toHaveLength(33);
+    // cards per category = types per category, as the owner listed them
     const per = Object.fromEntries(productCategories.map((c) => [c.slug, productCards.filter((k) => k.category === c.slug).length]));
-    expect(per).toEqual({ networking: 17, fiber: 9, cybersecurity: 1, surveillance: 6, av: 4, computing: 15, storage: 9, communication: 2, environmental: 2 });
-    // the image follows the TYPE: every card of one type shares one file
-    const byType = new Map<string, Set<string>>();
-    for (const k of productCards) byType.set(k.typeEn, (byType.get(k.typeEn) ?? new Set()).add(k.image));
-    for (const [, imgs] of byType) expect(imgs.size).toBe(1);
-    // no (category + type + brand) repeats
-    expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}|${k.brand}`)).size).toBe(65);
+    expect(per).toEqual({ networking: 8, fiber: 3, cybersecurity: 1, surveillance: 4, av: 3, computing: 6, storage: 4, communication: 2, environmental: 2 });
+    // D-068: a card IS a type — no (category + type) repeats
+    expect(new Set(productCards.map((k) => `${k.category}|${k.typeEn}`)).size).toBe(33);
+    // …and its brands are real names, sorted with localeCompare; [] means no brand line
+    for (const k of productCards) {
+      expect(k.brands.every((b) => b.trim().length > 0), `${k.typeEn}: no empty brand`).toBe(true);
+      expect(k.brands, `${k.typeEn}: alphabetical`).toEqual([...k.brands].sort((a, b) => a.localeCompare(b, "en")));
+    }
+    expect(productCards.find((k) => k.typeEn === "Switches")?.brands).toEqual(["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"]);
+    expect(productCards.filter((k) => k.brands.length === 0).map((k) => k.typeEn)).toEqual([
+      "PoE Switches", "Network Racks", "HDMI over Fiber Extenders", "HDMI Extenders", "Rack Servers", "Storage Arrays", "Weather Stations",
+    ]);
     // no model number ever leaks into a name or brand
-    for (const k of productCards) expect(`${k.typeEn} ${k.typeAr} ${k.brand}`).not.toMatch(/DS-K1T673DX/);
+    for (const k of productCards) expect(`${k.typeEn} ${k.typeAr} ${k.brands.join(" ")}`).not.toMatch(/DS-K1T673DX/);
   });
 
   it("carries exactly the 24 approved product categories with the owner image mapping (D-058)", () => {

@@ -228,10 +228,12 @@ import { productCards, productCategories } from "../src/content/product-catalog"
   const known = new Set(productCategories.map((c) => c.slug));
   const seen = new Set<string>();
   for (const k of productCards) {
-    if (!known.has(k.category)) errors.push(`catalog card "${k.typeEn}" (${k.brand || "no brand"}): unknown category "${k.category}"`);
-    const key = `${k.category}|${k.typeEn}|${k.brand}`;
+    if (!known.has(k.category)) errors.push(`catalog card "${k.typeEn}": unknown category "${k.category}"`);
+    const key = `${k.category}|${k.typeEn}`; // D-068: one card per type
     if (seen.has(key)) errors.push(`catalog: duplicate card ${key}`);
     seen.add(key);
+    // D-068: brands are real names or absent — never the empty-string stand-in of old
+    if (k.brands.some((b) => b.trim() === "")) errors.push(`catalog card "${k.typeEn}": empty brand string`);
     if (k.image) checkPath(`/media/products/${k.image}`, `catalog "${k.typeEn}" image`, true);
   }
   for (const c of productCategories)

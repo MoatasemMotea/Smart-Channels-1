@@ -1,20 +1,23 @@
 /**
- * CATEGORY CARD GRID (D-059 · D-062).
+ * CATEGORY CARD GRID (D-059 · D-062 · D-068).
  *
- * A card is a product type + (optional) brand. The photograph follows
- * the TYPE, so five "Switches" cards share one image; a type with no
+ * A card is a product TYPE (D-068): its photograph, its name, and its
+ * brands as one quiet line — "Aruba · Cisco · Hikvision · Linksys ·
+ * Ruijie" — or no line at all when the type has none. A type with no
  * photograph yet shows the neutral placeholder — a grey field with an
  * inline SVG, nothing generated or borrowed.
  *
  * D-062 removed the brand filter row and its state: this is a plain
- * server-rendered grid. The brand still appears as the quiet second
- * line under each card — text, not a control. Nothing here shows a
- * model number and nothing anywhere shows a count.
+ * server-rendered grid. The brand line is text, not a control, and is
+ * dir="ltr" on its own element: the names are Latin, and inside an RTL
+ * card the bidi algorithm would otherwise reverse their order and move
+ * the separators. Nothing here shows a model number and nothing
+ * anywhere shows a count.
  */
 export interface CardView {
   key: string;
   name: string;
-  brand: string; // "" = no brand line at all
+  brands: string[]; // alphabetical; [] = no brand line at all
   image: string; // "" = placeholder
   alt: string;
 }
@@ -46,7 +49,11 @@ export function CategoryCards({ cards }: { cards: CardView[] }) {
             </div>
           )}
           <p className="catalog-card-name">{c.name}</p>
-          {c.brand ? <p className="catalog-card-brand">{c.brand}</p> : null}
+          {c.brands.length > 0 ? (
+            <p className="catalog-card-brand" dir="ltr">
+              {c.brands.join(" · ")}
+            </p>
+          ) : null}
         </li>
       ))}
     </ul>

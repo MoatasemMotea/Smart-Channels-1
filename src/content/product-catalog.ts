@@ -8,7 +8,8 @@
  * then Monitors (computing, six cards). D-066 (2026-09-15) removed Camera
  * Mounts, added PoE Switches, Network Racks, Rack Servers and Storage
  * Arrays (no brand yet) and renamed the storage category's display names
- * to "Storage & Servers" (slug unchanged) — 33 types / 65 cards.
+ * to "Storage & Servers" (slug unchanged) — 33 types. D-068: 33 cards,
+ * one per type.
  * A card is a (category, product type, brand) triple; the brand may be
  * empty, which means "no brand shown", never a placeholder.
  *
@@ -52,7 +53,7 @@ export interface ProductCard {
   category: CategorySlug;
   typeEn: string; // product type
   typeAr: string;
-  brand: string; // empty = no brand
+  brands: string[]; // alphabetical (localeCompare); may be empty = no brand line
   image: string; // filename inside public/media/products/ — empty = placeholder
 }
 
@@ -71,7 +72,7 @@ export const productCategories: ProductCategory[] = [
 /**
  * One row per product TYPE: its category, names, the shared photograph
  * (owner mapping table, D-059 §2 — "" where none exists yet) and the
- * brands that expand into cards. The 65 cards are derived below, so a
+ * brands listed on its card. The 33 cards are derived below, so a
  * type's image lives in exactly one place.
  */
 type TypeRow = {
@@ -87,14 +88,14 @@ const TYPES: TypeRow[] = [
   { category: "networking", typeEn: "5G Routers", typeAr: "راوترات 5G", image: "routers-5g.webp", brands: ["Huawei"] },
   { category: "networking", typeEn: "Core Switches", typeAr: "محوّلات أساسية", image: "core-switches.webp", brands: ["Cisco", "TP-Link"] },
   { category: "networking", typeEn: "Switches", typeAr: "محوّلات شبكة", image: "switches.webp", brands: ["Aruba", "Cisco", "Hikvision", "Linksys", "Ruijie"] },
-  { category: "networking", typeEn: "PoE Switches", typeAr: "محوّلات PoE", image: "poe-switches.webp", brands: [""] },
+  { category: "networking", typeEn: "PoE Switches", typeAr: "محوّلات PoE", image: "poe-switches.webp", brands: [] },
   { category: "networking", typeEn: "Wi-Fi Extenders", typeAr: "مقويات إشارة", image: "wifi-extenders.webp", brands: ["TP-Link"] },
   { category: "networking", typeEn: "Access Points", typeAr: "نقاط وصول لاسلكية", image: "access-points.webp", brands: ["Aruba", "EDiMax", "Huawei", "Linksys", "Ubiquiti"] },
   { category: "networking", typeEn: "Point-to-Point", typeAr: "وصلات نقطة لنقطة", image: "point-to-point.webp", brands: ["UPOE"] },
-  { category: "networking", typeEn: "Network Racks", typeAr: "خزائن شبكات", image: "network-racks.webp", brands: [""] },
+  { category: "networking", typeEn: "Network Racks", typeAr: "خزائن شبكات", image: "network-racks.webp", brands: [] },
   /* ---- fiber (9 cards) ---- */
   { category: "fiber", typeEn: "Media Converters", typeAr: "محوّلات وسائط", image: "media-converters.webp", brands: ["D-Link", "Planet", "TP-Link", "TRENDnet", "Vivotek"] },
-  { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "hdmi-over-fiber.webp", brands: [""] },
+  { category: "fiber", typeEn: "HDMI over Fiber Extenders", typeAr: "موسّعات HDMI عبر الألياف", image: "hdmi-over-fiber.webp", brands: [] },
   { category: "fiber", typeEn: "SFP Modules", typeAr: "وحدات SFP", image: "sfp-modules.webp", brands: ["Alcatel-Lucent", "Cisco", "Huawei"] },
   /* ---- cybersecurity (1 card) ---- */
   { category: "cybersecurity", typeEn: "Firewalls", typeAr: "جدران حماية", image: "firewalls.webp", brands: ["Fortinet"] },
@@ -106,7 +107,7 @@ const TYPES: TypeRow[] = [
   /* ---- av (4 cards) ---- */
   { category: "av", typeEn: "Video Wall Displays", typeAr: "شاشات فيديو وول", image: "video-wall-displays.webp", brands: ["Hikvision", "Samsung"] },
   { category: "av", typeEn: "HDMI Splitters", typeAr: "موزّعات HDMI", image: "hdmi-splitters.webp", brands: ["UGREEN"] },
-  { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extenders.webp", brands: [""] },
+  { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extenders.webp", brands: [] },
   /* ---- computing (15 cards) ---- */
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablets.webp", brands: ["Lenovo"] },
   { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "", brands: ["Dell", "Egeira", "HP"] },
@@ -115,8 +116,8 @@ const TYPES: TypeRow[] = [
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },
   { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "", brands: ["Dell", "MIXIE", "PULI"] },
   /* ---- storage (9 cards) ---- */
-  { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "rack-servers.webp", brands: [""] },
-  { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "storage-arrays.webp", brands: [""] },
+  { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "rack-servers.webp", brands: [] },
+  { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "storage-arrays.webp", brands: [] },
   { category: "storage", typeEn: "Hard Drives", typeAr: "أقراص تخزين", image: "hard-drives.webp", brands: ["Dell", "Hikvision", "Seagate", "Western Digital"] },
   { category: "storage", typeEn: "Flash Memory", typeAr: "ذاكرات فلاش", image: "flash-memory.webp", brands: ["Hikvision", "NEO HOME", "SanDisk"] },
   /* ---- communication (2 cards) ---- */
@@ -124,16 +125,16 @@ const TYPES: TypeRow[] = [
   { category: "communication", typeEn: "Multi-Bay Chargers", typeAr: "شواحن متعددة القنوات", image: "multi-bay-chargers.webp", brands: ["Kirisun"] },
   /* ---- environmental (2 cards) ---- */
   { category: "environmental", typeEn: "People Counting Sensors", typeAr: "حساسات عدّ وتحليل", image: "people-counting-sensors.webp", brands: ["Xovis"] },
-  { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "weather-stations.webp", brands: [""] },
+  { category: "environmental", typeEn: "Weather Stations", typeAr: "محطات رصد جوي", image: "weather-stations.webp", brands: [] },
 ];
 
-/** The 65 cards, in category order then as listed by the owner (D-064 removed five av types and Monitors; D-066 removed Camera Mounts and added four brandless types). */
-export const productCards: ProductCard[] = TYPES.flatMap((t) =>
-  t.brands.map((brand) => ({
-    category: t.category,
-    typeEn: t.typeEn,
-    typeAr: t.typeAr,
-    brand,
-    image: t.image,
-  })),
-);
+/** The 33 cards — ONE per product type (D-068), in category order then as
+ *  listed by the owner. A card's brands are its TYPES row's brands, sorted
+ *  alphabetically (localeCompare, "en"), and may be empty. */
+export const productCards: ProductCard[] = TYPES.map((t) => ({
+  category: t.category,
+  typeEn: t.typeEn,
+  typeAr: t.typeAr,
+  brands: [...t.brands].sort((a, b) => a.localeCompare(b, "en")),
+  image: t.image,
+}));
