@@ -3995,7 +3995,7 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 /* ------------------------------------------------------------------ */
 /* D-059/D-061 — categorised product catalogue (/products, /products/[cat]) */
 /* Logical properties throughout, so RTL needs no overrides. Colours   */
-/* are theme tokens only; brand line is full ink at .72 (≥ 4.5:1).     */
+/* are theme tokens only.                                             */
 /* ------------------------------------------------------------------ */
 .catalog-side-link:focus-visible {
   outline: 2px solid var(--accent);
@@ -4049,7 +4049,6 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 .catalog-card-media[data-empty] { background: var(--surface-2); color: var(--ink-muted); }
 .catalog-card-media svg { inline-size: 2.25rem; block-size: 2.25rem; opacity: 0.55; }
 .catalog-card-name { margin-top: 0.7rem; font-size: 0.95rem; font-weight: 700; color: var(--ink); }
-.catalog-card-brand { margin-top: 0.15rem; font-size: 0.85rem; font-weight: 400; color: var(--ink); opacity: 0.72; }
 
 @media (prefers-reduced-motion: reduce) {
   .catalog-side-link { transition: none; }

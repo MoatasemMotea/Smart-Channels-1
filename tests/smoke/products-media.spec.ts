@@ -144,26 +144,17 @@ test("AR /products/networking: same eight cards, Arabic names, RTL, nothing mirr
   expect(mirrored).toBe(false);
 });
 
-test("D-068: the Switches card lists its brands alphabetically, in the same order in LTR and RTL (dir=ltr)", async ({ page }) => {
-  const expected = "Aruba · Cisco · Hikvision · Linksys · Ruijie";
+test("D-068 (a): no brand line on any category page — a card is a photograph and a type name", async ({ page }) => {
   for (const loc of ["en", "ar"]) {
-    await page.goto(`/${loc}/products/networking`, { waitUntil: "networkidle" });
-    const card = page.locator(".catalog-card", { hasText: loc === "en" ? /^Switches/ : /^محوّلات شبكة/ });
-    await expect(card).toHaveCount(1);
-    const line = card.locator(".catalog-card-brand");
-    await expect(line).toHaveText(expected);
-    await expect(line).toHaveAttribute("dir", "ltr");
-    // the VISUAL order, not just the DOM text: Aruba's glyphs sit left of Ruijie's in both locales
-    const order = await line.evaluate((el) => {
-      const range = document.createRange(); const text = el.firstChild as Text; const s = text.data;
-      const x = (word: string) => { const i = s.indexOf(word); range.setStart(text, i); range.setEnd(text, i + word.length); return range.getBoundingClientRect().left; };
-      return { aruba: x("Aruba"), ruijie: x("Ruijie") };
-    });
-    expect(order.aruba, loc).toBeLessThan(order.ruijie);
+    for (const cat of ["networking", "fiber", "cybersecurity", "surveillance", "av", "computing", "storage", "communication", "environmental"]) {
+      await page.goto(`/${loc}/products/${cat}`, { waitUntil: "networkidle" });
+      await expect(page.locator(".catalog-card-brand")).toHaveCount(0);
+      // and no brand name leaks into a card by another route
+      const text = await page.locator(".catalog-grid").innerText();
+      expect(text, `${loc}/${cat}`).not.toMatch(/Aruba|Cisco|Hikvision|Linksys|Ruijie|Huawei|Lenovo|Dell/);
+      expect(await page.locator(".catalog-card p").count()).toBe(await page.locator(".catalog-card").count()); // exactly one text line per card
+    }
   }
-  // a type without brands draws no brand line at all
-  await page.goto("/en/products/networking", { waitUntil: "networkidle" });
-  await expect(page.locator(".catalog-card", { hasText: "PoE Switches" }).locator(".catalog-card-brand")).toHaveCount(0);
 });
 
 test("unknown category slug is a 404", async ({ request }) => {
