@@ -15,6 +15,11 @@ import { localize } from "@/lib/content";
  * close, and returns focus to the opening card. A video plays WITH
  * sound and controls here — the click that opened the dialog is the
  * browser's permission (D-065). Posters are explicit data.
+ *
+ * D-070: the dialog is a full-screen grid (see .gallery-lightbox in
+ * globals.css) that centres the media on the screen; the caption and, on
+ * small screens, the arrow row hang under the media inside
+ * .gallery-lightbox-below, so they never shift the centre.
  */
 export function GalleryLightbox({
   items,
@@ -114,35 +119,37 @@ export function GalleryLightbox({
                 // eslint-disable-next-line @next/next/no-img-element -- approved published media
                 <img key={current.id} src={current.src} alt={localize(current.alt, locale)} />
               )}
-            </div>
-            <div className="gallery-lightbox-caption">
-              <p>{localize(current.alt, locale)}</p>
-              {meta(current) ? <p className="microlabel">{meta(current)}</p> : null}
-            </div>
-            {items.length > 1 ? (
-              <div className="gallery-lightbox-nav-row">
-                <button
-                  type="button"
-                  className="rail-nav gallery-lightbox-prev"
-                  aria-label={t("carousel.prev")}
-                  onClick={() => onStep(-1)}
-                >
-                  <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path d="M10.5 3 5.5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  className="rail-nav gallery-lightbox-next"
-                  aria-label={t("carousel.next")}
-                  onClick={() => onStep(1)}
-                >
-                  <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                    <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
+              <div className="gallery-lightbox-below">
+                <div className="gallery-lightbox-caption">
+                  <p>{localize(current.alt, locale)}</p>
+                  {meta(current) ? <p className="microlabel">{meta(current)}</p> : null}
+                </div>
+                {items.length > 1 ? (
+                  <div className="gallery-lightbox-nav-row">
+                    <button
+                      type="button"
+                      className="rail-nav gallery-lightbox-prev"
+                      aria-label={t("carousel.prev")}
+                      onClick={() => onStep(-1)}
+                    >
+                      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path d="M10.5 3 5.5 8l5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="rail-nav gallery-lightbox-next"
+                      aria-label={t("carousel.next")}
+                      onClick={() => onStep(1)}
+                    >
+                      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path d="M5.5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
+            </div>
             <button
               type="button"
               className="gallery-lightbox-close"

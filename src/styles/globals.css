@@ -3273,10 +3273,22 @@ html[data-motion-tier="full"] .project-opening-backdrop .po-c {
 }
 html[data-motion-tier="static"] .gcar-card { transition: opacity 200ms ease; transform: translate(-50%, -50%) translateX(var(--gx)) scale(var(--gs)); }
 html[data-motion-tier="static"][dir="rtl"] .gcar-card { transform: translate(50%, -50%) translateX(var(--gx)) scale(var(--gs)); }
-/* lightbox — native dialog, dark stage in both themes */
+/* lightbox — native dialog, dark stage in both themes.
+   D-070: the dialog itself is the full-screen grid (Tailwind's preflight
+   zeroes the UA `dialog { margin: auto }`, which used to pin the 1200 px
+   box to the start corner). Three rows — spacer · media · spacer — with an
+   equal minimum (--lb-stack) so the media sits at the exact centre of the
+   screen while its caption (and, on small screens, the arrow row) hangs
+   under it inside the bottom spacer. */
 .gallery-lightbox {
-  width: min(100vw, 1200px);
-  max-height: 100svh;
+  --lb-stack: 5rem; /* room reserved under the media for the caption */
+  --lb-edge: clamp(12px, 3vw, 40px);
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
   border: none;
   padding: 0;
   background: transparent;
@@ -3285,38 +3297,57 @@ html[data-motion-tier="static"][dir="rtl"] .gcar-card { transform: translate(50%
   --ink-muted: #b4b4b1;
   --accent: #ff189c;
 }
+.gallery-lightbox[open] {
+  display: grid;
+  grid-template-rows: minmax(var(--lb-stack), 1fr) auto minmax(var(--lb-stack), 1fr);
+  justify-items: center;
+  align-items: center;
+}
 .gallery-lightbox::backdrop {
   background: rgba(4, 5, 8, 0.9);
 }
-.gallery-lightbox-body {
+.gallery-lightbox-body { display: contents; }
+.gallery-lightbox-stage {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  padding: 2.75rem 1rem 1.5rem;
+  grid-row: 2;
 }
 .gallery-lightbox-stage img,
 .gallery-lightbox-stage video {
   display: block;
-  width: 100%;
-  max-height: 76svh;
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 1400px);
+  max-height: min(84dvh, calc(100dvh - 2 * var(--lb-stack)));
   object-fit: contain;
   border-radius: 8px;
   background: #050608;
 }
+/* caption (and the small-screen arrow row) hang under the media, as wide as
+   the media, without taking part in the centring */
+.gallery-lightbox-below {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  inset-inline: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+.gallery-lightbox-caption { width: 100%; } /* the media width, not the text width */
 .gallery-lightbox-caption p { font-size: 0.9375rem; line-height: 1.6; }
 .gallery-lightbox-prev,
 .gallery-lightbox-next {
-  position: absolute;
+  position: fixed;
   top: 50%;
   translate: 0 -50%;
 }
-.gallery-lightbox-prev { inset-inline-start: 0.4rem; }
-.gallery-lightbox-next { inset-inline-end: 0.4rem; }
+.gallery-lightbox-prev { inset-inline-start: var(--lb-edge); }
+.gallery-lightbox-next { inset-inline-end: var(--lb-edge); }
 .gallery-lightbox-close {
-  position: absolute;
-  top: 0.4rem;
-  inset-inline-end: 0.4rem;
+  position: fixed;
+  top: var(--lb-edge);
+  inset-inline-end: var(--lb-edge);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3330,22 +3361,25 @@ html[data-motion-tier="static"][dir="rtl"] .gcar-card { transform: translate(50%
 }
 .gallery-lightbox-close:hover,
 .gallery-lightbox-close:focus-visible { border-color: rgba(255, 24, 156, 0.55); color: #fff; }
-/* the arrow pair is transparent to layout on desktop (absolute at the
-   stage edges); on small screens it becomes a real row UNDER the stage
-   so controls never cover the media */
+/* the arrow pair is transparent to layout on desktop (fixed at the screen
+   edges); on small screens it becomes a real row UNDER the caption so
+   controls never cover the media (owner decision, D-070) */
 .gallery-lightbox-nav-row { display: contents; }
 @media (max-width: 640px) {
+  .gallery-lightbox { --lb-stack: 8rem; } /* caption + arrow row */
+  .gallery-lightbox-stage img,
+  .gallery-lightbox-stage video { max-width: 100vw; border-radius: 0; }
+  .gallery-lightbox-caption p { font-size: 0.875rem; }
   .gallery-lightbox-nav-row {
     display: flex;
+    justify-content: center;
     gap: 0.75rem;
-    order: 3;
   }
   .gallery-lightbox-prev,
   .gallery-lightbox-next {
     position: static;
     translate: none;
   }
-  .gallery-lightbox-body { padding-top: 3.25rem; }
 }
 
 /* ------------------------------------------------------------------ */
