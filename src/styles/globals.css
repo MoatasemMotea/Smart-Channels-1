@@ -500,10 +500,6 @@ html:not([data-opening]) .hero-accent-word {
 [dir="rtl"] .site-header nav a {
   font-size: 0.9375rem;
 }
-[dir="rtl"] .mobile-menu-item a,
-[dir="rtl"] .mobile-menu-item {
-  line-height: 1.7;
-}
 .hero-line { display: block; }
 .hero-accent-word {
   font-style: normal;
@@ -825,7 +821,8 @@ html:not([data-opening]) .opening-canvas {
    dark-scene tokens whatever the global theme — text, controls and the
    scrolled blur surface all stay legible over the dark ground. Over
    editorial surfaces the theme tokens apply as before. */
-html[data-header-env="dark"] .site-header {
+html[data-header-env="dark"] .site-header,
+html[data-header-env="dark"] .site-menu /* D-069: the sheet under the header shares its environment */ {
   --bg: #0a0a0c;
   --ink: #f5f5f4;
   --ink-muted: #b4b4b1;
@@ -868,44 +865,108 @@ main > *:not(.hero-scene):first-child {
   padding-top: 5rem;
 }
 
-/* Full-screen mobile navigation (F-8): same visual universe, usability first. */
-.mobile-menu-overlay {
+/* Mobile navigation (F-8, rebuilt at D-069): one morphing toggle, one
+   panel portalled to <body> — never inside the header, whose scrolled
+   backdrop-filter would make it the containing block of a fixed panel. */
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem; /* 44 px touch target */
+  block-size: 2.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+}
+.menu-toggle svg { inline-size: 1.375rem; block-size: 1.375rem; }
+.menu-toggle-bar {
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  transform-origin: 12px 12px;
+  transform-box: view-box;
+  transition:
+    transform 200ms var(--ease-engineered),
+    opacity 200ms var(--ease-engineered);
+}
+/* bars slide to the centre line FIRST, then rotate about it (CSS applies the right-hand transform first) */
+.menu-toggle[data-open] .menu-toggle-bar[data-bar="top"] { transform: rotate(45deg) translateY(5px); }
+.menu-toggle[data-open] .menu-toggle-bar[data-bar="mid"] { opacity: 0; transform: scaleX(0.2); }
+.menu-toggle[data-open] .menu-toggle-bar[data-bar="bot"] { transform: rotate(-45deg) translateY(-5px); }
+.menu-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.site-menu-backdrop {
   position: fixed;
-  inset: 0;
-  z-index: 50;
+  inset: 5rem 0 0 0; /* under the 80 px header, which stays usable */
+  z-index: 69;
+  border: 0;
+  padding: 0;
+  background: rgba(6, 6, 7, 0.55);
+  opacity: 0;
+  transition: opacity 220ms var(--ease-engineered);
+}
+.site-menu {
+  position: fixed;
+  inset: 5rem 0 auto 0; /* sheet under the header; the backdrop dims what it leaves */
+  max-block-size: calc(100dvh - 5rem);
+  z-index: 70; /* above the floating chat (60) and WhatsApp (59) buttons */
   display: flex;
   flex-direction: column;
-  background: #060607;
-  color: #f5f5f4;
-  --ink: #f5f5f4;
-  --ink-muted: #b4b4b1;
-  --line: rgba(255, 255, 255, 0.1);
-  --accent: #ff189c;
-  --accent-ink: #0a0a0c;
+  gap: 1.25rem;
   overflow-y: auto;
-  padding: 1.25rem 1.5rem 2.5rem;
-}
-.mobile-menu-overlay::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 40% at 78% 18%, rgba(141, 52, 146, 0.12), transparent 70%),
-    radial-gradient(40% 30% at 15% 85%, rgba(255, 24, 156, 0.06), transparent 70%);
-}
-.mobile-menu-item {
+  padding: 0.75rem 1.5rem 1.5rem;
+  background: var(--bg);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
   opacity: 0;
-  transform: translateY(14px);
-  animation: menu-item-in 360ms var(--ease-engineered) forwards;
+  transform: translateY(-12px);
+  transition:
+    opacity 220ms var(--ease-engineered),
+    transform 220ms var(--ease-engineered);
 }
-@keyframes menu-item-in {
-  to { opacity: 1; transform: none; }
+.site-menu[data-state="open"],
+.site-menu-backdrop[data-state="open"] { opacity: 1; transform: none; }
+.site-menu[data-state="closing"] { opacity: 0; transform: translateY(-12px); }
+.site-menu-backdrop[data-state="closing"] { opacity: 0; }
+.site-menu-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.site-menu-link {
+  display: flex;
+  align-items: center;
+  min-block-size: 3rem; /* 48 px rows */
+  padding-block: 0.25rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: start;
 }
-[data-motion-tier="static"] .mobile-menu-item {
-  animation: none;
-  opacity: 1;
-  transform: none;
+.site-menu-link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.site-menu-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 3rem;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+}
+.site-menu-tools { display: flex; align-items: center; gap: 0.5rem; }
+.site-menu-contact { font-size: 0.875rem; line-height: 1.75; font-style: normal; color: var(--ink-muted); }
+[dir="rtl"] .site-menu-link { line-height: 1.7; }
+[dir="rtl"] .site-menu-contact p { text-align: right; } /* the LTR phone line still sits at the RTL line start */
+@media (prefers-reduced-motion: reduce) {
+  .menu-toggle-bar, .site-menu, .site-menu-backdrop { transition: none; }
+}
+html[data-motion-tier="static"] .menu-toggle-bar,
+html[data-motion-tier="static"] .site-menu,
+html[data-motion-tier="static"] .site-menu-backdrop { transition: none; }
+@media (min-width: 64rem) {
+  .site-menu, .site-menu-backdrop { display: none; }
 }
 
 /* ------------------------------------------------------------------ */
