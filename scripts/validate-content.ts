@@ -34,6 +34,15 @@ const errors: string[] = [];
 const warnings: string[] = [];
 const arGaps: string[] = [];
 
+/** canvas width of a WebP file: VP8X extended header (what sharp writes), else VP8/VP8L */
+function webpWidth(b: Buffer): number {
+  const chunk = b.toString("ascii", 12, 16);
+  if (chunk === "VP8X") return 1 + (b[24]! | (b[25]! << 8) | (b[26]! << 16));
+  if (chunk === "VP8 ") return b.readUInt16LE(26) & 0x3fff;
+  if (chunk === "VP8L") return 1 + (((b[21]! | (b[22]! << 8)) & 0x3fff));
+  return -1;
+}
+
 function checkPath(p: string, owner: string, requiredNow: boolean) {
   const fs = join(root, "public", p);
   if (!existsSync(fs)) {
@@ -265,7 +274,22 @@ for (const f of solutionFamilies) {
       checkAr(item, `solution ${f.id}/${sub.id} item ${i}`);
   }
 }
-for (const i of industries) checkAr(i.name, `industry ${i.id}`);
+for (const i of industries) {
+  checkAr(i.name, `industry ${i.id}`);
+  checkAr(i.tagline, `industry ${i.id} tagline`);
+  // D-072: the slide image is a pair (full width + -960 phone variant) under /media/industries
+  if (i.image) {
+    if (!/^industry-\d{2}-[a-z-]+\.webp$/.test(i.image)) errors.push(`industry ${i.id}: image must be a bare industry-NN-slug.webp name (got ${i.image})`);
+    checkPath(`/media/industries/${i.image}`, `industry ${i.id} image`, true);
+    checkPath(`/media/industries/${i.image.replace(/\.webp$/, "-960.webp")}`, `industry ${i.id} image (960)`, true);
+    // the srcset descriptor must be the file's real width (VP8X canvas in the WebP header)
+    const full = join(root, "public", "media", "industries", i.image);
+    if (existsSync(full)) {
+      const w = webpWidth(readFileSync(full));
+      if (w !== i.imageWidth) errors.push(`industry ${i.id}: imageWidth ${i.imageWidth} but the file is ${w} px wide`);
+    }
+  } else if (i.imageWidth !== 0) errors.push(`industry ${i.id}: imageWidth must be 0 without an image`);
+}
 for (const p of projects) {
   checkAr(p.name, `project ${p.id} name`);
   if (p.location) checkAr(p.location, `project ${p.id} location`);

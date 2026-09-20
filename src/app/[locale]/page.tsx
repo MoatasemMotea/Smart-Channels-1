@@ -4,7 +4,7 @@ import { Hero } from "@/components/hero/Hero";
 import { NetworkScene } from "@/components/network/NetworkScene";
 import { AboutScene } from "@/components/home/AboutScene";
 import { SolutionsShowcase } from "@/components/home/SolutionsShowcase";
-import { IndustriesMatrix } from "@/components/home/IndustriesMatrix";
+import { IndustriesSection } from "@/components/home/IndustriesSection";
 import { SelectedProjects } from "@/components/home/SelectedProjects";
 import { GallerySection } from "@/components/home/GallerySection";
 import { AlliancesIndex, ClientsField } from "@/components/home/TrustSections";
@@ -21,7 +21,7 @@ import { SectionSeam } from "@/components/motion/SectionSeam";
  * Approved journey (no adjacent section repeats a composition):
  *   Opening → Cinematic Hero → Editorial About → Cinematic Reach →
  *   Technical Solutions index → Structural
- *   Industries matrix → Selected Projects → Media Gallery preview →
+ *   Industries slider → Selected Projects → Media Gallery preview →
  *   Engineered Alliances index → Calm Clients trust field →
  *   Let's Talk → Footer.
  *
@@ -65,7 +65,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* D-062: no seam here — Solutions already reveals as `trace` and ends
           on border-b; a trace seam after it separated without distinguishing */}
-      <IndustriesMatrix locale={locale} />
+      <IndustriesSection locale={locale} />
 
       <SectionSeam variant="node" />
 

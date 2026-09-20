@@ -1,0 +1,165 @@
+import { expect, test, type Page } from "@playwright/test";
+
+/**
+ * D-072 — the homepage Industries section is a full-width slider of the 16
+ * approved sectors in the owner's importance order, with no "featured"
+ * marks: order 01→16, arrows and the loop, autoplay that pauses on hover,
+ * no autoplay under reduced motion, a logically mirrored counter in RTL,
+ * the active label kept in view in the bottom strip, a title that fits
+ * 390 px, and lazy scenes (the first decoded at load, the sixth not yet).
+ */
+const ORDER = [
+  "Religious & Holy Sites", "Government & Public Sector", "Giga-projects", "Diplomatic Missions",
+  "Banking & Finance", "Industrial & Energy", "Education", "Stadiums & Sports Cities",
+  "Major Sporting Events", "Motorsport & Racing", "Healthcare", "Cultural Seasons & Festivals",
+  "Hospitality & F&B", "Retail & Malls", "Transport & Rail", "Media & Broadcast",
+];
+const region = (page: Page) => page.locator('.industries-slider[role="region"]');
+const active = (page: Page) => page.locator('.industries-slide[data-state="active"]');
+const activeIndex = (page: Page) => active(page).getAttribute("data-slide");
+
+/** the homepage plays its opening first; then bring the section into view WITHOUT focusing it (focus pauses autoplay) */
+async function gotoSlider(page: Page, loc: "en" | "ar") {
+  await page.goto(`/${loc}/`, { waitUntil: "networkidle" });
+  await page.waitForFunction(() => {
+    const s = document.documentElement.getAttribute("data-opening");
+    return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === "");
+  }, null, { timeout: 15000 });
+  await page.evaluate(() => document.querySelector("#industries")!.scrollIntoView({ block: "center" }));
+  await page.waitForTimeout(600);
+}
+
+test("order 01→16 in the strip and the counter; zero featured marks", async ({ page }) => {
+  await gotoSlider(page, "en");
+  await expect(page.locator(".industries-slider-tab")).toHaveText(ORDER);
+  await expect(page.locator(".industries-slide")).toHaveCount(16);
+  await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[0]!);
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  await expect(page.locator(".industries-slider-counter-total")).toHaveText("16");
+  // D-072: no distinction marks anywhere in the DOM
+  await expect(page.locator(".industry-mark, [data-featured], .industries-matrix")).toHaveCount(0);
+  expect(await page.locator("#industries").innerText()).not.toMatch(/Featured focus sector/);
+  // accessibility contract
+  await expect(region(page)).toHaveAttribute("aria-roledescription", "carousel");
+  await expect(region(page)).toHaveAttribute("aria-label", "Industries we serve");
+  await expect(page.locator('.industries-slide[aria-hidden="true"]')).toHaveCount(15);
+  await expect(page.locator(".industries-slide[inert]")).toHaveCount(15);
+  await expect(region(page).locator('[aria-live="polite"]')).toHaveText(ORDER[0]!);
+  const toggle = page.getByRole("button", { name: "Pause automatic rotation" });
+  const tb = await toggle.boundingBox();
+  expect(tb!.width).toBeGreaterThanOrEqual(44);
+  expect(tb!.height).toBeGreaterThanOrEqual(44);
+});
+
+test("arrows step and the loop closes: 16 → 01 and 01 → 16; Home/End", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop"); // the arrows are hidden at ≤ 640 px (strip + swipe there)
+  await gotoSlider(page, "en");
+  const next = page.getByRole("button", { name: "Next industry" });
+  const prev = page.getByRole("button", { name: "Previous industry" });
+  await next.click();
+  await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[1]!);
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02");
+  await prev.click();
+  await prev.click(); // 01 → 16: the loop
+  await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[15]!);
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("16");
+  await next.click(); // 16 → 01
+  await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[0]!);
+  await expect(region(page).locator('[aria-live="polite"]')).toHaveText(ORDER[0]!);
+  await next.focus();
+  await page.keyboard.press("End");
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("16");
+  await page.keyboard.press("Home");
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02");
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  // the leaving slide's exit state clears on transitionend (no slide stuck in "leaving")
+  await expect(page.locator('.industries-slide[data-state="leaving"]')).toHaveCount(0);
+});
+
+test("autoplay runs in view, advances after 6 s, and pauses on hover and on the visible button", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop"); // hover is a pointer affair
+  await gotoSlider(page, "en");
+  await expect(region(page)).toHaveAttribute("data-autoplay", "running");
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02", { timeout: 8000 });
+  await active(page).hover();
+  await expect(region(page)).toHaveAttribute("data-autoplay", "paused");
+  const before = await activeIndex(page);
+  await page.waitForTimeout(6800);
+  expect(await activeIndex(page)).toBe(before);
+  await page.mouse.move(5, 5); // leave the region
+  await expect(region(page)).toHaveAttribute("data-autoplay", "running");
+  await page.getByRole("button", { name: "Pause automatic rotation" }).click();
+  await expect(region(page)).toHaveAttribute("data-autoplay", "paused"); // focus inside + user pause
+  await expect(page.getByRole("button", { name: "Resume automatic rotation" })).toBeVisible();
+});
+
+test("reduced motion: no autoplay, no pause button, no progress line", async ({ browser }) => {
+  const ctx = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await gotoSlider(page, "en");
+  await expect(region(page)).toHaveAttribute("data-autoplay", "off");
+  await expect(page.locator(".industries-slider-toggle")).toHaveCount(0);
+  await expect(page.locator('.industries-slider-tab[aria-current="true"] .industries-slider-tab-line')).toBeHidden();
+  await page.waitForTimeout(6800);
+  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  const t = await active(page).evaluate((e) => getComputedStyle(e).transitionDuration);
+  expect(parseFloat(t)).toBeLessThanOrEqual(0.2);
+  await ctx.close();
+});
+
+test("RTL: the counter mirrors logically (01 at the right, 16 at the left) with Latin digits", async ({ page }) => {
+  await gotoSlider(page, "ar");
+  const now = page.locator(".industries-slider-counter-now");
+  const total = page.locator(".industries-slider-counter-total");
+  await expect(now).toHaveText("01");
+  await expect(total).toHaveText("16");
+  const a = (await now.boundingBox())!;
+  const z = (await total.boundingBox())!;
+  expect(a.x).toBeGreaterThan(z.x);
+  await expect(active(page).locator(".industries-slide-title")).toHaveText("المواقع الدينية والمقدسة");
+  await expect(region(page)).toHaveAttribute("aria-label", "القطاعات التي نخدمها");
+});
+
+test("the bottom strip keeps the active label in view after every transition", async ({ page }) => {
+  await gotoSlider(page, "en");
+  const strip = page.locator(".industries-slider-strip");
+  for (let i = 0; i < 16; i++) {
+    await page.locator(`.industries-slider-tab[data-tab="${(i * 5) % 16}"]`).click();
+    await page.waitForTimeout(700); // smooth scrollIntoView
+    const s = (await strip.boundingBox())!;
+    const t = (await page.locator('.industries-slider-tab[aria-current="true"]').boundingBox())!;
+    expect(t.x, `tab ${(i * 5) % 16}`).toBeGreaterThanOrEqual(s.x - 1);
+    expect(t.x + t.width, `tab ${(i * 5) % 16}`).toBeLessThanOrEqual(s.x + s.width + 1);
+  }
+});
+
+test("390 px: every title fits the screen width; slides without a scene show the gradient", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await gotoSlider(page, "en");
+  for (let i = 0; i < 16; i++) {
+    await page.locator(`.industries-slider-tab[data-tab="${i}"]`).click();
+    await expect(active(page)).toHaveAttribute("data-slide", String(i));
+    const r = (await active(page).locator(".industries-slide-title").boundingBox())!;
+    expect(r.x, ORDER[i]).toBeGreaterThanOrEqual(0);
+    expect(r.x + r.width, ORDER[i]).toBeLessThanOrEqual(390);
+  }
+  // 08 and 09 are held (transparent cut-outs, owner decision): gradient only, no <img>
+  for (const i of [7, 8]) {
+    await expect(page.locator(`.industries-slide[data-slide="${i}"]`)).toHaveAttribute("data-empty", "");
+    await expect(page.locator(`.industries-slide[data-slide="${i}"] img`)).toHaveCount(0);
+  }
+});
+
+test("lazy scenes: the first is decoded at load, the sixth is not loaded yet", async ({ page }) => {
+  await gotoSlider(page, "en");
+  const first = page.locator('.industries-slide[data-slide="0"] img');
+  await expect(first).toHaveCount(1);
+  expect(await first.evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
+  await expect(page.locator('.industries-slide[data-slide="5"] img')).toHaveCount(0);
+  expect(await page.evaluate(() => performance.getEntriesByType("resource").filter((e) => e.name.includes("industry-06-")).length)).toBe(0);
+  // the neighbours are the only other scenes in the DOM
+  expect(await page.locator(".industries-slide img").count()).toBe(3);
+});

@@ -68,10 +68,6 @@ export function getIndustries(): Industry[] {
   return [...industries].sort(byOrder);
 }
 
-export function getFeaturedIndustries(): Industry[] {
-  return getIndustries().filter((i) => i.featured);
-}
-
 /** Public projects only — display: 'hidden' records never render (A-004). */
 export function getPublicProjects(): Project[] {
   return projects.filter((p) => p.display !== "hidden").sort(byOrder);

@@ -106,10 +106,17 @@ export interface SolutionFamily {
 export interface Industry {
   id: string;
   name: LocalizedText;
-  /** Homepage showcase membership — data-driven. */
-  featured: boolean;
+  /** One-line promise under the name on the homepage slide (D-072, owner text, verbatim). */
+  tagline: LocalizedText;
+  /** Homepage slide order (D-072 importance order). */
   order: number;
-  media?: MediaRef;
+  /** Delivery file under public/media/industries/ (the full-width WebP; a
+   *  `-960.webp` sibling serves phones). "" = no approved scene yet — the
+   *  slide shows the dark gradient alone. */
+  image: string;
+  /** Pixel width of `image` (its srcset descriptor; the validator checks it
+   *  against the file). 0 when there is no image. */
+  imageWidth: number;
 }
 
 /* ------------------------------------------------------------------ */

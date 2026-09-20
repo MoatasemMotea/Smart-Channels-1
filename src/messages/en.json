@@ -1,4 +1,13 @@
 {
+  "industries": {
+    "carousel": {
+      "label": "Industries we serve",
+      "prev": "Previous industry",
+      "next": "Next industry",
+      "pause": "Pause automatic rotation",
+      "play": "Resume automatic rotation"
+    }
+  },
   "common": {
     "skipToContent": "Skip to content",
     "menu": "Menu",

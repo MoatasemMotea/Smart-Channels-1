@@ -9,7 +9,6 @@ import { products } from "../../src/content/products";
 import { productCards, productCategories } from "../../src/content/product-catalog";
 import { galleryItems } from "../../src/content/gallery";
 import {
-  getFeaturedIndustries,
   getPublicProjects,
   getPublishedGalleryItems,
   localize,
@@ -33,9 +32,20 @@ describe("approved business data invariants", () => {
     ]);
   });
 
-  it("models all 16 approved sectors (Q3)", () => {
+  it("models all 16 approved sectors in the D-072 homepage order, with owner taglines", () => {
     expect(industries).toHaveLength(16);
-    expect(getFeaturedIndustries().length).toBeGreaterThanOrEqual(6);
+    const ordered = [...industries].sort((a, b) => a.order - b.order).map((i) => i.name.en);
+    expect(ordered).toEqual([
+      "Religious & Holy Sites", "Government & Public Sector", "Giga-projects", "Diplomatic Missions",
+      "Banking & Finance", "Industrial & Energy", "Education", "Stadiums & Sports Cities",
+      "Major Sporting Events", "Motorsport & Racing", "Healthcare", "Cultural Seasons & Festivals",
+      "Hospitality & F&B", "Retail & Malls", "Transport & Rail", "Media & Broadcast",
+    ]);
+    for (const i of industries) {
+      expect(i.tagline.en.length).toBeGreaterThan(0);
+      expect(i.tagline.ar?.length ?? 0).toBeGreaterThan(0);
+      expect("featured" in i).toBe(false); // D-072: no distinction marks
+    }
   });
 
   it("carries the exact owner Solutions media mapping (D-050 MAPPING.md)", () => {
