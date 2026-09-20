@@ -4,23 +4,32 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 /**
- * INDUSTRIES SLIDER (D-072).
+ * INDUSTRIES SLIDER (D-072, corrected at D-073).
  *
- * Sixteen full-width slides — scene photograph, name, tagline, a 01…16
- * counter and a bottom strip of labels that scrolls the active one into
- * view — with a 700 ms cross-fade (image opacity + 1.04→1 scale, text
- * rising in with a 150 ms delay), 6 s autoplay that pauses on hover, on
- * focus inside the region and while the section is out of view
- * (IntersectionObserver, 0.5), arrow keys, Home/End, a 40 px touch swipe
- * and a visible pause/play button. Under prefers-reduced-motion (or the
- * STATIC tier) there is no autoplay and the change is a 200 ms fade.
+ * Sixteen full-width slides — the scene shown WHOLE (`object-fit: contain`)
+ * over a blurred, dimmed copy of itself (the 960 px file, `cover`), the
+ * name and tagline, a 01…16 counter and a bottom strip of labels that
+ * scrolls the active one into view with a 5 s progress line.
+ *
+ * Transition (900 ms): the leaving slide stays still underneath; the
+ * entering slide is revealed by a growing circle (clip-path) while its
+ * blur and scale settle; a light orb crosses from the line end to the
+ * line start (mirrored in RTL); the text leaves in the first 250 ms and
+ * arrives between 450 and 900 ms. The leaving slide is released on the
+ * entering slide's transitionend (never a fixed timer). Under
+ * prefers-reduced-motion (or the STATIC tier): a 200 ms fade, no orb, no
+ * clip-path, no blur, no autoplay.
+ *
+ * Autoplay 5 s. It stops ONLY for the visible pause button, the section
+ * leaving the viewport (IntersectionObserver, 0.5), a hidden tab
+ * (visibilitychange) and reduced motion — never for hover or focus. A
+ * click on a label or an arrow moves with the full transition and restarts
+ * the timer from zero.
  *
  * Only the active slide is in the accessibility tree (the rest are
  * aria-hidden + inert); a polite live region announces the name. Images
- * are mounted for the active slide and its two neighbours only, so the
- * first paint fetches one scene (plus the neighbours at low priority) and
- * the rest never load until they are next in line. A slide without an
- * approved scene (image "") shows the dark gradient alone.
+ * are mounted for the active slide and its two neighbours only. A slide
+ * without an approved scene (image "") shows the dark gradient alone.
  */
 export interface IndustrySlide {
   id: string;
@@ -32,7 +41,7 @@ export interface IndustrySlide {
   imageWidth: number;
 }
 
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 5000;
 const SWIPE_PX = 40;
 const phone = (src: string) => src.replace(/\.webp$/, "-960.webp");
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -46,8 +55,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState<number | null>(null);
   const [userPlaying, setUserPlaying] = useState(true); // the visible pause/play button
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
+  const [hidden, setHidden] = useState(false); // document.visibilityState
   const [inView, setInView] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -78,31 +86,39 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
     return () => mq.removeEventListener("change", read);
   }, []);
 
-  // the leaving slide keeps its exit state until its transition ends (no fixed timer)
+  // the leaving slide stays underneath until the ENTERING slide's reveal ends
+  // (transitionend / transitioncancel, never a fixed timer); when no transition
+  // runs at all — STATIC tier, or a step back to a slide still at its target —
+  // it is released on the next frame
   useEffect(() => {
     if (leaving === null) return;
-    const el = regionRef.current?.querySelector<HTMLElement>(`[data-slide="${leaving}"]`);
+    const el = regionRef.current?.querySelector<HTMLElement>(`[data-slide="${index}"]`);
     if (!el) {
       setLeaving(null);
       return;
     }
-    // no transition will run when nothing transitions (STATIC tier) or when the
-    // slide never became visible (stepped away within the same frame) — clear at once
-    const style = getComputedStyle(el);
-    if ((parseFloat(style.transitionDuration) || 0) === 0 || style.opacity === "0") {
-      setLeaving(null);
-      return;
-    }
     const done = (e: TransitionEvent) => {
-      if (e.target === el && e.propertyName === "opacity") setLeaving(null);
+      if (e.target === el) setLeaving(null);
     };
     el.addEventListener("transitionend", done);
     el.addEventListener("transitioncancel", done);
+    const raf = requestAnimationFrame(() => {
+      if (el.getAnimations().length === 0) setLeaving(null);
+    });
     return () => {
+      cancelAnimationFrame(raf);
       el.removeEventListener("transitionend", done);
       el.removeEventListener("transitioncancel", done);
     };
-  }, [leaving]);
+  }, [leaving, index]);
+
+  // a hidden tab stops the clock
+  useEffect(() => {
+    const read = () => setHidden(document.visibilityState === "hidden");
+    read();
+    document.addEventListener("visibilitychange", read);
+    return () => document.removeEventListener("visibilitychange", read);
+  }, []);
 
   // visibility: autoplay only while at least half the region is on screen
   useEffect(() => {
@@ -113,7 +129,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
     return () => io.disconnect();
   }, []);
 
-  const autoplay = !reduced && userPlaying && !hovered && !focused && inView;
+  const autoplay = !reduced && userPlaying && inView && !hidden;
   useEffect(() => {
     if (!autoplay) return;
     const id = window.setTimeout(() => go(index + 1), AUTOPLAY_MS);
@@ -126,8 +142,8 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
     btn?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduced ? "auto" : "smooth" });
   }, [index, reduced]);
 
-  // interaction on the region itself (keys, pointer swipe, hover / focus pause)
-  // is registered imperatively — the region is a landmark, not a control
+  // interaction on the region itself (keys, pointer swipe) is registered
+  // imperatively — the region is a landmark, not a control
   useEffect(() => {
     const el = regionRef.current;
     if (!el) return;
@@ -148,27 +164,13 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
       if (Math.abs(dx) < SWIPE_PX) return;
       step(dx < 0 ? 1 : -1); // physical: dragging left brings the slide on the right
     };
-    const enter = () => setHovered(true);
-    const leave = () => setHovered(false);
-    const focusIn = () => setFocused(true);
-    const focusOut = (e: FocusEvent) => {
-      if (!el.contains(e.relatedTarget as Node | null)) setFocused(false);
-    };
     el.addEventListener("keydown", onKey);
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointerup", onUp);
-    el.addEventListener("mouseenter", enter);
-    el.addEventListener("mouseleave", leave);
-    el.addEventListener("focusin", focusIn);
-    el.addEventListener("focusout", focusOut);
     return () => {
       el.removeEventListener("keydown", onKey);
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointerup", onUp);
-      el.removeEventListener("mouseenter", enter);
-      el.removeEventListener("mouseleave", leave);
-      el.removeEventListener("focusin", focusIn);
-      el.removeEventListener("focusout", focusOut);
     };
   }, [step, go, n, rtl]);
 
@@ -195,6 +197,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
               className="industries-slide"
               data-slide={i}
               data-state={state}
+              data-entering={active && leaving !== null ? "" : undefined}
               data-empty={item.image ? undefined : ""}
               aria-hidden={!active}
               inert={!active}
@@ -202,6 +205,12 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
               aria-roledescription="slide"
               aria-label={`${pad(i + 1)} / ${pad(n)}`}
             >
+              {item.image && mounted(i) ? (
+                <div className="industries-slide-backdrop" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- the same owner-supplied 960 px file as the phone foreground, blurred as a ground; CSS-sized */}
+                  <img src={phone(item.image)} alt="" loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+                </div>
+              ) : null}
               {item.image && mounted(i) ? (
                 <picture className="industries-slide-media">
                   <source srcSet={`${phone(item.image)} 960w, ${item.image} ${item.imageWidth}w`} sizes="100vw" type="image/webp" />
@@ -222,6 +231,8 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
             </div>
           );
         })}
+
+        {leaving !== null && !reduced ? <div className="industries-slider-orb" aria-hidden="true" /> : null}
 
         <div className="industries-slider-counter" aria-hidden="true">
           <span className="industries-slider-counter-now">{pad(index + 1)}</span>
