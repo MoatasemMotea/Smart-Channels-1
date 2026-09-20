@@ -51,9 +51,9 @@ paths (D-053) — a path is never reused for different bytes.
 | 20 | End-User Devices | أجهزة لوحية | Tablets | `tablets.webp` |
 | 21 | End-User Devices | أجهزة مكتبية | Desktop PCs | `desktop-pcs.webp` (replacement, D-071) |
 | 22 | End-User Devices | طابعات | Printers | `printers-catalog.webp` |
-| 23 | End-User Devices | فأرات | Mice | held — baked light haze (D-066) |
+| 23 | End-User Devices | فأرات | Mice | `mice.webp` (replacement, D-071) |
 | 24 | End-User Devices | لابتوب | Laptops | `laptops.webp` |
-| 25 | End-User Devices | لوحات مفاتيح | Keyboards | held — baked light haze (D-066) |
+| 25 | End-User Devices | لوحات مفاتيح | Keyboards | `keyboards.webp` (replacement, D-071) |
 | 26 | Storage & Servers | خوادم | Rack Servers | `rack-servers.webp` |
 | 27 | Storage & Servers | مصفوفات تخزين | Storage Arrays | `storage-arrays.webp` |
 | 28 | Storage & Servers | أقراص تخزين | Hard Drives | `hard-drives.webp` |

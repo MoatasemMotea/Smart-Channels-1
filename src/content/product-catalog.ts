@@ -112,9 +112,9 @@ const TYPES: TypeRow[] = [
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablets.webp", brands: ["Lenovo"] },
   { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "desktop-pcs.webp", brands: ["Dell", "Egeira", "HP"] },
   { category: "computing", typeEn: "Printers", typeAr: "طابعات", image: "printers-catalog.webp", brands: ["Canon", "Epson", "HP"] },
-  { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "", brands: ["MIXIE", "PULI"] },
+  { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "mice.webp", brands: ["MIXIE", "PULI"] },
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },
-  { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "", brands: ["Dell", "MIXIE", "PULI"] },
+  { category: "computing", typeEn: "Keyboards", typeAr: "لوحات مفاتيح", image: "keyboards.webp", brands: ["Dell", "MIXIE", "PULI"] },
   /* ---- storage (9 cards) ---- */
   { category: "storage", typeEn: "Rack Servers", typeAr: "خوادم", image: "rack-servers.webp", brands: [] },
   { category: "storage", typeEn: "Storage Arrays", typeAr: "مصفوفات تخزين", image: "storage-arrays.webp", brands: [] },

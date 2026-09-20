@@ -108,15 +108,14 @@ test("/products/networking: eight cards — one per type — no model numbers, n
   expect(broken).toBe(0);
 });
 
-test("/products/computing: four types photographed, two held on the placeholder (D-066 · D-068 · D-071)", async ({ page }) => {
+test("/products/computing: all six types photographed, none on the placeholder (D-066 · D-068 · D-071)", async ({ page }) => {
   await page.goto("/en/products/computing", { waitUntil: "networkidle" });
   await expect(page.locator(".catalog-card")).toHaveCount(6);
-  // laptops, tablets, printers, desktop-pcs (D-071) carry photographs; keyboards, mice are held — one card each
-  await expect(page.locator(".catalog-card img")).toHaveCount(4);
-  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(2);
-  await expect(page.locator(".catalog-card", { hasText: "Desktop PCs" }).locator('img[src="/media/products/desktop-pcs.webp"]')).toHaveCount(1);
-  for (const held of ["Keyboards", "Mice"])
-    await expect(page.locator(".catalog-card", { hasText: held }).locator("[data-empty] svg").first()).toBeVisible();
+  // laptops, tablets, printers, and the three D-071 replacements (desktop-pcs, keyboards, mice) — one card each
+  await expect(page.locator(".catalog-card img")).toHaveCount(6);
+  await expect(page.locator(".catalog-card [data-empty]")).toHaveCount(0);
+  for (const [name, file] of [["Desktop PCs", "desktop-pcs"], ["Keyboards", "keyboards"], ["Mice", "mice"]])
+    await expect(page.locator(".catalog-card", { hasText: name }).locator(`img[src="/media/products/${file}.webp"]`)).toHaveCount(1);
 });
 
 test("/products/storage: renamed to Storage & Servers, four types, all photographed (D-066)", async ({ page }) => {
