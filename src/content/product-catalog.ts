@@ -110,7 +110,7 @@ const TYPES: TypeRow[] = [
   { category: "av", typeEn: "HDMI Extenders", typeAr: "موسّعات HDMI", image: "hdmi-extenders.webp", brands: [] },
   /* ---- computing (15 cards) ---- */
   { category: "computing", typeEn: "Tablets", typeAr: "أجهزة لوحية", image: "tablets.webp", brands: ["Lenovo"] },
-  { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "", brands: ["Dell", "Egeira", "HP"] },
+  { category: "computing", typeEn: "Desktop PCs", typeAr: "أجهزة مكتبية", image: "desktop-pcs.webp", brands: ["Dell", "Egeira", "HP"] },
   { category: "computing", typeEn: "Printers", typeAr: "طابعات", image: "printers-catalog.webp", brands: ["Canon", "Epson", "HP"] },
   { category: "computing", typeEn: "Mice", typeAr: "فأرات", image: "", brands: ["MIXIE", "PULI"] },
   { category: "computing", typeEn: "Laptops", typeAr: "لابتوب", image: "laptops.webp", brands: ["Asus", "Dell", "Lenovo"] },

@@ -1,4 +1,4 @@
-# Product catalogue imagery — intake sheet (D-060 · D-064 · D-066)
+# Product catalogue imagery — intake sheet (D-060 · D-064 · D-066 · D-071)
 
 The categorised catalogue (`src/content/product-catalog.ts`, D-059) is
 linked type by type as photographs arrive: the image follows the TYPE,
@@ -49,7 +49,7 @@ paths (D-053) — a path is never reused for different bytes.
 | 18 | AV & Display | موزّعات HDMI | HDMI Splitters | `hdmi-splitters.webp` |
 | 19 | AV & Display | موسّعات HDMI | HDMI Extenders | `hdmi-extenders.webp` |
 | 20 | End-User Devices | أجهزة لوحية | Tablets | `tablets.webp` |
-| 21 | End-User Devices | أجهزة مكتبية | Desktop PCs | held — baked white ground (D-064) |
+| 21 | End-User Devices | أجهزة مكتبية | Desktop PCs | `desktop-pcs.webp` (replacement, D-071) |
 | 22 | End-User Devices | طابعات | Printers | `printers-catalog.webp` |
 | 23 | End-User Devices | فأرات | Mice | held — baked light haze (D-066) |
 | 24 | End-User Devices | لابتوب | Laptops | `laptops.webp` |
