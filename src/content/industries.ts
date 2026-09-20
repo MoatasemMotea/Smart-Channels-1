@@ -9,9 +9,9 @@ import type { Industry } from "@/types/content";
  * verbatim (D-072). `image` names the full-width WebP under
  * public/media/industries/ (its `-960.webp` sibling serves phones); "" means
  * no approved scene yet and the slide shows the dark gradient alone;
- * `imageWidth` is the file's real pixel width (the srcset descriptor)
- * (08 Stadiums and 09 Major Sporting Events: the supplied files are
- * transparent cut-outs, held by owner decision until scenes arrive).
+ * `imageWidth` is the file's real pixel width (the srcset descriptor).
+ * 08 Stadiums and 09 Major Sporting Events are transparent cut-outs linked
+ * by owner exception (D-074) over the dark gradient until scenes arrive.
  * Do not add sectors that are not owner-approved; ids are referenced by
  * projects (`sectorId`) and never change.
  */
@@ -77,16 +77,16 @@ export const industries: Industry[] = [
     name: { en: "Stadiums & Sports Cities", ar: "الملاعب والمدن الرياضية" },
     tagline: { en: "Connectivity and control for venues that fill in minutes", ar: "اتصال وتحكّم لمنشآت تمتلئ في دقائق" },
     order: 8,
-    image: "",
-    imageWidth: 0,
+    image: "industry-08-stadiums.webp", // D-074 owner exception: a transparent cut-out, not a scene — replaced when a scene arrives
+    imageWidth: 1536,
   },
   {
     id: "major-sporting-events",
     name: { en: "Major Sporting Events", ar: "الفعاليات الرياضية الكبرى" },
     tagline: { en: "Temporary infrastructure deployed and dismantled on schedule", ar: "بنية مؤقتة تُنشر وتُفكّك في موعدها" },
     order: 9,
-    image: "",
-    imageWidth: 0,
+    image: "industry-09-sporting-events.webp", // D-074 owner exception: a transparent cut-out, not a scene — replaced when a scene arrives
+    imageWidth: 1536,
   },
   {
     id: "motorsport-racing",

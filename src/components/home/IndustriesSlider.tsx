@@ -196,6 +196,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
               key={item.id}
               className="industries-slide"
               data-slide={i}
+              data-id={item.id}
               data-state={state}
               data-entering={active && leaving !== null ? "" : undefined}
               data-empty={item.image ? undefined : ""}

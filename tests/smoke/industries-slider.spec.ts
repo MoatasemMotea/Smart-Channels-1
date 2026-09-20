@@ -194,7 +194,7 @@ test("the bottom strip keeps the active label in view after every transition", a
   }
 });
 
-test("390 px: every title fits the screen width; slides without a scene show the gradient", async ({ page }) => {
+test("390 px: every title fits the screen width; the two cut-out slides carry their files (D-074)", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await gotoSlider(page, "en");
   for (let i = 0; i < 16; i++) {
@@ -204,10 +204,14 @@ test("390 px: every title fits the screen width; slides without a scene show the
     expect(r.x, ORDER[i]).toBeGreaterThanOrEqual(0);
     expect(r.x + r.width, ORDER[i]).toBeLessThanOrEqual(390);
   }
-  // 08 and 09 are held (transparent cut-outs, owner decision): gradient only, no <img>
+  // D-074: 08 and 09 are transparent cut-outs linked by owner exception — a scene
+  // like the rest (foreground + blurred ground over the gradient), alpha preserved
+  await expect(page.locator(".industries-slide[data-empty]")).toHaveCount(0);
   for (const i of [7, 8]) {
-    await expect(page.locator(`.industries-slide[data-slide="${i}"]`)).toHaveAttribute("data-empty", "");
-    await expect(page.locator(`.industries-slide[data-slide="${i}"] img`)).toHaveCount(0);
+    await page.locator(`.industries-slider-tab[data-tab="${i}"]`).click();
+    const img = page.locator(`.industries-slide[data-slide="${i}"] .industries-slide-media img`);
+    await expect(img).toHaveCount(1);
+    await expect(img).toHaveAttribute("src", /industry-0[89]-[a-z-]+\.webp$/);
   }
 });
 
