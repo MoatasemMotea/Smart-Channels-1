@@ -157,6 +157,24 @@ test("D-068 (a): no brand line on any category page — a card is a photograph a
   }
 });
 
+test("D-071: the catalogue is complete — 33 cards photographed, no placeholder in any category", async ({ page }) => {
+  let cards = 0;
+  for (const cat of ["networking", "fiber", "cybersecurity", "surveillance", "av", "computing", "storage", "communication", "environmental"]) {
+    await page.goto(`/en/products/${cat}`, { waitUntil: "networkidle" });
+    const n = await page.locator(".catalog-card").count();
+    cards += n;
+    expect(await page.locator(".catalog-card img").count(), cat).toBe(n);
+    await expect(page.locator(".catalog-card [data-empty]"), cat).toHaveCount(0);
+  }
+  expect(cards).toBe(33);
+  // PTT Radios carries the owner-approved exception file (a marketing scene, not a cut-out)
+  await page.goto("/en/products/communication", { waitUntil: "networkidle" });
+  const ptt = page.locator(".catalog-card", { hasText: "PTT Radios" }).locator("img");
+  await expect(ptt).toHaveAttribute("src", "/media/products/ptt-radios.webp");
+  await ptt.scrollIntoViewIfNeeded();
+  expect(await ptt.evaluate(async (i: HTMLImageElement) => { await i.decode().catch(() => undefined); return i.naturalWidth; })).toBe(600);
+});
+
 test("unknown category slug is a 404", async ({ request }) => {
   const res = await request.get("/en/products/not-a-category");
   expect(res.status()).toBe(404);

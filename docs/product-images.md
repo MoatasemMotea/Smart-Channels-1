@@ -58,7 +58,7 @@ paths (D-053) — a path is never reused for different bytes.
 | 27 | Storage & Servers | مصفوفات تخزين | Storage Arrays | `storage-arrays.webp` |
 | 28 | Storage & Servers | أقراص تخزين | Hard Drives | `hard-drives.webp` |
 | 29 | Storage & Servers | ذاكرات فلاش | Flash Memory | `flash-memory.webp` |
-| 30 | Two-Way Radio | أجهزة اتصال لاسلكي PTT | PTT Radios | held — marketing scene, JPEG (D-064) |
+| 30 | Two-Way Radio | أجهزة اتصال لاسلكي PTT | PTT Radios | `ptt-radios.webp` — owner exception (D-071): marketing scene with text, no alpha; replaced when a cut-out arrives |
 | 31 | Two-Way Radio | شواحن متعددة القنوات | Multi-Bay Chargers | `multi-bay-chargers.webp` |
 | 32 | Specialized Systems | حساسات عدّ وتحليل | People Counting Sensors | `people-counting-sensors.webp` |
 | 33 | Specialized Systems | محطات رصد جوي | Weather Stations | `weather-stations.webp` |

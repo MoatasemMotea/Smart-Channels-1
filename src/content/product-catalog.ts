@@ -121,7 +121,7 @@ const TYPES: TypeRow[] = [
   { category: "storage", typeEn: "Hard Drives", typeAr: "أقراص تخزين", image: "hard-drives.webp", brands: ["Dell", "Hikvision", "Seagate", "Western Digital"] },
   { category: "storage", typeEn: "Flash Memory", typeAr: "ذاكرات فلاش", image: "flash-memory.webp", brands: ["Hikvision", "NEO HOME", "SanDisk"] },
   /* ---- communication (2 cards) ---- */
-  { category: "communication", typeEn: "PTT Radios", typeAr: "أجهزة اتصال لاسلكي PTT", image: "", brands: ["Kirisun"] },
+  { category: "communication", typeEn: "PTT Radios", typeAr: "أجهزة اتصال لاسلكي PTT", image: "ptt-radios.webp", brands: ["Kirisun"] },
   { category: "communication", typeEn: "Multi-Bay Chargers", typeAr: "شواحن متعددة القنوات", image: "multi-bay-chargers.webp", brands: ["Kirisun"] },
   /* ---- environmental (2 cards) ---- */
   { category: "environmental", typeEn: "People Counting Sensors", typeAr: "حساسات عدّ وتحليل", image: "people-counting-sensors.webp", brands: ["Xovis"] },
