@@ -57,7 +57,7 @@ export default async function LocaleLayout({
     : null;
 
   return (
-    <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static">
+    <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static" suppressHydrationWarning>
       <head>
         {/* the authoritative logo must be decoded before the opening's
             readable-identity beat — never fetched ad hoc mid-sequence */}

@@ -33,8 +33,6 @@ export interface AccordionItem {
   image: { src: string; alt: string } | null;
 }
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 export function ProjectsAccordion({ items }: { items: AccordionItem[] }) {
   const t = useTranslations("home.selectedProjects");
   const rtl = useLocale() === "ar";
@@ -108,10 +106,6 @@ export function ProjectsAccordion({ items }: { items: AccordionItem[] }) {
                   </svg>
                 )}
                 <span className="pa-dim" />
-              </span>
-
-              <span className="pa-counter" aria-hidden="true">
-                {pad(i + 1)} / {pad(n)}
               </span>
 
               <span className="pa-spine" aria-hidden="true">

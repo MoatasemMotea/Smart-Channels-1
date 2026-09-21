@@ -5,7 +5,7 @@ import { expect, test, type Page } from "@playwright/test";
  * approved sectors in the owner's importance order, with no "featured"
  * marks: order 01→16, arrows and the loop, 5 s autoplay that does NOT
  * pause on hover (D-073) but does on the visible button, no autoplay and
- * no orb under reduced motion, a logically mirrored counter in RTL, the
+ * no orb under reduced motion, RTL-mirrored controls, the
  * active label kept in view in the bottom strip, a title that fits 390 px,
  * lazy scenes (the first decoded at load, the sixth not yet), the scene
  * shown whole (0 % cropped) on three viewports, and the light orb present
@@ -20,6 +20,7 @@ const ORDER = [
 const region = (page: Page) => page.locator('.industries-slider[role="region"]');
 const active = (page: Page) => page.locator('.industries-slide[data-state="active"]');
 const activeIndex = (page: Page) => active(page).getAttribute("data-slide");
+const expectSlide = (page: Page, i: number) => expect(active(page)).toHaveAttribute("data-slide", String(i));
 
 /** the homepage plays its opening first; then bring the section into view WITHOUT focusing it (focus pauses autoplay) */
 async function gotoSlider(page: Page, loc: "en" | "ar") {
@@ -32,13 +33,14 @@ async function gotoSlider(page: Page, loc: "en" | "ar") {
   await page.waitForTimeout(600);
 }
 
-test("order 01→16 in the strip and the counter; zero featured marks", async ({ page }) => {
+test("order 01→16 in the strip; zero featured marks; no visible counter (D-076)", async ({ page }) => {
   await gotoSlider(page, "en");
   await expect(page.locator(".industries-slider-tab")).toHaveText(ORDER);
   await expect(page.locator(".industries-slide")).toHaveCount(16);
   await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[0]!);
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
-  await expect(page.locator(".industries-slider-counter-total")).toHaveText("16");
+  await expectSlide(page, 0);
+  await expect(page.locator(".industries-slider-counter, .industries-slider-counter-now, .industries-slider-counter-total")).toHaveCount(0); // D-076
+  await expect(active(page)).toHaveAttribute("aria-label", "01 / 16"); // the accessible label stays
   // D-072: no distinction marks anywhere in the DOM
   await expect(page.locator(".industry-mark, [data-featured], .industries-matrix")).toHaveCount(0);
   expect(await page.locator("#industries").innerText()).not.toMatch(/Featured focus sector/);
@@ -61,23 +63,23 @@ test("arrows step and the loop closes: 16 → 01 and 01 → 16; Home/End", async
   const prev = page.getByRole("button", { name: "Previous industry" });
   await next.click();
   await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[1]!);
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02");
+  await expect(active(page)).toHaveAttribute("data-slide", "1");
   await prev.click();
   await prev.click(); // 01 → 16: the loop
   await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[15]!);
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("16");
+  await expect(active(page)).toHaveAttribute("data-slide", "15");
   await next.click(); // 16 → 01
   await expect(active(page).locator(".industries-slide-title")).toHaveText(ORDER[0]!);
   await expect(region(page).locator('[aria-live="polite"]')).toHaveText(ORDER[0]!);
   await next.focus();
   await page.keyboard.press("End");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("16");
+  await expect(active(page)).toHaveAttribute("data-slide", "15");
   await page.keyboard.press("Home");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  await expect(active(page)).toHaveAttribute("data-slide", "0");
   await page.keyboard.press("ArrowRight");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02");
+  await expect(active(page)).toHaveAttribute("data-slide", "1");
   await page.keyboard.press("ArrowLeft");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  await expect(active(page)).toHaveAttribute("data-slide", "0");
   // the leaving slide's exit state clears on transitionend (no slide stuck in "leaving")
   await expect(page.locator('.industries-slide[data-state="leaving"]')).toHaveCount(0);
 });
@@ -88,16 +90,16 @@ test("autoplay runs in view, advances after 5 s, keeps running under the pointer
   await expect(region(page)).toHaveAttribute("data-autoplay", "running");
   const fill = page.locator('.industries-slider-tab[aria-current="true"] .industries-slider-tab-fill');
   expect(await fill.evaluate((e) => getComputedStyle(e).animationDuration)).toBe("5s");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("02", { timeout: 7000 });
+  await expect(active(page)).toHaveAttribute("data-slide", "1", { timeout: 7000 });
   // D-073: hover does not stop the clock
   await active(page).hover();
   await expect(region(page)).toHaveAttribute("data-autoplay", "running");
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("03", { timeout: 7000 });
+  await expect(active(page)).toHaveAttribute("data-slide", "2", { timeout: 7000 });
   // a click on a label moves with the full transition and restarts the timer — autoplay stays on
   await page.locator('.industries-slider-tab[data-tab="9"]').click();
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("10");
+  await expect(active(page)).toHaveAttribute("data-slide", "9");
   await expect(region(page)).toHaveAttribute("data-autoplay", "running"); // focus inside does not pause either
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("11", { timeout: 7000 });
+  await expect(active(page)).toHaveAttribute("data-slide", "10", { timeout: 7000 });
   // only the visible button pauses
   await page.getByRole("button", { name: "Pause automatic rotation" }).click();
   await expect(region(page)).toHaveAttribute("data-autoplay", "paused");
@@ -131,7 +133,7 @@ test("reduced motion: no autoplay, no pause button, no progress line, no orb, no
   await expect(page.locator(".industries-slider-toggle")).toHaveCount(0);
   await expect(page.locator('.industries-slider-tab[aria-current="true"] .industries-slider-tab-line')).toBeHidden();
   await page.waitForTimeout(5800);
-  await expect(page.locator(".industries-slider-counter-now")).toHaveText("01");
+  await expect(active(page)).toHaveAttribute("data-slide", "0");
   await page.locator('.industries-slider-tab[data-tab="1"]').click();
   await expect(page.locator(".industries-slider-orb")).toHaveCount(0);
   const cs = await active(page).evaluate((e) => { const c = getComputedStyle(e); return { t: c.transitionDuration, clip: c.clipPath, filter: c.filter }; });
@@ -168,17 +170,24 @@ for (const [w, h] of [[1440, 900], [1890, 600], [390, 844]] as const) {
   });
 }
 
-test("RTL: the counter mirrors logically (01 at the right, 16 at the left) with Latin digits", async ({ page }) => {
+test("RTL: the pause button sits at the line start (right) and the arrows mirror; ← moves to the logical next", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop");
   await gotoSlider(page, "ar");
-  const now = page.locator(".industries-slider-counter-now");
-  const total = page.locator(".industries-slider-counter-total");
-  await expect(now).toHaveText("01");
-  await expect(total).toHaveText("16");
-  const a = (await now.boundingBox())!;
-  const z = (await total.boundingBox())!;
-  expect(a.x).toBeGreaterThan(z.x);
+  const stage = (await page.locator(".industries-slider-stage").boundingBox())!;
+  const toggle = (await page.locator(".industries-slider-toggle").boundingBox())!;
+  const prev = (await page.locator('.industries-slider-arrow[data-dir="prev"]').boundingBox())!;
+  const next = (await page.locator('.industries-slider-arrow[data-dir="next"]').boundingBox())!;
+  const mid = stage.x + stage.width / 2;
+  expect(toggle.x + toggle.width / 2).toBeGreaterThan(mid); // inline start = right in RTL
+  expect(prev.x + prev.width / 2).toBeGreaterThan(mid); // "previous" toward the line start
+  expect(next.x + next.width / 2).toBeLessThan(mid); // "next" toward the line end
+  expect(await page.locator('.industries-slider-arrow[data-dir="prev"] svg').evaluate((e) => getComputedStyle(e).transform)).not.toBe("none"); // glyph mirrored
   await expect(active(page).locator(".industries-slide-title")).toHaveText("المواقع الدينية والمقدسة");
   await expect(region(page)).toHaveAttribute("aria-label", "القطاعات التي نخدمها");
+  await expect(page.locator(".industries-slider-counter")).toHaveCount(0);
+  await page.locator(".industries-slider-toggle").focus();
+  await page.keyboard.press("ArrowLeft"); // RTL: ← is the logical next
+  await expectSlide(page, 1);
 });
 
 test("the bottom strip keeps the active label in view after every transition", async ({ page }) => {

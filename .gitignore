@@ -25,3 +25,7 @@ next-env.d.ts
 
 # owner drop-box for raw product photography — never committed
 /incoming-products/
+
+# written by `next dev` on every start (Next 16 agent rules) — tool residue, not owner content (D-076)
+AGENTS.md
+CLAUDE.md

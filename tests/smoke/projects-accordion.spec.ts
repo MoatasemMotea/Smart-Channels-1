@@ -44,7 +44,7 @@ test("five panels in order, the first active (flex 4 vs 1), tags are the sector 
   expect(await grow(page)).toEqual(["4", "1", "1", "1", "1"]);
   await expect(active(page).locator("a")).toHaveAttribute("aria-current", "true");
   await expect(page.locator('.pa-link[aria-current="true"]')).toHaveCount(1);
-  await expect(active(page).locator(".pa-counter")).toHaveText("01 / 05");
+  await expect(page.locator(".pa-counter")).toHaveCount(0); // D-076: no visible counter
   // no image exists yet for any of the five: the designed ground, not an empty panel
   await expect(page.locator('.pa-panel[data-ground="designed"]')).toHaveCount(5);
   await expect(page.locator(".pa-panel img")).toHaveCount(0);

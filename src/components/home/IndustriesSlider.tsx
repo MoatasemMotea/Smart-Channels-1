@@ -8,8 +8,9 @@ import { useLocale, useTranslations } from "next-intl";
  *
  * Sixteen full-width slides — the scene shown WHOLE (`object-fit: contain`)
  * over a blurred, dimmed copy of itself (the 960 px file, `cover`), the
- * name and tagline, a 01…16 counter and a bottom strip of labels that
- * scrolls the active one into view with a 5 s progress line.
+ * name and tagline, and a bottom strip of labels that scrolls the active
+ * one into view with a 5 s progress line (the visible 01/16 counter was
+ * removed at D-076; the slide's accessible "01 / 16" label stays).
  *
  * Transition (900 ms): the leaving slide stays still underneath; the
  * entering slide is revealed by a growing circle (clip-path) while its
@@ -234,11 +235,6 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
         })}
 
         {leaving !== null && !reduced ? <div className="industries-slider-orb" aria-hidden="true" /> : null}
-
-        <div className="industries-slider-counter" aria-hidden="true">
-          <span className="industries-slider-counter-now">{pad(index + 1)}</span>
-          <span className="industries-slider-counter-total">{pad(n)}</span>
-        </div>
 
         <button type="button" className="industries-slider-arrow" data-dir="prev" aria-label={t("prev")} onClick={() => step(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>

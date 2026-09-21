@@ -1172,19 +1172,6 @@ a:focus-visible > .tx-link,
   transition: opacity 700ms var(--pa-ease);
 }
 .pa-panel:not([data-active]) .pa-dim { opacity: 1; background: rgba(6, 6, 10, 0.55); }
-.pa-counter {
-  position: absolute;
-  inset-block-start: 1rem;
-  inset-inline-end: 1.1rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.85);
-  direction: ltr;
-  opacity: 0;
-  transition: opacity 300ms var(--pa-ease);
-}
-.pa-panel[data-active] .pa-counter { opacity: 1; transition-delay: 200ms; }
 /* inactive: the title stands vertically at the foot of the panel */
 .pa-spine {
   position: absolute;
@@ -1254,12 +1241,11 @@ a:focus-visible > .tx-link,
 .pa-cta svg { inline-size: 0.9rem; block-size: 0.9rem; }
 [dir="rtl"] .pa-cta svg { transform: scaleX(-1); }
 @media (prefers-reduced-motion: reduce) {
-  .pa-panel, .pa-dim, .pa-counter, .pa-spine, .pa-content { transition: none; }
+  .pa-panel, .pa-dim, .pa-spine, .pa-content { transition: none; }
   .pa-ground img { transition: none; transform: none; }
 }
 html[data-motion-tier="static"] .pa-panel,
 html[data-motion-tier="static"] .pa-dim,
-html[data-motion-tier="static"] .pa-counter,
 html[data-motion-tier="static"] .pa-spine,
 html[data-motion-tier="static"] .pa-content { transition: none; }
 html[data-motion-tier="static"] .pa-ground img { transition: none; transform: none; }
@@ -1285,7 +1271,6 @@ html[data-motion-tier="static"] .pa-ground img { transition: none; transform: no
   .pa-ground img { transform: none; }
   .pa-panel:not([data-active]) .pa-dim { background: linear-gradient(to top, rgba(6, 6, 10, 0.88) 0%, rgba(6, 6, 10, 0.42) 45%, rgba(6, 6, 10, 0.18) 100%); }
   .pa-spine { display: none; }
-  .pa-counter, .pa-panel[data-active] .pa-counter { opacity: 1; transition: none; }
   .pa-content, .pa-panel[data-active] .pa-content { opacity: 1; transform: none; transition: none; }
   .pa-title { font-size: clamp(22px, 6vw, 28px); }
   .pa-panel[data-ground="designed"] .pa-title { font-size: clamp(26px, 7vw, 32px); }
@@ -2194,21 +2179,6 @@ html[data-motion-tier="full"] .ss-sweep {
   color: rgba(255, 255, 255, 0.8);
   text-wrap: pretty;
 }
-.industries-slider-counter {
-  position: absolute;
-  inset-inline: clamp(1.5rem, 4vw, 3rem);
-  inset-block-start: 1.5rem;
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.85);
-  pointer-events: none;
-  direction: ltr; /* Latin digits in both languages; the flex container is still logical, so 01 sits at the line start */
-}
-[dir="rtl"] .industries-slider-counter { flex-direction: row-reverse; }
 .industries-slider-arrow,
 .industries-slider-toggle {
   position: absolute;
