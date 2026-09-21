@@ -232,6 +232,8 @@ export interface Partner {
   logo?: { src: string; quality: "approved" | "pdf-extract" };
   /** Optional: only where the profile explicitly associates domains. */
   domains?: string[];
+  /** D-078: see Client.originalColor. */
+  originalColor?: boolean;
   enabled: boolean;
   order: number;
 }
@@ -239,7 +241,14 @@ export interface Partner {
 export interface Client {
   id: string;
   name: LocalizedText;
+  /** Absent while a mark is pending — the rails skip it, the index lists it. */
   logo?: { src: string; quality: "approved" | "pdf-extract" };
+  /**
+   * D-078: the mark's background is part of its design (no separable
+   * ground), so it is shown in its original colours and excluded from
+   * the rail's unified-colour filter. Documented exceptions only.
+   */
+  originalColor?: boolean;
   enabled: boolean;
   order: number;
 }

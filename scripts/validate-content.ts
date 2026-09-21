@@ -75,6 +75,20 @@ checkUnique(galleryItems.map((g) => g.id), "gallery");
 checkUnique(partners.map((p) => p.id), "partners");
 checkUnique(clients.map((c) => c.id), "clients");
 
+/* ---- logos (D-078) ----
+   A record may have NO logo (pending mark — the rails skip it, the name
+   index lists it). A logo that IS declared must exist on disk, and
+   `originalColor` is meaningful only on a record that has one. */
+for (const [owner, list] of [["partner", partners], ["client", clients]] as const) {
+  for (const r of list) {
+    if (r.logo) {
+      if (!existsSync(join("public", r.logo.src))) errors.push(`${owner} ${r.id}: logo file missing "${r.logo.src}"`);
+    } else if (r.originalColor) {
+      errors.push(`${owner} ${r.id}: originalColor without a logo`);
+    }
+  }
+}
+
 /* ---- referential integrity ---- */
 const industryIds = new Set(industries.map((i) => i.id));
 const partnerIds = new Set(partners.map((p) => p.id));

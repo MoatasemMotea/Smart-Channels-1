@@ -2554,17 +2554,40 @@ html[data-motion-tier="static"] .industries-slide-text { transition: none; }
   justify-content: center;
   block-size: 100%;
 }
+/* D-078 §د — SIZE BY INK. Every delivery file is trimmed to its ink box
+   (scripts/logo-transparency.ts), so the box height IS the ink height:
+   one clamp sizes all 64 marks to the same visual height. Marks wider
+   than 4:1 hit the 180 px cap and shrink inside their box (contain). */
 .rail-plate img {
-  max-block-size: 2.4rem;
-  max-inline-size: 9.5rem;
+  block-size: clamp(28px, 2.4vw, 40px);
   inline-size: auto;
-  block-size: auto;
+  max-inline-size: 180px;
   object-fit: contain;
   user-select: none;
+  /* D-078 §ج — ONE COLOUR AT REST: white on dark, dark on light. A
+     filter (not mask-image) keeps the real <img> in the DOM — same
+     request, same alt text, same lazy loading, and the original colours
+     are one property away on hover. */
+  filter: var(--rail-mark-filter);
+  transition: filter 200ms var(--ease-engineered);
 }
-/* Clients — same family, calmer voice: slightly smaller marks */
+.logo-rail { --rail-mark-filter: brightness(0) invert(1); }
+[data-theme="light"] .logo-rail { --rail-mark-filter: brightness(0); }
+/* original colours: the mark under the pointer, or every mark while the
+   rail has keyboard focus (nothing inside a cell is focusable — the rail
+   region is the keyboard target, and it pauses the flow at the same time) */
+.rail-cell:hover .rail-plate img,
+.rail-viewport:focus-visible .rail-plate img { filter: none; }
+/* documented exceptions — the ground is part of the mark (lenovo,
+   hopscotch, moments-international): never filtered */
+.rail-cell[data-original-color] .rail-plate img { filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  .rail-plate img { transition: none; }
+}
+html[data-motion-tier="static"] .rail-plate img { transition: none; }
+/* Clients — same family, calmer voice: a slightly tighter cell (the
+   marks themselves are one size across both rails since D-078) */
 .client-rail-cell { block-size: 3.6rem; }
-.client-rail-cell .rail-plate img { max-block-size: 2.1rem; max-inline-size: 8.5rem; }
 
 /* round control — retained for the gallery lightbox arrows only */
 .rail-nav {
@@ -2651,9 +2674,7 @@ html[data-motion-tier="full"] .logo-rail-client .rail-underline::after {
 /* smaller marks and a tighter rhythm on small screens */
 @media (max-width: 640px) {
   .rail-cell { block-size: 3.2rem; }
-  .rail-plate img { max-block-size: 1.9rem; max-inline-size: 7rem; }
   .client-rail-cell { block-size: 3rem; }
-  .client-rail-cell .rail-plate img { max-block-size: 1.7rem; max-inline-size: 6.5rem; }
   .rail-copy { gap: 1.75rem; padding-inline-end: 1.75rem; }
   .rail-nav { inline-size: 2.5rem; block-size: 2.5rem; }
 }

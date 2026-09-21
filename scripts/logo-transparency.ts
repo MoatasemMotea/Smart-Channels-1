@@ -1,16 +1,26 @@
 /**
- * LOGO TRANSPARENCY (D-057 PART 1).
+ * LOGO TRANSPARENCY (D-057 PART 1 · linked by D-078).
  *
- * The 68 approved alliance/client marks were extracted from the Company
- * Profile PDF and every one of them carries a baked opaque white
- * background with no alpha channel (audited in D-056). This script
- * derives transparent copies WITHOUT touching a single source file.
+ * The approved alliance/client marks were extracted from the Company
+ * Profile PDF and carry a baked opaque white background with no alpha
+ * channel (audited in D-056). This script derives the transparent
+ * delivery files WITHOUT touching a single source file.
  *
  *   READS   media-source/brand/{alliances,clients}/*.png   (read-only)
- *   WRITES  public/media/logos-transparent/{...}/*.webp    (staging)
+ *   WRITES  public/media/logos/{alliances,clients}/*.webp   (delivery)
  *
- * The staging path is deliberate: nothing is linked to the site until
- * the owner approves the contact sheet (D-057 §1.2).
+ * D-057 wrote to a staging folder pending owner approval; D-078 approved
+ * the method and the output now replaces the delivery files directly
+ * (owner directive 2026-09-21 — the one authorised in-place rewrite of
+ * these paths). A source that already carries real alpha (owner-supplied
+ * cut-outs such as riyadh-season / diriyah-season) passes through with
+ * its own alpha untouched: the flood never enters a transparent pixel.
+ *
+ * A mark whose background is PART OF ITS DESIGN (a solid brand box —
+ * the flood finds no separable ground and reports REMOVED-NOTHING) is
+ * written as-is, opaque, and its record carries `originalColor: true`
+ * so the rail shows it in its own colours (D-078 exceptions, named in
+ * the decision log). Nothing is ever hand-cut or invented.
  *
  * WHY A FLOOD FILL, NOT A COLOUR THRESHOLD
  * A global "make white transparent" rule punches holes through white
@@ -28,15 +38,16 @@
  * — recovering the mark's true colour instead of a washed-out one.
  *
  * Finally the fully transparent margin is trimmed, so each file's box
- * becomes its ink box. Nothing is recoloured, mirrored, stretched or
- * cropped into: only background is removed (D-033).
+ * becomes its ink box — which is what lets the rail size every mark by
+ * ink height with plain CSS (D-078 §د). Nothing is recoloured,
+ * mirrored, stretched or cropped into: only background is removed.
  */
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 
 const SRC_ROOT = "media-source/brand";
-const OUT_ROOT = "public/media/logos-transparent";
+const OUT_ROOT = "public/media/logos";
 const GROUPS = ["alliances", "clients"] as const;
 
 /** a pixel this light, reached from the border, is background */
@@ -65,6 +76,8 @@ export interface LogoReport {
   /** feather depth actually used (2 = mark has light artwork) */
   feather: number;
   interiorHoles: number;
+  /** transparent share of the ink box after the flood — ~0 = solid brand box */
+  boxTransparentPct: number;
   /** mean luminance of the surviving ink, 0–255 */
   inkLuma: number;
   /** share of surviving ink that is near-white (invisible on dark) */
@@ -106,6 +119,18 @@ async function processOne(group: string, file: string): Promise<LogoReport> {
     }
   };
 
+  /* a source that already carries real alpha (owner-supplied cut-out):
+     its transparent pixels ARE background — mark them so the hole
+     assertion below stays honest; the flood never enters them. */
+  let sourceAlphaPx = 0;
+  for (let i = 0; i < total; i++)
+    if (data[idx(i) + 3]! <= 8) {
+      bg[i] = 1;
+      /* far outside the feather band: a cut-out's edge pixels are
+         antialiased against transparency, not white — never un-premultiply them */
+      dist[i] = 32767;
+      sourceAlphaPx++;
+    }
   for (let x = 0; x < w; x++) {
     push(x);
     push((h - 1) * w + x);
@@ -275,12 +300,40 @@ async function processOne(group: string, file: string): Promise<LogoReport> {
   let interiorHoles = 0;
   for (let i = 0; i < total; i++) if (out[idx(i) + 3]! === 0 && !bg[i]!) interiorHoles++;
 
+  /* solid ground: how much of the ink BOX is transparent after the flood.
+     A wordmark keeps air between its letters; a mark whose background is
+     a solid brand box keeps none — that box is part of the design and the
+     record must carry `originalColor: true` (D-078). */
+  let bx0 = w, by0 = h, bx1 = -1, by1 = -1;
+  for (let i = 0; i < total; i++) {
+    if (out[idx(i) + 3]! === 0) continue;
+    const x = i % w;
+    const y = (i / w) | 0;
+    if (x < bx0) bx0 = x;
+    if (x > bx1) bx1 = x;
+    if (y < by0) by0 = y;
+    if (y > by1) by1 = y;
+  }
+  let boxTransparent = 0;
+  for (let y = by0; y <= by1; y++) for (let x = bx0; x <= bx1; x++) if (out[idx(y * w + x) + 3]! === 0) boxTransparent++;
+  const boxArea = Math.max(1, (bx1 - bx0 + 1) * (by1 - by0 + 1));
+  const boxTransparentPct = (100 * boxTransparent) / boxArea;
+
   /* ---- 4. trim the transparent margin so the file box IS the ink box ---- */
   const outDir = path.join(OUT_ROOT, group);
   fs.mkdirSync(outDir, { recursive: true });
   const outPath = path.join(outDir, `${id}.webp`);
-  const trimmed = await sharp(out, { raw: { width: w, height: h, channels: 4 } })
-    .trim({ threshold: 0 })
+  const removedPct = (100 * removed) / total;
+  /* REMOVED-NOTHING: the ground is part of the design — deliver the mark
+     exactly as supplied (opaque, untrimmed) for an `originalColor` record. */
+  const keepOriginal = removedPct < 2;
+  const pipeline = keepOriginal
+    ? sharp(src).flatten({ background: "#ffffff" })
+    : sharp(out, { raw: { width: w, height: h, channels: 4 } }).trim({ threshold: 0 });
+  /* delivery cap: the rail shows a mark at ≤ 40 CSS px; 300 px of
+     height is 7.5× that (one owner cut-out arrives at 798 px). */
+  const trimmed = await pipeline
+    .resize({ height: 300, withoutEnlargement: true })
     .webp({ quality: 92, alphaQuality: 100, effort: 6 })
     .toBuffer();
   fs.writeFileSync(outPath, trimmed);
@@ -288,7 +341,6 @@ async function processOne(group: string, file: string): Promise<LogoReport> {
 
   const inkLuma = inkCount ? inkLumaSum / inkCount : 0;
   const paleInkPct = inkCount ? (100 * paleInk) / inkCount : 0;
-  const removedPct = (100 * removed) / total;
 
   const flags: string[] = [];
   if (removedPct < 2) flags.push("REMOVED-NOTHING");
@@ -296,6 +348,8 @@ async function processOne(group: string, file: string): Promise<LogoReport> {
   if (interiorHoles > 0) flags.push("INTERIOR-HOLE");
   if (inkLuma < 95) flags.push("DARK-INK");
   if (paleInkPct > 25) flags.push("PALE-INK");
+  if (keepOriginal || boxTransparentPct < 1) flags.push("SOLID-GROUND");
+  if (sourceAlphaPx > 0) flags.push("SOURCE-ALPHA");
 
   return {
     group,
@@ -308,6 +362,7 @@ async function processOne(group: string, file: string): Promise<LogoReport> {
     speckPx,
     feather: FEATHER,
     interiorHoles,
+    boxTransparentPct: +boxTransparentPct.toFixed(1),
     inkLuma: +inkLuma.toFixed(0),
     paleInkPct: +paleInkPct.toFixed(1),
     flags,
@@ -323,7 +378,7 @@ export async function run(): Promise<LogoReport[]> {
       reports.push(await processOne(group, f));
     }
   }
-  fs.writeFileSync("/tmp/logo-report.json", JSON.stringify(reports, null, 1));
+  fs.writeFileSync(process.env.LOGO_REPORT ?? "/tmp/logo-report.json", JSON.stringify(reports, null, 1));
   return reports;
 }
 

@@ -18,8 +18,10 @@ import { LogoCarousel, type RailLogo } from "./LogoMotion";
  * The section head pairs the current locale's title with its
  * counterpart-language name as a quiet accent subtitle (both are
  * approved section names — no invented copy). Logos are the approved
- * D-033 extractions — never distorted, recolored, or mirrored; RTL
- * reverses flow/paging semantics only. The continuation notes stay
+ * D-033 extractions, transparent since D-078 — never distorted or
+ * mirrored; drawn in one colour at rest, original colours on hover
+ * (D-078, `originalColor` exceptions excepted); RTL reverses flow/paging
+ * semantics only. The continuation notes stay
  * BELOW each ecosystem as restrained editorial lines (never chips
  * inside the rails). Section ids anchor the header's cinematic
  * arrivals (§9).
@@ -37,6 +39,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
     id: p.id,
     name: localize(p.name, locale),
     src: p.logo?.src ?? "",
+    originalColor: p.originalColor,
   }));
 
   return (
@@ -74,6 +77,7 @@ export async function ClientsField({ locale }: { locale: Locale }) {
     id: c.id,
     name: localize(c.name, locale),
     src: c.logo?.src ?? "",
+    originalColor: c.originalColor,
   }));
 
   return (

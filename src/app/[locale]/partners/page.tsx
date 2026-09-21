@@ -40,6 +40,7 @@ export default async function PartnersPage({ params }: { params: Promise<{ local
     id: p.id,
     name: localize(p.name, locale),
     src: p.logo?.src ?? "",
+    originalColor: p.originalColor,
   }));
 
   return (

@@ -37,7 +37,8 @@ export const partners: Partner[] = [
   { id: "honeywell", name: name("Honeywell"), logo: { src: "/media/logos/alliances/honeywell.webp", quality: "pdf-extract" }, enabled: true, order: 20 },
   { id: "axis", name: name("Axis Communications"), logo: { src: "/media/logos/alliances/axis.webp", quality: "pdf-extract" }, enabled: true, order: 21 },
   { id: "dell", name: name("Dell Technologies"), logo: { src: "/media/logos/alliances/dell.webp", quality: "pdf-extract" }, enabled: true, order: 22 },
-  { id: "lenovo", name: name("Lenovo"), logo: { src: "/media/logos/alliances/lenovo.webp", quality: "pdf-extract" }, enabled: true, order: 23 },
+  // D-078 exception: the red box IS the mark — shown in its own colours, never filtered
+  { id: "lenovo", name: name("Lenovo"), logo: { src: "/media/logos/alliances/lenovo.webp", quality: "pdf-extract" }, originalColor: true, enabled: true, order: 23 },
   { id: "asus", name: name("ASUS"), logo: { src: "/media/logos/alliances/asus.webp", quality: "pdf-extract" }, enabled: true, order: 24 },
   { id: "westerndigital", name: name("Western Digital"), logo: { src: "/media/logos/alliances/westerndigital.webp", quality: "pdf-extract" }, enabled: true, order: 25 },
   { id: "jupiter", name: name("Jupiter Systems"), logo: { src: "/media/logos/alliances/jupiter.webp", quality: "pdf-extract" }, enabled: true, order: 26 },

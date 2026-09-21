@@ -39,6 +39,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
     id: c.id,
     name: localize(c.name, locale),
     src: c.logo?.src ?? "",
+    originalColor: c.originalColor,
   }));
 
   return (
