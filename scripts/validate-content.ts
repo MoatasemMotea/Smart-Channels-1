@@ -134,6 +134,18 @@ for (const g of galleryItems) {
     errors.push(`gallery ${g.id}: unknown projectId "${g.projectId}"`);
   checkPath(g.src, `gallery ${g.id}`, g.published);
   if (g.poster) checkPath(g.poster, `gallery ${g.id} poster`, g.published);
+  if (g.thumb) checkPath(g.thumb, `gallery ${g.id} thumb`, g.published);
+  // D-077: a published photograph's derivatives carry no EXIF / ICC / XMP (a phone
+  // original may hold a GPS position; the WebP must not) — checked by RIFF chunk id
+  if (g.type === "image" && g.published) {
+    for (const file of [g.src, g.thumb].filter((x): x is string => Boolean(x))) {
+      const fs = join(root, "public", file);
+      if (!existsSync(fs)) continue;
+      const b = readFileSync(fs);
+      if (b.toString("ascii", 0, 4) !== "RIFF" || b.toString("ascii", 8, 12) !== "WEBP") errors.push(`gallery ${g.id}: ${file} is not a WebP`);
+      for (const chunk of ["EXIF", "ICCP", "XMP "]) if (b.includes(Buffer.from(chunk, "ascii"))) errors.push(`gallery ${g.id}: ${file} carries a ${chunk.trim()} chunk — strip metadata at derivation (D-077)`);
+    }
+  }
 }
 for (const d of documents) checkPath(d.src, `document ${d.locale}`, true);
 

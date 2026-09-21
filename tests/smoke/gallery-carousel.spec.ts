@@ -61,15 +61,13 @@ test("arrows rotate the ring and the loop returns to the first item", async ({ p
   await gotoGallery(page, "en");
   const first = await centreId(page);
   const n = await page.locator(".gcar-card").count();
-  expect(n).toBe(3);
-  await expect(page.locator('.gcar-card[data-pos="1"]')).toHaveCount(1);
-  await expect(page.locator('.gcar-card[data-pos="-1"]')).toHaveCount(1);
-  await expect(page.locator('.gcar-card[data-pos="hidden"]')).toHaveCount(0); // 3 items: ±1 covers the ring
+  expect(n).toBe(6); // D-077: three videos/stills + three 2026 photographs
+  for (const pos of ["1", "-1", "2", "-2"]) await expect(page.locator(`.gcar-card[data-pos="${pos}"]`)).toHaveCount(1);
+  await expect(page.locator('.gcar-card[data-pos="hidden"]')).toHaveCount(1); // 6 items: ±2 visible, the opposite one hidden
   const next = page.getByRole("button", { name: "Next item" });
   await next.click();
   expect(await centreId(page)).not.toBe(first);
-  await next.click();
-  await next.click(); // third press: back to the first — the ring is a loop
+  for (let i = 0; i < 5; i++) await next.click(); // sixth press: back to the first — the ring is a loop
   expect(await centreId(page)).toBe(first);
   await page.getByRole("button", { name: "Previous item" }).click();
   expect(await centreId(page)).not.toBe(first);
@@ -88,14 +86,14 @@ test("arrow keys step the ring; only the centre card is focusable", async ({ pag
   expect(second).not.toBe(first);
   await page.keyboard.press("ArrowLeft");
   expect(await centreId(page)).toBe(first);
-  await expect(page.locator('[role="region"][aria-roledescription="carousel"]')).toHaveAttribute("aria-label", "Gallery carousel");
+  await expect(page.locator('#gallery [role="region"][aria-roledescription="carousel"]')).toHaveAttribute("aria-label", "Gallery carousel");
 });
 
 test("the centre video plays muted; leaving the centre pauses and rewinds it", async ({ page }) => {
   await serveDecodableVideos(page);
   await gotoGallery(page, "en");
   // bring a video to the centre if the first item is the image
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     if ((await centre(page).getAttribute("data-kind")) === "video") break;
     await page.getByRole("button", { name: "Next item" }).click();
   }
@@ -115,7 +113,7 @@ test("the centre video plays muted; leaving the centre pauses and rewinds it", a
 test("the speaker button unmutes in place without opening the lightbox; a step re-mutes", async ({ page }) => {
   await serveDecodableVideos(page);
   await gotoGallery(page, "en");
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     if ((await centre(page).getAttribute("data-kind")) === "video") break;
     await page.getByRole("button", { name: "Next item" }).click();
   }
@@ -132,7 +130,7 @@ test("the speaker button unmutes in place without opening the lightbox; a step r
 test("clicking the centre card opens the existing lightbox with controls and sound", async ({ page }) => {
   await serveDecodableVideos(page);
   await gotoGallery(page, "en");
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     if ((await centre(page).getAttribute("data-kind")) === "video") break;
     await page.getByRole("button", { name: "Next item" }).click();
   }
@@ -170,7 +168,7 @@ test("RTL mirrors the ring: logical +1 sits on the LEFT of the centre, and the a
   const c = await box('.gcar-card[data-pos="0"]');
   expect(await box('.gcar-card[data-pos="1"]')).toBeLessThan(c);
   expect(await box('.gcar-card[data-pos="-1"]')).toBeGreaterThan(c);
-  await expect(page.locator('[role="region"][aria-roledescription="carousel"]')).toHaveAttribute("aria-label", "دوّار المعرض");
+  await expect(page.locator('#gallery [role="region"][aria-roledescription="carousel"]')).toHaveAttribute("aria-label", "دوّار المعرض");
   // the chevrons are mirrored by CSS in RTL
   expect(await page.locator(".gcar-btn svg").first().evaluate((el) => getComputedStyle(el).transform)).toMatch(/matrix\(-1,/);
   // in RTL "ArrowLeft" advances (reading direction)
@@ -269,4 +267,37 @@ test("D067-OFFSCREEN-PLAY: the centre video stays idle until the section scrolls
   // leaving the viewport pauses it again
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused), { timeout: 4000 }).toBe(true);
+});
+
+test("D-077: the three photographs are in the ring after the starter set, cards use the 800 px file and the focus crop, five cards are on screen at 1440", async ({ page }, info) => {
+  test.skip(info.project.name !== "desktop");
+  await gotoGallery(page, "en");
+  const ids = await page.locator(".gcar-card").evaluateAll((els) => els.map((e) => (e.querySelector("video, img") as HTMLMediaElement | HTMLImageElement).getAttribute("src")));
+  expect(ids.slice(3)).toEqual([
+    "/media/gallery/al-nassr-press-room-800.webp",
+    "/media/gallery/smc-office-ceiling-install-800.webp",
+    "/media/gallery/smc-office-ladder-install-800.webp",
+  ]);
+  // five cards inside the viewport (±2 visible), one hidden
+  const boxes = await page.locator('.gcar-card:not([data-pos="hidden"])').evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return { pos: e.getAttribute("data-pos"), x: r.x, right: r.right, w: r.width }; }));
+  expect(boxes).toHaveLength(5);
+  for (const b of boxes) { expect(b.x, b.pos!).toBeGreaterThanOrEqual(0); expect(b.right, b.pos!).toBeLessThanOrEqual(1440); expect(b.w).toBeGreaterThan(80); }
+  const hidden = await page.locator('.gcar-card[data-pos="hidden"]').evaluate((e) => getComputedStyle(e).opacity);
+  expect(parseFloat(hidden)).toBe(0);
+  // the focus crop reaches the card image as object-position; the press room keeps the default
+  const focus = await page.locator(".gcar-card img").evaluateAll((els) => els.map((i) => [i.getAttribute("src")!.split("/").pop(), getComputedStyle(i).objectPosition]));
+  expect(focus).toEqual(expect.arrayContaining([
+    ["al-nassr-press-room-800.webp", "50% 50%"],
+    ["smc-office-ceiling-install-800.webp", "50% 20%"],
+    ["smc-office-ladder-install-800.webp", "50% 0%"],
+  ]));
+  // the lightbox opens the photograph at full size (1600 file), portrait
+  for (let i = 0; i < 6; i++) { if ((await centreId(page))?.includes("al-nassr")) break; await page.getByRole("button", { name: "Next item" }).click(); await page.waitForTimeout(700); }
+  await centre(page).locator(".gcar-open").click();
+  const dialog = page.locator("dialog.gallery-lightbox");
+  await expect(dialog).toHaveAttribute("open", "");
+  await expect(dialog.locator("img")).toHaveAttribute("src", "/media/gallery/al-nassr-press-room.webp");
+  await expect(dialog.locator(".gallery-lightbox-caption")).toContainText("Alawwal Park");
+  expect(await dialog.locator("img").evaluate(async (i: HTMLImageElement) => { await i.decode(); return i.naturalWidth < i.naturalHeight; })).toBe(true);
+  await page.keyboard.press("Escape");
 });
