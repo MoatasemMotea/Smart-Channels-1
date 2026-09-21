@@ -1105,124 +1105,190 @@ a:focus-visible > .tx-link,
 }
 
 /* ------------------------------------------------------------------ */
-/* D-050 §12 — SELECTED PROJECTS as cinematic large moments (homepage) */
-/* Four full-width numbered moments, alternating anchor sides; each    */
-/* carries a media-ready ground (approved project media when present,  */
-/* an engineered signal field until then). Never a card grid.          */
+/* D-075 — SELECTED PROJECTS: horizontal accordion (homepage).          */
+/* Five panels in one flex row; the active one grows (flex 4 vs 1) in  */
+/* 700 ms. Below 900 px the same markup is a snap-scrolled card row.   */
+/* A panel commits to a dark ground in BOTH themes (white text on a    */
+/* photograph, or on the designed no-image ground).                    */
 /* ------------------------------------------------------------------ */
-.selected-projects {
+.projects-accordion {
+  --pa-h: clamp(420px, 52vw, 640px);
+  --pa-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  gap: 12px;
+  block-size: var(--pa-h);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-/* D-054 §5/§15: the Selected Projects moments are CINEMATIC SCALE, not a
-   black interruption. They now sit on the continuous canvas and alternate
-   surface tone for rhythm; only a moment carrying an approved photograph
-   commits to the dark ground (the image brings its own darkness). */
-.project-moment {
+.pa-panel {
   position: relative;
-  display: flex;
-  align-items: center;
-  min-block-size: clamp(360px, 62svh, 640px);
+  flex: 1 1 0;
+  min-inline-size: 0;
   overflow: hidden;
-  border-top: 1px solid var(--line);
-  background: var(--canvas-raised);
-  color: var(--ink);
-
-  --moment-wash-a: rgba(255, 24, 156, 0.12);
-  --moment-wash-b: rgba(141, 52, 146, 0.14);
-  --moment-beam: rgba(255, 24, 156, 0.4);
-  --moment-node: rgba(255, 24, 156, 0.65);
-  --moment-node-glow: rgba(255, 24, 156, 0.45);
-}
-.project-moment:nth-child(even) {
-  background: var(--canvas-sunken);
-}
-[data-theme="light"] .project-moment {
-  --moment-wash-a: rgba(197, 13, 115, 0.07);
-  --moment-wash-b: rgba(106, 40, 110, 0.06);
-  --moment-beam: rgba(197, 13, 115, 0.34);
-  --moment-node: rgba(197, 13, 115, 0.72);
-  --moment-node-glow: rgba(197, 13, 115, 0.26);
-}
-/* an approved photograph is the ground: the moment commits to dark in
-   BOTH themes so the image reads (never dimmed to fit a palette) */
-.project-moment[data-ground="photo"],
-[data-theme="light"] .project-moment[data-ground="photo"] {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08); /* the panel edge on the dark canvas */
   background: #0a0a0c;
   color: #f5f5f4;
+  transition: flex-grow 700ms var(--pa-ease);
 }
-.project-moment-ground {
+.pa-panel[data-active] { flex-grow: 4; }
+.pa-link {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  display: block;
+  color: inherit;
+  outline-offset: -3px;
 }
-.project-moment-photo {
-  object-fit: cover;
-  opacity: 0.5;
-}
-.project-moment-field {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(60% 90% at 78% 30%, var(--moment-wash-a), transparent 70%),
-    radial-gradient(50% 80% at 20% 85%, var(--moment-wash-b), transparent 70%);
-}
-.project-moment[data-moment="end"] .project-moment-field {
-  background:
-    radial-gradient(60% 90% at 22% 30%, var(--moment-wash-a), transparent 70%),
-    radial-gradient(50% 80% at 80% 85%, var(--moment-wash-b), transparent 70%);
-}
-.project-moment-beam {
-  position: absolute;
-  inset-inline-start: -10%;
-  top: 58%;
-  inline-size: 120%;
-  block-size: 1px;
-  background: linear-gradient(90deg, transparent, var(--moment-beam), transparent);
-}
-.project-moment-node {
-  position: absolute;
-  inset-inline-end: 18%;
-  top: 34%;
-  inline-size: 8px;
-  block-size: 8px;
-  border-radius: 9999px;
-  background: var(--moment-node);
-  box-shadow: 0 0 22px var(--moment-node-glow);
-}
-.project-moment[data-moment="end"] .project-moment-node {
-  inset-inline-end: auto;
-  inset-inline-start: 18%;
-}
-.project-moment-content {
-  position: relative;
+.pa-link:focus-visible { outline: 2px solid var(--accent); }
+.pa-ground { position: absolute; inset: 0; }
+.pa-ground img {
+  display: block;
   inline-size: 100%;
-  padding-block: 4.5rem;
+  block-size: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 1000ms var(--pa-ease);
 }
-.project-moment[data-moment="end"] .project-moment-content {
-  text-align: end;
+.pa-panel[data-active] .pa-ground img { transform: scale(1); }
+/* designed no-image ground: dark gradient (canvas → deeper) + a faint dot grid */
+.pa-panel[data-ground="designed"] .pa-ground {
+  background: linear-gradient(160deg, #16181f 0%, #0d0e13 55%, #06060a 100%);
 }
-.project-moment-title {
-  margin-top: 0.9rem;
-  font-size: clamp(2rem, 5.2vw, 4rem);
-  line-height: 1.12;
-  max-inline-size: 18ch;
+.pa-dots {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  color: #f5f5f4;
+  opacity: 0.08;
 }
-.project-moment[data-moment="end"] .project-moment-title {
-  margin-inline-start: auto;
+/* the fade is an opacity layer (never filter: brightness) so it reads in both themes */
+.pa-dim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6, 6, 10, 0.88) 0%, rgba(6, 6, 10, 0.42) 45%, rgba(6, 6, 10, 0.18) 100%);
+  opacity: 1;
+  transition: opacity 700ms var(--pa-ease);
 }
-[dir="rtl"] .project-moment-title {
-  line-height: 1.4;
+.pa-panel:not([data-active]) .pa-dim { opacity: 1; background: rgba(6, 6, 10, 0.55); }
+.pa-counter {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.85);
+  direction: ltr;
+  opacity: 0;
+  transition: opacity 300ms var(--pa-ease);
 }
-/* moment entrance: ground settles, content rises — tier-guarded */
-html:not([data-motion-tier="static"]) .reveal.is-visible[data-scene="projects"] .project-moment-content,
-html:not([data-motion-tier="static"]) .arrive[data-scene="projects"] .project-moment-content {
-  animation: moment-rise 800ms var(--ease-cinematic) both;
+.pa-panel[data-active] .pa-counter { opacity: 1; transition-delay: 200ms; }
+/* inactive: the title stands vertically at the foot of the panel */
+.pa-spine {
+  position: absolute;
+  inset-block-end: 1.1rem;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  writing-mode: vertical-rl;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: #fff;
+  opacity: 1;
+  transition: opacity 250ms var(--pa-ease);
 }
-@keyframes moment-rise {
-  from { opacity: 0; transform: translateY(22px); }
-  to { opacity: 1; transform: translateY(0); }
+[dir="rtl"] .pa-spine { translate: 50% 0; }
+.pa-panel[data-active] .pa-spine { opacity: 0; }
+/* active content: enters after 200 ms, rising 12 px */
+.pa-content {
+  position: absolute;
+  inset-inline: clamp(1.25rem, 3vw, 2.5rem);
+  inset-block-end: clamp(1.25rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-inline-size: 40rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 400ms var(--pa-ease),
+    transform 400ms var(--pa-ease);
+}
+.pa-panel[data-active] .pa-content { opacity: 1; transform: none; transition-delay: 200ms; }
+.pa-tag {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+.pa-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  text-wrap: balance;
+}
+[dir="rtl"] .pa-title { line-height: 1.35; }
+.pa-panel[data-ground="designed"] .pa-title { font-size: clamp(28px, 3.6vw, 52px); }
+.pa-meta { display: block; font-size: 0.9375rem; color: rgba(255, 255, 255, 0.8); }
+.pa-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-block-start: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+}
+.pa-cta svg { inline-size: 0.9rem; block-size: 0.9rem; }
+[dir="rtl"] .pa-cta svg { transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) {
+  .pa-panel, .pa-dim, .pa-counter, .pa-spine, .pa-content { transition: none; }
+  .pa-ground img { transition: none; transform: none; }
+}
+html[data-motion-tier="static"] .pa-panel,
+html[data-motion-tier="static"] .pa-dim,
+html[data-motion-tier="static"] .pa-counter,
+html[data-motion-tier="static"] .pa-spine,
+html[data-motion-tier="static"] .pa-content { transition: none; }
+html[data-motion-tier="static"] .pa-ground img { transition: none; transform: none; }
+/* ≤ 900 px: no accordion — a snap-scrolled row of 4:5 cards that navigate directly */
+@media (max-width: 900px) {
+  .projects-accordion {
+    block-size: auto;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+  }
+  .projects-accordion::-webkit-scrollbar { display: none; }
+  .pa-panel,
+  .pa-panel[data-active] {
+    flex: 0 0 84vw; /* 84 % of the screen, whatever the section's padding */
+    aspect-ratio: 4 / 5;
+    scroll-snap-align: center;
+    transition: none;
+  }
+  .pa-ground img { transform: none; }
+  .pa-panel:not([data-active]) .pa-dim { background: linear-gradient(to top, rgba(6, 6, 10, 0.88) 0%, rgba(6, 6, 10, 0.42) 45%, rgba(6, 6, 10, 0.18) 100%); }
+  .pa-spine { display: none; }
+  .pa-counter, .pa-panel[data-active] .pa-counter { opacity: 1; transition: none; }
+  .pa-content, .pa-panel[data-active] .pa-content { opacity: 1; transform: none; transition: none; }
+  .pa-title { font-size: clamp(22px, 6vw, 28px); }
+  .pa-panel[data-ground="designed"] .pa-title { font-size: clamp(26px, 7vw, 32px); }
 }
 
 /* §12 — floating WhatsApp action: accessible, safe-area aware, never

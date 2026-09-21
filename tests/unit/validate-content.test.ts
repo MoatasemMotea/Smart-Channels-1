@@ -10,6 +10,7 @@ import { productCards, productCategories } from "../../src/content/product-catal
 import { galleryItems } from "../../src/content/gallery";
 import {
   getPublicProjects,
+  projectHasDetail,
   getPublishedGalleryItems,
   localize,
 } from "../../src/lib/content";
@@ -158,6 +159,18 @@ describe("approved business data invariants", () => {
       expect(p.summary).toBeUndefined();
       expect(p.importance).toBeUndefined();
     }
+  });
+
+  it("carries the owner's five homepage projects in order, each with a detail route (D-075)", () => {
+    const home = projects.filter((p) => p.homeOrder !== undefined).sort((a, b) => a.homeOrder! - b.homeOrder!);
+    expect(home.map((p) => p.slug)).toEqual([
+      "grand-mosque-makkah",
+      "diriyah-season",
+      "red-sea-film-festival",
+      "neom-sports-village",
+      "rcu-outdoor-entertainment-alula",
+    ]);
+    for (const p of home) expect(projectHasDetail(p)).toBe(true); // P9 rule extended: a homepage project deserves a page
   });
 
   it("features exactly the owner's D-050 §12 Selected Projects (supersedes D-044)", () => {

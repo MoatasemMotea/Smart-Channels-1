@@ -257,6 +257,13 @@ for (const l of socialLinks) {
   if (l.url && !/^https:\/\//.test(l.url))
     errors.push(`social ${l.platform}: URL must be absolute https`);
 }
+// D-075: exactly five homepage projects, homeOrder 1..5, each once, none hidden
+{
+  const home = projects.filter((p) => p.homeOrder !== undefined);
+  const orders = home.map((p) => p.homeOrder!).sort((a, b) => a - b);
+  if (orders.join(",") !== "1,2,3,4,5") errors.push(`projects.homeOrder must be exactly 1..5 once each (got ${orders.join(",") || "none"})`);
+  for (const p of home) if (p.display === "hidden") errors.push(`project ${p.id}: on the homepage (homeOrder) but hidden`);
+}
 for (const p of projects) {
   for (const m of p.media ?? []) checkPath(m.src, `project ${p.id} media ${m.id}`, p.display !== "hidden");
   if (p.logo) checkPath(p.logo.src, `project ${p.id} logo`, p.display === "logo");

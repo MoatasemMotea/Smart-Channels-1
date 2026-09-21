@@ -171,6 +171,8 @@ export interface Project {
   display: "logo" | "text-only" | "hidden";
   /** Stays false until the D-004 assessment selects the featured set. */
   featured: boolean;
+  /** D-075: position 1..5 in the homepage accordion (the owner's five), independent of `featured`. */
+  homeOrder?: number;
   caseStudy?: ProjectCaseStudy;
   order: number;
 }

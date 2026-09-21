@@ -18,8 +18,15 @@ import type { LocalizedText, Project } from "@/types/content";
  * - `years`, `scope`, `services`, `media` may only be filled with
  *   owner-approved, source-backed facts. Absent field = not yet approved,
  *   NOT unknown-so-guessed.
+ * - `homeOrder` (D-075): the owner's five on the homepage accordion, in
+ *   this order — 1 Grand Mosque, 2 Diriyah Season, 3 Red Sea Film
+ *   Festival, 4 NEOM Sports Village, 5 RCU Outdoor Entertainment — AlUla.
+ *   Independent of `featured` (which drives the /projects chapter). A
+ *   project with a `homeOrder` earns a detail route (P9 rule, extended).
  * - Adding a photo/video = one `media` entry; relating a Gallery item =
- *   its id in `galleryItemIds` (no duplicate files) — D-013.
+ *   its id in `galleryItemIds` (no duplicate files) — D-013. The homepage
+ *   accordion uses the first image entry as the panel's ground and shows
+ *   a designed no-image state until one exists.
  *
  * The six venue records carry years and delivered scope from p.26
  * ("Sports cities & stadiums — planned, installed and commissioned across
@@ -41,11 +48,11 @@ const base = { display: "text-only" as const, featured: false };
 
 export const projects: Project[] = [
   // ---- p.24 ----
-  { ...base, id: "grand-mosque-makkah", featured: true, slug: "grand-mosque-makkah", name: { en: "Grand Mosque — Makkah", ar: "المسجد الحرام — مكة المكرمة" }, location: { en: "Makkah", ar: "مكة المكرمة" }, sectorIds: ["religious-holy-sites"], order: 1 },
-  { ...base, id: "rcu-outdoor-alula", slug: "rcu-outdoor-entertainment-alula", name: { en: "RCU Outdoor Entertainment — AlUla", arPolicy: "latin" }, location: { en: "AlUla", ar: "العلا" }, sectorIds: ["cultural-seasons-festivals"], order: 2 },
-  { ...base, id: "diriyah-season", featured: true, slug: "diriyah-season", name: { en: "Diriyah Season", ar: "موسم الدرعية" }, location: { en: "Diriyah", ar: "الدرعية" }, sectorIds: ["cultural-seasons-festivals"], order: 3 },
-  { ...base, id: "red-sea-film-festival", featured: true, slug: "red-sea-film-festival", name: { en: "Red Sea Film Festival", ar: "مهرجان البحر الأحمر السينمائي" }, sectorIds: ["cultural-seasons-festivals"], order: 4 },
-  { ...base, id: "neom-sports-village", featured: true, slug: "neom-sports-village", name: { en: "NEOM Sports Village", arPolicy: "latin" }, location: { en: "NEOM", ar: "نيوم" }, sectorIds: ["giga-projects"], order: 5 },
+  { ...base, id: "grand-mosque-makkah", featured: true, homeOrder: 1, slug: "grand-mosque-makkah", name: { en: "Grand Mosque — Makkah", ar: "المسجد الحرام — مكة المكرمة" }, location: { en: "Makkah", ar: "مكة المكرمة" }, sectorIds: ["religious-holy-sites"], order: 1 },
+  { ...base, id: "rcu-outdoor-alula", homeOrder: 5, slug: "rcu-outdoor-entertainment-alula", name: { en: "RCU Outdoor Entertainment — AlUla", arPolicy: "latin" }, location: { en: "AlUla", ar: "العلا" }, sectorIds: ["cultural-seasons-festivals"], order: 2 },
+  { ...base, id: "diriyah-season", featured: true, homeOrder: 2, slug: "diriyah-season", name: { en: "Diriyah Season", ar: "موسم الدرعية" }, location: { en: "Diriyah", ar: "الدرعية" }, sectorIds: ["cultural-seasons-festivals"], order: 3 },
+  { ...base, id: "red-sea-film-festival", featured: true, homeOrder: 3, slug: "red-sea-film-festival", name: { en: "Red Sea Film Festival", ar: "مهرجان البحر الأحمر السينمائي" }, sectorIds: ["cultural-seasons-festivals"], order: 4 },
+  { ...base, id: "neom-sports-village", featured: true, homeOrder: 4, slug: "neom-sports-village", name: { en: "NEOM Sports Village", arPolicy: "latin" }, location: { en: "NEOM", ar: "نيوم" }, sectorIds: ["giga-projects"], order: 5 },
   {
     ...base,
     id: "prince-abdullah-al-faisal",

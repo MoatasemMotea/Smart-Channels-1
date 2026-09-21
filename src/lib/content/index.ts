@@ -78,13 +78,22 @@ export function getFeaturedProjects(): Project[] {
   return getPublicProjects().filter((p) => p.featured);
 }
 
+/** D-075: the owner's five homepage projects, in `homeOrder`. */
+export function getHomeProjects(): Project[] {
+  return getPublicProjects()
+    .filter((p) => p.homeOrder !== undefined)
+    .sort((a, b) => a.homeOrder! - b.homeOrder!);
+}
+
 /**
  * P9 evidence-adaptive rule: a project earns a detail route when it is
  * Featured OR carries deep approved evidence (years + delivered scope).
  * Thin records stay ledger-only so weak pages never exist.
+ * D-075 extension (owner decision): a project the owner shows on the
+ * homepage (`homeOrder`) deserves a page.
  */
 export function projectHasDetail(p: Project): boolean {
-  return p.featured || Boolean(p.years && p.scope && p.scope.length > 0);
+  return p.featured || p.homeOrder !== undefined || Boolean(p.years && p.scope && p.scope.length > 0);
 }
 
 export function getDetailProjects(): Project[] {

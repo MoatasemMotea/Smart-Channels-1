@@ -9,6 +9,7 @@ const routes = [
   "/projects",
   "/projects/diriyah-season",
   "/projects/grand-mosque-makkah",
+  "/projects/rcu-outdoor-entertainment-alula", // D-075: a homepage project earns a detail route
   "/projects/king-abdullah-sports-city",
   "/industries",
   "/company",
