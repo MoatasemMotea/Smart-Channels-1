@@ -274,7 +274,7 @@ test("D-077: the three photographs are in the ring after the starter set, cards 
   await gotoGallery(page, "en");
   const ids = await page.locator(".gcar-card").evaluateAll((els) => els.map((e) => (e.querySelector("video, img") as HTMLMediaElement | HTMLImageElement).getAttribute("src")));
   expect(ids.slice(3)).toEqual([
-    "/media/gallery/al-nassr-press-room-800.webp",
+    "/media/gallery/alawwal-park-press-room-800.webp",
     "/media/gallery/smc-office-ceiling-install-800.webp",
     "/media/gallery/smc-office-ladder-install-800.webp",
   ]);
@@ -287,16 +287,16 @@ test("D-077: the three photographs are in the ring after the starter set, cards 
   // the focus crop reaches the card image as object-position; the press room keeps the default
   const focus = await page.locator(".gcar-card img").evaluateAll((els) => els.map((i) => [i.getAttribute("src")!.split("/").pop(), getComputedStyle(i).objectPosition]));
   expect(focus).toEqual(expect.arrayContaining([
-    ["al-nassr-press-room-800.webp", "50% 50%"],
+    ["alawwal-park-press-room-800.webp", "50% 50%"],
     ["smc-office-ceiling-install-800.webp", "50% 20%"],
     ["smc-office-ladder-install-800.webp", "50% 0%"],
   ]));
   // the lightbox opens the photograph at full size (1600 file), portrait
-  for (let i = 0; i < 6; i++) { if ((await centreId(page))?.includes("al-nassr")) break; await page.getByRole("button", { name: "Next item" }).click(); await page.waitForTimeout(700); }
+  for (let i = 0; i < 6; i++) { if ((await centreId(page))?.includes("alawwal-park")) break; await page.getByRole("button", { name: "Next item" }).click(); await page.waitForTimeout(700); }
   await centre(page).locator(".gcar-open").click();
   const dialog = page.locator("dialog.gallery-lightbox");
   await expect(dialog).toHaveAttribute("open", "");
-  await expect(dialog.locator("img")).toHaveAttribute("src", "/media/gallery/al-nassr-press-room.webp");
+  await expect(dialog.locator("img")).toHaveAttribute("src", "/media/gallery/alawwal-park-press-room.webp");
   await expect(dialog.locator(".gallery-lightbox-caption")).toContainText("Alawwal Park");
   expect(await dialog.locator("img").evaluate(async (i: HTMLImageElement) => { await i.decode(); return i.naturalWidth < i.naturalHeight; })).toBe(true);
   await page.keyboard.press("Escape");

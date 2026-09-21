@@ -88,10 +88,10 @@ export const galleryItems: GalleryItem[] = [
      not a client; the event was held at their venue. No projectId: the only
      ledger record at that venue is a 2022–2025 venue fit-out, not this event. */
   {
-    id: "image-al-nassr-press-room",
+    id: "image-alawwal-park-press-room",
     type: "image",
-    src: "/media/gallery/al-nassr-press-room.webp",
-    thumb: "/media/gallery/al-nassr-press-room-800.webp",
+    src: "/media/gallery/alawwal-park-press-room.webp",
+    thumb: "/media/gallery/alawwal-park-press-room-800.webp",
     published: true,
     order: 4,
     alt: {
