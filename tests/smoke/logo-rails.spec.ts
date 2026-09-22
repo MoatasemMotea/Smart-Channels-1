@@ -7,8 +7,12 @@ import { expect, test, type Page } from "@playwright/test";
  * light) through a computed `filter`, the original colours return on
  * hover, and the three `originalColor` exceptions are never filtered;
  * all 64 render at one ink height (std dev < 15 % of the mean) with wide
- * marks capped at 180 px.
+ * marks capped at 180 px. Follow-up (D078-HOVER-DARK-INK): on the dark
+ * theme a light plate rises behind the hovered mark; never at rest,
+ * never on the light theme.
  */
+const plateOpacity = (page: Page, id: string) =>
+  page.locator(`#partners .rail-copy-a .rail-cell[data-id="${id}"] .rail-plate`).evaluate((e) => getComputedStyle(e, "::before").opacity);
 const cells = (page: Page, rail: "clients" | "partners") => page.locator(`#${rail} .rail-copy-a .rail-cell`);
 
 async function gotoHome(page: Page, loc: "en" | "ar") {
@@ -95,6 +99,33 @@ test("one colour at rest: white filter on dark, dark filter on light; exceptions
   await expect(hovered).toHaveCSS("filter", "none");
   expect(await hovered.evaluate((e) => getComputedStyle(e).transitionDuration)).toBe("0.2s");
   await expect(page.locator(`#partners .rail-copy-a .rail-cell[data-id="${other!.id}"] img`)).toHaveCSS("filter", "brightness(0) invert(1)");
+  // dark theme: the light plate is up behind the hovered mark only
+  await expect.poll(() => plateOpacity(page, target!.id)).toBe("1");
+  expect(await plateOpacity(page, other!.id)).toBe("0");
+  const plate = await page.locator(`#partners .rail-copy-a .rail-cell[data-id="${target!.id}"] .rail-plate`).evaluate((e) => {
+    const s = getComputedStyle(e, "::before");
+    return { bg: s.backgroundColor, radius: s.borderRadius, dur: s.transitionDuration, top: s.top, left: s.left };
+  });
+  expect(plate).toEqual({ bg: "rgba(250, 250, 248, 0.92)", radius: "8px", dur: "0.2s", top: "-6px", left: "-10px" });
+  // light theme: same hover, no plate
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  await page.waitForTimeout(400);
+  await expect(hovered).toHaveCSS("filter", "none");
+  expect(await plateOpacity(page, target!.id)).toBe("0");
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  // pointer away: the plate is down again
+  await page.mouse.move(2, 2);
+  await expect.poll(() => plateOpacity(page, target!.id)).toBe("0");
+});
+
+test("dark theme, at rest: no plate behind any mark; reduced motion shows it without a transition", async ({ page }) => {
+  await gotoHome(page, "en");
+  await scrollTo(page, "partners");
+  const idle = await page.locator("#partners .rail-copy-a .rail-plate").evaluateAll((els) => els.map((e) => getComputedStyle(e, "::before").opacity));
+  expect(idle.every((o) => o === "0")).toBe(true);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const prop = await page.locator('#partners .rail-copy-a .rail-cell[data-id="cisco"] .rail-plate').evaluate((e) => getComputedStyle(e, "::before").transitionProperty);
+  expect(prop).toBe("none");
 });
 
 test("reduced motion: no transition on the mark colour", async ({ page }) => {
