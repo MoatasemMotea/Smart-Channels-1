@@ -109,7 +109,7 @@ export default async function SolutionFamilyPage({
 
       {/* certified vendors — only where the profile associates them */}
       {vendors.length > 0 ? (
-        <MotionSection reveal="sweep" className="border-b border-line" aria-label={t("inner.vendors")}>
+        <MotionSection reveal="mask" className="border-b border-line" aria-label={t("inner.vendors")}>
           <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
             <p className="microlabel mb-6 text-accent">{t("inner.vendors")}</p>
             <ul className="vendor-row">

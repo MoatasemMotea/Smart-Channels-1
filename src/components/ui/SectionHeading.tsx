@@ -18,7 +18,7 @@ export function SectionHeading({
           {index}
         </p>
       ) : null}
-      <Tag className="font-display text-3xl font-bold tracking-tight text-ink md:text-4xl">
+      <Tag className="section-title font-display text-3xl font-bold tracking-tight text-ink md:text-4xl">
         {children}
       </Tag>
     </div>

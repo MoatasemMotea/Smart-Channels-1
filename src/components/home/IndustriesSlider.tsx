@@ -130,7 +130,20 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
     return () => io.disconnect();
   }, []);
 
-  const autoplay = !reduced && userPlaying && inView && !hidden;
+  // D-079: a covered scene is not visible even while it intersects — the
+  // scroll engine marks the stuck section `data-covered` at cover ≥ 0.5
+  const [covered, setCovered] = useState(false);
+  useEffect(() => {
+    const section = regionRef.current?.closest("[data-stack]");
+    if (!section) return;
+    const read = () => setCovered(section.hasAttribute("data-covered"));
+    read();
+    const mo = new MutationObserver(read);
+    mo.observe(section, { attributes: true, attributeFilter: ["data-covered"] });
+    return () => mo.disconnect();
+  }, []);
+
+  const autoplay = !reduced && userPlaying && inView && !hidden && !covered;
   useEffect(() => {
     if (!autoplay) return;
     const id = window.setTimeout(() => go(index + 1), AUTOPLAY_MS);

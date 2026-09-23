@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { COVER_EVENT } from "@/lib/motion/scroll-engine";
 
 /**
  * Header environment tracking (P4 · F-7, Revision 2).
@@ -15,6 +16,11 @@ import { useEffect } from "react";
  *   adopts the environment beneath it, not the global theme.
  *
  * rAF-throttled and passive; recomputed on scroll and resize.
+ *
+ * D-079: a stuck scene the next chapter has covered by half or more
+ * (`data-covered`, written by the scroll engine) is not the visible
+ * environment any more, even though it still intersects the band
+ * geometrically — it is skipped, and the engine's cover event recomputes.
  */
 export function ScrollState() {
   useEffect(() => {
@@ -25,6 +31,7 @@ export function ScrollState() {
       const bandY = 40; // header midline
       let env = "surface";
       for (const el of document.querySelectorAll<HTMLElement>('[data-env="dark"]')) {
+        if (el.hasAttribute("data-covered")) continue;
         const r = el.getBoundingClientRect();
         if (r.top <= bandY && r.bottom >= bandY) {
           env = "dark";
@@ -42,9 +49,11 @@ export function ScrollState() {
     apply();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener(COVER_EVENT, onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener(COVER_EVENT, onScroll);
     };
   }, []);
   return null;

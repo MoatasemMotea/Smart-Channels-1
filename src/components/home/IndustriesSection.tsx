@@ -28,11 +28,14 @@ export async function IndustriesSection({ locale }: { locale: Locale }) {
       className="border-b border-line"
       aria-label={t("sections.industries")}
       data-scene="industries"
+      data-stack="stick"
     >
       <div className="mx-auto max-w-360 px-6 pt-20 lg:px-12">
         <SectionHeading>{t("sections.industries")}</SectionHeading>
       </div>
       <IndustriesSlider items={items} />
+      {/* D-079: darkens with --cover as Selected Projects rises over it */}
+      <div className="scene-veil" aria-hidden="true" />
     </MotionSection>
   );
 }

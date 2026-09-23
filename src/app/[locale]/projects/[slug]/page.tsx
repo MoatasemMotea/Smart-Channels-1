@@ -194,7 +194,7 @@ export default async function ProjectDetailPage({
 
       {/* media rail — appears the moment approved media is added (data-only) */}
       {rail.length > 0 ? (
-        <MotionSection reveal="sweep" className="border-b border-line" aria-label={t("inner.projectMedia")}>
+        <MotionSection reveal="mask" className="border-b border-line" aria-label={t("inner.projectMedia")}>
           <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
             <p className="microlabel mb-8 text-accent">{t("inner.projectMedia")}</p>
             <ul className="project-media-rail">

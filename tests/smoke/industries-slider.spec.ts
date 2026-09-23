@@ -22,6 +22,48 @@ const active = (page: Page) => page.locator('.industries-slide[data-state="activ
 const activeIndex = (page: Page) => active(page).getAttribute("data-slide");
 const expectSlide = (page: Page, i: number) => expect(active(page)).toHaveAttribute("data-slide", String(i));
 
+/**
+ * D-079: click a label the way a visitor reaches it — bring it into view INSIDE the
+ * horizontally scrolling strip first (block "nearest": the page itself does not move).
+ * Playwright's own auto-scroll centres an off-strip tab on BOTH axes, which would scroll
+ * the page past the sticky Industries scene and let Selected Projects cover the strip.
+ */
+async function clickTab(page: Page, n: number) {
+  const tab = page.locator(`.industries-slider-tab[data-tab="${n}"]`);
+  // the strip also scrolls ITSELF (smoothly) after every autoplay step: scroll the strip's
+  // own horizontal container (never the page) until the tab is wholly inside it and the
+  // container is still — Playwright then has nothing to scroll before its real click
+  await tab.evaluate(async (e) => {
+    if (!document.querySelector(".scene-stack[data-stack-on]")) return; // no stack (LITE/STATIC): a plain click
+    // an earlier pointer action (hover) may have let Playwright scroll the page — put the
+    // sticky scene back where its bottom meets the viewport bottom (cover 0)
+    // (scrollIntoView on a STUCK element reads its stuck position — compute the static top)
+    const section = document.querySelector<HTMLElement>("#industries")!;
+    document.documentElement.classList.add("sc-measure");
+    let top = 0;
+    for (let n: HTMLElement | null = section; n; n = n.offsetParent as HTMLElement | null) top += n.offsetTop;
+    document.documentElement.classList.remove("sc-measure");
+    window.scrollTo({ top: Math.max(top + section.offsetHeight - innerHeight, top - (innerHeight - section.offsetHeight) / 2), behavior: "instant" });
+    let sc: HTMLElement | null = e.parentElement;
+    while (sc && !/(auto|scroll)/.test(getComputedStyle(sc).overflowX)) sc = sc.parentElement;
+    const frame = () => new Promise((r) => requestAnimationFrame(r));
+    for (let i = 0; i < 20; i++) {
+      const box = sc ? sc.getBoundingClientRect() : { left: 0, right: innerWidth };
+      const lo = Math.max(0, box.left);
+      const hi = Math.min(innerWidth, box.right);
+      const r = e.getBoundingClientRect();
+      if (sc && r.left < lo) sc.scrollLeft -= lo - r.left + 8;
+      else if (sc && r.right > hi) sc.scrollLeft += r.right - hi + 8;
+      const x = sc?.scrollLeft ?? 0;
+      await frame();
+      await frame();
+      const q = e.getBoundingClientRect();
+      if ((sc?.scrollLeft ?? 0) === x && q.left >= lo - 1 && q.right <= hi + 1) return;
+    }
+  });
+  await tab.click();
+}
+
 /** the homepage plays its opening first; then bring the section into view WITHOUT focusing it (focus pauses autoplay) */
 async function gotoSlider(page: Page, loc: "en" | "ar") {
   await page.goto(`/${loc}/`, { waitUntil: "networkidle" });
@@ -29,7 +71,12 @@ async function gotoSlider(page: Page, loc: "en" | "ar") {
     const s = document.documentElement.getAttribute("data-opening");
     return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === "");
   }, null, { timeout: 15000 });
-  await page.evaluate(() => document.querySelector("#industries")!.scrollIntoView({ block: "center" }));
+  // D-079: on desktop Industries is a sticky scene taller than the viewport — bring its BOTTOM
+  // edge to the viewport bottom (the whole slider on screen, the riser not yet in: cover 0)
+  await page.evaluate(() => {
+    const el = document.querySelector<HTMLElement>("#industries")!;
+    el.scrollIntoView({ block: el.offsetHeight > innerHeight ? "end" : "center", behavior: "instant" });
+  });
   await page.waitForTimeout(600);
 }
 
@@ -96,7 +143,7 @@ test("autoplay runs in view, advances after 5 s, keeps running under the pointer
   await expect(region(page)).toHaveAttribute("data-autoplay", "running");
   await expect(active(page)).toHaveAttribute("data-slide", "2", { timeout: 7000 });
   // a click on a label moves with the full transition and restarts the timer — autoplay stays on
-  await page.locator('.industries-slider-tab[data-tab="9"]').click();
+  await clickTab(page, 9);
   await expect(active(page)).toHaveAttribute("data-slide", "9");
   await expect(region(page)).toHaveAttribute("data-autoplay", "running"); // focus inside does not pause either
   await expect(active(page)).toHaveAttribute("data-slide", "10", { timeout: 7000 });
@@ -113,7 +160,7 @@ test("the reveal: the light orb exists during the 900 ms transition and is gone 
   test.skip(info.project.name !== "desktop");
   await gotoSlider(page, "en");
   await page.getByRole("button", { name: "Pause automatic rotation" }).click();
-  await page.locator('.industries-slider-tab[data-tab="1"]').click();
+  await clickTab(page, 1);
   await expect(page.locator(".industries-slider-orb")).toHaveCount(1);
   await expect(page.locator('.industries-slide[data-state="leaving"]')).toHaveCount(1);
   await expect(page.locator('.industries-slide[data-entering]')).toHaveCount(1);
@@ -134,7 +181,7 @@ test("reduced motion: no autoplay, no pause button, no progress line, no orb, no
   await expect(page.locator('.industries-slider-tab[aria-current="true"] .industries-slider-tab-line')).toBeHidden();
   await page.waitForTimeout(5800);
   await expect(active(page)).toHaveAttribute("data-slide", "0");
-  await page.locator('.industries-slider-tab[data-tab="1"]').click();
+  await clickTab(page, 1);
   await expect(page.locator(".industries-slider-orb")).toHaveCount(0);
   const cs = await active(page).evaluate((e) => { const c = getComputedStyle(e); return { t: c.transitionDuration, clip: c.clipPath, filter: c.filter }; });
   expect(parseFloat(cs.t)).toBeLessThanOrEqual(0.2);
@@ -194,7 +241,7 @@ test("the bottom strip keeps the active label in view after every transition", a
   await gotoSlider(page, "en");
   const strip = page.locator(".industries-slider-strip");
   for (let i = 0; i < 16; i++) {
-    await page.locator(`.industries-slider-tab[data-tab="${(i * 5) % 16}"]`).click();
+    await clickTab(page, (i * 5) % 16);
     await page.waitForTimeout(700); // smooth scrollIntoView
     const s = (await strip.boundingBox())!;
     const t = (await page.locator('.industries-slider-tab[aria-current="true"]').boundingBox())!;
@@ -207,7 +254,7 @@ test("390 px: every title fits the screen width; the two cut-out slides carry th
   await page.setViewportSize({ width: 390, height: 844 });
   await gotoSlider(page, "en");
   for (let i = 0; i < 16; i++) {
-    await page.locator(`.industries-slider-tab[data-tab="${i}"]`).click();
+    await clickTab(page, i);
     await expect(active(page)).toHaveAttribute("data-slide", String(i));
     const r = (await active(page).locator(".industries-slide-title").boundingBox())!;
     expect(r.x, ORDER[i]).toBeGreaterThanOrEqual(0);
@@ -217,7 +264,7 @@ test("390 px: every title fits the screen width; the two cut-out slides carry th
   // like the rest (foreground + blurred ground over the gradient), alpha preserved
   await expect(page.locator(".industries-slide[data-empty]")).toHaveCount(0);
   for (const i of [7, 8]) {
-    await page.locator(`.industries-slider-tab[data-tab="${i}"]`).click();
+    await clickTab(page, i);
     const img = page.locator(`.industries-slide[data-slide="${i}"] .industries-slide-media img`);
     await expect(img).toHaveCount(1);
     await expect(img).toHaveAttribute("src", /industry-0[89]-[a-z-]+\.webp$/);

@@ -119,7 +119,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
       </MotionSection>
 
       {/* Reach → conversation */}
-      <MotionSection reveal="sweep" aria-label={t("sections.clients")}>
+      <MotionSection reveal="mask" aria-label={t("sections.clients")}>
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
           <p className="max-w-3xl text-xl leading-9">{localize(company.reach, locale)}</p>
           <p className="mt-8">

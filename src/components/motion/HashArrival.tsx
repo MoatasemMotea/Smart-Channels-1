@@ -26,6 +26,7 @@ const SECTION_IDS = new Set([
   "about",
   "solutions",
   "industries",
+  "projects",
   "gallery",
   "partners",
   "clients",

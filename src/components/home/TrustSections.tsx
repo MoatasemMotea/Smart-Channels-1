@@ -95,7 +95,7 @@ export async function ClientsField({ locale }: { locale: Locale }) {
             {tOther("sections.clients")}
           </p>
         </div>
-        <p className="max-w-3xl text-lg leading-8">{localize(company.reach, locale)}</p>
+        <p className="section-lead max-w-3xl text-lg leading-8">{localize(company.reach, locale)}</p>
         <LogoCarousel
           logos={logos.filter((l) => l.src)}
           rtl={locale === "ar"}

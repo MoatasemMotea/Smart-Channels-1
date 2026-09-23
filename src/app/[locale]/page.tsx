@@ -13,6 +13,8 @@ import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { HashArrival } from "@/components/motion/HashArrival";
 import { SectionSeam } from "@/components/motion/SectionSeam";
+import { SceneStack } from "@/components/motion/SceneStack";
+import { SceneIndex } from "@/components/motion/SceneIndex";
 
 /**
  * HOMEPAGE — the primary one-page experience (final pre-media
@@ -24,6 +26,11 @@ import { SectionSeam } from "@/components/motion/SectionSeam";
  *   Industries slider → Selected Projects → Media Gallery preview →
  *   Engineered Alliances index → Calm Clients trust field →
  *   Let's Talk → Footer.
+ *
+ * D-079 (scroll-linked cinematics): two adjacent scene stacks — About
+ * rises over the Hero, Selected Projects rises over Industries (the
+ * first of each pair is sticky, FULL tier ≥ 768 px only). Every other
+ * section reveals with the reversible MotionSection progress.
  *
  * Header anchors land on the section ids declared here (§5); Smart AI
  * is no longer a homepage section (§14 — the Digital Employee is a
@@ -39,9 +46,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       <HashArrival />
-      <Hero />
-
-      <AboutScene locale={locale} />
+      <SceneIndex />
+      <SceneStack>
+        <Hero />
+        <AboutScene locale={locale} />
+      </SceneStack>
 
       <SectionSeam variant="converge" />
 
@@ -65,16 +74,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* D-062: no seam here — Solutions already reveals as `trace` and ends
           on border-b; a trace seam after it separated without distinguishing */}
-      <IndustriesSection locale={locale} />
-
-      <SectionSeam variant="node" />
-
-      <SelectedProjects locale={locale} />
+      <SceneStack>
+        <IndustriesSection locale={locale} />
+        <SectionSeam variant="node" />
+        <SelectedProjects locale={locale} />
+      </SceneStack>
 
       {/* Gallery — approved starter media in the D-065 cover carousel; this section IS the gallery since D-067 */}
       <MotionSection
         id="gallery"
-        reveal="sweep"
+        reveal="mask"
         className="border-b border-line"
         aria-label={t("gallery")}
         data-scene="gallery"

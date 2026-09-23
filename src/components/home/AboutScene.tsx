@@ -27,7 +27,10 @@ export async function AboutScene({ locale }: { locale: Locale }) {
       className="border-b border-line"
       aria-label={t("sections.about")}
       data-scene="about"
+      data-stack="cover"
     >
+      {/* D-079: light line + fading shadow on the rising edge */}
+      <div className="scene-edge" aria-hidden="true" />
       {/* D-054 §10: the chapter breathes — a wider vertical measure and a
           calmer rhythm between the editorial column, the media and the
           capability row. */}

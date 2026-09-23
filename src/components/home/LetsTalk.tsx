@@ -34,7 +34,7 @@ export async function LetsTalk() {
         </div>
 
         <p className="microlabel relative text-accent">{t("lead.overline")}</p>
-        <h2 className="relative mt-4 max-w-3xl font-display text-4xl font-bold md:text-5xl">
+        <h2 className="section-title relative mt-4 max-w-3xl font-display text-4xl font-bold md:text-5xl">
           {locale === "ar" ? (
             <>
               لنبنِه <span className="text-accent">معًا.</span>
@@ -45,7 +45,7 @@ export async function LetsTalk() {
             </>
           )}
         </h2>
-        <p className="relative mt-5 max-w-xl text-base leading-8 text-ink-muted">
+        <p className="section-lead relative mt-5 max-w-xl text-base leading-8 text-ink-muted">
           {t("lead.intro")}
         </p>
 

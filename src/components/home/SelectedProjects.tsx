@@ -33,11 +33,15 @@ export async function SelectedProjects({ locale }: { locale: Locale }) {
 
   return (
     <MotionSection
+      id="projects"
       reveal="converge"
       className="border-b border-line"
       aria-label={t("sections.projects")}
       data-scene="projects"
+      data-stack="cover"
     >
+      {/* D-079: light line + fading shadow on the rising edge */}
+      <div className="scene-edge" aria-hidden="true" />
       <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
         <SectionHeading>{t("sections.projects")}</SectionHeading>
         <ProjectsAccordion items={items} />

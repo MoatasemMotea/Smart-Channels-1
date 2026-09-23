@@ -1,20 +1,35 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { registerReveal } from "@/lib/motion/scroll-engine";
 
 /**
- * Scene-reveal primitive (motion contract; Amendment 5 + Rev3 §14): an
- * IntersectionObserver-driven reveal honoring the capability tier via the
- * `.reveal` CSS in globals.css. STATIC tier renders instantly; without JS
- * content is fully visible (server markup carries no hidden state — the
- * class is added client-side only when animation is possible).
+ * Scene-reveal primitive — SCROLL-LINKED since D-079.
  *
- * Rev3 §14 — a controlled transition family instead of one generic fade:
- *   rise (default) · mask (editorial wipe) · converge (depth settle) ·
- *   trace (signal line draws across the section seam) · sweep (one light
- *   pass). Each section picks the device that fits its content; native
- *   scrolling stays untouched (no pinning, no scroll-jacking).
+ * The section registers with the scroll engine, which writes `--t`
+ * (0 → 1, eased, with a delay) from the section's entry into the
+ * viewport. Scrolling down advances the reveal; scrolling back up
+ * returns it exactly — the reveal is a position, not an event.
+ *
+ * Variants (Rev3 §14, re-expressed on `--t`):
+ *   rise (default) · opacity + translateY(16px → 0)
+ *   mask           · the children unclip from the top down
+ *   converge       · scale(.988 → 1) + translateY(10px → 0) — no blur
+ *                    (a filter on a whole layer is not allowed, D-079)
+ *   trace          · a signal line draws across the top edge
+ * `sweep` was retired at D-079; its sections use `mask`.
+ * Inside every variant the section title wipes in from the start of the
+ * line and `.section-lead` rises with `--t`.
+ *
+ * Once `--t` reaches 1 the engine sets `data-rs="1"` and no transform
+ * rule applies: the computed transform is literally `none` (closes
+ * D075-RESIDUAL-TRANSFORM, where converge kept scale(.988) forever).
+ * `.is-visible` survives as a class with hysteresis for the rules keyed
+ * on it. STATIC tier: nothing registers, the server markup is final;
+ * without JS the content is fully visible.
  */
+export type RevealVariant = "rise" | "mask" | "converge" | "trace";
+
 export function MotionSection({
   children,
   className,
@@ -25,29 +40,15 @@ export function MotionSection({
   children: ReactNode;
   className?: string;
   as?: "section" | "div" | "li";
-  reveal?: "rise" | "mask" | "converge" | "trace" | "sweep";
+  reveal?: RevealVariant;
 } & Record<string, unknown>) {
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const tier = document.documentElement.getAttribute("data-motion-tier");
-    if (tier === "static") return; // no reveal treatment at all
-    el.classList.add("reveal");
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            el.classList.add("is-visible");
-            io.disconnect();
-          }
-        }
-      },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    if (document.documentElement.getAttribute("data-motion-tier") === "static") return;
+    return registerReveal(el);
   }, []);
 
   return (

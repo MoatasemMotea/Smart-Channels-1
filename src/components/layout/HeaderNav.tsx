@@ -6,6 +6,7 @@ import type { Locale } from "@/types/content";
 import { getNavigation, localize } from "@/lib/content";
 import { overflowNavIds } from "@/content/navigation";
 import { Link, usePathname } from "@/i18n/navigation";
+import { COVER_EVENT, staticTopOf } from "@/lib/motion/scroll-engine";
 
 /**
  * Desktop primary navigation (P5 §§6–9 + Visual Correction §9).
@@ -46,7 +47,10 @@ const ANCHOR_ROUTE_ALIASES: Record<string, string> = {
 export function arriveAt(sceneId: string, smooth: boolean) {
   const el = document.getElementById(sceneId);
   if (!el) return false;
-  el.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  /* D-079: scroll to the section's STATIC top, never scrollIntoView — a
+     sticky scene reports where it is stuck, not where it lives, and the
+     jump would land mid-transition */
+  window.scrollTo({ top: staticTopOf(el), behavior: smooth ? "smooth" : "auto" });
   el.classList.remove("arrive");
   void el.offsetWidth; // restart the one-shot choreography
   el.classList.add("arrive");
@@ -77,6 +81,7 @@ export function HeaderNav() {
       const probe = window.innerHeight * 0.42;
       let found: string | null = null;
       for (const el of targets) {
+        if (el.hasAttribute("data-covered")) continue; // D-079: covered ≠ visible
         const r = el.getBoundingClientRect();
         if (r.top <= probe && r.bottom >= probe) found = el.id;
       }
@@ -84,8 +89,10 @@ export function HeaderNav() {
     };
     const io = new IntersectionObserver(pick, { rootMargin: "-30% 0px -40% 0px" });
     targets.forEach((el) => io.observe(el));
+    window.addEventListener(COVER_EVENT, pick);
     return () => {
       io.disconnect();
+      window.removeEventListener(COVER_EVENT, pick);
       setSectionActive(null); // leaving the homepage clears anchor state
     };
   }, [pathname]);

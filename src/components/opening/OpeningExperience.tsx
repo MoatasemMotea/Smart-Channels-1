@@ -135,7 +135,16 @@ export function OpeningExperience() {
     // network scene owns the stage further down the page).
     let docVisible = document.visibilityState === "visible";
     let heroInView = true;
-    const applyVisible = () => engine.setVisible(docVisible && heroInView);
+    // D-079: once About covers the stuck hero by half (data-covered), the
+    // field is not visible even though it still intersects — stop it
+    const heroSection = canvas.closest("[data-stack]");
+    let heroCovered = heroSection?.hasAttribute("data-covered") ?? false;
+    const applyVisible = () => engine.setVisible(docVisible && heroInView && !heroCovered);
+    const coverObs = new MutationObserver(() => {
+      heroCovered = heroSection?.hasAttribute("data-covered") ?? false;
+      applyVisible();
+    });
+    if (heroSection) coverObs.observe(heroSection, { attributes: true, attributeFilter: ["data-covered"] });
     const onVisibility = () => {
       docVisible = document.visibilityState === "visible";
       applyVisible();
@@ -162,6 +171,7 @@ export function OpeningExperience() {
       engine.destroy();
       removeSkipListeners();
       io.disconnect();
+      coverObs.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
       unlockScroll();

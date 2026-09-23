@@ -256,22 +256,34 @@ html[data-header-env="dark"] .site-header .logo-light-mark { display: none; }
   scroll-behavior: auto !important;
 }
 
-/* MotionSection reveal primitive — the only P3 animation (Amendment 5). */
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity var(--dur-component) var(--ease-engineered),
-    transform var(--dur-component) var(--ease-engineered);
+/* MotionSection reveal primitive — SCROLL-LINKED since D-079.
+   `--t` (0→1) is written by the scroll engine from the section's entry;
+   no transitions: the scroll position IS the timeline, so scrolling back
+   up returns every value exactly. `data-rs` is "0" | "p" | "1"; at "1"
+   none of the rules below apply and the computed transform is literally
+   `none`. The fallback `var(--t, 1)` keeps content visible if the engine
+   never wrote a value. */
+.reveal:not([data-rs="1"]) {
+  opacity: var(--t, 1);
+  transform: translateY(calc(16px * (1 - var(--t, 1))));
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
+/* the section title wipes in from the start of the line (mirrors in RTL);
+   the ±0.4em margins keep ascenders, descenders and Arabic marks unclipped
+   at t = 1 */
+.reveal .section-title { inline-size: fit-content; max-inline-size: 100%; }
+.reveal:not([data-rs="1"]) .section-title {
+  clip-path: inset(-0.4em calc((1 - var(--t, 1)) * (100% + 0.8em) - 0.4em) -0.4em -0.4em);
+}
+[dir="rtl"] .reveal:not([data-rs="1"]) .section-title {
+  clip-path: inset(-0.4em -0.4em -0.4em calc((1 - var(--t, 1)) * (100% + 0.8em) - 0.4em));
+}
+.reveal:not([data-rs="1"]) .section-lead {
+  opacity: var(--t, 1);
+  transform: translateY(calc(18px * (1 - var(--t, 1))));
 }
 [data-motion-tier="static"] .reveal {
   opacity: 1;
   transform: none;
-  transition: none;
 }
 
 /* ------------------------------------------------------------------ */
@@ -389,8 +401,10 @@ html:not([data-motion-tier="static"]) .hero-backdrop polyline {
 
 /* Page hold-back while the cinematic runs: everything after the hero is
    covered; header hidden; hero content staged (F-7). */
-html[data-opening="pending"] main > *:not(.hero-scene),
-html[data-opening="running"] main > *:not(.hero-scene) {
+html[data-opening="pending"] main > *:not(.hero-scene):not(.scene-stack),
+html[data-opening="running"] main > *:not(.hero-scene):not(.scene-stack),
+html[data-opening="pending"] main > .scene-stack > *:not(.hero-scene),
+html[data-opening="running"] main > .scene-stack > *:not(.hero-scene) {
   visibility: hidden;
 }
 html[data-opening="pending"] .site-header,
@@ -861,7 +875,7 @@ html[data-opening="revealing"] .site-header {
   to { opacity: 1; }
 }
 /* page content starts under the fixed header except the full-bleed hero */
-main > *:not(.hero-scene):first-child {
+main > *:not(.hero-scene):not(.scene-stack):first-child {
   padding-top: 5rem;
 }
 
@@ -1548,35 +1562,27 @@ html[data-opening="running"] .floating-de {
   opacity: 0.55; /* media grade: enriches, never competes (§22) */
 }
 
-/* §14 — scene-transition family (variants on the reveal primitive).
-   Native scroll only; each section picks the device that fits. STATIC
-   neutralizes everything via the global override. */
-.reveal[data-reveal="mask"] {
+/* §14 — scene-transition family, re-expressed on `--t` (D-079).
+   Native scroll only; STATIC neutralizes everything (nothing registers). */
+.reveal[data-reveal="mask"]:not([data-rs="1"]) {
   transform: none;
   opacity: 1;
 }
-/* the CHILD is clipped, never the observed section itself — a fully
-   clipped target reports zero intersection and the reveal deadlocks */
-.reveal[data-reveal="mask"] > * {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path calc(var(--dur-section) + 150ms) var(--ease-cinematic);
+/* the CHILDREN unclip from the top down; the D-079 scene layers (edge,
+   veil) are not content and are never clipped */
+.reveal[data-reveal="mask"]:not([data-rs="1"]) > :not(.scene-edge):not(.scene-veil) {
+  clip-path: inset(0 0 calc((1 - var(--t, 1)) * 100%) 0);
 }
-.reveal.is-visible[data-reveal="mask"] > * {
-  clip-path: inset(0 0 -2% 0);
-}
-.reveal[data-reveal="converge"] {
-  transform: scale(0.988) translateY(10px);
-  filter: blur(6px);
-  transition:
-    opacity var(--dur-section) var(--ease-cinematic),
-    transform var(--dur-section) var(--ease-cinematic),
-    filter var(--dur-section) var(--ease-cinematic);
-}
-.reveal.is-visible[data-reveal="converge"] {
-  filter: none;
+/* converge: depth settle WITHOUT blur (a filter on a whole layer is not
+   allowed, D-079) — and at t = 1 the rule stops applying, so the section
+   ends at transform: none (D075-RESIDUAL-TRANSFORM closed) */
+.reveal[data-reveal="converge"]:not([data-rs="1"]) {
+  transform: scale(calc(0.988 + 0.012 * var(--t, 1))) translateY(calc(10px * (1 - var(--t, 1))));
 }
 .reveal[data-reveal="trace"] {
   position: relative;
+}
+.reveal[data-reveal="trace"]:not([data-rs="1"]) {
   transform: none;
 }
 .reveal[data-reveal="trace"]::before {
@@ -1586,34 +1592,14 @@ html[data-opening="running"] .floating-de {
   top: 0;
   height: 1px;
   background: linear-gradient(90deg, var(--accent), rgba(255, 24, 156, 0));
-  transform: scaleX(0);
+  transform: scaleX(var(--t, 1));
   transform-origin: 0 0;
-  transition: transform calc(var(--dur-section) + 250ms) var(--ease-cinematic);
 }
 [dir="rtl"] .reveal[data-reveal="trace"]::before {
   background: linear-gradient(-90deg, var(--accent), rgba(255, 24, 156, 0));
   transform-origin: 100% 0;
 }
-.reveal.is-visible[data-reveal="trace"]::before {
-  transform: scaleX(1);
-}
-.reveal[data-reveal="sweep"] {
-  position: relative;
-  overflow: hidden;
-}
-.reveal[data-reveal="sweep"]::after {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inline-size: 34%;
-  inset-inline-start: -40%;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(226, 226, 229, 0.05), transparent);
-  transition: inset-inline-start 900ms var(--ease-cinematic);
-}
-.reveal.is-visible[data-reveal="sweep"]::after {
-  inset-inline-start: 110%;
-}
+/* `sweep` retired at D-079 — its sections reveal as `mask` */
 [data-motion-tier="static"] .reveal[data-reveal],
 [data-motion-tier="static"] .reveal[data-reveal] > * {
   clip-path: none;
@@ -4511,3 +4497,128 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
   .catalog-side-link { transition: none; }
 }
 html[data-motion-tier="static"] .catalog-side-link { transition: none; }
+
+/* ------------------------------------------------------------------ */
+/* D-079 — scene stacks + side scene index (scroll engine).             */
+/* Two adjacent pairs on the homepage: About rises over the stuck Hero, */
+/* Selected Projects rises over the stuck Industries. Every value is    */
+/* written by the scroll engine from the scroll position (reversible).  */
+/* Animated properties: transform · opacity · clip-path · border-radius */
+/* only. FULL tier, ≥ 768 px, once the engine has measured             */
+/* (data-stack-on); everything else keeps the plain flow.              */
+/* ------------------------------------------------------------------ */
+.scene-veil,
+.scene-edge { display: none; }
+@media (min-width: 768px) {
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="stick"] {
+    position: sticky;
+    /* 0, or (100vh − height) for a scene taller than the screen: it sticks
+       when its bottom edge reaches the bottom of the viewport */
+    top: var(--stick-top, 0px);
+    z-index: 0;
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > :not([data-stack="stick"]) {
+    position: relative;
+    z-index: 1;
+  }
+  /* the riser: opaque ground, top corners open as it arrives */
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="cover"] {
+    background: var(--bg);
+    border-start-start-radius: calc(32px * (1 - var(--enter, 1)));
+    border-start-end-radius: calc(32px * (1 - var(--enter, 1)));
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="cover"] > .scene-edge {
+    display: block;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    block-size: 96px;
+    pointer-events: none;
+    opacity: calc(1 - var(--enter, 1));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="cover"] > .scene-edge::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    inset-inline: 15%;
+    block-size: 1px;
+    background: linear-gradient(90deg, transparent, var(--brand-magenta), transparent);
+  }
+  /* the covered scene recedes: scale from the top, drift up, darken —
+     ONLY while cover > 0, so at rest its transform
+     is literally none (the hero's fixed opening stage is never
+     re-parented by a containing block) */
+  /* while a cover runs the receding scene and its veil are composited
+     layers (the scale and the fade then cost no repaint); outside a cover
+     neither is promoted — no containing block for the opening's fixed stage */
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="stick"][data-cover-active] {
+    will-change: transform;
+    transform-origin: 50% 0;
+    transform: scale(calc(1 - 0.07 * var(--cover))) translateY(calc(-2vh * var(--cover)));
+    /* NO bottom-corner clip: measured at D-079, the receding scene's bottom
+       edge is always under the riser except at 1920×1080 early in the
+       Industries cover, where 24px·cover ≤ 0.21 px — invisible — while an
+       animated rounded clip-path re-rasterised the whole scene every frame
+       (dropped frames 52 % → 26 % without it) */
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="stick"] > .scene-veil {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    background: #000;
+    opacity: calc(0.72 * var(--cover, 0));
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="stick"][data-cover-active] > .scene-veil {
+    will-change: opacity;
+  }
+  /* fully covered: the riser hides the whole scene — stop painting it */
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > [data-stack="stick"][data-cover-full] {
+    visibility: hidden;
+  }
+  /* the hero's grid and content slide up and fade with the cover */
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > .hero-scene[data-cover-active] .hero-content {
+    transform: translateY(calc(-70px * var(--cover)));
+    opacity: calc(1 - 0.6 * var(--cover));
+  }
+  html[data-motion-tier="full"] .scene-stack[data-stack-on] > .hero-scene[data-cover-active] :is(.hero-photo-stage, .hero-backdrop) {
+    transform: translateY(calc(-60px * var(--cover)));
+  }
+  /* measurement pass (engine only, same frame): stickiness off, flow unchanged */
+  html.sc-measure .scene-stack[data-stack-on] > [data-stack="stick"] {
+    position: relative !important;
+    top: 0 !important;
+  }
+}
+
+/* side scene index: dots at the end of the line, mid-height; the active
+   chapter is a pink bar. Desktop only, never STATIC. */
+.scene-index { display: none; }
+@media (min-width: 880px) {
+  html:not([data-motion-tier="static"]) .scene-index {
+    display: flex;
+    position: fixed;
+    inset-inline-end: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 35;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    pointer-events: none;
+  }
+}
+.scene-index span {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 9999px;
+  background: rgba(146, 154, 180, 0.45);
+  transition: background-color 300ms var(--ease-engineered);
+}
+.scene-index span[data-on] {
+  block-size: 26px;
+  border-radius: 4px;
+  background: var(--brand-magenta);
+}

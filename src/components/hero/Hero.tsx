@@ -31,7 +31,7 @@ export async function Hero() {
   const t = await getTranslations("hero");
 
   return (
-    <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero" data-env="dark">
+    <section className="hero-scene" aria-label={t("ariaLabel")} data-scene="hero" data-env="dark" data-stack="stick">
       <HeroBackdropStatic />
       {/* D-041: the owner-approved Riyadh photographic scene — the
           photograph, the registered technology-network overlay, and the
@@ -113,6 +113,8 @@ export async function Hero() {
           </p>
         </div>
       </div>
+      {/* D-079: darkens with --cover as About rises over the stuck hero */}
+      <div className="scene-veil" aria-hidden="true" />
     </section>
   );
 }
