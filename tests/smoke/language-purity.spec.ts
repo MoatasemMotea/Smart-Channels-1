@@ -117,3 +117,41 @@ for (const loc of ["ar", "en"] as const) {
     expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(37);
   });
 }
+
+/* D-082 — the mobile menu (portalled, mounted only when open) is part of
+   every page: open it at 390 px and hold its text to the same rules. */
+for (const loc of ["ar", "en"] as const) {
+  test(`${loc}: the OPEN mobile menu at 390 px speaks one language too`, async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(`/${loc}/partners`, { waitUntil: "networkidle" });
+    await page.locator(".menu-toggle").click();
+    const panel = page.locator(".site-menu");
+    await expect(panel).toBeVisible();
+    const nodes = await panel.evaluate((root) => {
+      const out: { text: string; lang: string }[] = [];
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let n: Node | null;
+      while ((n = w.nextNode())) {
+        const t = (n.textContent ?? "").replace(/\s+/g, " ").trim();
+        if (t) out.push({ text: t, lang: n.parentElement?.closest("[lang]")?.getAttribute("lang") ?? "" });
+      }
+      return out;
+    });
+    expect(nodes.length).toBeGreaterThan(5);
+    const foreign = loc === "ar" ? "en" : "ar";
+    const problems: string[] = [];
+    for (const n of nodes) {
+      for (const r of splitForeign(n.text, loc).filter((x) => x.lang)) {
+        const run = clean(r.text);
+        if (!run) continue;
+        const ok = loc === "ar" ? latinAllowed(run) : ARABIC_ON_EN.includes(run);
+        if (!ok) problems.push(`«${run}» not on the allow-list`);
+        else if (!n.lang.startsWith(foreign)) problems.push(`«${run}» lang="${n.lang}"`);
+      }
+    }
+    expect(problems).toEqual([]);
+    // the email is there, and carries English
+    await expect(panel.locator('a[href^="mailto:"] [lang="en"]')).toHaveCount(1);
+  });
+}

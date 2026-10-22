@@ -24,7 +24,15 @@ export const BRANDS: string[] = [
   "Avaya",
   "Alcatel",
   "FIFA",
+  // D-082: series marks kept in Latin inside the official Arabic project names
+  "PFL",
+  "E1",
 ];
+
+/** D-082: the company's registered Arabic (legal) name — commercial register.
+ *  Arabic, so always at home on Arabic pages; carried by the Arabic
+ *  Organization JSON-LD as `legalName`. "Smart Channels" stays the brand. */
+export const LEGAL_NAME_AR = "شركة القنوات الذكية";
 
 /** technical terms and standards kept in Latin inside Arabic sentences */
 export const TECH_TERMS: string[] = [

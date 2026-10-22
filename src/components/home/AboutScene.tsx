@@ -92,7 +92,7 @@ export async function AboutScene({ locale }: { locale: Locale }) {
           </li>
           <li className="stagger-item stagger-rule pt-4" style={{ "--i": 1 } as CSSProperties}>
             <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.mission")}</h3>
-            <p className="mt-3 text-sm leading-7 text-ink-muted">{localize(pillars.mission, locale)}</p>
+            <p className="mt-3 text-sm leading-7 text-ink-muted">{localize(company.mission, locale)}</p>
           </li>
           <li className="stagger-item stagger-rule pt-4" style={{ "--i": 2 } as CSSProperties}>
             <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.values")}</h3>

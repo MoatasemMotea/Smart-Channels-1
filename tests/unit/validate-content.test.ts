@@ -232,3 +232,23 @@ describe("D-081 Track Record figures advance by themselves", () => {
     expect(at("2026-12-31T20:30:00Z").projects).toBe(200);
   });
 });
+
+describe("D-082 the registered Arabic name", () => {
+  it("the Arabic Organization JSON-LD carries legalName and the brand as alternateName; English carries neither", async () => {
+    const { organizationSchema } = await import("../../src/lib/seo");
+    const { LEGAL_NAME_AR } = await import("../../src/content/lang-allowlist");
+    const ar = organizationSchema({ locale: "ar", name: "القنوات الذكية" });
+    expect(ar.legalName).toBe(LEGAL_NAME_AR);
+    expect(ar.legalName).toBe("شركة القنوات الذكية");
+    expect(ar.alternateName).toBe("Smart Channels");
+    const en = organizationSchema({ locale: "en", name: "Smart Channels" });
+    expect(en.legalName).toBeUndefined();
+    expect(en.alternateName).toBeUndefined();
+  });
+
+  it("one mission: the homepage About and /company read the same company.mission", async () => {
+    const { company } = await import("../../src/content/company");
+    expect(company.mission.ar).toBe("نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.");
+    expect("mission" in company.aboutPillars).toBe(false);
+  });
+});

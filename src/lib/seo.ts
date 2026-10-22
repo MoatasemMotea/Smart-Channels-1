@@ -128,6 +128,8 @@ export function organizationSchema(opts: {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: opts.name,
+    // D-082: the registered Arabic name (commercial register); the brand stays "Smart Channels"
+    ...(opts.locale === "ar" ? { legalName: "شركة القنوات الذكية", alternateName: "Smart Channels" } : {}),
     logo: ORGANIZATION_LOGO,
     /* Text form: the approved address is authored as one localized line
        (src/content/contact.ts) and splitting it into PostalAddress parts

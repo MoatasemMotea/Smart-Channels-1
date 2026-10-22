@@ -20,22 +20,7 @@ export interface PendingName {
 }
 
 export const arabicPending: PendingName[] = [
-  { kind: "client", id: "skywave", en: "SkyWave", note: "no Arabic on the approved logo" },
   { kind: "client", id: "wpe", en: "Water & Power Engineering", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "add-plus", en: "add+", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "sala-entertainment", en: "Sala Entertainment", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "hopscotch", en: "Hopscotch", note: "Saudi or international brand? — no Arabic on the logo" },
-  { kind: "client", id: "moments-international", en: "Moments International", note: "Saudi or international brand? — no Arabic on the logo" },
   { kind: "client", id: "hwadi", en: "Hwadi", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "reform-athletica", en: "Reform Athletica", note: "no Arabic on the approved logo" },
-  { kind: "project", id: "rcu-outdoor-alula", en: "RCU Outdoor Entertainment — AlUla", note: "official Arabic title of the engagement unknown" },
-  { kind: "project", id: "neom-sports-village", en: "NEOM Sports Village", note: "official Arabic name unknown" },
-  { kind: "project", id: "world-combat-games", en: "World Combat Games — Riyadh 2023", note: "official Arabic name unknown" },
-  { kind: "project", id: "formula-e1-jeddah", en: "Formula E1 — Jeddah", note: "event identity unclear (E1 powerboat series?)" },
-  { kind: "project", id: "pfl-venues", en: "PFL — Green Hall / Boulevard / MENA", note: "official Arabic name unknown" },
-  { kind: "project", id: "fei-world-cup-finals", en: "FEI World Cup Finals — Riyadh", note: "official Arabic name unknown" },
-  { kind: "project", id: "longines-gct", en: "Longines Global Champions Tour", note: "official Arabic name unknown" },
-  { kind: "project", id: "wta-finals-riyadh", en: "WTA Finals — Riyadh", note: "official Arabic name unknown" },
-  { kind: "project", id: "next-gen-atp-finals", en: "Next Gen ATP Finals", note: "official Arabic name unknown" },
-  { kind: "project", id: "saudi-snooker-masters", en: "Saudi Arabia Snooker Masters", note: "official Arabic name unknown" },
+  { kind: "client", id: "sala-entertainment", en: "Sala Entertainment", note: "not named in D-082 (neither allow-listed nor kept) — awaiting the owner" },
 ];

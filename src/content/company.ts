@@ -21,11 +21,12 @@ export const company = {
     ar: "تقدّم Smart Channels حلولاً متكاملة للتقنية والاتصالات والبنية التحتية والأمن للشركات والمؤسسات والمنشآت والفعاليات. تمتد قدراتنا من الاستشارات والخدمات التقنية إلى تكامل الأنظمة والخدمات المُدارة وتنفيذ المشاريع والدعم المستمر — لنساعد عملاءنا على بناء بيئات موثوقة وآمنة وقابلة للتوسّع.",
   } satisfies LocalizedText,
 
-  /** p.4 mission — verbatim from the approved profile. */
+  /** The company's mission — ONE source for the homepage About and
+   *  /company (D-082: the owner's D-081 wording replaces the profile's p.4
+   *  sentence everywhere). */
   mission: {
-    en: "We are committed to carefully listening to our customers' distinct needs, fully understanding their requirements, and then guiding them to the best technologies that serve those needs and contribute to the tangible growth of their business.",
-    // AR authored from the approved EN (D-006) — owner review pending
-    ar: "نلتزم بالإصغاء بعناية إلى الاحتياجات الخاصة لعملائنا وفهم متطلباتهم فهماً كاملاً، ثم إرشادهم إلى أفضل التقنيات التي تخدم تلك الاحتياجات وتسهم في نموّ أعمالهم نموّاً ملموساً.",
+    en: "We design, supply, install and operate technology infrastructure — networks, security, communications and AV — delivered on schedule and working from day one.",
+    ar: "نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.",
   } satisfies LocalizedText,
 
   /** p.4 numbered value statements. */
@@ -40,17 +41,15 @@ export const company = {
    * D-081 — the four parts under the About photograph on the homepage
    * (vision · mission · values · goals), owner-authored in both languages
    * (directive 2026-10-22). They replace the capability row THERE only;
-   * /company keeps `mission`, `values` and `capabilities` above.
+   * /company keeps `values` and `capabilities`; both pages read the one
+   * `mission` (D-082).
    */
   aboutPillars: {
     vision: {
       en: "To be the technology partner the Kingdom relies on for its major national projects.",
       ar: "أن نكون الشريك التقني الذي تعتمد عليه المملكة في مشاريعها الوطنية الكبرى.",
     } satisfies LocalizedText,
-    mission: {
-      en: "We design, supply, install and operate technology infrastructure — networks, security, communications and AV — delivered on schedule and working from day one.",
-      ar: "نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.",
-    } satisfies LocalizedText,
+    // mission: read from `company.mission` above (one source, D-082)
     values: [
       { name: { en: "Reliability", ar: "الموثوقية" }, line: { en: "systems that work when it matters", ar: "أنظمة تعمل حين يُعتمد عليها" } },
       { name: { en: "Precision", ar: "الدقة" }, line: { en: "we measure before we install", ar: "نقيس قبل أن نركّب" } },

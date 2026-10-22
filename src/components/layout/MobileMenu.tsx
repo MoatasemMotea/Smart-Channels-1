@@ -221,7 +221,7 @@ export function MobileMenu({ label, closeLabel }: { label: string; closeLabel: s
                     <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
                   </p>
                   <p>
-                    <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                    <a href={`mailto:${contact.email}`}><span lang="en" dir="ltr">{contact.email}</span></a>
                   </p>
                 </address>
               </nav>
