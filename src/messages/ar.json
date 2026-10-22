@@ -130,7 +130,11 @@
     "city": "الرياض",
     "role": "المقر الرئيسي",
     "asOf": "اعتبارًا من 2026",
-    "regional": "امتداد إقليمي"
+    "regional": "امتداد إقليمي",
+    "citiesLabel": "المدن ومشاريعها",
+    "cityProjects": "{count, plural, one {مشروع واحد} two {مشروعان} few {# مشاريع} many {# مشروعًا} other {# مشروع}}",
+    "moreProjects": "{count, plural, one {ومشروع آخر} two {ومشروعان آخران} few {و# مشاريع أخرى} many {و# مشروعًا آخر} other {و# مشروع آخر}}",
+    "viewProject": "عرض المشروع"
   },
   "carousel": {
     "prev": "الشعارات السابقة",

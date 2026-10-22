@@ -1025,16 +1025,21 @@ html[data-motion-tier="static"] .site-menu-backdrop { transition: none; }
   --map-grid-soft: rgba(20, 20, 22, 0.028);
   --map-vignette: rgba(20, 20, 22, 0.06);
 }
+/* D-081: the wrapper carries the stage's spacing so the city-button layer
+   can cover the stage box exactly */
+.network-stage-wrap {
+  position: relative;
+  margin-block: 2.5rem;
+}
 .network-stage {
   position: relative;
   height: clamp(340px, 58vh, 620px);
-  margin-block: 2.5rem;
 }
 @media (max-width: 767px) {
   /* dedicated mobile composition (§17): tighter stage, same narrative */
+  .network-stage-wrap { margin-block: 1.75rem; }
   .network-stage {
     height: clamp(300px, 46vh, 420px);
-    margin-block: 1.75rem;
   }
 }
 .network-canvas {
@@ -4621,4 +4626,120 @@ html[data-motion-tier="static"] .catalog-side-link { transition: none; }
   block-size: 26px;
   border-radius: 4px;
   background: var(--brand-magenta);
+}
+
+/* ------------------------------------------------------------------ */
+/* D-081 — city buttons + project cards on the network map (popover,   */
+/* not tooltip), and the text alternative / mobile list.               */
+/* ------------------------------------------------------------------ */
+.map-cities {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.map-city {
+  position: absolute;
+  pointer-events: auto;
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+  /* the hit area is ≥ 44 × 44 px; the visible mark is the small dot */
+  outline: none;
+}
+.map-city:hover,
+.map-city[aria-expanded="true"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 24, 156, 0.55);
+}
+.map-city:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.map-city-dot {
+  position: absolute;
+  inline-size: 9px;
+  block-size: 9px;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  background: var(--brand-magenta);
+  /* a hairline of the page ground keeps the dot distinct on any map ink */
+  box-shadow: 0 0 0 2px var(--bg);
+  pointer-events: none;
+}
+.map-card {
+  position: absolute;
+  z-index: 3;
+  pointer-events: auto;
+  inline-size: max-content;
+  max-inline-size: min(300px, calc(100vw - 16px));
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  text-align: start;
+}
+.map-card[hidden] { display: none; }
+.map-card-image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  margin-block-end: 0.6rem;
+  border-radius: 6px;
+}
+.map-card-city { color: var(--accent); }
+.map-card-name {
+  margin-block-start: 0.35rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.map-card-sector,
+.map-card-more {
+  margin-block-start: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+}
+.map-card-link {
+  display: inline-block;
+  margin-block-start: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* the text alternative: visually hidden next to the desktop map, the
+   visible list on small screens where the buttons give way (ج) */
+.map-city-list {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .map-cities { display: none; }
+  .map-city-list {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    margin-block: 0 2rem;
+  }
+  .map-city-list-title { color: var(--accent); margin-block-end: 0.75rem; }
+  .map-city-list > ul { display: grid; gap: 0.9rem; }
+  .map-city-list > ul > li {
+    border-block-start: 1px solid var(--line);
+    padding-block-start: 0.7rem;
+  }
+  .map-city-list-name { font-weight: 600; }
+  .map-city-list li ul {
+    margin-block-start: 0.3rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--ink-muted);
+  }
 }

@@ -35,6 +35,9 @@ export async function generateMetadata({
  * content (D-002/D-006); D-020 keeps the profile itself source-only —
  * no public document exists.
  */
+/* D-081: the Track Record figures advance with the calendar — regenerated daily */
+export const revalidate = 86400;
+
 export default async function CompanyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   const locale = raw as Locale;

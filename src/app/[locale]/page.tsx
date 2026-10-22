@@ -12,6 +12,7 @@ import { LetsTalk } from "@/components/home/LetsTalk";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { HashArrival } from "@/components/motion/HashArrival";
+import { getMapCities, getStats } from "@/lib/content";
 import { SectionSeam } from "@/components/motion/SectionSeam";
 import { SceneStack } from "@/components/motion/SceneStack";
 import { SceneIndex } from "@/components/motion/SceneIndex";
@@ -37,6 +38,15 @@ import { SceneIndex } from "@/components/motion/SceneIndex";
  * floating experience). Every section is data-driven; D-020 keeps the
  * Company Profile source-only (no public document chapter exists).
  */
+/* D-081: the Track Record figures advance with the calendar, so they are
+   computed on the server for every request (≈ 30 ms) and written into the
+   HTML at their final values — never only at build time. `revalidate =
+   86400` (the directive's mechanism) was built and measured first: on
+   Next 16.3.3 it makes the router's segment prefetches of this page hang
+   (200 headers, body never closed — every page linking home then never
+   reaches network-idle). Restore it once that is fixed upstream. */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   const locale = raw as Locale;
@@ -54,7 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <SectionSeam variant="converge" />
 
-      <NetworkScene />
+      <NetworkScene stats={getStats()} cities={getMapCities(locale)} />
 
       {/* Solutions — cinematic media showcase (D-050 Solutions
           integration): the reach/evidence system resolves into tangible

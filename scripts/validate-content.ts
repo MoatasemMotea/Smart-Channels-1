@@ -385,7 +385,7 @@ const hqCount = locations.filter((l) => l.kind === "hq").length;
 if (hqCount !== 1) errors.push(`locations: expected exactly 1 HQ record, found ${hqCount}`);
 for (const l of locations) {
   checkAr(l.name, `location ${l.id} name`);
-  if (l.kind !== "hq" && l.projectIds.length === 0)
+  if (l.kind === "venue-city" && l.projectIds.length === 0)
     errors.push(`location ${l.id}: non-HQ evidence location must reference approved projects`);
   for (const pid of l.projectIds) {
     if (!projectIds.has(pid)) errors.push(`location ${l.id}: unknown projectId "${pid}"`);

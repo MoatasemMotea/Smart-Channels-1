@@ -21,7 +21,8 @@ import type {
   SolutionFamily,
   Stat,
 } from "@/types/content";
-import { stats } from "@/content/stats";
+import { FOUNDED_YEAR, stats } from "@/content/stats";
+import { locations } from "@/content/locations";
 import { solutionFamilies } from "@/content/solutions";
 import { industries } from "@/content/industries";
 import { projects } from "@/content/projects";
@@ -38,6 +39,7 @@ import { products } from "@/content/products";
 import { productCards, productCategories, type CategorySlug } from "@/content/product-catalog";
 import { navigation } from "@/content/navigation";
 import { company } from "@/content/company";
+import { project } from "@/lib/map/geo";
 
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
@@ -52,8 +54,97 @@ export function localize(text: LocalizedText, locale: Locale): string {
   return text.en;
 }
 
-export function getStats(): Stat[] {
-  return stats;
+/** The current calendar year in Riyadh (the company's home time zone). */
+export function riyadhYear(now: Date = new Date()): number {
+  return Number(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Riyadh", year: "numeric" }).format(now));
+}
+
+/**
+ * D-081: the Track Record figures as of `now`. A figure with `growth`
+ * advances by perYear for every calendar year after its `asOf`; "years"
+ * becomes (current year − FOUNDED_YEAR) once the founding year is on
+ * record. Never below the approved value. Call on the server — the pages
+ * that render these regenerate daily (revalidate = 86400).
+ */
+export function getStats(now: Date = new Date()): Stat[] {
+  const year = riyadhYear(now);
+  return stats.map((s) => {
+    if (!s.growth) return s;
+    const grown =
+      s.id === "years" && FOUNDED_YEAR !== null
+        ? year - FOUNDED_YEAR
+        : s.value + s.growth.perYear * Math.max(0, year - s.asOf);
+    return { ...s, value: Math.max(s.value, grown) };
+  });
+}
+
+/** One button on the network map (a city, or a group of cities closer
+ *  than a touch target) and the data its card shows (D-081). */
+export interface MapCityView {
+  id: string;
+  label: string;
+  /** member node positions (normalized map coordinates) */
+  points: { nx: number; ny: number }[];
+  projectCount: number;
+  first: { name: string; sector: string; href: string | null; image: { src: string; alt: string } | null };
+}
+/** The text alternative: every city with all of its projects. */
+export interface MapCityListItem {
+  id: string;
+  name: string;
+  projects: { name: string; href: string | null }[];
+}
+
+export function getMapCities(locale: Locale): { buttons: MapCityView[]; list: MapCityListItem[] } {
+  const join = (names: string[]) =>
+    locale === "ar"
+      ? names.join(" و")
+      : names.length < 3
+        ? names.join(" and ")
+        : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  const visible = new Set(getPublicProjects().map((p) => p.id));
+  const projectOf = (id: string) => (visible.has(id) ? projects.find((p) => p.id === id) : undefined);
+  const hrefOf = (p: Project) => (projectHasDetail(p) ? `/projects/${p.slug}` : null);
+  const withProjects = locations.filter((l) => l.kind !== "coverage-city" && l.projectIds.length > 0);
+  const list: MapCityListItem[] = withProjects.map((l) => ({
+    id: l.id,
+    name: localize(l.name, locale),
+    projects: l.projectIds
+      .map(projectOf)
+      .filter((p): p is Project => Boolean(p))
+      .map((p) => ({ name: localize(p.name, locale), href: hrefOf(p) })),
+  }));
+  const groups = new Map<string, typeof withProjects>();
+  for (const l of withProjects) {
+    const key = l.group ?? l.id;
+    groups.set(key, [...(groups.get(key) ?? []), l]);
+  }
+  const buttons: MapCityView[] = [...groups.entries()].map(([key, members]) => {
+    const all = members.flatMap((m) => m.projectIds.map(projectOf)).filter((p): p is Project => Boolean(p));
+    // the card leads with a project that has its own page (owner's selection
+    // first, by homeOrder), otherwise the first on record
+    const ranked = [...all].sort((a, b) => {
+      const da = hrefOf(a) ? 0 : 1;
+      const db = hrefOf(b) ? 0 : 1;
+      return da - db || (a.homeOrder ?? 99) - (b.homeOrder ?? 99);
+    });
+    const lead = ranked[0]!;
+    const sector = industries.find((i) => i.id === lead.sectorIds[0]);
+    const media = lead.media?.find((m) => m.type === "image");
+    return {
+      id: key,
+      label: join(members.map((m) => localize(m.name, locale))),
+      points: members.map((m) => project(m.latitude, m.longitude)).map((p) => ({ nx: p.x, ny: p.y })),
+      projectCount: all.length,
+      first: {
+        name: localize(lead.name, locale),
+        sector: sector ? localize(sector.name, locale) : "",
+        href: hrefOf(lead),
+        image: media ? { src: media.src, alt: localize(media.alt, locale) } : null,
+      },
+    };
+  });
+  return { buttons, list };
 }
 
 export function getSolutionFamilies(): SolutionFamily[] {

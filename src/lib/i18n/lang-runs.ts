@@ -13,7 +13,10 @@ export type Run = { text: string; lang?: "en" | "ar" };
 
 /* the first word must contain a letter ("5G" yes, a bare year no — "© 2026
    Smart Channels" keeps the year in the Arabic flow, as before) */
-const LATIN_RUN = /[0-9]*[A-Za-z][A-Za-z0-9&+.'’\-/:@_]*(?: [A-Za-z0-9&+.'’\-/:@_]+)*/g;
+/* Latin words stay ONE run across single spaces and across " — " / " – "
+   when Latin continues on the other side ("WTA Finals — Riyadh" is one
+   name; "FIFA — جدة" stops at FIFA) */
+const LATIN_RUN = /[0-9]*[A-Za-z][A-Za-z0-9&+.'’\-/:@_]*(?:(?: [—–] | )[A-Za-z0-9&+.'’\-/:@_]+)*/g;
 /* sentence punctuation after a run belongs to the surrounding sentence */
 const TRAILING = /[.,:;'’]+$/;
 const ARABIC_RUN = /[؀-ۿ](?:[؀-ۿً-ٟ ،]*[؀-ۿً-ٟ])?/g;

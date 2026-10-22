@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { Locale } from "@/types/content";
+import type { Locale, Stat } from "@/types/content";
+import type { MapCityListItem, MapCityView } from "@/lib/content";
 import { locations } from "@/content/locations";
 import { gulfRegions } from "@/content/regions";
-import { stats } from "@/content/stats";
 import { SAUDI_OUTLINE, GEO_BOUNDS, project } from "@/lib/map/geo";
 import { NetworkEngine, type NetRegion, type NetTier } from "./engine";
+import { MapCities, MapCityList } from "./MapCities";
 
 /**
  * Homepage chapter 04 — TRACK RECORD × NATIONAL NETWORK (Revision 2 §§3–9).
@@ -15,8 +16,10 @@ import { NetworkEngine, type NetRegion, type NetTier } from "./engine";
  * One designed cinematic moment, not a map widget: the Kingdom emerges
  * from the same particle universe as the Opening/Hero, Riyadh activates
  * as the brand origin, the signal travels city to city, the constellation
- * matures toward the Gulf horizon — and the approved Track Record counters
- * rise in step with the choreography (D-002).
+ * matures toward the Gulf horizon. The Track Record figures (D-002) are
+ * computed on the server (D-081: two of them advance by themselves each
+ * year) and written into the HTML at their final values — the client
+ * never rewrites them: no count from zero.
  *
  * Progressive enhancement: the server render carries the full semantic
  * content (counters at final values) plus a designed static SVG map — the
@@ -56,7 +59,15 @@ function subscribeTier(cb: () => void) {
 }
 const getTier = () => document.documentElement.getAttribute("data-motion-tier") ?? "static";
 
-export function NetworkScene() {
+export function NetworkScene({
+  stats,
+  cities,
+}: {
+  /** server-computed (getStats) — final values, never animated */
+  stats: Stat[];
+  /** server-computed (getMapCities) — city buttons + the text list */
+  cities: { buttons: MapCityView[]; list: MapCityListItem[] };
+}) {
   const locale = useLocale() as Locale;
   const t = useTranslations();
   // Server snapshot is "static": SSR/no-JS markup carries the designed SVG
@@ -67,7 +78,6 @@ export function NetworkScene() {
   const labelRef = useRef<HTMLParagraphElement>(null);
   const regionRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const legendRef = useRef<HTMLParagraphElement>(null);
-  const valueRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const engineRef = useRef<NetworkEngine | null>(null);
 
   useEffect(() => {
@@ -76,11 +86,6 @@ export function NetworkScene() {
     const section = sectionRef.current;
     if (!canvas || !section) return;
     const engineTier: NetTier = tier === "lite" ? "lite" : "full";
-
-    // counters start from zero only when the story will actually run
-    valueRefs.current.forEach((el) => {
-      if (el) el.textContent = "0";
-    });
 
     const engine = new NetworkEngine(canvas, locations, {
       tier: engineTier,
@@ -108,12 +113,6 @@ export function NetworkScene() {
           }
           el.style.opacity = "1";
           el.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
-        },
-        onCount: (p) => {
-          valueRefs.current.forEach((el, i) => {
-            const s = stats[i];
-            if (el && s) el.textContent = String(Math.round(s.value * p));
-          });
         },
         onDone: () => {
           io.disconnect();
@@ -199,6 +198,7 @@ export function NetworkScene() {
           {t("network.title")}
         </h2>
 
+        <div className="network-stage-wrap">
         <div className="network-stage" aria-hidden="true">
           {/* cinematic story (FULL/LITE); STATIC mounts no canvas at all */}
           {tier === "static" ? null : (
@@ -304,6 +304,12 @@ export function NetworkScene() {
           </div>
         </div>
 
+        {/* D-081: city buttons + project cards over the map (outside the
+            aria-hidden stage), and the text alternative / mobile list */}
+        <MapCities buttons={cities.buttons} tier={tier} />
+        </div>
+        <MapCityList list={cities.list} heading={t("network.citiesLabel")} />
+
         {/* Track Record — approved figures (D-002); server-rendered final
             values are the no-JS/STATIC truth, the engine counts them up in
             step with the network choreography. Suffixes never animate. */}
@@ -313,17 +319,11 @@ export function NetworkScene() {
             isolation so 200+ never renders as +200. Logical flow only —
             no hard-coded left/right; EN composition unchanged. */}
         <dl className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((s, i) => (
+          {stats.map((s) => (
             <div key={s.id} className="stat-block border-t border-line pt-4">
               <dd className="font-display text-5xl font-bold tabular-nums">
                 <span dir="ltr" className="inline-block">
-                  <span
-                    ref={(el) => {
-                      valueRefs.current[i] = el;
-                    }}
-                  >
-                    {s.value}
-                  </span>
+                  <span>{s.value}</span>
                   {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
                 </span>
               </dd>

@@ -130,7 +130,11 @@
     "city": "RIYADH",
     "role": "HEADQUARTERS",
     "asOf": "As of 2026",
-    "regional": "Regional reach"
+    "regional": "Regional reach",
+    "citiesLabel": "Cities and their projects",
+    "cityProjects": "{count, plural, one {# project} other {# projects}}",
+    "moreProjects": "and {count, plural, one {# more project} other {# more projects}}",
+    "viewProject": "View project"
   },
   "carousel": {
     "prev": "Previous logos",

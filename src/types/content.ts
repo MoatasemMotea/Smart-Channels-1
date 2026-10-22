@@ -51,6 +51,12 @@ export interface Stat {
   asOf: number;
   /** Internal provenance note — never rendered. */
   source?: string;
+  /**
+   * D-081: a figure that grows by itself. `value` is the approved figure
+   * for `asOf`; the server shows value + perYear × (current year − asOf).
+   * Absent = a manual figure, shown as written.
+   */
+  growth?: { perYear: number };
 }
 
 /* ------------------------------------------------------------------ */

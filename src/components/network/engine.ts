@@ -18,6 +18,7 @@
  * positioned via callback.
  */
 import { MAP_POINTS, MAP_ASPECT } from "@/generated/opening-data";
+import { canvasMapRect, FINAL_PUSH } from "./layout";
 import { project } from "@/lib/map/geo";
 import type { MapLocation } from "@/content/locations";
 
@@ -245,15 +246,8 @@ export class NetworkEngine {
     this.height = this.canvas.clientHeight;
     this.canvas.width = Math.round(this.width * this.dpr);
     this.canvas.height = Math.round(this.height * this.dpr);
-    const availW = this.width * (this.width < 768 ? 0.92 : 0.7);
-    const availH = this.height * 0.86;
-    let w = availW;
-    let h = w / MAP_ASPECT;
-    if (h > availH) {
-      h = availH;
-      w = h * MAP_ASPECT;
-    }
-    this.mapRect = { x: (this.width - w) / 2, y: (this.height - h) / 2, w, h };
+    // shared with the city-button overlay (D-081) so buttons sit on the nodes
+    this.mapRect = canvasMapRect(this.width, this.height, MAP_ASPECT);
     for (const n of this.nodes) {
       n.x = this.mapRect.x + n.nx * this.mapRect.w;
       n.y = this.mapRect.y + n.ny * this.mapRect.h;
@@ -367,10 +361,10 @@ export class NetworkEngine {
 
     // restrained camera: slow push across the routes beat (§6)
     const push = easeCinematic(clamp01((t - tl.routesStart) / (tl.end - tl.routesStart)));
-    const s = 1 + 0.04 * push;
+    const s = 1 + (FINAL_PUSH.scale - 1) * push;
     ctx.translate(this.width / 2, this.height / 2);
     ctx.scale(s, s);
-    ctx.translate(-this.width / 2, -this.height / 2 - 4 * push);
+    ctx.translate(-this.width / 2, -this.height / 2 - FINAL_PUSH.lift * push);
 
     const emerge = easeEngineered(clamp01(t / tl.emergeEnd));
 

@@ -219,3 +219,16 @@ describe("localize (A-002 / Q5)", () => {
     expect(localize({ en: "Hello" }, "en")).toBe("Hello");
   });
 });
+
+describe("D-081 Track Record figures advance by themselves", () => {
+  it("2026 shows the approved values; projects +20 and years +1 per later year; sectors and venues stay manual", async () => {
+    const { getStats } = await import("../../src/lib/content");
+    const at = (iso: string) => Object.fromEntries(getStats(new Date(iso)).map((s) => [s.id, s.value]));
+    expect(at("2026-10-22T12:00:00Z")).toEqual({ projects: 200, years: 7, sectors: 16, venues: 100 });
+    expect(at("2027-01-01T12:00:00Z")).toEqual({ projects: 220, years: 8, sectors: 16, venues: 100 });
+    expect(at("2030-06-01T12:00:00Z")).toEqual({ projects: 280, years: 11, sectors: 16, venues: 100 });
+    // the year turns at midnight in Riyadh (UTC+3), not at UTC midnight
+    expect(at("2026-12-31T21:30:00Z").projects).toBe(220);
+    expect(at("2026-12-31T20:30:00Z").projects).toBe(200);
+  });
+});

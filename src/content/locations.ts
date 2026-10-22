@@ -9,6 +9,11 @@ import type { LocalizedText } from "@/types/content";
  * project record id (validated). `appearsInOpening` controls the opening
  * scene; the P6 Track Record scene uses the full list.
  *
+ * D-081: Dammam is a "coverage-city" (owner directive) — a route from
+ * Riyadh and a node, no project, no button. Riyadh+Diriyah (≈ 6 px apart
+ * on a 1440 px map) and Jeddah+Makkah+Taif (33–37 px apart) are grouped:
+ * each group is ONE ≥ 44 × 44 px button on the desktop map.
+ *
  * Do NOT add cities, offices, or Gulf locations without owner-approved
  * source backing (Amendment 2 / D-5). Riyadh is the HQ (approved contact,
  * profile p.31) and the only labeled location in the opening (C-4/D-5).
@@ -18,10 +23,15 @@ export interface MapLocation {
   name: LocalizedText;
   latitude: number;
   longitude: number;
-  kind: "hq" | "venue-city";
+  /** "coverage-city" (D-081): a city the network reaches with no project
+   *  on record — drawn as a routed node, with no button and no card */
+  kind: "hq" | "venue-city" | "coverage-city";
   projectIds: string[];
   appearsInOpening: boolean;
   priority: number;
+  /** D-081: cities closer than a 44 px touch target on the desktop map
+   *  share ONE button ("Riyadh and Diriyah — 6 projects") */
+  group?: string;
 }
 
 export const locations: MapLocation[] = [
@@ -35,6 +45,7 @@ export const locations: MapLocation[] = [
     projectIds: ["riyadh-marathon", "wta-finals-riyadh", "world-combat-games", "islamic-solidarity-games", "fei-world-cup-finals"],
     appearsInOpening: true,
     priority: 1,
+    group: "riyadh-diriyah",
   },
   {
     id: "jeddah",
@@ -45,6 +56,7 @@ export const locations: MapLocation[] = [
     projectIds: ["king-abdullah-sports-city", "prince-abdullah-al-faisal", "al-jawhara-stadium", "f1-saudi-arabian-gp", "fifa-club-world-cup-jeddah", "formula-e1-jeddah"],
     appearsInOpening: true,
     priority: 2,
+    group: "jeddah-makkah-taif",
   },
   {
     id: "makkah",
@@ -55,6 +67,7 @@ export const locations: MapLocation[] = [
     projectIds: ["grand-mosque-makkah"],
     appearsInOpening: true,
     priority: 3,
+    group: "jeddah-makkah-taif",
   },
   {
     id: "alula",
@@ -95,6 +108,7 @@ export const locations: MapLocation[] = [
     projectIds: ["diriyah-season"],
     appearsInOpening: true,
     priority: 7,
+    group: "riyadh-diriyah",
   },
   {
     id: "taif",
@@ -105,6 +119,7 @@ export const locations: MapLocation[] = [
     projectIds: ["king-fahd-sports-city-taif"],
     appearsInOpening: false, // visually clusters with Makkah in the opening; P6 uses it
     priority: 8,
+    group: "jeddah-makkah-taif",
   },
   {
     id: "tabuk",
@@ -115,5 +130,15 @@ export const locations: MapLocation[] = [
     projectIds: ["camel-festival-tabuk"],
     appearsInOpening: false, // visually clusters with NEOM in the opening; P6 uses it
     priority: 9,
+  },
+  {
+    id: "dammam",
+    name: { en: "Dammam", ar: "الدمام" },
+    latitude: 26.39,
+    longitude: 50.0,
+    kind: "coverage-city",
+    projectIds: [],
+    appearsInOpening: false,
+    priority: 10,
   },
 ];
