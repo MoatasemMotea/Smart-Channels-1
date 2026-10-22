@@ -29,20 +29,23 @@ export const company = {
     ar: "نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.",
   } satisfies LocalizedText,
 
-  /** p.4 numbered value statements. */
+  /** The company's values — ONE source for the homepage About and /company
+   *  (D-083: the owner's five, each a name and one line, replace the
+   *  profile's three p.4 statements everywhere). */
   values: [
-    // AR translated from the approved EN at D-081 — owner review pending
-    { en: "Comprehensive and integrated solutions", ar: "حلول شاملة ومتكاملة" },
-    { en: "Reliable solutions built to global standards", ar: "حلول موثوقة مبنية وفق المعايير العالمية" },
-    { en: "Quality, reliability and operational efficiency", ar: "الجودة والموثوقية والكفاءة التشغيلية" },
-  ] satisfies LocalizedText[],
+    { name: { en: "Reliability", ar: "الموثوقية" }, line: { en: "systems that work when it matters", ar: "أنظمة تعمل حين يُعتمد عليها" } },
+    { name: { en: "Precision", ar: "الدقة" }, line: { en: "we measure before we install", ar: "نقيس قبل أن نركّب" } },
+    { name: { en: "Speed", ar: "السرعة" }, line: { en: "we deploy from our own stock, not supplier lead times", ar: "ننشر من مخزوننا لا من انتظار الموردين" } },
+    { name: { en: "Safety", ar: "السلامة" }, line: { en: "for our teams and our clients' sites", ar: "لفرقنا ولمواقع عملائنا" } },
+    { name: { en: "Partnership", ar: "الشراكة" }, line: { en: "we stay after handover", ar: "نبقى بعد التسليم" } },
+  ] satisfies { name: LocalizedText; line: LocalizedText }[],
 
   /**
    * D-081 — the four parts under the About photograph on the homepage
    * (vision · mission · values · goals), owner-authored in both languages
    * (directive 2026-10-22). They replace the capability row THERE only;
-   * /company keeps `values` and `capabilities`; both pages read the one
-   * `mission` (D-082).
+   * /company keeps `capabilities`; both pages read the one `mission`
+   * (D-082) and the one `values` (D-083).
    */
   aboutPillars: {
     vision: {
@@ -50,13 +53,7 @@ export const company = {
       ar: "أن نكون الشريك التقني الذي تعتمد عليه المملكة في مشاريعها الوطنية الكبرى.",
     } satisfies LocalizedText,
     // mission: read from `company.mission` above (one source, D-082)
-    values: [
-      { name: { en: "Reliability", ar: "الموثوقية" }, line: { en: "systems that work when it matters", ar: "أنظمة تعمل حين يُعتمد عليها" } },
-      { name: { en: "Precision", ar: "الدقة" }, line: { en: "we measure before we install", ar: "نقيس قبل أن نركّب" } },
-      { name: { en: "Speed", ar: "السرعة" }, line: { en: "we deploy from our own stock, not supplier lead times", ar: "ننشر من مخزوننا لا من انتظار الموردين" } },
-      { name: { en: "Safety", ar: "السلامة" }, line: { en: "for our teams and our clients' sites", ar: "لفرقنا ولمواقع عملائنا" } },
-      { name: { en: "Partnership", ar: "الشراكة" }, line: { en: "we stay after handover", ar: "نبقى بعد التسليم" } },
-    ] satisfies { name: LocalizedText; line: LocalizedText }[],
+    // values: read from `company.values` above (one source, D-083)
     goals: [
       { en: "Power Vision 2030 projects with the infrastructure they need", ar: "دعم مشاريع رؤية 2030 بالبنية التقنية التي تحتاجها" },
       { en: "Develop national technical talent", ar: "تطوير الكفاءات التقنية الوطنية" },

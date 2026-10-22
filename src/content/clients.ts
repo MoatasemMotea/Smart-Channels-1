@@ -22,7 +22,8 @@ import type { Client } from "@/types/content";
  * logos (Response Plus, Veda, 2P, Dhahran Expo, Saleh Al Rajhi, Takamol)
  * or long established (Sela = سيلا — corrected by the owner at D-082 —
  * and the three seasons). D-082: SkyWave, add+, Hopscotch, Moments
- * International and Reform Athletica are brands written in Latin. International brands
+ * International and Reform Athletica are brands written in Latin; D-083:
+ * so are Water & Power Engineering, Hwadi and Sala Entertainment. International brands
  * keep `name()` = Latin, allow-listed and wrapped lang="en". `pendingAr()`
  * marks a name whose official Arabic is awaited from the owner; it is
  * listed in src/content/arabic-pending.ts and shown in Latin until then. `jeddah-season`
@@ -52,19 +53,19 @@ export const clients: Client[] = [
   { id: "mott-macdonald", name: name("Mott MacDonald"), logo: { src: "/media/logos/clients/mott-macdonald.webp", quality: "pdf-extract" }, enabled: true, order: 6 },
   { id: "westcon-comstor", name: name("Westcon-Comstor"), logo: { src: "/media/logos/clients/westcon-comstor.webp", quality: "pdf-extract" }, enabled: true, order: 7 },
   { id: "response-plus", name: { en: "Response Plus Medical Complex", ar: "مجمع ريسبونس بلس الطبي" }, logo: { src: "/media/logos/clients/response-plus.webp", quality: "pdf-extract" }, enabled: true, order: 8 },
-  { id: "wpe", name: pendingAr("Water & Power Engineering"), logo: { src: "/media/logos/clients/wpe.webp", quality: "pdf-extract" }, enabled: true, order: 9 },
+  { id: "wpe", name: name("Water & Power Engineering"), logo: { src: "/media/logos/clients/wpe.webp", quality: "pdf-extract" }, enabled: true, order: 9 },
   { id: "veda-holding", name: { en: "Veda Holding", ar: "ڤيدا القابضة" }, logo: { src: "/media/logos/clients/veda-holding.webp", quality: "pdf-extract" }, enabled: true, order: 10 },
   { id: "perfect-presentation", name: { en: "Perfect Presentation (2P)", ar: "شركة العرض المتقن" }, logo: { src: "/media/logos/clients/perfect-presentation.webp", quality: "pdf-extract" }, enabled: true, order: 11 },
   { id: "add-plus", name: name("add+"), logo: { src: "/media/logos/clients/add-plus.webp", quality: "pdf-extract" }, enabled: true, order: 12 },
   { id: "dhahran-expo", name: { en: "Dhahran Expo", ar: "الظهران اكسبو" }, logo: { src: "/media/logos/clients/dhahran-expo.webp", quality: "pdf-extract" }, enabled: true, order: 13 },
-  { id: "sala-entertainment", name: pendingAr("Sala Entertainment"), logo: { src: "/media/logos/clients/sala-entertainment.webp", quality: "pdf-extract" }, enabled: true, order: 14 },
+  { id: "sala-entertainment", name: name("Sala Entertainment"), logo: { src: "/media/logos/clients/sala-entertainment.webp", quality: "pdf-extract" }, enabled: true, order: 14 },
   // D-078 exception: the black square IS the mark — shown in its own colours, never filtered
   { id: "hopscotch", name: name("Hopscotch"), logo: { src: "/media/logos/clients/hopscotch.webp", quality: "pdf-extract" }, originalColor: true, enabled: true, order: 16 },
   // D-078 exception: the black band IS the mark — shown in its own colours, never filtered
   { id: "moments-international", name: name("Moments International"), logo: { src: "/media/logos/clients/moments-international.webp", quality: "pdf-extract" }, originalColor: true, enabled: true, order: 17 },
   { id: "mediapro", name: name("mediaPro International"), logo: { src: "/media/logos/clients/mediapro.webp", quality: "pdf-extract" }, enabled: true, order: 18 },
   { id: "moelis", name: name("Moelis"), logo: { src: "/media/logos/clients/moelis.webp", quality: "pdf-extract" }, enabled: true, order: 21 },
-  { id: "hwadi", name: pendingAr("Hwadi"), logo: { src: "/media/logos/clients/hwadi.webp", quality: "pdf-extract" }, enabled: true, order: 24 },
+  { id: "hwadi", name: name("Hwadi"), logo: { src: "/media/logos/clients/hwadi.webp", quality: "pdf-extract" }, enabled: true, order: 24 },
   { id: "reform-athletica", name: name("Reform Athletica"), logo: { src: "/media/logos/clients/reform-athletica.webp", quality: "pdf-extract" }, enabled: true, order: 25 },
   /* D-078 — three owner-supplied marks (intake 392a79f). */
   { id: "riyadh-season", name: { en: "Riyadh Season", ar: "موسم الرياض" }, logo: { src: "/media/logos/clients/riyadh-season.webp", quality: "approved" }, enabled: true, order: 26 },

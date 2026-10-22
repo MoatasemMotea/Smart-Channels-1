@@ -32,7 +32,7 @@ export const solutionFamilies: SolutionFamily[] = [
           { en: "Fiber optic cabling", ar: "كابلات الألياف البصرية" },
           { en: "Copper cabling — Cat 6 / Cat 6A / Cat 7", ar: "الكابلات النحاسية — Cat 6 / Cat 6A / Cat 7" },
           { en: "Cable management", ar: "تنظيم الكابلات" },
-          { en: "Racks and enclosures", ar: "الخزائن والحاويات" },
+          { en: "Racks and enclosures", ar: "خزائن الشبكات والصناديق" },
           { en: "Testing, certification & documentation", ar: "الاختبار والاعتماد والتوثيق" },
         ],
       },
@@ -44,7 +44,7 @@ export const solutionFamilies: SolutionFamily[] = [
           { en: "High-density fiber panels", ar: "لوحات ألياف عالية الكثافة" },
           { en: "Pre-terminated MPO / MTP solutions", ar: "حلول MPO / MTP منتهية مسبقًا" },
           { en: "Pre-terminated fiber trunks", ar: "مسارات ألياف رئيسية منتهية مسبقًا" },
-          { en: "Rack & aisle containment", ar: "عزل الخزائن والممرات" },
+          { en: "Rack & aisle containment", ar: "عزل الممرات الساخنة والباردة" },
         ],
       },
     ],
@@ -234,7 +234,7 @@ export const solutionFamilies: SolutionFamily[] = [
         items: [
           {
             en: "A private branch exchange concentrates central-office lines and provides intercommunication between a large number of stations. An IP PBX handles voice under Internet protocol, bringing the benefits of computer telephony integration (CTI) to enterprise and hospitality deployments. Technology from Cisco, Avaya, Panasonic, Alcatel, Grandstream and others.",
-            ar: "يجمع السنترال الخاص خطوط المقسم المركزي ويوفّر الاتصال الداخلي بين عدد كبير من الأطراف. ويعالج سنترال IP PBX الصوت عبر بروتوكول الإنترنت، فيضيف مزايا تكامل الهاتف مع الحاسوب (CTI) إلى منشآت المؤسسات والضيافة. بتقنيات من Cisco وAvaya وPanasonic وAlcatel وGrandstream وغيرها.",
+            ar: "يجمع السنترال الخاص (PBX) خطوط المقسم المركزي ويوفّر الاتصال الداخلي بين عدد كبير من الأطراف. ويعالج سنترال IP PBX الصوت عبر بروتوكول الإنترنت، فيضيف مزايا تكامل الهاتف مع الحاسوب (CTI) إلى منشآت المؤسسات والضيافة. بتقنيات من Cisco وAvaya وPanasonic وAlcatel وGrandstream وغيرها.",
           },
         ],
       },

@@ -66,17 +66,20 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
         </div>
       </MotionSection>
 
-      {/* Values — the approved p.4 numbered statements as a technical index */}
+      {/* Values — the company's five (D-083: one source with the homepage About) as a technical index */}
       <MotionSection reveal="trace" className="border-b border-line" aria-label={t("inner.values")}>
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
           <p className="microlabel mb-8 text-accent">{t("inner.values")}</p>
           <ol className="company-values">
             {company.values.map((v, i) => (
-              <li key={i} className="company-value">
+              <li key={v.name.en} className="company-value">
                 <span aria-hidden="true" className="company-value-index microlabel">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="text-xl font-semibold md:text-2xl"><LangText text={localize(v, locale)} /></p>
+                <div>
+                  <p className="text-xl font-semibold md:text-2xl"><LangText text={localize(v.name, locale)} /></p>
+                  <p className="mt-2 text-base leading-7 text-ink-muted"><LangText text={localize(v.line, locale)} /></p>
+                </div>
               </li>
             ))}
           </ol>

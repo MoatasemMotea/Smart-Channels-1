@@ -19,8 +19,11 @@ export interface PendingName {
   note: string;
 }
 
-export const arabicPending: PendingName[] = [
-  { kind: "client", id: "wpe", en: "Water & Power Engineering", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "hwadi", en: "Hwadi", note: "no Arabic on the approved logo" },
-  { kind: "client", id: "sala-entertainment", en: "Sala Entertainment", note: "not named in D-082 (neither allow-listed nor kept) — awaiting the owner" },
-];
+/* D-083: the list is closed — every client and project now has its
+   official Arabic name or is an allow-listed Latin brand. To add a name
+   later whose official Arabic is not yet known: give the record `en`
+   only (no `ar`, no arPolicy) and add one line here, e.g.
+     { kind: "client", id: "acme", en: "Acme", note: "official Arabic awaited" },
+   The validator then requires the line, and the language test accepts
+   and prints the Latin name until `ar` arrives. */
+export const arabicPending: PendingName[] = [];

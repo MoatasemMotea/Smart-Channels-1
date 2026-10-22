@@ -97,7 +97,7 @@ export async function AboutScene({ locale }: { locale: Locale }) {
           <li className="stagger-item stagger-rule pt-4" style={{ "--i": 2 } as CSSProperties}>
             <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.values")}</h3>
             <ul className="about-values mt-3">
-              {pillars.values.map((v) => (
+              {company.values.map((v) => (
                 <li key={v.name.en} className="text-sm leading-7">
                   <strong className="font-semibold text-ink">{localize(v.name, locale)}</strong>
                   <span className="text-ink-muted"> — {localize(v.line, locale)}</span>
