@@ -30,7 +30,9 @@
     "themeDark": "المظهر الداكن",
     "themeLight": "المظهر الفاتح",
     "more": "المزيد",
-    "moreLabel": "المزيد من التنقّل"
+    "moreLabel": "المزيد من التنقّل",
+    "mainLabel": "التنقّل الرئيسي",
+    "homeLabel": "Smart Channels — الصفحة الرئيسية"
   },
   "home": {
     "title": "Smart Channels — التقنية التي تصنع التجربة",
@@ -110,7 +112,10 @@
   "footer": {
     "rights": "جميع الحقوق محفوظة.",
     "brandName": "القنوات الذكية",
-    "brandTagline": "نأخذك إلى المستقبل"
+    "brandTagline": "نأخذك إلى المستقبل",
+    "navLabel": "روابط التذييل",
+    "logoAlt": "Smart Channels — نأخذك إلى المستقبل",
+    "markAlt": "Smart Channels"
   },
   "hero": {
     "ariaLabel": "Smart Channels — التقنية التي تصنع التجربة",
@@ -205,7 +210,8 @@
     "errPhone": "أدخل رقم هاتف صحيحاً",
     "errConsent": "يرجى تأكيد الموافقة لنتمكن من التواصل معك",
     "infoTitle": "معلومات التواصل",
-    "mapTitle": "القنوات الذكية — خريطة الموقع"
+    "mapTitle": "القنوات الذكية — خريطة الموقع",
+    "honeypot": "الموقع الإلكتروني"
   },
   "assistant": {
     "name": "الموظف الرقمي لدى القنوات الذكية",

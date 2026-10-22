@@ -5,6 +5,7 @@ import { getSolutionFamilies, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 export async function generateMetadata({
   params,
@@ -44,7 +45,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
         <h1 className="max-w-3xl font-display text-4xl font-bold tracking-tight md:text-5xl">
           {t("title")}
         </h1>
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-ink-muted">{t("description")}</p>
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-ink-muted"><LangText text={t("description")} /></p>
       </MotionSection>
 
       <MotionSection as="div" reveal="trace" className="mt-14">
@@ -57,13 +58,13 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
                 </span>
                 <span className="solution-row-body">
                   <span className="solution-row-name font-display">
-                    {localize(f.name, locale)}
+                    <LangText text={localize(f.name, locale)} />
                   </span>
-                  <span className="solution-row-tagline">{localize(f.tagline, locale)}</span>
+                  <span className="solution-row-tagline"><LangText text={localize(f.tagline, locale)} /></span>
                   <span className="solution-row-tags" aria-hidden="true">
                     {f.subSolutions.map((s) => (
                       <span key={s.id} className="solution-tag microlabel">
-                        {localize(s.name, locale)}
+                        <LangText text={localize(s.name, locale)} />
                       </span>
                     ))}
                   </span>

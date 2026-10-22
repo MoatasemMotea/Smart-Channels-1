@@ -4,6 +4,7 @@ import { getContact, localize } from "@/lib/content";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { LeadForm } from "@/components/contact/LeadForm";
 import { LocationMap } from "@/components/contact/LocationMap";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * LET'S TALK — the homepage contact chapter (§§24–27 · D-050).
@@ -67,17 +68,17 @@ export async function LetsTalk() {
                 <dt className="microlabel">{t("contact.emailLabel")}</dt>
                 <dd>
                   <a className="tx-link" href={`mailto:${contact.email}`}>
-                    {contact.email}
+                    <LangText text={contact.email} />
                   </a>
                 </dd>
               </div>
               <div>
                 <dt className="microlabel">{t("contact.addressLabel")}</dt>
-                <dd>{localize(contact.address, locale)}</dd>
+                <dd><LangText text={localize(contact.address, locale)} /></dd>
               </div>
             </dl>
             <div className="mt-8">
-              <LocationMap address={contact.address.en} />
+              <LocationMap label={localize(contact.address, locale)} query={contact.address.en} />
             </div>
           </aside>
         </div>

@@ -4,6 +4,7 @@ import { getClients, getCompany, getPartners, localize } from "@/lib/content";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { LogoCarousel, type RailLogo } from "./LogoMotion";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * TECHNOLOGY ALLIANCES + OUR CLIENTS (D-033 content · D-042 presentation).
@@ -30,11 +31,11 @@ async function railStrings(locale: Locale) {
   const other = (locale === "ar" ? "en" : "ar") as Locale;
   const t = await getTranslations();
   const tOther = await getTranslations({ locale: other });
-  return { t, tOther, otherDir: other === "ar" ? "rtl" : "ltr" } as const;
+  return { t, tOther, otherLang: other, otherDir: other === "ar" ? "rtl" : "ltr" } as const;
 }
 
 export async function AlliancesIndex({ locale }: { locale: Locale }) {
-  const { t, tOther, otherDir } = await railStrings(locale);
+  const { t, tOther, otherLang, otherDir } = await railStrings(locale);
   const logos: RailLogo[] = getPartners().map((p) => ({
     id: p.id,
     name: localize(p.name, locale),
@@ -53,7 +54,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
           <SectionHeading>{t("sections.partners")}</SectionHeading>
-          <p className="rail-head-echo" dir={otherDir} aria-hidden="true">
+          <p className="rail-head-echo" lang={otherLang} dir={otherDir} aria-hidden="true">
             {tOther("sections.partners")}
           </p>
         </div>
@@ -71,7 +72,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
 }
 
 export async function ClientsField({ locale }: { locale: Locale }) {
-  const { t, tOther, otherDir } = await railStrings(locale);
+  const { t, tOther, otherLang, otherDir } = await railStrings(locale);
   const company = getCompany();
   const logos: RailLogo[] = getClients().map((c) => ({
     id: c.id,
@@ -91,11 +92,11 @@ export async function ClientsField({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
           <SectionHeading>{t("sections.clients")}</SectionHeading>
-          <p className="rail-head-echo" dir={otherDir} aria-hidden="true">
+          <p className="rail-head-echo" lang={otherLang} dir={otherDir} aria-hidden="true">
             {tOther("sections.clients")}
           </p>
         </div>
-        <p className="section-lead max-w-3xl text-lg leading-8">{localize(company.reach, locale)}</p>
+        <p className="section-lead max-w-3xl text-lg leading-8"><LangText text={localize(company.reach, locale)} /></p>
         <LogoCarousel
           logos={logos.filter((l) => l.src)}
           rtl={locale === "ar"}

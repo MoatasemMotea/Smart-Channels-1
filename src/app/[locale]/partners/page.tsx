@@ -4,6 +4,7 @@ import type { Locale } from "@/types/content";
 import { getPartners, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
+import { LangText } from "@/components/ui/LangText";
 import { PageHero } from "@/components/page/PageHero";
 import { LogoCarousel, type RailLogo } from "@/components/home/LogoMotion";
 
@@ -71,7 +72,7 @@ export default async function PartnersPage({ params }: { params: Promise<{ local
           <ul className="name-index">
             {partners.map((p) => (
               <li key={p.id} className="name-index-cell">
-                {p.name.en}
+                <LangText text={localize(p.name, locale)} />
               </li>
             ))}
           </ul>

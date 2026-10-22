@@ -30,9 +30,10 @@ export const company = {
 
   /** p.4 numbered value statements. */
   values: [
-    { en: "Comprehensive and integrated solutions" },
-    { en: "Reliable solutions built to global standards" },
-    { en: "Quality, reliability and operational efficiency" },
+    // AR translated from the approved EN at D-081 — owner review pending
+    { en: "Comprehensive and integrated solutions", ar: "حلول شاملة ومتكاملة" },
+    { en: "Reliable solutions built to global standards", ar: "حلول موثوقة مبنية وفق المعايير العالمية" },
+    { en: "Quality, reliability and operational efficiency", ar: "الجودة والموثوقية والكفاءة التشغيلية" },
   ] satisfies LocalizedText[],
 
   /** p.3 capability pillars. */

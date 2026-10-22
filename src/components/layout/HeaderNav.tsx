@@ -7,6 +7,7 @@ import { getNavigation, localize } from "@/lib/content";
 import { overflowNavIds } from "@/content/navigation";
 import { Link, usePathname } from "@/i18n/navigation";
 import { COVER_EVENT, staticTopOf } from "@/lib/motion/scroll-engine";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * Desktop primary navigation (P5 §§6–9 + Visual Correction §9).
@@ -145,7 +146,7 @@ export function HeaderNav() {
   const moreActive = overflow.some((i) => isActive(i.href));
 
   return (
-    <nav aria-label="Main" className="ms-auto hidden items-center gap-4 xl:gap-6 lg:flex">
+    <nav aria-label={t("mainLabel")} className="ms-auto hidden items-center gap-4 xl:gap-6 lg:flex">
       {items.map((item) => (
         <Link
           key={item.id}
@@ -155,7 +156,7 @@ export function HeaderNav() {
           aria-current={isActive(item.href) ? "true" : undefined}
           className={`${linkClass()}${overflowNavIds.has(item.id) ? " nav-collapsible" : ""}`}
         >
-          {localize(item.label, locale)}
+          <LangText text={localize(item.label, locale)} />
         </Link>
       ))}
 
@@ -187,7 +188,7 @@ export function HeaderNav() {
                 aria-current={isActive(item.href) ? "true" : undefined}
                 className="nav-more-item"
               >
-                {localize(item.label, locale)}
+                <LangText text={localize(item.label, locale)} />
               </Link>
             ))}
           </div>

@@ -11,6 +11,7 @@
  * server-rendered grid. Nothing here shows a model number and nothing
  * anywhere shows a count.
  */
+import { LangText } from "@/components/ui/LangText";
 export interface CardView {
   key: string;
   name: string;
@@ -45,7 +46,7 @@ export function CategoryCards({ cards }: { cards: CardView[] }) {
               <PlaceholderIcon />
             </div>
           )}
-          <p className="catalog-card-name">{c.name}</p>
+          <p className="catalog-card-name"><LangText text={c.name} /></p>
         </li>
       ))}
     </ul>

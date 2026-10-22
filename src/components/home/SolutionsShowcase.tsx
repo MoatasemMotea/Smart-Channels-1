@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { Locale, SolutionFamily, SolutionMedia } from "@/types/content";
 import { getSolutionFamilies, localize } from "@/lib/content";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * SOLUTIONS — cinematic media showcase (D-050 Solutions integration).
@@ -220,12 +221,12 @@ export function SolutionsShowcase() {
 
   const details = (f: SolutionFamily) => (
     <div className="ss-details">
-      <p className="text-base font-medium leading-7">{localize(f.tagline, locale)}</p>
+      <p className="text-base font-medium leading-7"><LangText text={localize(f.tagline, locale)} /></p>
       <ul className="mt-4 space-y-1.5">
         {f.subSolutions.slice(0, 3).map((sub) => (
           <li key={sub.id} className="flex items-baseline gap-3 text-sm text-ink-muted">
             <span aria-hidden="true" className="solutions-tick" />
-            {localize(sub.name, locale)}
+            <LangText text={localize(sub.name, locale)} />
           </li>
         ))}
       </ul>
@@ -255,7 +256,7 @@ export function SolutionsShowcase() {
               </span>
               <span aria-hidden="true" className="ss-item-rail" />
               <span className="ss-item-name font-display font-semibold">
-                {localize(f.name, locale)}
+                <LangText text={localize(f.name, locale)} />
               </span>
             </button>
             {/* desktop: the active entry expands in place */}

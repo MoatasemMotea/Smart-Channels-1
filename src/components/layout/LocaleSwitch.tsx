@@ -21,7 +21,8 @@ export function LocaleSwitch() {
       aria-label={t("switchLocaleLabel")}
       className="h-11 rounded border border-line px-4 text-sm font-medium text-ink-muted transition-colors hover:text-ink focus-visible:text-ink"
     >
-      {t("switchLocale")}
+      {/* the target language names itself, in its own language (WCAG 3.1.2) */}
+      <span lang={other}>{t("switchLocale")}</span>
     </button>
   );
 }

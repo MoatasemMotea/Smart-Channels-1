@@ -4,6 +4,7 @@ import type { Locale } from "@/types/content";
 import { getIndustries, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
+import { LangText } from "@/components/ui/LangText";
 
 export async function generateMetadata({
   params,
@@ -42,7 +43,7 @@ export default async function IndustriesPage({ params }: { params: Promise<{ loc
         <h1 className="max-w-3xl font-display text-4xl font-bold tracking-tight md:text-5xl">
           {t("title")}
         </h1>
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-ink-muted">{t("description")}</p>
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-ink-muted"><LangText text={t("description")} /></p>
       </MotionSection>
 
       <MotionSection as="div" reveal="converge" className="mt-14">
@@ -52,7 +53,7 @@ export default async function IndustriesPage({ params }: { params: Promise<{ loc
               <span aria-hidden="true" className="industry-cell-index microlabel">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="industry-cell-name">{localize(ind.name, locale)}</span>
+              <span className="industry-cell-name"><LangText text={localize(ind.name, locale)} /></span>
             </li>
           ))}
         </ul>

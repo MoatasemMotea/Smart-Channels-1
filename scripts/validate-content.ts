@@ -23,6 +23,7 @@ import { galleryItems } from "../src/content/gallery";
 import { galleryCategories } from "../src/content/gallery-categories";
 import { partners } from "../src/content/partners";
 import { clients } from "../src/content/clients";
+import { arabicPending } from "../src/content/arabic-pending";
 import { documents } from "../src/content/documents";
 import { navigation } from "../src/content/navigation";
 import { locations } from "../src/content/locations";
@@ -74,6 +75,30 @@ checkUnique(projects.map((p) => p.slug), "projects.slug");
 checkUnique(galleryItems.map((g) => g.id), "gallery");
 checkUnique(partners.map((p) => p.id), "partners");
 checkUnique(clients.map((c) => c.id), "clients");
+
+/* ---- one language per page (D-081) ----
+   Projects are always Arabic on the Arabic site (no arPolicy latin). A
+   client or project without Arabic must be on the pending list, and the
+   list holds nothing that already has Arabic. */
+{
+  const pending = new Map(arabicPending.map((p) => [`${p.kind}:${p.id}`, p]));
+  for (const p of projects) {
+    if (p.name.arPolicy === "latin") errors.push(`project ${p.id}: arPolicy latin is not allowed (D-081)`);
+  }
+  const named = [
+    ...projects.map((p) => ({ key: `project:${p.id}`, name: p.name })),
+    ...clients.map((c) => ({ key: `client:${c.id}`, name: c.name })),
+  ];
+  for (const { key, name } of named) {
+    const listed = pending.get(key);
+    if (!name.ar && name.arPolicy !== "latin" && !listed) errors.push(`${key}: no Arabic name and not on arabic-pending.ts`);
+    if (listed && (name.ar || name.arPolicy === "latin")) errors.push(`${key}: has a name policy but is still on arabic-pending.ts`);
+    if (listed && listed.en !== name.en) errors.push(`${key}: arabic-pending.ts lists "${listed.en}", record says "${name.en}"`);
+  }
+  for (const key of pending.keys()) {
+    if (!named.some((n) => n.key === key)) errors.push(`arabic-pending.ts: unknown record ${key}`);
+  }
+}
 
 /* ---- logos (D-078) ----
    A record may have NO logo (pending mark — the rails skip it, the name

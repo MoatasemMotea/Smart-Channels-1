@@ -18,17 +18,19 @@
  */
 import { getTranslations } from "next-intl/server";
 
-export async function LocationMap({ address }: { address: string }) {
+/** `label` is shown in the page language; `query` is the address the map
+ *  search resolves (the approved English address, D-081). */
+export async function LocationMap({ label, query }: { label: string; query: string }) {
   const t = await getTranslations("lead");
   return (
     <div className="location-map">
       <p className="location-map-ground" aria-hidden="true">
         <span className="location-map-pin">◎</span>
-        <span>{address}</span>
+        <span>{label}</span>
       </p>
       <iframe
         title={t("mapTitle")}
-        src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+        src={`https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen

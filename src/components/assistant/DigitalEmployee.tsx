@@ -8,6 +8,7 @@ import { getContact, getSolutionFamilies, localize } from "@/lib/content";
 // switch this panel to conversational mode; guided intake is the honest
 // deterministic default meanwhile.
 import type { AssistantMessage } from "@/lib/digital-employee/provider";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * SMART CHANNELS DIGITAL EMPLOYEE (§§15–22, §34 · D-050).
@@ -359,7 +360,7 @@ export function DigitalEmployee() {
               <div className="de-choices">
                 {families.map((f) => (
                   <button key={f.id} type="button" onClick={() => chooseService(localize(f.name, locale))}>
-                    {localize(f.name, locale)}
+                    <LangText text={localize(f.name, locale)} />
                   </button>
                 ))}
                 <button type="button" onClick={() => chooseService(t("generalService"))}>

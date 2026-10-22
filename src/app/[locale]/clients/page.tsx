@@ -4,6 +4,7 @@ import type { Locale } from "@/types/content";
 import { getClients, getCompany, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
+import { LangText } from "@/components/ui/LangText";
 import { PageHero } from "@/components/page/PageHero";
 import { LogoCarousel, type RailLogo } from "@/components/home/LogoMotion";
 
@@ -69,7 +70,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
           <ul className="name-index">
             {clients.map((c) => (
               <li key={c.id} className="name-index-cell">
-                {c.name.en}
+                <LangText text={localize(c.name, locale)} />
               </li>
             ))}
           </ul>

@@ -4,6 +4,7 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { GalleryItem, Locale } from "@/types/content";
 import { localize } from "@/lib/content";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * GALLERY LIGHTBOX (D-045, extracted at D-067 — behaviour unchanged).
@@ -163,7 +164,7 @@ export function GalleryLightbox({
               )}
               <div className="gallery-lightbox-below">
                 <div className="gallery-lightbox-caption">
-                  <p>{localize(current.alt, locale)}</p>
+                  <p><LangText text={localize(current.alt, locale)} /></p>
                   {meta(current) ? <p className="microlabel">{meta(current)}</p> : null}
                 </div>
                 {items.length > 1 ? (

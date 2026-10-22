@@ -1,3 +1,5 @@
+import { LangText } from "@/components/ui/LangText";
+
 /**
  * Foundation section heading: mono chapter index (decorative metadata,
  * legibility contract §4 — never essential info) + real heading.
@@ -15,7 +17,7 @@ export function SectionHeading({
     <div className="mb-8">
       {index ? (
         <p aria-hidden="true" className="microlabel mb-3 text-accent">
-          {index}
+          <LangText text={index} />
         </p>
       ) : null}
       <Tag className="section-title font-display text-3xl font-bold tracking-tight text-ink md:text-4xl">

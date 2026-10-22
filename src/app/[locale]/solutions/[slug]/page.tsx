@@ -9,6 +9,7 @@ import { MotionSection } from "@/components/motion/MotionSection";
 import { PageHero } from "@/components/page/PageHero";
 import { SolutionCinematicMoment } from "@/components/solutions/SolutionCinematicMoment";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -78,7 +79,7 @@ export default async function SolutionFamilyPage({
 
       <MotionSection reveal="mask" className="border-b border-line" aria-label={localize(family.name, locale)}>
         <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
-          <p className="max-w-3xl text-xl leading-9">{localize(family.summary, locale)}</p>
+          <p className="max-w-3xl text-xl leading-9"><LangText text={localize(family.summary, locale)} /></p>
         </div>
       </MotionSection>
 
@@ -92,12 +93,12 @@ export default async function SolutionFamilyPage({
                   {String(idx + 1).padStart(2, "0")}.{i + 1}
                 </p>
                 <h2 className="font-display text-xl font-semibold md:text-2xl">
-                  {localize(sub.name, locale)}
+                  <LangText text={localize(sub.name, locale)} />
                 </h2>
                 {sub.items ? (
                   <ul className="subsolution-items mt-4">
                     {sub.items.map((item, j) => (
-                      <li key={j}>{localize(item, locale)}</li>
+                      <li key={j}><LangText text={localize(item, locale)} /></li>
                     ))}
                   </ul>
                 ) : null}
@@ -119,7 +120,7 @@ export default async function SolutionFamilyPage({
                     // eslint-disable-next-line @next/next/no-img-element -- approved marks, never distorted
                     <img src={v.logo.src} alt={localize(v.name, locale)} loading="lazy" />
                   ) : (
-                    <span className="text-sm font-semibold">{v.name.en}</span>
+                    <span className="text-sm font-semibold"><LangText text={localize(v.name, locale)} /></span>
                   )}
                 </li>
               ))}
@@ -135,7 +136,7 @@ export default async function SolutionFamilyPage({
             <Link href={`/solutions/${prev.slug}`} className="solution-xnav-link" rel="prev">
               <span className="microlabel text-ink-muted">{t("inner.prevSolution")}</span>
               <span className="mt-1 block font-display text-lg font-semibold">
-                {localize(prev.name, locale)}
+                <LangText text={localize(prev.name, locale)} />
               </span>
             </Link>
             <Link href="/solutions" className="solution-xnav-index tx-link microlabel">
@@ -144,7 +145,7 @@ export default async function SolutionFamilyPage({
             <Link href={`/solutions/${next.slug}`} className="solution-xnav-link solution-xnav-next" rel="next">
               <span className="microlabel text-ink-muted">{t("inner.nextSolution")}</span>
               <span className="mt-1 block font-display text-lg font-semibold">
-                {localize(next.name, locale)}
+                <LangText text={localize(next.name, locale)} />
               </span>
             </Link>
           </nav>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * INNER-PAGE cinematic intro (P6 · D-043).
@@ -43,10 +44,10 @@ export function PageHero({
           <span aria-hidden="true" className="text-accent">
             ●
           </span>
-          &nbsp;&nbsp;{overline}
+          &nbsp;&nbsp;<LangText text={overline} />
         </p>
-        <h1 className="page-hero-title font-display font-bold">{title}</h1>
-        {lede ? <p className="page-hero-lede">{lede}</p> : null}
+        <h1 className="page-hero-title font-display font-bold"><LangText text={title} /></h1>
+        {lede ? <p className="page-hero-lede"><LangText text={lede} /></p> : null}
         {children}
       </div>
     </header>

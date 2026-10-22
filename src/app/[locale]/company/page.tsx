@@ -7,6 +7,7 @@ import { MotionSection } from "@/components/motion/MotionSection";
 import { PageHero } from "@/components/page/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 export async function generateMetadata({
   params,
@@ -57,7 +58,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
           <p className="microlabel mb-6 text-accent">{t("inner.mission")}</p>
           <blockquote className="company-mission max-w-4xl font-display text-2xl font-semibold leading-relaxed md:text-[2rem] md:leading-snug">
-            {localize(company.mission, locale)}
+            <LangText text={localize(company.mission, locale)} />
           </blockquote>
         </div>
       </MotionSection>
@@ -72,7 +73,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
                 <span aria-hidden="true" className="company-value-index microlabel">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="text-xl font-semibold md:text-2xl">{localize(v, locale)}</p>
+                <p className="text-xl font-semibold md:text-2xl"><LangText text={localize(v, locale)} /></p>
               </li>
             ))}
           </ol>
@@ -86,9 +87,9 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
           <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {company.capabilities.map((c) => (
               <article key={c.id} className="capability-pillar">
-                <h3 className="text-lg font-semibold">{localize(c.name, locale)}</h3>
+                <h3 className="text-lg font-semibold"><LangText text={localize(c.name, locale)} /></h3>
                 <p className="mt-3 text-sm leading-7 text-ink-muted">
-                  {localize(c.description, locale)}
+                  <LangText text={localize(c.description, locale)} />
                 </p>
               </article>
             ))}
@@ -111,7 +112,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
                     {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
                   </span>
                 </dd>
-                <dt className="mt-2 text-sm text-ink-muted">{localize(s.label, locale)}</dt>
+                <dt className="mt-2 text-sm text-ink-muted"><LangText text={localize(s.label, locale)} /></dt>
               </div>
             ))}
           </dl>
@@ -121,7 +122,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
       {/* Reach → conversation */}
       <MotionSection reveal="mask" aria-label={t("sections.clients")}>
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
-          <p className="max-w-3xl text-xl leading-9">{localize(company.reach, locale)}</p>
+          <p className="max-w-3xl text-xl leading-9"><LangText text={localize(company.reach, locale)} /></p>
           <p className="mt-8">
             <Link
               href="/#contact"

@@ -6,6 +6,7 @@ import { getCompany, localize } from "@/lib/content";
 import { aboutMedia } from "@/content/company";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * ABOUT — editorial split (P5 · Q-P5-1).
@@ -38,14 +39,14 @@ export async function AboutScene({ locale }: { locale: Locale }) {
         <div className="grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-16">
           <div>
             <SectionHeading index={t("sections.about")}>
-              {localize(company.positioning, locale)}
+              <LangText text={localize(company.positioning, locale)} />
             </SectionHeading>
             <p className="max-w-xl text-lg leading-8 text-ink-muted">
-              {localize(company.about, locale)}
+              <LangText text={localize(company.about, locale)} />
             </p>
             <p className="microlabel mt-10 text-accent">{t("home.missionLabel")}</p>
             <p className="mt-3 max-w-xl border-s-2 border-accent ps-5 text-base leading-8">
-              {localize(company.mission, locale)}
+              <LangText text={localize(company.mission, locale)} />
             </p>
           </div>
           <figure className="media-frame self-center">
@@ -92,9 +93,9 @@ export async function AboutScene({ locale }: { locale: Locale }) {
               className="stagger-item stagger-rule pt-4"
               style={{ "--i": i } as CSSProperties}
             >
-              <p className="font-display text-lg font-semibold">{localize(c.name, locale)}</p>
+              <p className="font-display text-lg font-semibold"><LangText text={localize(c.name, locale)} /></p>
               <p className="mt-2 text-sm leading-7 text-ink-muted">
-                {localize(c.description, locale)}
+                <LangText text={localize(c.description, locale)} />
               </p>
             </li>
           ))}

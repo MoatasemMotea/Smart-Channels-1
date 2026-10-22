@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * CATEGORY SIDE LIST (D-059 §4) — the nine categories beside a category
@@ -25,7 +26,7 @@ export function CategorySidebar({
               className="catalog-side-link"
               aria-current={i.slug === current ? "page" : undefined}
             >
-              {i.label}
+              <LangText text={i.label} />
             </Link>
           </li>
         ))}

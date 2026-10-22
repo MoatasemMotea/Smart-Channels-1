@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/types/content";
 import { getContact, getSolutionFamilies, localize } from "@/lib/content";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * LET'S TALK — the real lead form (§§24–26 · D-050).
@@ -138,7 +139,7 @@ export function LeadForm() {
           <p className="mt-1 text-sm leading-7 text-ink-muted">
             {t("failBody")}{" "}
             <a className="tx-link font-semibold text-accent" href={`mailto:${contact.email}`}>
-              {contact.email}
+              <LangText text={contact.email} />
             </a>
           </p>
         </div>
@@ -181,7 +182,7 @@ export function LeadForm() {
             <option value="">{t("serviceGeneral")}</option>
             {families.map((fam) => (
               <option key={fam.id} value={localize(fam.name, locale)}>
-                {localize(fam.name, locale)}
+                <LangText text={localize(fam.name, locale)} />
               </option>
             ))}
           </select>
@@ -198,7 +199,7 @@ export function LeadForm() {
 
       {/* honeypot — visually hidden from people, present for bots */}
       <div className="lead-hp" aria-hidden="true">
-        <label htmlFor="lf-website">Website</label>
+        <label htmlFor="lf-website">{t("honeypot")}</label>
         <input id="lf-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 

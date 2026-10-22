@@ -9,6 +9,7 @@ import { LocaleSwitch } from "./LocaleSwitch";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { MobileMenu } from "./MobileMenu";
 import { ScrollState } from "./ScrollState";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * Site header (P4 · F-7): transparent over the cinematic hero, gaining a
@@ -20,16 +21,17 @@ import { ScrollState } from "./ScrollState";
 export async function Header() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("nav");
+  const tf = await getTranslations("footer");
   const cta = getNavigation().find((i) => i.highlight === "cta");
 
   return (
     <header className="site-header">
       <ScrollState />
       <div className="mx-auto flex h-20 max-w-360 items-center gap-4 px-6 xl:gap-6 lg:px-12">
-        <LogoHomeLink ariaLabel="Smart Channels — Home">
+        <LogoHomeLink ariaLabel={t("homeLabel")}>
           <Image
             src="/brand/logo-dark.png"
-            alt="Smart Channels — we take you to the future"
+            alt={tf("logoAlt")}
             width={132}
             height={108}
             priority
@@ -37,7 +39,7 @@ export async function Header() {
           />
           <Image
             src="/brand/logo-mark.png"
-            alt="Smart Channels"
+            alt={tf("markAlt")}
             width={61}
             height={66}
             className="logo-light-mark h-12 w-auto"
@@ -49,7 +51,7 @@ export async function Header() {
           href={cta.href}
           className="magnetic hidden whitespace-nowrap rounded bg-accent px-4 py-2.5 text-[0.8125rem] font-semibold text-accent-ink lg:inline-block"
         >
-          {localize(cta.label, locale)}
+          <LangText text={localize(cta.label, locale)} />
         </Link>
       ) : null}
         <div className="ms-auto flex items-center gap-2 lg:ms-3">

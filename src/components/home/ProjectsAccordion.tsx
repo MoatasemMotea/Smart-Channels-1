@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 /**
  * PROJECTS ACCORDION (D-075).
@@ -109,12 +110,12 @@ export function ProjectsAccordion({ items }: { items: AccordionItem[] }) {
               </span>
 
               <span className="pa-spine" aria-hidden="true">
-                {item.title}
+                <LangText text={item.title} />
               </span>
 
               <span className="pa-content">
                 {item.sector ? <span className="pa-tag">{item.sector}</span> : null}
-                <span className="pa-title">{item.title}</span>
+                <span className="pa-title"><LangText text={item.title} /></span>
                 {meta ? <span className="pa-meta">{meta}</span> : null}
                 <span className="pa-cta" aria-hidden="true">
                   {t("exploreProject")}

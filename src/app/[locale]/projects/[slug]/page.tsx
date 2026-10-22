@@ -15,6 +15,7 @@ import { pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 export function generateStaticParams() {
   // evidence-adaptive rule (D-044): only Featured or deep-evidence
@@ -132,10 +133,10 @@ export default async function ProjectDetailPage({
             {project.featured ? t("inner.featuredChapter") : t("pages.projects.title")}
           </p>
           <h1 className="page-hero-title font-display font-bold">
-            {localize(project.name, locale)}
+            <LangText text={localize(project.name, locale)} />
           </h1>
           <p className="project-opening-meta microlabel">
-            {project.location ? <span>{localize(project.location, locale)}</span> : null}
+            {project.location ? <span><LangText text={localize(project.location, locale)} /></span> : null}
             {years ? (
               <span dir="ltr" className="inline-block">
                 {years}
@@ -150,7 +151,7 @@ export default async function ProjectDetailPage({
         <MotionSection reveal="mask" className="border-b border-line" aria-label={t("inner.overview")}>
           <div className="mx-auto max-w-360 px-6 py-16 lg:px-12">
             <p className="microlabel mb-6 text-accent">{t("inner.overview")}</p>
-            <p className="max-w-3xl text-xl leading-9">{localize(project.caseStudy.overview, locale)}</p>
+            <p className="max-w-3xl text-xl leading-9"><LangText text={localize(project.caseStudy.overview, locale)} /></p>
           </div>
         </MotionSection>
       ) : null}
@@ -166,7 +167,7 @@ export default async function ProjectDetailPage({
                   <span aria-hidden="true" className="scope-item-index microlabel">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <p className="text-lg font-semibold md:text-xl">{localize(item, locale)}</p>
+                  <p className="text-lg font-semibold md:text-xl"><LangText text={localize(item, locale)} /></p>
                 </li>
               ))}
             </ol>
@@ -181,9 +182,9 @@ export default async function ProjectDetailPage({
             <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
               {project.services.map((s) => (
                 <article key={s.id} className="capability-pillar">
-                  <h2 className="text-lg font-semibold">{localize(s.title, locale)}</h2>
+                  <h2 className="text-lg font-semibold"><LangText text={localize(s.title, locale)} /></h2>
                   {s.description ? (
-                    <p className="mt-3 text-sm leading-7 text-ink-muted">{localize(s.description, locale)}</p>
+                    <p className="mt-3 text-sm leading-7 text-ink-muted"><LangText text={localize(s.description, locale)} /></p>
                   ) : null}
                 </article>
               ))}
@@ -211,7 +212,7 @@ export default async function ProjectDetailPage({
                     </div>
                     {m.caption ? (
                       <figcaption className="gallery-shell-caption">
-                        <span>{localize(m.caption, locale)}</span>
+                        <span><LangText text={localize(m.caption, locale)} /></span>
                       </figcaption>
                     ) : null}
                   </figure>
@@ -233,13 +234,13 @@ export default async function ProjectDetailPage({
                 <li key={r.id} className="related-project">
                   {projectHasDetail(r) ? (
                     <Link href={`/projects/${r.slug}`} className="related-project-link tx-link">
-                      {localize(r.name, locale)}
+                      <LangText text={localize(r.name, locale)} />
                     </Link>
                   ) : (
-                    <span>{localize(r.name, locale)}</span>
+                    <span><LangText text={localize(r.name, locale)} /></span>
                   )}
                   {r.location ? (
-                    <span className="microlabel">{localize(r.location, locale)}</span>
+                    <span className="microlabel"><LangText text={localize(r.location, locale)} /></span>
                   ) : null}
                 </li>
               ))}
@@ -264,7 +265,7 @@ export default async function ProjectDetailPage({
               <Link href={`/projects/${nextFeatured.slug}`} className="solution-xnav-link solution-xnav-next" rel="next">
                 <span className="microlabel text-ink-muted">{t("inner.nextProject")}</span>
                 <span className="mt-1 block font-display text-lg font-semibold">
-                  {localize(nextFeatured.name, locale)}
+                  <LangText text={localize(nextFeatured.name, locale)} />
                 </span>
               </Link>
             ) : (

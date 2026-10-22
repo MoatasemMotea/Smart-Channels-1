@@ -30,7 +30,9 @@
     "themeDark": "Dark theme",
     "themeLight": "Light theme",
     "more": "More",
-    "moreLabel": "More navigation"
+    "moreLabel": "More navigation",
+    "mainLabel": "Main",
+    "homeLabel": "Smart Channels — Home"
   },
   "home": {
     "title": "Smart Channels — Technology Behind the Experience",
@@ -110,7 +112,10 @@
   "footer": {
     "rights": "All rights reserved.",
     "brandName": "Smart Channels",
-    "brandTagline": "We Take You To The Future"
+    "brandTagline": "We Take You To The Future",
+    "navLabel": "Footer",
+    "logoAlt": "Smart Channels — we take you to the future",
+    "markAlt": "Smart Channels"
   },
   "hero": {
     "ariaLabel": "Smart Channels — technology behind the experience",
@@ -205,7 +210,8 @@
     "errPhone": "Enter a valid phone number",
     "errConsent": "Please confirm consent so we can contact you",
     "infoTitle": "Contact information",
-    "mapTitle": "Smart Channels — location map"
+    "mapTitle": "Smart Channels — location map",
+    "honeypot": "Website"
   },
   "assistant": {
     "name": "Smart Channels Digital Employee",

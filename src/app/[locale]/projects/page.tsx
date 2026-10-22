@@ -5,6 +5,7 @@ import { getFeaturedProjects, getPublicProjects, localize, projectHasDetail } fr
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
+import { LangText } from "@/components/ui/LangText";
 
 export async function generateMetadata({
   params,
@@ -79,14 +80,14 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
                     )}
                     <div className="featured-card-body">
                       <p className="featured-card-meta microlabel">
-                        {p.location ? <span>{localize(p.location, locale)}</span> : null}
+                        {p.location ? <span><LangText text={localize(p.location, locale)} /></span> : null}
                         {p.years ? (
                           <span dir="ltr" className="inline-block">
                             {p.years.to ? `${p.years.from}—${p.years.to}` : `${p.years.from}`}
                           </span>
                         ) : null}
                       </p>
-                      <h2 className="featured-card-name font-display">{localize(p.name, locale)}</h2>
+                      <h2 className="featured-card-name font-display"><LangText text={localize(p.name, locale)} /></h2>
                       {p.scope ? (
                         <p className="featured-card-scope">
                           {p.scope.slice(0, 3).map((s) => localize(s, locale)).join(" · ")}
@@ -115,7 +116,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="project-entry-body">
-                  <p className="project-entry-name font-display">{localize(p.name, locale)}</p>
+                  <p className="project-entry-name font-display"><LangText text={localize(p.name, locale)} /></p>
                   {p.scope ? (
                     <p className="project-entry-scope">
                       {p.scope.map((s) => localize(s, locale)).join(" · ")}
@@ -123,7 +124,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
                   ) : null}
                 </div>
                 <p className="project-entry-meta microlabel">
-                  {p.location ? <span>{localize(p.location, locale)}</span> : null}
+                  {p.location ? <span><LangText text={localize(p.location, locale)} /></span> : null}
                   {p.years ? (
                     <span dir="ltr" className="inline-block">
                       {p.years.to ? `${p.years.from}—${p.years.to}` : `${p.years.from}`}
