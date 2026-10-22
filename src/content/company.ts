@@ -36,6 +36,36 @@ export const company = {
     { en: "Quality, reliability and operational efficiency", ar: "الجودة والموثوقية والكفاءة التشغيلية" },
   ] satisfies LocalizedText[],
 
+  /**
+   * D-081 — the four parts under the About photograph on the homepage
+   * (vision · mission · values · goals), owner-authored in both languages
+   * (directive 2026-10-22). They replace the capability row THERE only;
+   * /company keeps `mission`, `values` and `capabilities` above.
+   */
+  aboutPillars: {
+    vision: {
+      en: "To be the technology partner the Kingdom relies on for its major national projects.",
+      ar: "أن نكون الشريك التقني الذي تعتمد عليه المملكة في مشاريعها الوطنية الكبرى.",
+    } satisfies LocalizedText,
+    mission: {
+      en: "We design, supply, install and operate technology infrastructure — networks, security, communications and AV — delivered on schedule and working from day one.",
+      ar: "نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.",
+    } satisfies LocalizedText,
+    values: [
+      { name: { en: "Reliability", ar: "الموثوقية" }, line: { en: "systems that work when it matters", ar: "أنظمة تعمل حين يُعتمد عليها" } },
+      { name: { en: "Precision", ar: "الدقة" }, line: { en: "we measure before we install", ar: "نقيس قبل أن نركّب" } },
+      { name: { en: "Speed", ar: "السرعة" }, line: { en: "we deploy from our own stock, not supplier lead times", ar: "ننشر من مخزوننا لا من انتظار الموردين" } },
+      { name: { en: "Safety", ar: "السلامة" }, line: { en: "for our teams and our clients' sites", ar: "لفرقنا ولمواقع عملائنا" } },
+      { name: { en: "Partnership", ar: "الشراكة" }, line: { en: "we stay after handover", ar: "نبقى بعد التسليم" } },
+    ] satisfies { name: LocalizedText; line: LocalizedText }[],
+    goals: [
+      { en: "Power Vision 2030 projects with the infrastructure they need", ar: "دعم مشاريع رؤية 2030 بالبنية التقنية التي تحتاجها" },
+      { en: "Develop national technical talent", ar: "تطوير الكفاءات التقنية الوطنية" },
+      { en: "Stay ready to deploy in any city", ar: "الجاهزية الدائمة للنشر في أي مدينة" },
+      { en: "Build long-term partnerships", ar: "بناء شراكات طويلة الأمد" },
+    ] satisfies LocalizedText[],
+  },
+
   /** p.3 capability pillars. */
   capabilities: [
     {

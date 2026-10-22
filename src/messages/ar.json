@@ -51,6 +51,12 @@
     "selectedProjects": {
       "exploreProject": "استكشف المشروع",
       "allProjects": "عرض جميع المشاريع"
+    },
+    "aboutPillars": {
+      "vision": "رؤيتنا",
+      "mission": "رسالتنا",
+      "values": "قيمنا",
+      "goals": "أهدافنا"
     }
   },
   "sections": {

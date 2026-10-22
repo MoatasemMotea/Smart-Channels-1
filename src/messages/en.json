@@ -51,6 +51,12 @@
     "selectedProjects": {
       "exploreProject": "Explore Project",
       "allProjects": "View all projects"
+    },
+    "aboutPillars": {
+      "vision": "Our vision",
+      "mission": "Our mission",
+      "values": "Our values",
+      "goals": "Our goals"
     }
   },
   "sections": {

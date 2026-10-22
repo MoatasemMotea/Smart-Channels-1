@@ -20,6 +20,7 @@ import { LangText } from "@/components/ui/LangText";
 export async function AboutScene({ locale }: { locale: Locale }) {
   const t = await getTranslations();
   const company = getCompany();
+  const pillars = company.aboutPillars;
 
   return (
     <MotionSection
@@ -43,10 +44,6 @@ export async function AboutScene({ locale }: { locale: Locale }) {
             </SectionHeading>
             <p className="max-w-xl text-lg leading-8 text-ink-muted">
               <LangText text={localize(company.about, locale)} />
-            </p>
-            <p className="microlabel mt-10 text-accent">{t("home.missionLabel")}</p>
-            <p className="mt-3 max-w-xl border-s-2 border-accent ps-5 text-base leading-8">
-              <LangText text={localize(company.mission, locale)} />
             </p>
           </div>
           <figure className="media-frame self-center">
@@ -83,22 +80,41 @@ export async function AboutScene({ locale }: { locale: Locale }) {
           </figure>
         </div>
 
-        {/* the capability row is READ along its length: each column rises a
-            moment after the one before it and its rule draws from the
-            reading edge (D-054 §§4, 6) */}
-        <ul className="mt-20 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {company.capabilities.map((c, i) => (
-            <li
-              key={c.id}
-              className="stagger-item stagger-rule pt-4"
-              style={{ "--i": i } as CSSProperties}
-            >
-              <p className="font-display text-lg font-semibold"><LangText text={localize(c.name, locale)} /></p>
-              <p className="mt-2 text-sm leading-7 text-ink-muted">
-                <LangText text={localize(c.description, locale)} />
-              </p>
-            </li>
-          ))}
+        {/* D-081: the four parts under the photograph — vision · mission ·
+            values · goals (h3 under the section's h2). Still READ along
+            the row: each column rises after the one before it and its rule
+            draws from the reading edge (D-054 §§4, 6); with D-079 the
+            arrival reverses on the way back up (.is-visible hysteresis). */}
+        <ul className="about-pillars mt-20 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <li className="stagger-item stagger-rule pt-4" style={{ "--i": 0 } as CSSProperties}>
+            <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.vision")}</h3>
+            <p className="mt-3 text-sm leading-7 text-ink-muted">{localize(pillars.vision, locale)}</p>
+          </li>
+          <li className="stagger-item stagger-rule pt-4" style={{ "--i": 1 } as CSSProperties}>
+            <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.mission")}</h3>
+            <p className="mt-3 text-sm leading-7 text-ink-muted">{localize(pillars.mission, locale)}</p>
+          </li>
+          <li className="stagger-item stagger-rule pt-4" style={{ "--i": 2 } as CSSProperties}>
+            <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.values")}</h3>
+            <ul className="about-values mt-3">
+              {pillars.values.map((v) => (
+                <li key={v.name.en} className="text-sm leading-7">
+                  <strong className="font-semibold text-ink">{localize(v.name, locale)}</strong>
+                  <span className="text-ink-muted"> — {localize(v.line, locale)}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+          <li className="stagger-item stagger-rule pt-4" style={{ "--i": 3 } as CSSProperties}>
+            <h3 className="font-display text-lg font-semibold">{t("home.aboutPillars.goals")}</h3>
+            <ul className="about-goals mt-3">
+              {pillars.goals.map((g) => (
+                <li key={g.en} className="text-sm leading-7 text-ink-muted">
+                  {localize(g, locale)}
+                </li>
+              ))}
+            </ul>
+          </li>
         </ul>
       </div>
     </MotionSection>

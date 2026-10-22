@@ -4743,3 +4743,20 @@ html[data-motion-tier="static"] .catalog-side-link { transition: none; }
     color: var(--ink-muted);
   }
 }
+
+/* D-081 — About: values and goals lists in the four-part row */
+.about-values li + li,
+.about-goals li + li { margin-block-start: 0.45rem; }
+.about-goals li {
+  position: relative;
+  padding-inline-start: 1rem;
+}
+.about-goals li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.8em;
+  inline-size: 5px;
+  block-size: 5px;
+  background: var(--accent);
+}
