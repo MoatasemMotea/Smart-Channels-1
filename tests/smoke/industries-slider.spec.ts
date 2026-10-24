@@ -238,6 +238,7 @@ test("RTL: the pause button sits at the line start (right) and the arrows mirror
 });
 
 test("the bottom strip keeps the active label in view after every transition", async ({ page }) => {
+  test.slow(); // D-085: 16 × (click + 700 ms) sits at the 30 s limit in slower containers
   await gotoSlider(page, "en");
   const strip = page.locator(".industries-slider-strip");
   for (let i = 0; i < 16; i++) {

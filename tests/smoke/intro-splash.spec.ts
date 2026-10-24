@@ -204,3 +204,30 @@ test("a video that cannot load never holds the site: the page is free within 3 s
   await expect(page.locator(".hero-scene h1")).toBeInViewport();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });
+
+for (const loc of ["ar", "en"] as const) {
+  test(`${loc}: a reduced-motion visitor stays at the top — no mount-time scroll moves the page (D085-SLIDER-SCROLL)`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(`/${loc}`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(2000);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    // the strip still centres its active tab — horizontally, inside itself
+    await expect(page.locator('.industries-slider-tab[aria-current="true"]')).toHaveCount(1);
+  });
+
+  test(`${loc}: a #hash link skips the intro, lands on its section and marks the intro seen`, async ({ page }) => {
+    await asVisitor(page);
+    const urls = introRequests(page);
+    await page.goto(`/${loc}/#contact`);
+    await expect(page.locator("#contact")).toBeInViewport({ timeout: 10_000 });
+    await expect(page.locator("html")).not.toHaveAttribute("data-intro");
+    await expect(page.locator(".intro-splash")).toHaveCount(0);
+    expect(await page.evaluate(() => sessionStorage.getItem("sc-intro"))).toBe("1");
+    expect(urls).toEqual([]);
+    // later in the same session the homepage opens without it
+    await page.goto(`/${loc}`);
+    await expect(page.locator(".site-header")).toBeVisible();
+    await expect(page.locator("html")).not.toHaveAttribute("data-intro");
+    await expect(page.locator(".intro-splash")).toHaveCount(0);
+  });
+}

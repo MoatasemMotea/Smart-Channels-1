@@ -153,7 +153,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
   // the active label centres itself in the strip
   useEffect(() => {
     const btn = stripRef.current?.querySelector<HTMLElement>(`[data-tab="${index}"]`);
-    btn?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduced ? "auto" : "smooth" });
+    if (btn && stripRef.current) { const s = stripRef.current.getBoundingClientRect(), b = btn.getBoundingClientRect(); stripRef.current.scrollBy({ left: b.left + b.width / 2 - (s.left + s.width / 2), behavior: reduced ? "auto" : "smooth" }); } // D-085: the strip only, never the page
   }, [index, reduced]);
 
   // interaction on the region itself (keys, pointer swipe) is registered
