@@ -7,6 +7,7 @@ import { aboutMedia } from "@/content/company";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { LangText } from "@/components/ui/LangText";
+import { LazyVideo } from "@/components/ui/LazyVideo";
 
 /**
  * ABOUT — editorial split (P5 · Q-P5-1).
@@ -52,7 +53,7 @@ export async function AboutScene({ locale }: { locale: Locale }) {
                   the photograph the moment aboutMedia is enabled — the
                   photograph stays the poster/fallback. */}
               {aboutMedia.enabled && aboutMedia.videoSrc ? (
-                <video
+                <LazyVideo
                   src={aboutMedia.videoSrc}
                   poster={aboutMedia.poster ?? undefined}
                   className="h-auto w-full"

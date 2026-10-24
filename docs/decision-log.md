@@ -1900,6 +1900,11 @@ data. **Nothing is deleted here, by decision** — see the updated
 - **Slow test:** `test.slow()` on industries-slider "the bottom strip keeps the active label in view after every transition" only — a timing failure in this container (it failed identically on the build without D-085), not a regression; its logic is unchanged.
 - **Tests:** `intro-splash.spec.ts` gains reduced-motion scrollY = 0 (/ar, /en) and #contact (/ar, /en) — 18 tests × desktop/mobile.
 
+**D-086 (items 7 and 9).** Owner directives during D-086 phase 1 (2026-10-24); the measurement items 1–5 await decisions.
+- **Item 7, test only:** `scroll-scenes` "header environment…" waits for `data-header-env` (`expect.poll`, 4 assertions). It was an intermittent failure older than D-085 (3/10 on `5c75c9c`); after the fix 10/10 passed, and the full suite gave 263 passed, 0 failed (`69e641a`). The `projects-accordion` pointer park landed just before (`690d876`).
+- **Item 9, videos:** all ten Solutions and Gallery videos were re-encoded from their `media-source` originals (untouched; every one already had an original) to H.264 CRF 28, long edge ≤ 1280 px, faststart; Solutions are silent, Gallery keeps AAC 96k (the carousel can unmute). 72.4 MB → 17.1 MB. Two clips needed a peak cap to stay at CRF 28 (02: 900k; event-network-build: 300k). **02 is 3.31 MB, over the 2.5 MB budget:** the budget-sized encode visibly smears its fine lines, so quality won (see `docs/product-images.md`). No WebM ships, because it was not clearly smaller. Same names, so no content paths changed.
+- **Loading:** new `LazyVideo` (poster, `preload="none"`, src attached only while on screen, released with `removeAttribute("src")` + `load()` when it leaves, hidden tab pauses). Used by the homepage Solutions stage (one video at a time; the `eligible` state and manual play/pause removed), `SolutionCinematicMoment`, the project hero and AboutScene. Only the D-085 intro keeps `preload="auto"`. The permanent encoding rule is in `docs/product-images.md`. New `tests/smoke/video-loading.spec.ts`.
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

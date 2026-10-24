@@ -16,6 +16,7 @@ import { routing } from "@/i18n/routing";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
+import { LazyVideo } from "@/components/ui/LazyVideo";
 
 export function generateStaticParams() {
   // evidence-adaptive rule (D-044): only Featured or deep-evidence
@@ -113,7 +114,7 @@ export default async function ProjectDetailPage({
         {hero ? (
           <div className="project-opening-media" aria-hidden="true">
             {hero.type === "video" ? (
-              <video src={hero.src} poster={hero.poster} muted loop playsInline autoPlay preload="metadata" />
+              <LazyVideo src={hero.src} poster={hero.poster} muted loop playsInline autoPlay />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element -- owner-approved project media, art-directed cover
               <img src={hero.src} alt="" />

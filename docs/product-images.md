@@ -85,3 +85,40 @@ to the future”, then a zoom into the mark; light radial background throughout.
 | `intro-poster.jpg` | first frame · `-q:v 3` | 8,480 |
 
 Encoded with the system ffmpeg (not a project dependency).
+
+## قاعدة الفيديو الدائمة — Permanent video rule (D-086)
+
+**Every video enters `public/media/` only after encoding with these settings.**
+Its original goes to `media-source/` first and is never touched; the
+delivery file is encoded from that original.
+
+| Setting | Value |
+|---|---|
+| Codec | H.264 High, `yuv420p`, `-preset slow`, `-movflags +faststart`, `-map_metadata -1` |
+| Size | long edge ≤ 1280 px: landscape ≤ 1280×720, portrait ≤ 720×1280; never upscaled |
+| Quality | `-crf 28`. If the result exceeds its budget, keep CRF 28 and cap the peaks (`-maxrate`/`-bufsize`, 2× buffer) rather than lowering resolution or raising CRF. |
+| Audio | removed (`-an`) unless the page lets the visitor hear it, otherwise AAC 96k |
+| Budget | ≤ 2.5 MB per Solutions film · ≤ 4 MB per Gallery video |
+| WebM (VP9 CRF 36, `-b:v 0`) | only when clearly smaller (≥ 25%); at D-086 it was not (−16% / +58% / +19%), so none ships |
+| Playback | `LazyVideo` (poster, `preload="none"`): downloads only while on screen, released when it leaves; no `preload="auto"` anywhere except the D-085 intro |
+
+Reference command (landscape, silent):
+`ffmpeg -i media-source/…/source.mp4 -an -vf "scale='min(1280,iw)':-2" -c:v libx264 -profile:v high -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart -map_metadata -1 public/media/…/name.mp4`
+
+### Before / after (D-086, encoded from the media-source originals)
+
+| File (`public/media/`) | Before | After | Delivery |
+|---|---|---|---|
+| solutions/01-infrastructure-data-centre-web.mp4 | 2.7 MB (1920×1080) | 0.41 MB | 1280×720 · no audio |
+| solutions/02-networking-connectivity-web.mp4 | 16.3 MB (1920×1080) | **3.31 MB** | 1280×720 · no audio · CRF 28 + `-maxrate 900k`: over budget, see note |
+| solutions/03-security-technology-solutions-web.mp4 | 2.9 MB (1080×1920) | 0.68 MB | 720×1280 · no audio |
+| solutions/04-biometrics-access-control-web.mp4 | 10.1 MB (1920×1080) | 1.98 MB | 1280×720 · no audio |
+| solutions/05-audio-visual-solutions-web.mp4 | 3.7 MB (1080×1920) | 0.74 MB | 720×1280 · no audio |
+| solutions/06-unified-communications-smart-buildings-web.mp4 | 7.3 MB (1920×1080) | 2.47 MB | 1280×720 · no audio |
+| solutions/07-video-surveillance-ai-solutions-web.mp4 | 6.0 MB (1920×1080) | 1.00 MB | 1280×720 · no audio |
+| gallery/event-environment-night.mp4 | 4.0 MB | 1.12 MB | 464×848 · AAC 96k (the carousel can unmute) |
+| gallery/event-network-build-2025.mp4 | 14.1 MB | 3.68 MB | 848×464 · AAC 96k · CRF 28 + `-maxrate 300k` |
+| gallery/hospitality-walkway-night.mp4 | 5.3 MB | 1.70 MB | 464×848 · AAC 96k |
+| **Total** | **72.4 MB** | **17.1 MB** | −76% |
+
+Note on 02: 30 s of dense, constantly moving HUD lines. At 2.5 MB (`-maxrate 620k`) the fine lines visibly block and smear; at 960 px and CRF 28 it is 4.12 MB; VP9 is 11 MB. 1280 px with a 900k cap (3.31 MB) is visually equivalent at the stage's display size (751×470 px) and was chosen over a visible loss.

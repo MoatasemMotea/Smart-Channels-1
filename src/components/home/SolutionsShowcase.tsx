@@ -6,6 +6,7 @@ import type { Locale, SolutionFamily, SolutionMedia } from "@/types/content";
 import { getSolutionFamilies, localize } from "@/lib/content";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
+import { LazyVideo } from "@/components/ui/LazyVideo";
 
 /**
  * SOLUTIONS — cinematic media showcase (D-050 Solutions integration).
@@ -21,13 +22,13 @@ import { LangText } from "@/components/ui/LangText";
  * shift on the stage (FULL tier), never the active Solution and never
  * native scrolling (§5: no scroll-jacking).
  *
- * Playback lifecycle (§7): poster-first; ONLY the active layer ever
- * mounts a <video>, and only once the section is near the viewport
- * (IntersectionObserver, rootMargin 30%). Offscreen or hidden-tab →
- * pause; returning → clean resume. The outgoing layer survives just
- * long enough for the transition, then unmounts (releasing its
- * decoder). No eager seven-video loading — switches land on the poster
- * instantly while the faststart MP4 streams in.
+ * Playback lifecycle (§7, D-086): poster-first; ONLY the active layer
+ * ever mounts a <video> (LazyVideo, preload="none"), and it downloads
+ * only while the stage is on screen — off screen it is paused, its src
+ * removed and its buffer freed; a hidden tab pauses it. The outgoing
+ * layer is a poster image during the transition, then unmounts. One
+ * video loads at a time — switches land on the poster instantly while
+ * the faststart MP4 streams in.
  *
  * Transitions: one motion language — directional mask wipe for
  * landscape media, a rising masked frame over a same-media depth
@@ -52,7 +53,6 @@ function MediaLayer({
   dir,
   showVideo,
   index,
-  videoRef,
 }: {
   media: SolutionMedia;
   alt: string;
@@ -60,21 +60,10 @@ function MediaLayer({
   dir: 1 | -1;
   showVideo: boolean;
   index: number;
-  videoRef?: React.RefObject<HTMLVideoElement | null>;
 }) {
   const portrait = media.orientation === "portrait";
   const visual = showVideo ? (
-    <video
-      ref={videoRef}
-      src={media.video}
-      poster={media.poster}
-      muted
-      loop
-      playsInline
-      autoPlay
-      preload="auto"
-      aria-hidden="true"
-    />
+    <LazyVideo src={media.video} poster={media.poster} muted loop playsInline autoPlay aria-hidden="true" />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element -- owner-approved poster, art-directed cover
     <img src={media.poster} alt={alt} loading="lazy" decoding="async" />
@@ -124,11 +113,9 @@ export function SolutionsShowcase() {
   const [active, setActive] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
   const [dir, setDir] = useState<1 | -1>(1);
-  const [eligible, setEligible] = useState(false); // near viewport → video may load
 
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const prevTimer = useRef(0);
   const restored = useRef(false);
 
@@ -146,8 +133,8 @@ export function SolutionsShowcase() {
     prevTimer.current = window.setTimeout(() => setPrev(null), TRANSITION_MS);
   };
 
-  // §7: media becomes eligible near the viewport; §14: the previously
-  // active Solution is restored here (event callback, first approach)
+  // §14: the previously active Solution is restored on the first
+  // approach (event callback); playback itself belongs to LazyVideo
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -166,24 +153,14 @@ export function SolutionsShowcase() {
                 /* start at 01 */
               }
             }
-            setEligible(true);
-            videoRef.current?.play().catch(() => {});
-          } else {
-            videoRef.current?.pause();
           }
         }
       },
       { rootMargin: "30% 0px 30% 0px", threshold: 0.01 },
     );
     io.observe(root);
-    const onVis = () => {
-      if (document.visibilityState === "hidden") videoRef.current?.pause();
-      else videoRef.current?.play().catch(() => {});
-    };
-    document.addEventListener("visibilitychange", onVis);
     return () => {
       io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
       window.clearTimeout(prevTimer.current);
     };
   }, [families.length]);
@@ -217,7 +194,7 @@ export function SolutionsShowcase() {
   const media = current.media?.published ? current.media : null;
   const prevFamily = prev !== null ? families[prev] : null;
   const prevMedia = prevFamily?.media?.published ? prevFamily.media : null;
-  const showVideo = tier !== "static" && eligible;
+  const showVideo = tier !== "static";
 
   const details = (f: SolutionFamily) => (
     <div className="ss-details">
@@ -295,7 +272,6 @@ export function SolutionsShowcase() {
             dir={dir}
             showVideo={showVideo}
             index={active}
-            videoRef={videoRef}
           />
         ) : null}
         <span className="ss-sweep" key={`sweep-${active}`} aria-hidden="true" />
