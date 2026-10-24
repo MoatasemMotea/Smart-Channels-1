@@ -68,3 +68,20 @@ paths (D-053) — a path is never reused for different bytes.
 `public/media/products/` still holds the 18 `-2026.webp` delivery files
 and the 11 earlier ones (29 in total). Nothing was deleted at D-060; the
 homepage stage (`src/content/products.ts`) keeps serving its four.
+
+## وسائط المقدمة — Intro media (D-085)
+
+Source: a video generated with Gemini, supplied by the owner (uploaded 2026-10-24 as
+`media-source/intro-original.mp4.mp4`). Archived untouched as
+`media-source/video/intro-original.mp4` — 10.0 s · 1280×720 · H.264 High · 24 fps ·
+AAC stereo 48 kHz 128k · 3,327,900 bytes. Content: a pink/violet particle swirl that
+resolves into the SC mark, the “Smart Channels” wordmark and the tagline “we take you
+to the future”, then a zoom into the mark; light radial background throughout.
+
+| File (`public/media/intro/`) | Encoding | Size (bytes) |
+|---|---|---|
+| `intro.mp4` | H.264 High · CRF 25 · yuv420p · AAC 96k · `+faststart` | 1,330,673 |
+| `intro.webm` | VP9 · CRF 36 · `-b:v 0` · Opus 80k | 925,435 |
+| `intro-poster.jpg` | first frame · `-q:v 3` | 8,480 |
+
+Encoded with the system ffmpeg (not a project dependency).
