@@ -16,6 +16,7 @@ import { getMapCities, getStats } from "@/lib/content";
 import { SectionSeam } from "@/components/motion/SectionSeam";
 import { SceneStack } from "@/components/motion/SceneStack";
 import { SceneIndex } from "@/components/motion/SceneIndex";
+import { IntroSplash } from "@/components/home/IntroSplash";
 
 /**
  * HOMEPAGE — the primary one-page experience (final pre-media
@@ -113,6 +114,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <SectionSeam variant="trace" />
 
       <LetsTalk />
+
+      {/* D-085: fixed full-screen video intro — last, so it never becomes
+          main's :first-child (which carries the header offset) */}
+      <IntroSplash />
     </>
   );
 }

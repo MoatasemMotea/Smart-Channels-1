@@ -30,7 +30,12 @@ d.setAttribute("data-header-env",darkRoute?"dark":"surface");
 /* Revision 3 §1: the cinematic opening plays on EVERY full document load
    of the homepage (no session gating). Soft navigations (locale switch,
    client routing) never re-run this script, so they never replay it. */
-if(isHome&&tier!=="static"){
+/* D-085: the video intro replaces the opening — while it shows (set by
+   IntroScript just above) and on every later load of this session the
+   hero starts in its final state */
+var introSeen=false;try{introSeen=sessionStorage.getItem("sc-intro")==="1";}catch(e){}
+if(isHome&&tier!=="static"&&(d.getAttribute("data-intro")==="on"||introSeen)){d.setAttribute("data-opening","skipped");}
+else if(isHome&&tier!=="static"){
   d.setAttribute("data-opening","pending");
   /* the opening owns the viewport: neutralize browser scroll restoration
      so a mid-page refresh still SHOWS the sequence (root cause #1) */

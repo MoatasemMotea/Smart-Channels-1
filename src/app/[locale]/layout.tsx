@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing, isRtl } from "@/i18n/routing";
+import { IntroScript } from "@/components/layout/IntroScript";
 import { ThemeAndTierScript } from "@/components/layout/ThemeAndTierScript";
 import { HtmlStateGuard } from "@/components/layout/HtmlStateGuard";
 import { Header } from "@/components/layout/Header";
@@ -62,6 +63,8 @@ export default async function LocaleLayout({
         {/* the authoritative logo must be decoded before the opening's
             readable-identity beat — never fetched ad hoc mid-sequence */}
         <link rel="preload" as="image" href="/brand/logo-dark.png" fetchPriority="high" />
+        {/* D-085: decides the video intro first — the opening reads it */}
+        <IntroScript />
         <ThemeAndTierScript />
         {orgSchema && (
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgSchema }} />

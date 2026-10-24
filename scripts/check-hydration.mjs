@@ -11,7 +11,8 @@
  * when any were seen. The pre-paint bootstrap rewrites attributes on
  * <html> (theme, motion tier, header environment, opening state) before
  * React compares them; `suppressHydrationWarning` on that one element is
- * what keeps this at zero.
+ * what keeps this at zero. D-085: a third pass hides navigator.webdriver
+ * so the video intro (never shown to automation) is checked too.
  *
  *   npm run check:hydration
  */
@@ -21,7 +22,12 @@ import { chromium } from "@playwright/test";
 const PORT = Number(process.env.HYDRATION_PORT || 3111);
 const BASE = `http://localhost:${PORT}`;
 const ROUTES = ["/en/", "/ar/"];
-const SETTINGS = ["reduce", "no-preference"];
+// [reducedMotion, intro shown] — the intro needs a non-automated browser
+const SETTINGS = [
+  ["reduce", false],
+  ["no-preference", false],
+  ["no-preference", true],
+];
 
 const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "--port", String(PORT)], {
   stdio: ["ignore", "pipe", "pipe"],
@@ -58,9 +64,14 @@ let total = 0;
 try {
   await waitForServer();
   const browser = await chromium.launch();
-  for (const reducedMotion of SETTINGS) {
+  for (const [reducedMotion, intro] of SETTINGS) {
     for (const route of ROUTES) {
       const ctx = await browser.newContext({ reducedMotion, viewport: { width: 1440, height: 900 } });
+      if (intro) {
+        await ctx.addInitScript(() => {
+          Object.defineProperty(Navigator.prototype, "webdriver", { get: () => false, configurable: true });
+        });
+      }
       const page = await ctx.newPage();
       const hits = [];
       page.on("console", (m) => {
@@ -75,7 +86,7 @@ try {
       const attrs = await page.evaluate(() => Object.fromEntries([...document.documentElement.attributes].map((a) => [a.name, a.value])));
       total += hits.length;
       console.log(
-        `${reducedMotion.padEnd(14)} ${route.padEnd(6)} hydrated=${hydrated} hydration messages=${hits.length} tier=${attrs["data-motion-tier"]} header-env=${attrs["data-header-env"] ?? "-"} opening=${attrs["data-opening"] ?? "-"}`,
+        `${(reducedMotion + (intro ? "+intro" : "")).padEnd(20)} ${route.padEnd(6)} hydrated=${hydrated} hydration messages=${hits.length} tier=${attrs["data-motion-tier"]} header-env=${attrs["data-header-env"] ?? "-"} opening=${attrs["data-opening"] ?? "-"} intro=${attrs["data-intro"] ?? "-"}`,
       );
       for (const h of hits) console.log("   " + h.split("\n").slice(0, 1).join("") + " …");
       if (!hydrated) {
