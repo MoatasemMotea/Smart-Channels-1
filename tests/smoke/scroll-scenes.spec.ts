@@ -130,17 +130,17 @@ test.describe("desktop stacks (FULL tier)", () => {
     const aboutTop = await staticTop(page, "#about");
     // hero → about: covered below/above the half-way mark
     await scrollToY(page, aboutTop - vh * 0.65); // cover ≈ 0.12
-    expect(await env()).toBe("dark");
+    await expect.poll(env).toBe("dark");
     await scrollToY(page, aboutTop - vh / 2); // cover = 0.5 → covered
     expect(await page.locator('[data-scene="hero"]').getAttribute("data-covered")).toBe("");
-    expect(await env()).toBe("surface");
+    await expect.poll(env).toBe("surface");
     await scrollToY(page, aboutTop - vh * 0.65); // and back
-    expect(await env()).toBe("dark");
+    await expect.poll(env).toBe("dark");
     // industries → projects: mid-transition — Industries is covered, so no anchor is active for it
     const projTop = await staticTop(page, "#projects");
     await scrollToY(page, projTop - vh * 0.35);
     await expect(page.locator("#industries")).toHaveAttribute("data-covered", "");
-    expect(await env()).toBe("surface");
+    await expect.poll(env).toBe("surface");
     await expect(page.locator('.site-header a[href$="/#industries"][aria-current="true"]')).toHaveCount(0);
     await scrollToY(page, projTop - vh * 1.2);
     await expect(page.locator("#industries")).not.toHaveAttribute("data-covered", "");
