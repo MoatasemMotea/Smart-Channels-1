@@ -64,6 +64,10 @@ partners/clients never touches a React component
 - Indexing is **disabled by default** (noindex + robots disallow); the
   authorized production deployment must set
   `NEXT_PUBLIC_ALLOW_INDEXING=true` explicitly.
+- **At launch the owner sets two variables** on the production deployment:
+  `NEXT_PUBLIC_ALLOW_INDEXING=true` and `NEXT_PUBLIC_SITE_URL=https://<launch-domain>`
+  (the origin for absolute canonical, hreflang and Open Graph URLs; without
+  it Vercel's production URL is used, locally `http://localhost:3000`).
 - No analytics provider is connected (`src/lib/analytics.ts` is a no-op
   by design until one is approved).
 - Legacy `img/` photos are pending owner media review (O-008) and are not

@@ -25,6 +25,14 @@ export const heroScene: HeroSceneConfig = {
   sizes: "(orientation: portrait) 178vh, 100vw",
   width: 1672,
   height: 941,
+  // D-086: x 913–1442 of the 1672×941 master (centred on the tower at
+  // 70.4%), native pixels — the CSS under the same media query places it
+  portrait: {
+    src: "/media/hero/riyadh-portrait-529.webp",
+    width: 529,
+    height: 941,
+    media: "(orientation: portrait) and (max-aspect-ratio: 9/16)",
+  },
 };
 
 /**

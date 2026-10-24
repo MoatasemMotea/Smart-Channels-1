@@ -13,6 +13,20 @@ export function indexingAllowed(): boolean {
 
 export const SITE_NAME = "Smart Channels";
 
+/**
+ * The site origin that makes every metadata URL absolute (D-086):
+ * NEXT_PUBLIC_SITE_URL when the owner sets it (the launch domain), else
+ * Vercel's production URL (VERCEL_PROJECT_PRODUCTION_URL, set by Vercel
+ * on its builds), else the local dev server. No domain is written here.
+ */
+export function siteUrl(): URL {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return new URL(explicit);
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return new URL(`https://${vercel}`);
+  return new URL("http://localhost:3000");
+}
+
 /** hreflang alternates for a route path (without locale prefix). */
 export function localeAlternates(path: string): NonNullable<Metadata["alternates"]> {
   const p = path === "/" ? "" : path;
@@ -47,6 +61,8 @@ export function pageMetadata(opts: {
       siteName: SITE_NAME,
       locale: opts.locale === "ar" ? "ar_SA" : "en_US",
       type: "website",
+      // resolved against metadataBase (siteUrl) into an absolute URL
+      url: `/${opts.locale}${p}`,
     },
   };
 }

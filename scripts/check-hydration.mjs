@@ -9,7 +9,7 @@
  * writes `data-scrolled` on <html> only after hydration), counts console
  * messages that mention hydration, stops the server and exits non-zero
  * when any were seen. The pre-paint bootstrap rewrites attributes on
- * <html> (theme, motion tier, header environment, opening state) before
+ * <html> (theme, motion tier, header environment, intro) before
  * React compares them; `suppressHydrationWarning` on that one element is
  * what keeps this at zero. D-085: a third pass hides navigator.webdriver
  * so the video intro (never shown to automation) is checked too.

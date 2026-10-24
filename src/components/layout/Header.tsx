@@ -14,8 +14,7 @@ import { LangText } from "@/components/ui/LangText";
 /**
  * Site header (P4 · F-7): transparent over the cinematic hero, gaining a
  * controlled blur/solid state after scroll (with a reduced-transparency
- * fallback). Absent during the opening choreography, entering with the
- * final hero reveal; instantly available on skip. Data-driven from
+ * fallback). Visible from the first paint (D-086). Data-driven from
  * navigation.ts — labels and order are owner-editable content.
  */
 export async function Header() {
@@ -29,19 +28,23 @@ export async function Header() {
       <ScrollState />
       <div className="mx-auto flex h-20 max-w-360 items-center gap-4 px-6 xl:gap-6 lg:px-12">
         <LogoHomeLink ariaLabel={t("homeLabel")}>
+          {/* D-086: 2× display-size lossless derivatives of the untouched
+              brand PNGs (13 KB / 10 KB), served as-is — no preload */}
           <Image
-            src="/brand/logo-dark.png"
+            src="/brand/logo-dark-lockup.webp"
             alt={tf("logoAlt")}
             width={132}
             height={108}
-            priority
+            unoptimized
+            loading="eager"
             className="logo-dark-lockup h-14 w-auto"
           />
           <Image
-            src="/brand/logo-mark.png"
+            src="/brand/logo-mark-small.webp"
             alt={tf("markAlt")}
             width={61}
             height={66}
+            unoptimized
             className="logo-light-mark h-12 w-auto"
           />
         </LogoHomeLink>

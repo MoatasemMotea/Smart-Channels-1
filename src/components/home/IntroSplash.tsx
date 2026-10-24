@@ -18,8 +18,8 @@ import { useLocale, useTranslations } from "next-intl";
  * no playback within 3 s. The exit (0.9 s) scales and blurs the video,
  * fades the container and the sound together; then it records
  * sessionStorage "sc-intro"="1", releases the scroll lock, leaves the DOM
- * and fires window "sc:intro-done". ThemeAndTierScript has already set
- * the opening to "skipped", so the hero below is in its final state.
+ * and fires window "sc:intro-done". The hero below is final from the
+ * first paint (D-086).
  */
 const EXIT_MS = 900;
 const START_GUARD_MS = 3000;

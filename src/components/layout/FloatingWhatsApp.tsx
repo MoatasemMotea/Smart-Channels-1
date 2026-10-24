@@ -7,8 +7,7 @@ import { getContact } from "@/lib/content";
  * Data-driven: the number lives in src/content/contact.ts (owner-approved,
  * D-011) — the component derives the wa.me destination by stripping
  * non-digits. Accessible name in both locales; ≥48px target; safe-area
- * aware; hidden while the cinematic opening runs (CSS) so it never
- * competes with the brand moment. No prewritten message (not approved).
+ * aware. No prewritten message (not approved).
  */
 export async function FloatingWhatsApp() {
   const t = await getTranslations("contact");

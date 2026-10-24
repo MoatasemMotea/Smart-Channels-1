@@ -17,17 +17,19 @@ export async function Footer() {
       <div className="mx-auto grid max-w-360 gap-10 px-6 py-14 md:grid-cols-3 lg:px-12">
         <div>
           <Image
-            src="/brand/logo-dark.png"
+            src="/brand/logo-dark-lockup.webp"
             alt={t("footer.logoAlt")}
             width={132}
             height={108}
+            unoptimized
             className="logo-dark-lockup h-16 w-auto"
           />
           <Image
-            src="/brand/logo-mark.png"
+            src="/brand/logo-mark-small.webp"
             alt={t("footer.markAlt")}
             width={61}
             height={66}
+            unoptimized
             className="logo-light-mark h-14 w-auto"
           />
           {/* Approved textual brand treatment (D-001 stays intact: the logo

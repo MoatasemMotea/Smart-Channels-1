@@ -130,6 +130,19 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
     return () => io.disconnect();
   }, []);
 
+  // D-086: scene images attach on approach (1000 px ahead of the viewport),
+  // once — a homepage load at scroll 0 requests none of them
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = regionRef.current;
+    if (!el || near) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e?.isIntersecting) setNear(true);
+    }, { rootMargin: "1000px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
+
   // D-079: a covered scene is not visible even while it intersects — the
   // scroll engine marks the stuck section `data-covered` at cover ≥ 0.5
   const [covered, setCovered] = useState(false);
@@ -189,7 +202,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
   }, [step, go, n, rtl]);
 
   const current = items[index]!;
-  const mounted = (i: number) => i === index || i === (index + 1) % n || i === (index - 1 + n) % n;
+  const mounted = (i: number) => near && (i === index || i === (index + 1) % n || i === (index - 1 + n) % n);
 
   return (
     <div
@@ -220,10 +233,12 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
               aria-roledescription="slide"
               aria-label={`${pad(i + 1)} / ${pad(n)}`}
             >
+              {/* D-086: every scene, the first included, waits for the approach
+                  (`near`) — the section is below the fold */}
               {item.image && mounted(i) ? (
                 <div className="industries-slide-backdrop" aria-hidden="true">
                   {/* eslint-disable-next-line @next/next/no-img-element -- the same owner-supplied 960 px file as the phone foreground, blurred as a ground; CSS-sized */}
-                  <img src={phone(item.image)} alt="" loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+                  <img src={phone(item.image)} alt="" loading="lazy" decoding="async" />
                 </div>
               ) : null}
               {item.image && mounted(i) ? (
@@ -232,7 +247,7 @@ export function IndustriesSlider({ items }: { items: IndustrySlide[] }) {
                   <img
                     src={item.image}
                     alt=""
-                    loading={i === 0 ? "eager" : "lazy"}
+                    loading="lazy"
                     fetchPriority={active ? "high" : "low"}
                     decoding="async"
                   />

@@ -25,6 +25,9 @@ import { localize } from "@/lib/content";
  * without opening the lightbox. Clicking the card opens the lightbox
  * (with sound — the click is the browser's permission). No autoplay
  * with sound, ever, and no automatic rotation: the visitor drives.
+ * D-086: poster and src are attached only once the carousel is within
+ * 800 px of the viewport — a homepage load at scroll 0 requests none of
+ * its video posters or media.
  */
 const SWIPE_PX = 40;
 const WHEEL_PX = 30;
@@ -104,6 +107,17 @@ export function GalleryCarousel({
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  // D-086: media gate — posters and video sources attach on approach, once
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const el = regionRef.current;
+    if (!el || near || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e?.isIntersecting) setNear(true);
+    }, { rootMargin: "800px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
   const stepRef = useRef(step);
   useEffect(() => {
     stepRef.current = step;
@@ -176,8 +190,8 @@ export function GalleryCarousel({
                     if (el) videoRefs.current.set(item.id, el);
                     else videoRefs.current.delete(item.id);
                   }}
-                  src={item.src}
-                  poster={item.poster}
+                  src={near ? item.src : undefined}
+                  poster={near ? item.poster : undefined}
                   muted
                   playsInline
                   loop

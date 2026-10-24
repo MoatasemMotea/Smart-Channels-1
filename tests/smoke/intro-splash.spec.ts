@@ -4,10 +4,10 @@ import { expect, test, type Page } from "@playwright/test";
  * D-085 — the video intro splash.
  *
  * The intro never shows to an automated browser (navigator.webdriver), so
- * the rest of the suite keeps the cinematic-opening path untouched; every
+ * the rest of the suite never sees it; every
  * test here that needs the intro switches that flag off before any page
  * script runs. A log of every value html[data-opening] / html[data-intro]
- * takes proves the opening never runs alongside or after the intro.
+ * takes proves no opening state is ever written (D-086 removed it).
  */
 const COPY = {
   ar: { label: "مقدمة Smart Channels", skip: "تخطَّ المقدمة", on: "تشغيل الصوت", off: "كتم الصوت" },
@@ -77,13 +77,12 @@ for (const loc of ["ar", "en"] as const) {
     const ob = (await page.locator(".intro-sound").boundingBox())!;
     expect(loc === "ar" ? sb.x < ob.x : sb.x > ob.x).toBe(true);
     for (const b of [sb, ob]) expect(Math.min(b.width, b.height)).toBeGreaterThanOrEqual(44);
-    // the hero below is already final: the opening was skipped, never run
-    await expect(html).toHaveAttribute("data-opening", "skipped");
+    // the hero below is final from the first paint: no opening state at all
+    await expect(html).not.toHaveAttribute("data-opening");
     await skip.click();
     await expect(splash).toHaveCount(0);
     expect(await states(page)).toContain("data-intro=on");
-    expect(await states(page)).toContain("data-opening=skipped");
-    expect((await states(page)).filter((s) => /data-opening=(pending|running|revealing|done)/.test(s))).toEqual([]);
+    expect((await states(page)).filter((s) => s.startsWith("data-opening"))).toEqual([]);
 
     // nothing carried the window away from the hero while it played
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
@@ -95,10 +94,9 @@ for (const loc of ["ar", "en"] as const) {
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
     await expect(html).not.toHaveAttribute("data-intro");
     await expect(splash).toHaveCount(0);
-    await expect(html).toHaveAttribute("data-opening", "skipped");
+    await expect(html).not.toHaveAttribute("data-opening");
     expect(await states(page)).not.toContain("data-intro=on");
-    expect(await states(page)).toContain("data-opening=skipped");
-    expect((await states(page)).filter((s) => /data-opening=(pending|running|revealing|done)/.test(s))).toEqual([]);
+    expect((await states(page)).filter((s) => s.startsWith("data-opening"))).toEqual([]);
   });
 }
 
@@ -139,9 +137,8 @@ for (const loc of ["ar", "en"] as const) {
     await page.goto(`/${loc}`, { waitUntil: "networkidle" });
     await expect(page.locator("html")).not.toHaveAttribute("data-intro");
     await expect(page.locator(".intro-splash")).toHaveCount(0);
-    await expect(page.locator("html")).toHaveAttribute("data-opening", "skipped");
-    expect(await states(page)).toContain("data-opening=skipped");
-    expect((await states(page)).filter((s) => /data-opening=(pending|running|revealing|done)/.test(s))).toEqual([]);
+    await expect(page.locator("html")).not.toHaveAttribute("data-opening");
+    expect((await states(page)).filter((s) => s.startsWith("data-opening"))).toEqual([]);
     expect(urls).toEqual([]);
   });
 }

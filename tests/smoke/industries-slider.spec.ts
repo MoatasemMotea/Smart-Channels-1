@@ -272,11 +272,24 @@ test("390 px: every title fits the screen width; the two cut-out slides carry th
   }
 });
 
-test("lazy scenes: the first is decoded at load, the sixth is not loaded yet", async ({ page }) => {
-  await gotoSlider(page, "en");
+test("lazy scenes: the first is decoded before the section arrives (not at load), the sixth is not loaded yet", async ({ page }) => {
+  // D-086: nothing from the slider is requested on a homepage load at scroll 0
+  const early: string[] = [];
+  page.on("request", (r) => {
+    if (r.url().includes("/media/industries/")) early.push(r.url());
+  });
+  await page.goto("/en/", { waitUntil: "networkidle" });
+  expect(early).toEqual([]);
+  // approach: the section is still 300 px below the fold — the first scene decodes already
+  await page.evaluate(() => {
+    const top = document.querySelector<HTMLElement>("#industries")!.getBoundingClientRect().top + scrollY;
+    scrollTo({ top: top - innerHeight - 300, behavior: "instant" });
+  });
   const first = page.locator('.industries-slide[data-slide="0"] .industries-slide-media img');
   await expect(first).toHaveCount(1);
-  expect(await first.evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
+  await expect.poll(() => first.evaluate((i: HTMLImageElement) => (i.complete ? i.naturalWidth : 0))).toBeGreaterThan(0);
+  expect(await page.locator("#industries").evaluate((el) => el.getBoundingClientRect().top >= innerHeight)).toBe(true);
+  await gotoSlider(page, "en");
   // D-073: each mounted slide also carries its blurred backdrop (the 960 file)
   await expect(page.locator('.industries-slide[data-slide="0"] .industries-slide-backdrop img')).toHaveAttribute("src", /industry-01-religious-960\.webp$/);
   await expect(page.locator('.industries-slide[data-slide="5"] img')).toHaveCount(0);

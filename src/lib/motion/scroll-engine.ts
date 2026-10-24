@@ -9,7 +9,7 @@
  * requestAnimationFrame; the frame reads `scrollY` and writes CSS custom
  * properties and state attributes only — no React state per frame, no
  * layout reads per frame. Document positions are measured once per layout
- * change (resize, body ResizeObserver, registration, opening release) and
+ * change (resize, body ResizeObserver, registration) and
  * cached, so the per-frame work is arithmetic.
  *
  * WHAT IT DRIVES
@@ -22,17 +22,15 @@
  * - scene stacks (homepage, FULL tier, ≥ 768 px): a sticky scene and the
  *   section that rises over it. `--enter` on the riser, `--cover` on the
  *   stuck scene, `data-cover-active` while cover > 0 (so the transform is
- *   `none` at rest — the hero's fixed opening stage is never re-parented)
+ *   `none` at rest)
  *   and `data-covered` while cover ≥ 0.5 (header environment, nav probe,
- *   autoplay and the hero field treat such a scene as not visible).
+ *   and autoplay treat such a scene as not visible).
  * - the side scene index (homepage, desktop): `data-on` on the active dot.
  * - focus: keyboard focus that lands inside a scene the riser currently
  *   covers scrolls back to where that scene is uncovered (cover = 0), so a
  *   focused control is never hidden behind the next chapter (WCAG 2.4.11).
  *
- * GATES: the STATIC tier never registers anything (callers check), and
- * nothing is written while the homepage opening owns the viewport
- * (html[data-opening] pending | running | revealing).
+ * GATE: the STATIC tier never registers anything (callers check).
  */
 
 type RevealItem = {
@@ -69,7 +67,6 @@ let flushQueued = false;
 let vh = 0;
 let maxScroll = 0;
 let ro: ResizeObserver | null = null;
-let mo: MutationObserver | null = null;
 
 /* reveal window, as fractions of the viewport height: t starts when the
    section's top is 92 % down the viewport and completes at 45 % */
@@ -83,11 +80,6 @@ export const COVER_EVENT = "sc:covered";
 export const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 export const easeInOutCubic = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const r4 = (v: number) => Math.round(v * 10000) / 10000;
-
-function released() {
-  const s = document.documentElement.getAttribute("data-opening");
-  return s === null || s === "done" || s === "skipped";
-}
 
 function stackAllowed() {
   return (
@@ -244,7 +236,6 @@ function writeIndex(i: IndexItem, y: number) {
 
 function frame() {
   queued = false;
-  if (!released()) return;
   if (dirty) measure();
   const y = Math.min(Math.max(window.scrollY, 0), maxScroll);
   for (const r of reveals) writeReveal(r, y);
@@ -295,9 +286,6 @@ function listen() {
   window.addEventListener("resize", invalidate, { passive: true });
   ro = new ResizeObserver(invalidate);
   ro.observe(document.body);
-  /* the opening releases the viewport → first real frame */
-  mo = new MutationObserver(invalidate);
-  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-opening"] });
 }
 function unlistenIfIdle() {
   if (reveals.size || stacks.size || indexes.size || !listening) return;
@@ -306,9 +294,7 @@ function unlistenIfIdle() {
   window.removeEventListener("scroll", schedule);
   window.removeEventListener("resize", invalidate);
   ro?.disconnect();
-  mo?.disconnect();
   ro = null;
-  mo = null;
 }
 
 export function registerReveal(el: HTMLElement, kind: "reveal" | "seam" = "reveal") {

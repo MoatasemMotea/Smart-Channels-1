@@ -1,4 +1,3 @@
-import { preload } from "react-dom";
 import { heroScene } from "@/content/hero-media";
 import { HeroMedia } from "./HeroMedia";
 import { HeroPointerDepth } from "./HeroPointerDepth";
@@ -15,15 +14,13 @@ import { HeroPointerDepth } from "./HeroPointerDepth";
  *      shares the photograph's exact coordinate space (1672×941), so the
  *      luminous origin stays registered on the Kingdom Centre crown at
  *      every viewport: origin ring, fine signal routes, traveling pulses
- *      (SMIL — removed entirely on STATIC), activation nodes;
- *   3. the live particle field (opening canvas) renders above this whole
- *      stage, re-tuned to telemetry density.
+ *      (SMIL — removed entirely on STATIC), activation nodes.
+ *   (D-086 removed the particle field that used to paint above it.)
  *
  * The frame + overlay scale-drift together (the network is attached to
  * the city); pointer depth shifts the overlay a few px against the
  * photograph in FULL only. Server-rendered: the photograph and network
- * exist in STATIC/no-JS immediately. The photograph is preloaded with
- * high priority so the opening never reveals into an empty hero.
+ * exist in STATIC/no-JS immediately, visible from the first paint.
  *
  * Brand storytelling only: the single caption reuses the approved
  * "RIYADH — HEADQUARTERS" wording; the Gulf reach story remains in the
@@ -31,30 +28,31 @@ import { HeroPointerDepth } from "./HeroPointerDepth";
  * Gulf exists inside the Riyadh photograph.
  */
 export async function HeroRiyadh() {
-  preload(heroScene.src, {
-    as: "image",
-    imageSrcSet: heroScene.srcSet,
-    imageSizes: heroScene.sizes,
-    fetchPriority: "high",
-  });
-
+  // D-086: no preload — the LCP is the headline text, and a preloaded
+  // landscape set would make phones fetch it beside their portrait crop
+  const portrait = heroScene.portrait;
   return (
     <div className="hero-photo-stage" aria-hidden="true">
       <div className="hero-photo-frame">
         <div className="hero-photo-drift">
-          {/* eslint-disable-next-line @next/next/no-img-element -- LCP-critical art-directed frame; Next/Image cannot drive the manual cover math */}
-          <img
-            src={heroScene.src}
-            srcSet={heroScene.srcSet}
-            sizes={heroScene.sizes}
-            width={heroScene.width}
-            height={heroScene.height}
-            alt=""
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            draggable={false}
-          />
+          <picture>
+            {portrait ? (
+              <source media={portrait.media} srcSet={portrait.src} width={portrait.width} height={portrait.height} />
+            ) : null}
+            {/* art-directed frame: Next/Image cannot drive the manual cover math */}
+            <img
+              src={heroScene.src}
+              srcSet={heroScene.srcSet}
+              sizes={heroScene.sizes}
+              width={heroScene.width}
+              height={heroScene.height}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              draggable={false}
+            />
+          </picture>
 
           {/* D-024 video slot: when the owner approves the cinematic film
               it plays here, inside the same art-direction frame, above

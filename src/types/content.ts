@@ -324,6 +324,11 @@ export interface HeroSceneConfig {
    *  aspect ratio and the overlay coordinate space). */
   width: number;
   height: number;
+  /** D-086: a 9:16 crop of the same photograph for narrow portrait screens
+   *  — served through <picture> under `media`, and placed in the frame at
+   *  its original position (`left`/`span` as % of the master width) so the
+   *  overlay stays registered on the tower. */
+  portrait?: { src: string; width: number; height: number; media: string };
 }
 
 export interface ProfileDocument {

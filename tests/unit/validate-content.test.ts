@@ -268,3 +268,30 @@ describe("D-083 one set of values, closed pending list", () => {
     expect(arabicPending).toEqual([]);
   });
 });
+
+describe("D-086 absolute metadata URLs", () => {
+  it("siteUrl: NEXT_PUBLIC_SITE_URL, else Vercel's production URL, else localhost — no domain in code", async () => {
+    const { siteUrl } = await import("../../src/lib/seo");
+    const keep = { a: process.env.NEXT_PUBLIC_SITE_URL, b: process.env.VERCEL_PROJECT_PRODUCTION_URL };
+    try {
+      delete process.env.NEXT_PUBLIC_SITE_URL;
+      delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+      expect(siteUrl().href).toBe("http://localhost:3000/");
+      process.env.VERCEL_PROJECT_PRODUCTION_URL = "example-project.vercel.app";
+      expect(siteUrl().href).toBe("https://example-project.vercel.app/");
+      process.env.NEXT_PUBLIC_SITE_URL = "https://launch.example";
+      expect(siteUrl().href).toBe("https://launch.example/");
+    } finally {
+      if (keep.a === undefined) delete process.env.NEXT_PUBLIC_SITE_URL; else process.env.NEXT_PUBLIC_SITE_URL = keep.a;
+      if (keep.b === undefined) delete process.env.VERCEL_PROJECT_PRODUCTION_URL; else process.env.VERCEL_PROJECT_PRODUCTION_URL = keep.b;
+    }
+  });
+
+  it("the homepage carries canonical, hreflang ar/en/x-default and an OG url", async () => {
+    const { pageMetadata } = await import("../../src/lib/seo");
+    const m = pageMetadata({ locale: "ar", path: "/", title: "t", description: "d" });
+    expect(m.alternates?.canonical).toBe("/ar");
+    expect(m.alternates?.languages).toEqual({ en: "/en", ar: "/ar", "x-default": "/en" });
+    expect((m.openGraph as { url?: string }).url).toBe("/ar");
+  });
+});

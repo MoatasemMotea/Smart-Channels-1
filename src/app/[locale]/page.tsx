@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/types/content";
 import { Hero } from "@/components/hero/Hero";
@@ -16,6 +17,7 @@ import { getMapCities, getStats } from "@/lib/content";
 import { SectionSeam } from "@/components/motion/SectionSeam";
 import { SceneStack } from "@/components/motion/SceneStack";
 import { SceneIndex } from "@/components/motion/SceneIndex";
+import { pageMetadata } from "@/lib/seo";
 import { IntroSplash } from "@/components/home/IntroSplash";
 
 /**
@@ -47,6 +49,16 @@ import { IntroSplash } from "@/components/home/IntroSplash";
    (200 headers, body never closed — every page linking home then never
    reaches network-idle). Restore it once that is fixed upstream. */
 export const dynamic = "force-dynamic";
+
+/* D-086: the homepage gets the same canonical + hreflang (ar, en,
+   x-default) + Open Graph set as every inner page; the title stays the
+   layout's default (absolute — no "— Smart Channels" suffix added). */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  const meta = pageMetadata({ locale: locale as Locale, path: "/", title: t("title"), description: t("description") });
+  return { ...meta, title: { absolute: t("title") } };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;

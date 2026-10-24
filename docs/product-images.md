@@ -122,3 +122,15 @@ Reference command (landscape, silent):
 | **Total** | **72.4 MB** | **17.1 MB** | −76% |
 
 Note on 02: 30 s of dense, constantly moving HUD lines. At 2.5 MB (`-maxrate 620k`) the fine lines visibly block and smear; at 960 px and CRF 28 it is 4.12 MB; VP9 is 11 MB. 1280 px with a 900k cap (3.31 MB) is visually equivalent at the stage's display size (751×470 px) and was chosen over a visible loss.
+
+## Derived brand and hero files (D-086)
+
+Each is cut from an untouched source; the source stays where it is and keeps serving where noted.
+
+| File | Derived from | How | Size |
+|---|---|---|---|
+| `public/brand/logo-dark-lockup.webp` | `public/brand/logo-dark.png` (1147×939, 497,008 B) | Lanczos scale to 156×128 (2× its largest display, the 64 px footer), **lossless** WebP with alpha: same shape and colours | 13,420 B |
+| `public/brand/logo-mark-small.webp` | `public/brand/logo-mark.png` (610×660, 259,334 B) | Lanczos scale to 104×112, lossless WebP with alpha | 10,268 B |
+| `public/media/hero/riyadh-portrait-529.webp` | `media-source/images/riyadh-skyline-hero-approved-2026-08-29.webp` (1672×941) | crop x 913–1442 × full height (9:16, centred on the Kingdom Centre at 70.4%), native pixels (no upscale), WebP q74 | 52,364 B |
+
+The header and footer use the two logo derivatives. The PNG originals stay in `public/brand/`, and `logo-dark.png` remains the Organization JSON-LD logo. The portrait crop is served by `<picture>` only under `(orientation: portrait) and (max-aspect-ratio: 9/16)` and placed in the hero frame at its original position, so the network overlay stays registered. Wider screens keep the landscape set.

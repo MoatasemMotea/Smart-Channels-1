@@ -12,7 +12,7 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { DigitalEmployee } from "@/components/assistant/DigitalEmployee";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { CustomCursor } from "@/components/layout/CustomCursor";
-import { indexingAllowed, organizationSchema, SITE_NAME } from "@/lib/seo";
+import { indexingAllowed, organizationSchema, SITE_NAME, siteUrl } from "@/lib/seo";
 import "@/styles/globals.css";
 
 export function generateStaticParams() {
@@ -27,6 +27,8 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
   return {
+    // D-086: canonical, hreflang and OG URLs resolve against it — absolute
+    metadataBase: siteUrl(),
     title: { default: t("title"), template: `%s — ${SITE_NAME}` },
     description: t("description"),
     robots: indexingAllowed() ? undefined : { index: false, follow: false },
@@ -60,10 +62,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static" suppressHydrationWarning>
       <head>
-        {/* the authoritative logo must be decoded before the opening's
-            readable-identity beat — never fetched ad hoc mid-sequence */}
-        <link rel="preload" as="image" href="/brand/logo-dark.png" fetchPriority="high" />
-        {/* D-085: decides the video intro first — the opening reads it */}
+        {/* D-085: decides the video intro before the first paint */}
         <IntroScript />
         <ThemeAndTierScript />
         {orgSchema && (

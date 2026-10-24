@@ -10,11 +10,10 @@
  *   "sc-intro" — every access inside try/catch: storage may throw);
  * - no prefers-reduced-motion, no Save-Data;
  * - not an automated browser (navigator.webdriver) — the smoke suite and
- *   audits keep the opening path; the intro's own tests switch it back on.
+ *   audits never see it; the intro's own tests switch it back on.
  * CSS keys the splash (and the scroll lock) off the attribute, so it is
  * visible on the first paint or never — no flash, no hydration change
- * (<html> carries suppressHydrationWarning). ThemeAndTierScript reads the
- * same attribute to skip the cinematic opening.
+ * (<html> carries suppressHydrationWarning).
  */
 export function IntroScript() {
   const code = `(function(){try{
