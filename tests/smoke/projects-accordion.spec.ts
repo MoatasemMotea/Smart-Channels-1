@@ -64,6 +64,8 @@ test("hover activates, arrows and Home/End step, a click on an inactive panel ac
   await panels(page).nth(2).hover();
   await expect(panels(page).nth(2)).toHaveAttribute("data-active", "true");
   await expect.poll(() => grow(page), { timeout: 2000 }).toEqual(["1", "1", "4", "1", "1"]);
+  // D-085: park the pointer — a resting cursor over panels that resize would re-hover and race the keys
+  await page.mouse.move(5, 5);
   await panels(page).nth(2).locator("a").focus();
   await page.keyboard.press("ArrowRight");
   await expect(panels(page).nth(3)).toHaveAttribute("data-active", "true");
