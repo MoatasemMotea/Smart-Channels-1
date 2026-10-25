@@ -6,6 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export async function generateMetadata({
   params,
@@ -147,6 +148,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           })}
         </ul>
       </MotionSection>
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("pages.projects.title"), path: "/projects" }]} />
     </div>
   );
 }

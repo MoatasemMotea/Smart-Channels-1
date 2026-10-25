@@ -1935,6 +1935,40 @@ data. **Nothing is deleted here, by decision** — see the updated
 - **Observed, not changed:** on tall phones (390×844 ≈ 19.5:9), `cover` crops about 43 px from each side of the 9:16 portrait cut, so the «Smart Channels» wordmark reaches the screen edges.
 - **Tests:** the intro spec serves a VP9 fixture for the .mp4 requests, because the test browser has no H.264. New tests cover one file and one poster per orientation and the exit beginning only at the video's end. The original-source sentence in `media-source/README.md` was updated.
 
+**D-088 — the Arabic font, security and SEO.** Owner directive "D-088" (phase 1 inspection, then the phase 2 decisions of 2026-10-25). D-089 and D-090 not touched; no new package; `package.json` unchanged; no new Arabic copy merged (the privacy page, the category texts and the «سياسة الخصوصية» link wording are in the report for approval).
+- **Font (A):** Arabic text uses the system stack. The tokens are `"Archivo", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif` (display) and the same with `"Inter"` (body). The Latin faces cover Latin only (unicode-range), so Arabic falls through to the device font, which may differ by device (owner decision 1). The 21 Arabic `@font-face` blocks are removed. Their files (496,936 B: Noto Kufi Arabic ×5, IBM Plex Sans Arabic ×16, OFL) moved to `media-source/fonts/` with a LICENSE note. Arabic headings get line-height 1.35 at weight 700; `letter-spacing` is 0 on Arabic microlabels, tags and names. Before/after screenshots of nine pages, the form, the footer and the menu are in the report.
+- **SEC-5 · SEC-3 · SEC-11 — Upstash Redis over REST** (`src/lib/store/redis.ts`, fetch, 5 s timeout; reads `KV_REST_API_URL/TOKEN` or `UPSTASH_REDIS_REST_URL/TOKEN`):
+  - Leads: `sc:lead:<id>` with a 12-month TTL (`LEAD_TTL_SEC`, marked [للتأكيد] in the privacy draft), indexed by the ZSET `sc:leads`; status changes keep the TTL. `.data/` remains the development store only.
+  - On Vercel without the variables, the store is "unavailable". `/api/leads` answers 503 `storage-unconfigured`; the form and the Digital Employee show their failure state with email and WhatsApp links and never claim success; the console shows an operator banner.
+  - One limiter for sign-in (5 per 15 min) and leads (5 per 10 min), shared through Redis and in memory without it or on a Redis error. Going over locks the key, doubling per strike within 24 h (base 15/10 min, cap 24 h). A successful sign-in clears the key.
+  - The client IP comes from `x-vercel-forwarded-for` / `x-real-ip`. `x-forwarded-for` is trusted only on Vercel; anywhere else all clients share one bucket.
+  - Sessions: the token is `exp.sid.mac`; with Redis the sid is registered for 8 h and deleted at sign-out, so a copied cookie dies with it. A Redis failure fails closed. The cookie is `sameSite: strict`. Every caller awaits the now-async check; the synchronous version would have treated a Promise as signed in.
+- **Request guards:**
+  - POST routes need an Origin naming this host: the Host header, the request URL's origin, or `siteUrl()`. `next start` reports `req.url` as localhost, so the Host comparison is needed; a smoke run caught it.
+  - The CSV export refuses `Sec-Fetch-Site: cross-site`.
+  - Content types: leads accept JSON only, sign-in accepts form encodings (415 otherwise).
+  - 64 KB cap (413): checked from content-length before reading, and enforced again while reading the stream.
+- **SEC-4:** `csvCell` prefixes `'` to values starting with `= + - @ Tab CR`. **SEC-7:** HSTS `max-age=63072000; includeSubDomains` (no preload: the owner decides later). **SEC-8 rejected:** Next's per-page inline flight scripts need `'unsafe-inline'`; a hash disables it and a nonce forces dynamic rendering of every page. **SEC-12:** the 188 public images were already clean; `tests/unit/image-metadata.test.ts` walks JPEG segments, PNG chunks and WebP chunks so it cannot come back.
+- **SEC-2/9 (owner decision 8):** deleted from `public/` the unpublished `event-network-build-2025` video and poster, and the five unreferenced product images `01-switch`, `02-access-points`, `03-camera`, `firewall-interim`, `multi-charger-t60`; every original is in `media-source/`. The gallery record stays unpublished; the validator reports its missing file as the usual warning. Observed, not deleted: five more earlier files (`core-switch`, `laptop`, `nvr`, `printers`, `tablet`) are also not referenced by name in the code.
+- **SEO:**
+  - SEO-1: the sitemap uses `siteUrl()`, lists the nine categories with language alternates and drops `/products`; robots names it when indexing is on.
+  - SEO-2 · SEO-8: `/products` is a 308 to the first category, and `/contact` and `/smart-ai` are now 308 too (`permanentRedirect`). The nav points at `/products/networking`, with `match: "/products"` keeping it active on every category (the overflow "More" included).
+  - SEO-4/9: card names are `h2` with no visual change; the texts await approval.
+  - SEO-5: the project description is the overview, else the scope, else name and sectors, then location and years, cut at a word near 155 characters.
+  - SEO-6: Arabic home title «القنوات الذكية — التقنية التي تصنع التجربة», template «%s — القنوات الذكية» and an Arabic `og:site_name` on `/ar`.
+  - SEO-7: `defaultLocale = "ar"`, so every new visitor goes to `/ar`. **Deviation:** `localeDetection` stays true, because false would also ignore the language-switcher cookie. Instead the middleware withholds `Accept-Language`, so only the cookie can choose `/en`. x-default is `/ar`.
+  - SEO-10: `scripts/generate-og.ts` renders `public/og/og-ar.png` and `og-en.png` (1200×630), used as `og:image` with `summary_large_image` on every page.
+  - SEO-11: the Organization schema has a PostalAddress split from the approved address (no postal code), legalName «شركة القنوات الذكية» in both languages, an alternateName, an absolute url and logo, a contactPoint and `areaServed: "SA"`. BreadcrumbList on the sub-pages, emitted only when indexing is on and placed last in the page (the `main > :first-child` clearance rule).
+  - SEO-12: the gallery and accordion images take their data alt.
+- **Lighthouse SEO** (local, `final` variant): noindex build 61 on `/ar` and `/ar/products/networking`. The two failures are `is-crawlable` (noindex by design) and `canonical` (origin ≠ `siteUrl()`). With the launch settings simulated (`NEXT_PUBLIC_ALLOW_INDEXING=true`, `NEXT_PUBLIC_SITE_URL` = the test origin) it is **100 on both, mobile and desktop**.
+- **Tests:** new `tests/unit/security.test.ts` (12: CSV, lockout in memory and against an in-memory Upstash stand-in, revocation, fail-closed, store selection with the 12-month TTL), `tests/unit/image-metadata.test.ts` (3) and `tests/smoke/d088-security-seo.spec.ts` (guards 403/415/413, HSTS, `/`→`/ar` and the cookie, the 308s, nav state, sitemap, OG image, Arabic title, no JSON-LD under noindex, and the 503 form path through `route.fulfill`). No test lead was sent to any deployment.
+- **Existing tests updated to the decided behaviour:**
+  - `routes` and `products-media`: `/products` is a redirect, and redirects must be 308.
+  - `mobile-menu`: the Products link lands on `/products/networking`.
+  - `language-purity`: crawl ≥ 36, since `/products` is no longer a page.
+  - `products-media` D-068: a card's text line is now `p` or `h2`.
+  - `validate-content`: x-default `/ar`, legalName in both languages.
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

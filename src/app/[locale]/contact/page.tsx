@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { permanentRedirect } from "@/i18n/navigation";
 
 /**
- * /contact → /#contact (§25/§51 · D-050).
+ * /contact → /#contact (§25/§51 · D-050; 308 permanent since D-088).
  *
  * The contact experience lives on the homepage Let's Talk section; the
  * historical route stays as a locale-preserving compatibility redirect
@@ -15,5 +15,5 @@ export default async function ContactRedirect({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  redirect({ href: "/#contact", locale });
+  permanentRedirect({ href: "/#contact", locale });
 }

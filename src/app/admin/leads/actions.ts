@@ -13,7 +13,7 @@ import { LEAD_STATUSES, type LeadStatus } from "@/types/lead";
  */
 async function authed(): Promise<boolean> {
   const jar = await cookies();
-  return verifySessionToken(jar.get(ADMIN_COOKIE)?.value);
+  return await verifySessionToken(jar.get(ADMIN_COOKIE)?.value);
 }
 
 export async function updateLeadStatus(formData: FormData): Promise<void> {

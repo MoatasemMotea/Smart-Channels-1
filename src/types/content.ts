@@ -269,6 +269,9 @@ export interface ContactInfo {
   phone: string;
   /** Rendered as a mailto: link. */
   email: string;
+  /** D-088 (SEO-11): the same approved address, split for schema.org
+   *  PostalAddress — no part is new and no postal code is invented. */
+  addressParts?: { street: LocalizedText; city: LocalizedText; country: "SA" };
   /** Owner-approved WhatsApp number (P4 Rev3 §12); display form.
    *  The wa.me destination is derived by stripping non-digits. */
   whatsapp?: string;
@@ -399,6 +402,10 @@ export interface NavItem {
   label: LocalizedText;
   /** Route path without locale prefix (e.g. "/solutions"). */
   href: string;
+  /** D-088: the path prefix that marks the item current, when it differs
+   *  from href (Products links to its first category but is current on
+   *  every /products/… page). */
+  match?: string;
   highlight?: "smart-ai" | "cta";
   order: number;
 }

@@ -200,8 +200,9 @@ export function GalleryCarousel({
                   aria-hidden="true"
                 />
               ) : (
+                // D-088 (SEO-12): the approved alt from the data, so image search can read it
                 // eslint-disable-next-line @next/next/no-img-element -- approved published media, CSS-sized
-                <img src={item.thumb ?? item.src} alt="" loading={centre ? "eager" : "lazy"} decoding="async" style={item.focus ? { objectPosition: item.focus } : undefined} />
+                <img src={item.thumb ?? item.src} alt={label} loading={centre ? "eager" : "lazy"} decoding="async" style={item.focus ? { objectPosition: item.focus } : undefined} />
               )}
               {item.type === "video" ? (
                 <span className="gallery-play-badge" aria-hidden="true">

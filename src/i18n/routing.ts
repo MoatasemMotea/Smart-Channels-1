@@ -1,16 +1,15 @@
 import { defineRouting } from "next-intl/routing";
 
 /**
- * Locale routing (Q1/Q4): explicit /en and /ar canonical routes.
- * Detection on bare "/": preference cookie (set when the visitor uses the
- * language switcher) → Accept-Language (Arabic-preferred → /ar) → /en.
- * next-intl implements exactly this priority via its locale cookie +
- * accept-language negotiation; an explicit choice persists and is never
- * overridden by detection on later visits.
+ * Locale routing (Q1/Q4 · D-088): explicit /en and /ar canonical routes.
+ * Bare "/": preference cookie (set when the visitor uses the language
+ * switcher) → /ar. Arabic is the default (D-088, SEO-7); the middleware
+ * withholds Accept-Language so the browser language no longer picks /en,
+ * while an explicit choice still persists across visits.
  */
 export const routing = defineRouting({
   locales: ["en", "ar"],
-  defaultLocale: "en",
+  defaultLocale: "ar",
   localePrefix: "always",
   localeDetection: true,
   localeCookie: {

@@ -32,6 +32,8 @@ export const galleryItems: GalleryItem[] = [
     poster: "/media/posters/event-network-build-2025.jpg",
     // D-065: held — 14.09 MB exceeds the 8 MB video limit. Re-published
     // when the re-encoded file lands on a NEW path (D065-VIDEO-REENCODE).
+    // D-088: its public/ copy and poster were deleted (nothing unpublished is
+    // served); the original stays in media-source/video/.
     published: false, // approved starter set (Q-P5-5, 2026-08-29); held at D-065
     alt: {
       en: "Event site build and fiber network work at a Riyadh event, 2025",

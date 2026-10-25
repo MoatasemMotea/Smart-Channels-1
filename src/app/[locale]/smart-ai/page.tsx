@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { permanentRedirect } from "@/i18n/navigation";
 
 /**
- * /smart-ai → / (§14/§51 · D-050).
+ * /smart-ai → / (§14/§51 · D-050; 308 permanent since D-088).
  *
  * Smart AI is no longer a destination: the assistant became the
  * floating Smart Channels Digital Employee, available everywhere. The
@@ -15,5 +15,5 @@ export default async function SmartAiRedirect({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  redirect({ href: "/", locale });
+  permanentRedirect({ href: "/", locale });
 }

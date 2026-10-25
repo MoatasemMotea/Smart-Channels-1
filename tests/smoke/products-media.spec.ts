@@ -55,22 +55,20 @@ test("the product source archive is never publicly reachable", async ({ request 
   }
 });
 
-test("/products: renders the first category (networking) exactly as its own page, no counters", async ({ page }) => {
-  // D-063: the nine-tile index is gone — /products IS the first category by `order`
+test("/products: lands on the first category (networking), no counters", async ({ page }) => {
+  // D-063: the nine-tile index is gone. D-088 (SEO-2): /products is now a 308
+  // to the first category by `order`, so the two never compete as duplicates.
   await page.goto("/en/products", { waitUntil: "networkidle" });
+  await expect(page).toHaveURL(/\/en\/products\/networking$/);
   await expect(page.locator(".catalog-tile")).toHaveCount(0);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("h1")).toHaveText("Networking & Connectivity");
   await expect(page.locator(".catalog-card")).toHaveCount(8);
   await expect(page.locator('.catalog-side-link[aria-current="page"]')).toHaveText("Networking");
-  await expect(page).toHaveTitle(/Products/); // generic metadata, not the category's
+  await expect(page).toHaveTitle(/^Networking & Connectivity/); // the category's own metadata
   const text = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
   expect(text).not.toMatch(/\b\d+\s*(products|items|cards)\b/i); // no counters anywhere
   expect(text).not.toMatch(/\$|SAR|price|buy now|add to cart/i);
-  // the two routes render the same tree
-  await page.goto("/en/products/networking", { waitUntil: "networkidle" });
-  const own = await page.evaluate(() => document.querySelector("main")?.innerText ?? "");
-  expect(own).toBe(text);
 });
 
 test("/products/networking: eight cards — one per type — no model numbers, never a store", async ({ page }) => {
@@ -152,7 +150,8 @@ test("D-068 (a): no brand line on any category page — a card is a photograph a
       // and no brand name leaks into a card by another route
       const text = await page.locator(".catalog-grid").innerText();
       expect(text, `${loc}/${cat}`).not.toMatch(/Aruba|Cisco|Hikvision|Linksys|Ruijie|Huawei|Lenovo|Dell/);
-      expect(await page.locator(".catalog-card p").count()).toBe(await page.locator(".catalog-card").count()); // exactly one text line per card
+      // exactly one text line per card (an h2 since D-088 — SEO-4/9 heading outline)
+      expect(await page.locator(".catalog-card :is(p, h2)").count()).toBe(await page.locator(".catalog-card").count());
     }
   }
 });

@@ -5,18 +5,20 @@ import type { Locale, Project, ProjectMedia } from "@/types/content";
 import {
   getDetailProjects,
   getFeaturedProjects,
+  getIndustries,
   getProjectBySlug,
   getPublishedGalleryItems,
   getRelatedProjects,
   localize,
   projectHasDetail,
 } from "@/lib/content";
-import { pageMetadata } from "@/lib/seo";
+import { composeDescription, pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
 import { LazyVideo } from "@/components/ui/LazyVideo";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export function generateStaticParams() {
   // evidence-adaptive rule (D-044): only Featured or deep-evidence
@@ -38,12 +40,25 @@ export async function generateMetadata({
     locale: locale as Locale,
     path: `/projects/${slug}`,
     title: localize(project.name, locale as Locale),
-    description: [
-      project.location ? localize(project.location, locale as Locale) : null,
-      project.years ? `${project.years.from}${project.years.to ? `–${project.years.to}` : ""}` : null,
-    ]
-      .filter(Boolean)
-      .join(" · "),
+    // D-088 (SEO-5): overview, else the scope bullets, else the project's
+    // name and sectors — then place and year (approved text only)
+    description: composeDescription(
+      project.caseStudy?.overview
+        ? [localize(project.caseStudy.overview, locale as Locale)]
+        : project.scope?.length
+          ? project.scope.map((s) => localize(s, locale as Locale))
+          : [
+              localize(project.name, locale as Locale),
+              getIndustries()
+                .filter((i) => project.sectorIds.includes(i.id))
+                .map((i) => localize(i.name, locale as Locale))
+                .join("، "),
+            ],
+      [
+        project.location ? localize(project.location, locale as Locale) : null,
+        project.years ? `${project.years.from}${project.years.to ? `–${project.years.to}` : ""}` : null,
+      ],
+    ),
   });
 }
 
@@ -275,6 +290,7 @@ export default async function ProjectDetailPage({
           </nav>
         </div>
       </MotionSection>
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("pages.projects.title"), path: "/projects" }, { name: localize(project.name, locale), path: `/projects/${project.slug}` }]} />
     </>
   );
 }

@@ -10,5 +10,3 @@ offline-reproducible builds and zero third-party runtime requests
 | Archivo | Omnibus-Type (Héctor Gatti) |
 | Inter | Rasmus Andersson |
 | IBM Plex Mono | IBM Corp. (Bold Monday) |
-| IBM Plex Sans Arabic | IBM Corp. (Bold Monday) |
-| Noto Kufi Arabic | Google / Noto Project |

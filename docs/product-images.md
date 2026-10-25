@@ -69,6 +69,12 @@ paths (D-053) — a path is never reused for different bytes.
 and the 11 earlier ones (29 in total). Nothing was deleted at D-060; the
 homepage stage (`src/content/products.ts`) keeps serving its four.
 
+**D-088:** five of the earlier files had no reference anywhere in the code
+and were deleted from `public/` by owner decision: `01-switch.webp`,
+`02-access-points.webp`, `03-camera.webp`, `firewall-interim.webp` and
+`multi-charger-t60.webp`. Their originals stay in
+`media-source/images/products/` (`.jpg` / `.png`).
+
 ## وسائط المقدمة — Intro media (D-085)
 
 Source: a video generated with Gemini, supplied by the owner (uploaded 2026-10-24 as
@@ -117,7 +123,7 @@ Reference command (landscape, silent):
 | solutions/06-unified-communications-smart-buildings-web.mp4 | 7.3 MB (1920×1080) | 2.47 MB | 1280×720 · no audio |
 | solutions/07-video-surveillance-ai-solutions-web.mp4 | 6.0 MB (1920×1080) | 1.00 MB | 1280×720 · no audio |
 | gallery/event-environment-night.mp4 | 4.0 MB | 1.12 MB | 464×848 · AAC 96k (the carousel can unmute) |
-| gallery/event-network-build-2025.mp4 | 14.1 MB | 3.68 MB | 848×464 · AAC 96k · CRF 28 + `-maxrate 300k` |
+| gallery/event-network-build-2025.mp4 | 14.1 MB | 3.68 MB | 848×464 · AAC 96k · CRF 28 + `-maxrate 300k` — **deleted from `public/` at D-088** with its poster (the record is unpublished); the original stays in `media-source/video/` |
 | gallery/hospitality-walkway-night.mp4 | 5.3 MB | 1.70 MB | 464×848 · AAC 96k |
 | **Total** | **72.4 MB** | **17.1 MB** | −76% |
 
@@ -143,7 +149,20 @@ The owner supplied two shorter cuts (7.6 s, final zoom removed) plus a portrait 
 |---|---|---|
 | `intro-portrait.mp4` | owner cut · 720×1280 · 25 fps · 7.6 s · AAC | 672,493 |
 | `intro-landscape.mp4` | owner cut · 1280×720 · 24 fps · 7.6 s · AAC | 984,876 |
-| `intro-portrait-poster.jpg` | owner poster · 720×1280 (uploaded as `intro-portrait-poster.jpg.jpg`) | 8,150 |
+| `intro-portrait-poster.jpg` | owner poster · 720×1280 (uploaded as `intro-portrait-poster.jpg.jpg`) | 7,810 |
 | `intro-poster.jpg` | first frame of `intro-landscape.mp4`, `-q:v 3` | 8,300 |
 
 Under `(orientation: portrait)` the browser fetches the portrait cut and poster, otherwise the landscape ones: one video file per visit. Playwright's Chromium has no H.264, so the intro smoke tests answer these requests with `tests/smoke/fixtures/intro-test.webm`, a 320 px VP9 copy of the landscape cut (102,510 B). That file is a test fixture only and never served by the site.
+
+## صور المشاركة — Share images (D-088 · SEO-10)
+
+| File | Source | Bytes |
+|---|---|---|
+| `public/og/og-ar.png` | `scripts/generate-og.ts` · 1200×630 · `logo-dark.png` + the Arabic home title in Noto Kufi Arabic (`media-source/fonts/notokufi-5.woff2`, OFL) | 183,606 |
+| `public/og/og-en.png` | same · the English home title in Archivo (`public/fonts/archivo-3.woff2`) | 187,445 |
+
+One image per locale for now, used as `og:image` and `twitter:image`
+(`summary_large_image`) on every page. The text is the existing
+`home.title`; re-run `npx tsx scripts/generate-og.ts` when it changes.
+Chromium screenshots carry no EXIF/XMP/IPTC, and the SEC-12 unit test
+(`tests/unit/image-metadata.test.ts`) checks every image in `public/`.

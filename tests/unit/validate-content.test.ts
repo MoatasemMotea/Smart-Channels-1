@@ -234,7 +234,7 @@ describe("D-081 Track Record figures advance by themselves", () => {
 });
 
 describe("D-082 the registered Arabic name", () => {
-  it("the Arabic Organization JSON-LD carries legalName and the brand as alternateName; English carries neither", async () => {
+  it("the Organization JSON-LD carries the registered legalName in both locales, the other name as alternateName (D-088)", async () => {
     const { organizationSchema } = await import("../../src/lib/seo");
     const { LEGAL_NAME_AR } = await import("../../src/content/lang-allowlist");
     const ar = organizationSchema({ locale: "ar", name: "القنوات الذكية" });
@@ -242,8 +242,9 @@ describe("D-082 the registered Arabic name", () => {
     expect(ar.legalName).toBe("شركة القنوات الذكية");
     expect(ar.alternateName).toBe("Smart Channels");
     const en = organizationSchema({ locale: "en", name: "Smart Channels" });
-    expect(en.legalName).toBeUndefined();
-    expect(en.alternateName).toBeUndefined();
+    // D-088 decision 6: legalName in both languages (was Arabic-only at D-082)
+    expect(en.legalName).toBe(LEGAL_NAME_AR);
+    expect(en.alternateName).toBe("القنوات الذكية");
   });
 
   it("one mission: the homepage About and /company read the same company.mission", async () => {
@@ -291,7 +292,7 @@ describe("D-086 absolute metadata URLs", () => {
     const { pageMetadata } = await import("../../src/lib/seo");
     const m = pageMetadata({ locale: "ar", path: "/", title: "t", description: "d" });
     expect(m.alternates?.canonical).toBe("/ar");
-    expect(m.alternates?.languages).toEqual({ en: "/en", ar: "/ar", "x-default": "/en" });
+    expect(m.alternates?.languages).toEqual({ en: "/en", ar: "/ar", "x-default": "/ar" });
     expect((m.openGraph as { url?: string }).url).toBe("/ar");
   });
 });

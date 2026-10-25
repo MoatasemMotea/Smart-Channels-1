@@ -86,6 +86,7 @@ function persist(p: DEPersisted) {
 export function DigitalEmployee() {
   const locale = useLocale() as Locale;
   const t = useTranslations("assistant");
+  const tInner = useTranslations("inner");
   const contact = getContact();
   const families = getSolutionFamilies();
 
@@ -391,6 +392,17 @@ export function DigitalEmployee() {
                 <button type="button" onClick={restart}>
                   {t("restart")}
                 </button>
+                {/* D-088: a direct route when the intake cannot store the lead */}
+                {contact.whatsapp ? (
+                  <a
+                    className="de-choice-link"
+                    href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {tInner("whatsappShort")}
+                  </a>
+                ) : null}
               </div>
             ) : null}
 

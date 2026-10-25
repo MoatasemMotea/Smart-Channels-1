@@ -6,6 +6,7 @@ import { getProductCategories, getProductCategoryBySlug } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 import { CategoryCatalog } from "@/components/products/CategoryCatalog";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 /* nine categories × two locales = eighteen static routes (D-059 §3) */
 export function generateStaticParams() {
@@ -48,5 +49,11 @@ export default async function ProductCategoryPage({
   const cat = getProductCategoryBySlug(category);
   if (!cat) notFound();
 
-  return <CategoryCatalog locale={locale} category={cat} />;
+  const name = locale === "ar" ? cat.fullAr : cat.fullEn;
+  return (
+    <>
+      <CategoryCatalog locale={locale} category={cat} />
+      <BreadcrumbJsonLd locale={locale} trail={[{ name, path: `/products/${cat.slug}` }]} />
+    </>
+  );
 }

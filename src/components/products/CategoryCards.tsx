@@ -46,7 +46,8 @@ export function CategoryCards({ cards }: { cards: CardView[] }) {
               <PlaceholderIcon />
             </div>
           )}
-          <p className="catalog-card-name"><LangText text={c.name} /></p>
+          {/* D-088 (SEO-9): each card names a product type — a level-2 heading under the page h1 */}
+          <h2 className="catalog-card-name"><LangText text={c.name} /></h2>
         </li>
       ))}
     </ul>

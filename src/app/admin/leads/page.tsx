@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, adminConfigured, verifySessionToken } from "@/lib/admin/auth";
-import { getLeadStore } from "@/lib/leads/store";
+import { getLeadStore, leadStoreKind } from "@/lib/leads/store";
 import { LEAD_STATUSES, type Lead, type LeadStatus } from "@/types/lead";
 
 /**
@@ -65,7 +65,7 @@ export default async function AdminLeadsPage({
   }
 
   const jar = await cookies();
-  const authed = verifySessionToken(jar.get(ADMIN_COOKIE)?.value);
+  const authed = await verifySessionToken(jar.get(ADMIN_COOKIE)?.value);
 
   if (!authed) {
     const error = typeof params.error === "string" ? params.error : null;
@@ -115,6 +115,14 @@ export default async function AdminLeadsPage({
 
   return (
     <section>
+      {leadStoreKind() === "unavailable" ? (
+        /* D-088: on Vercel without Upstash Redis nothing can be stored — say so */
+        <p className="admin-card mb-6 text-sm leading-7 text-accent" role="alert">
+          Lead storage is not configured on this deployment: the form refuses submissions (503) and
+          points visitors to email and WhatsApp. Create Upstash Redis in the Vercel Marketplace and link it
+          to this project (KV_REST_API_URL / KV_REST_API_TOKEN).
+        </p>
+      ) : null}
       <header className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="admin-title">Lead console</h1>
         <div className="flex items-center gap-3">

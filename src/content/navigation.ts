@@ -19,7 +19,8 @@ export const navigation: NavItem[] = [
   { id: "home", label: { en: "Home", ar: "الرئيسية" }, href: "/", order: 1 },
   { id: "about", label: { en: "About Us", ar: "من نحن" }, href: "/#about", order: 2 },
   { id: "solutions", label: { en: "Solutions", ar: "الحلول" }, href: "/#solutions", order: 3 },
-  { id: "products", label: { en: "Products", ar: "المنتجات" }, href: "/products", order: 4 },
+  // D-088 (SEO-2): /products is a 308 to the first category — link straight to it
+  { id: "products", label: { en: "Products", ar: "المنتجات" }, href: "/products/networking", match: "/products", order: 4 },
   { id: "industries", label: { en: "Industries", ar: "القطاعات" }, href: "/#industries", order: 5 },
   { id: "projects", label: { en: "Projects", ar: "المشاريع" }, href: "/projects", order: 6 },
   { id: "gallery", label: { en: "Gallery", ar: "المعرض" }, href: "/#gallery", order: 7 },

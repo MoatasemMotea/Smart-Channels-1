@@ -64,8 +64,10 @@
   --motif-line-strong: rgba(226, 226, 229, 0.09);
 
   /* type roles (D-014 — Candidate A locked) */
-  --font-display: "Archivo", "Noto Kufi Arabic", system-ui, sans-serif;
-  --font-body: "Inter", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  /* Arabic words on English pages (e.g. the «العربية» switch) use the same
+     system Arabic stack as the Arabic pages (D-088) */
+  --font-display: "Archivo", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+  --font-body: "Inter", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   /* motion tokens (motion contract §8) — read by CSS and JS alike */
@@ -128,10 +130,14 @@
   color-scheme: light;
 }
 
-/* Arabic type-role swap: same tokens, Arabic-first families (Q-P3-5). */
+/* Arabic type-role swap (Q-P3-5 · D-088): the system Arial stack for
+   Arabic. The Latin families come first, but they carry no Arabic glyphs,
+   so Arabic letters fall through to Arial (Geeza Pro on Apple, Noto Naskh
+   Arabic on Android) while Latin words inside Arabic pages keep
+   Archivo/Inter. No Arabic webfont is downloaded. */
 [dir="rtl"] {
-  --font-display: "Noto Kufi Arabic", "Archivo", system-ui, sans-serif;
-  --font-body: "IBM Plex Sans Arabic", "Inter", system-ui, sans-serif;
+  --font-display: "Archivo", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
+  --font-body: "Inter", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
 }
 
 /* Map semantic tokens into Tailwind v4 utilities (bg-surface, text-ink…). */
@@ -190,6 +196,16 @@ h4 {
 [dir="rtl"] h3,
 [dir="rtl"] h4 {
   line-height: 1.35;
+  font-weight: 700; /* D-088: Arabic headings in Arial Bold */
+}
+/* D-088: Arabic script is never tracked (letter-spacing would break the
+   joins) — every rule that tracks text also resets for Arabic */
+[dir="rtl"] .pa-tag,
+[dir="rtl"] .solution-row-name,
+[dir="rtl"] .project-entry-name,
+[dir="rtl"] .featured-card-name,
+[dir="rtl"] .sc-cursor-label {
+  letter-spacing: 0;
 }
 
 /* Visible focus everywhere (§30). */
@@ -360,12 +376,12 @@ html:not([data-motion-tier="static"]) .hero-backdrop polyline {
   line-height: 1.95;
   max-width: 32rem;
 }
-/* Arabic microlabels leave the Latin mono voice: Plex Sans Arabic with no
+/* Arabic microlabels leave the Latin mono voice: the Arabic body stack with no
    letterspacing (tracking Arabic script is a typographic error). */
 [dir="rtl"] .microlabel {
   font-family: var(--font-body);
   font-size: 0.8125rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 /* Arabic nav + CTAs: slightly larger UI type for equivalent legibility. */
 [dir="rtl"] .site-header nav a {
@@ -1264,7 +1280,8 @@ html[data-motion-tier="static"] .pa-ground img { transition: none; transform: no
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-.de-choices button {
+.de-choices button,
+.de-choices .de-choice-link {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 0.5rem 0.95rem;
@@ -1276,8 +1293,11 @@ html[data-motion-tier="static"] .pa-ground img { transition: none; transform: no
     border-color var(--dur-control) var(--ease-engineered),
     background-color var(--dur-control) var(--ease-engineered);
 }
+.de-choices .de-choice-link { display: inline-flex; align-items: center; } /* D-088: styled as its sibling buttons */
 .de-choices button:hover,
-.de-choices button:focus-visible {
+.de-choices button:focus-visible,
+.de-choices .de-choice-link:hover,
+.de-choices .de-choice-link:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -4302,6 +4322,10 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-rule::before {
 .catalog-card-media[data-empty] { background: var(--surface-2); color: var(--ink-muted); }
 .catalog-card-media svg { inline-size: 2.25rem; block-size: 2.25rem; opacity: 0.55; }
 .catalog-card-name { margin-top: 0.7rem; font-size: 0.95rem; font-weight: 700; color: var(--ink); }
+/* D-088: an h2 since SEO-9 — keeps the look of the paragraph it replaced
+   (body font and line height, not the heading defaults) */
+.catalog-card-name { font-family: var(--font-body); line-height: 1.6; text-wrap: wrap; }
+[dir="rtl"] .catalog-card-name { line-height: 1.8; }
 
 @media (prefers-reduced-motion: reduce) {
   .catalog-side-link { transition: none; }

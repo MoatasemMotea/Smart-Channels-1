@@ -14,6 +14,12 @@ export const contact: ContactInfo = {
     en: "King Faisal Road, Al Murabba District, Riyadh, Kingdom of Saudi Arabia",
     ar: "طريق الملك فيصل، حي المربع، الرياض، المملكة العربية السعودية",
   },
+  // D-088: the line above, split for structured data (no postal code)
+  addressParts: {
+    street: { en: "King Faisal Road, Al Murabba District", ar: "طريق الملك فيصل، حي المربع" },
+    city: { en: "Riyadh", ar: "الرياض" },
+    country: "SA",
+  },
   phone: "+966 11 217 6668",
   email: "info@smartchannels.co",
   /* Owner-approved P4 Revision 3 §12 (floating WhatsApp action). */

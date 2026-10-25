@@ -12,7 +12,8 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { DigitalEmployee } from "@/components/assistant/DigitalEmployee";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { CustomCursor } from "@/components/layout/CustomCursor";
-import { indexingAllowed, organizationSchema, SITE_NAME, siteUrl } from "@/lib/seo";
+import { indexingAllowed, organizationSchema, shareMetadata, siteName, siteUrl } from "@/lib/seo";
+import type { Locale } from "@/types/content";
 import "@/styles/globals.css";
 
 export function generateStaticParams() {
@@ -26,13 +27,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+  const share = shareMetadata(locale as Locale);
   return {
     // D-086: canonical, hreflang and OG URLs resolve against it — absolute
     metadataBase: siteUrl(),
-    title: { default: t("title"), template: `%s — ${SITE_NAME}` },
+    title: { default: t("title"), template: `%s — ${siteName(locale as Locale)}` },
     description: t("description"),
     robots: indexingAllowed() ? undefined : { index: false, follow: false },
     icons: { icon: "/brand/favicon.png" },
+    // D-088 (SEO-10): the default share image for pages without their own metadata
+    openGraph: { siteName: siteName(locale as Locale), images: share.images },
+    twitter: share.twitter,
   };
 }
 

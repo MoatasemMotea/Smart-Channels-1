@@ -23,7 +23,7 @@ export default async function AdminLeadDetail({
   const { id } = await params;
   if (!adminConfigured()) notFound();
   const jar = await cookies();
-  if (!verifySessionToken(jar.get(ADMIN_COOKIE)?.value)) notFound();
+  if (!(await verifySessionToken(jar.get(ADMIN_COOKIE)?.value))) notFound();
 
   const lead = await getLeadStore().get(id);
   if (!lead) notFound();

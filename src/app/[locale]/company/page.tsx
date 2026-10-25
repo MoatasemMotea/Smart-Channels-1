@@ -8,6 +8,7 @@ import { PageHero } from "@/components/page/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export async function generateMetadata({
   params,
@@ -141,6 +142,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ locale
       </MotionSection>
       {/* D-020: the Company Profile is source material only — no public
           download section exists by owner ruling. */}
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("pages.company.title"), path: "/company" }]} />
     </>
   );
 }

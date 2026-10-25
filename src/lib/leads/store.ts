@@ -2,6 +2,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { randomBytes } from "node:crypto";
 import path from "node:path";
 import type { Lead } from "@/types/lead";
+import { redis, redisConfigured, redisPipeline } from "@/lib/store/redis";
 
 // Server-only guard (dependency-free): importing this module in a
 // client bundle is a build-breaking mistake — fail loudly at runtime.
@@ -17,11 +18,12 @@ if (typeof window !== "undefined") {
  * gitignored, server-only): fully functional for development and
  * single-instance deployments, transparent and dependency-free.
  *
- * ARCHITECTED-NEEDS-PROVIDER: a production deployment on serverless or
- * multi-instance infrastructure needs a durable store (the owner
- * decides the provider — see the report's decision matrix). Swapping =
- * implement LeadStore against the chosen service and return it from
- * getLeadStore(). No API-route or UI changes.
+ * D-088: production uses Upstash Redis (owner decision, Vercel
+ * Marketplace) through `RedisLeadStore` — each lead under its own key with
+ * a 12-month expiry, indexed by time. The file store remains for local
+ * development only. On Vercel without Redis the store is UNAVAILABLE: its
+ * filesystem is read-only/ephemeral, so writing would fail or vanish — the
+ * intake answers 503 and the form never claims success.
  */
 export interface LeadStore {
   create(lead: Lead): Promise<void>;
@@ -101,10 +103,84 @@ class FileLeadStore implements LeadStore {
   }
 }
 
+/** Retention (D-088): 12 months — "[للتأكيد]" in the privacy draft. */
+export const LEAD_TTL_SEC = 365 * 24 * 60 * 60;
+const LEAD_KEY = (id: string) => `sc:lead:${id}`;
+const LEAD_INDEX = "sc:leads";
+
+class RedisLeadStore implements LeadStore {
+  async create(lead: Lead): Promise<void> {
+    const now = Date.now();
+    await redisPipeline([
+      ["SET", LEAD_KEY(lead.leadId), JSON.stringify(lead), "EX", LEAD_TTL_SEC],
+      ["ZADD", LEAD_INDEX, Date.parse(lead.createdAt) || now, lead.leadId],
+      // the index forgets what the keys have already expired
+      ["ZREMRANGEBYSCORE", LEAD_INDEX, "-inf", now - LEAD_TTL_SEC * 1000],
+    ]);
+  }
+
+  async list(): Promise<Lead[]> {
+    const ids = await redis<string[]>(["ZRANGE", LEAD_INDEX, 0, -1, "REV"]);
+    const out: Lead[] = [];
+    for (let i = 0; i < ids.length; i += 100) {
+      const chunk = ids.slice(i, i + 100);
+      const values = await redis<(string | null)[]>(["MGET", ...chunk.map(LEAD_KEY)]);
+      for (const v of values) if (v) out.push(JSON.parse(v) as Lead);
+    }
+    return out.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+
+  async get(leadId: string): Promise<Lead | null> {
+    const v = await redis<string | null>(["GET", LEAD_KEY(leadId)]);
+    return v ? (JSON.parse(v) as Lead) : null;
+  }
+
+  /** read-modify-write; a single operator console makes conflicts moot */
+  async update(leadId: string, mutate: (lead: Lead) => Lead): Promise<Lead | null> {
+    const current = await this.get(leadId);
+    if (!current) return null;
+    const updated = mutate(current);
+    await redis(["SET", LEAD_KEY(leadId), JSON.stringify(updated), "KEEPTTL"]);
+    return updated;
+  }
+}
+
+/** thrown by the unavailable store; the intake maps it to 503 */
+export class LeadStoreUnavailableError extends Error {
+  constructor() {
+    super("lead storage is not configured on this deployment (Upstash Redis variables missing)");
+  }
+}
+
+class UnavailableLeadStore implements LeadStore {
+  async create(): Promise<void> {
+    throw new LeadStoreUnavailableError();
+  }
+  async list(): Promise<Lead[]> {
+    return [];
+  }
+  async get(): Promise<Lead | null> {
+    return null;
+  }
+  async update(): Promise<Lead | null> {
+    return null;
+  }
+}
+
+export type LeadStoreKind = "redis" | "file" | "unavailable";
+
+/** which store this deployment uses (pure — reads the environment) */
+export function leadStoreKind(): LeadStoreKind {
+  if (redisConfigured()) return "redis";
+  return process.env.VERCEL ? "unavailable" : "file";
+}
+
 /** survives dev hot-reload; one store per server process */
-const g = globalThis as unknown as { __scLeadStore?: LeadStore };
+const g = globalThis as unknown as { __scLeadStores?: Partial<Record<LeadStoreKind, LeadStore>> };
 
 export function getLeadStore(): LeadStore {
-  g.__scLeadStore ??= new FileLeadStore();
-  return g.__scLeadStore;
+  const kind = leadStoreKind();
+  g.__scLeadStores ??= {};
+  return (g.__scLeadStores[kind] ??=
+    kind === "redis" ? new RedisLeadStore() : kind === "file" ? new FileLeadStore() : new UnavailableLeadStore());
 }

@@ -133,7 +133,7 @@ for (const { w, h } of VIEWPORTS) {
 
       // link click → close, then navigate (client-side; the sheet is gone on the new route)
       await panel(page).locator("a.site-menu-link", { hasText: loc === "ar" ? "المنتجات" : "Products" }).click();
-      await expect(page).toHaveURL(new RegExp(`/${loc}/products$`));
+      await expect(page).toHaveURL(new RegExp(`/${loc}/products/networking$`)); // D-088: the nav points at the first category
       await expect(panel(page)).toHaveCount(0);
       await expect(toggle(page)).toHaveAttribute("aria-expanded", "false");
       expect(await page.evaluate(() => document.body.style.overflow)).toBe("");

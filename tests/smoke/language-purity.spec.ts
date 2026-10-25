@@ -114,7 +114,8 @@ for (const loc of ["ar", "en"] as const) {
     if (pendingSeen.length) console.log(`[${loc}] names awaiting official Arabic (${pendingSeen.length}): ${pendingSeen.join(" · ")}`);
     const report = findings.map((f) => `${f.route} · ${f.where} · «${f.run}» · ${f.problem} · in: ${f.text.slice(0, 90)}`);
     expect(report, `${findings.length} foreign-script runs:\n${report.join("\n")}`).toEqual([]);
-    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(37);
+    // 36 since D-088: /products is a redirect to its first category, not a page
+    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(36);
   });
 }
 

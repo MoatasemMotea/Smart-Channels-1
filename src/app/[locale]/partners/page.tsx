@@ -7,6 +7,7 @@ import { MotionSection } from "@/components/motion/MotionSection";
 import { LangText } from "@/components/ui/LangText";
 import { PageHero } from "@/components/page/PageHero";
 import { LogoCarousel, type RailLogo } from "@/components/home/LogoMotion";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export async function generateMetadata({
   params,
@@ -78,6 +79,7 @@ export default async function PartnersPage({ params }: { params: Promise<{ local
           </ul>
         </div>
       </MotionSection>
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("pages.partners.title"), path: "/partners" }]} />
     </>
   );
 }

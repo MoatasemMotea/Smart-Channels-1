@@ -10,6 +10,7 @@ import { PageHero } from "@/components/page/PageHero";
 import { SolutionCinematicMoment } from "@/components/solutions/SolutionCinematicMoment";
 import { Link } from "@/i18n/navigation";
 import { LangText } from "@/components/ui/LangText";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -151,6 +152,7 @@ export default async function SolutionFamilyPage({
           </nav>
         </div>
       </MotionSection>
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("pages.solutions.title"), path: "/solutions" }, { name: localize(family.name, locale), path: `/solutions/${family.slug}` }]} />
     </>
   );
 }

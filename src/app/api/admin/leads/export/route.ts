@@ -2,10 +2,14 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin/auth";
 import { getLeadStore } from "@/lib/leads/store";
+import { csvCell } from "@/lib/leads/csv";
+import { sameOriginRequest } from "@/lib/http/request-guard";
 
 /**
- * CSV export (§31): authenticated only. UTF-8 with BOM so Arabic
- * content opens correctly in Excel; every field quoted/escaped.
+ * CSV export (§31): authenticated only, same-site requests only. UTF-8
+ * with BOM so Arabic content opens correctly in Excel; every field
+ * quoted/escaped, and (D-088 · SEC-4) any value a spreadsheet would read
+ * as a formula is neutralized.
  */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,21 +30,19 @@ const COLUMNS = [
   "consentTimestamp",
 ] as const;
 
-function cell(v: unknown): string {
-  const s = v == null ? "" : String(v);
-  return `"${s.replace(/"/g, '""')}"`;
-}
-
-export async function GET() {
+export async function GET(req: Request) {
+  if (!sameOriginRequest(req)) {
+    return NextResponse.json({ ok: false, error: "forbidden-origin" }, { status: 403 });
+  }
   const jar = await cookies();
-  if (!verifySessionToken(jar.get(ADMIN_COOKIE)?.value)) {
+  if (!(await verifySessionToken(jar.get(ADMIN_COOKIE)?.value))) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
   const leads = await getLeadStore().list();
   const rows = [
     COLUMNS.join(","),
-    ...leads.map((l) => COLUMNS.map((c) => cell(l[c])).join(",")),
+    ...leads.map((l) => COLUMNS.map((c) => csvCell(l[c])).join(",")),
   ];
   const csv = `${"\uFEFF"}${rows.join("\r\n")}\r\n`;
 

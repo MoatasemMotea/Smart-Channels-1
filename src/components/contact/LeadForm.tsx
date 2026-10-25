@@ -32,6 +32,7 @@ const REQUIRED: Record<FieldId, boolean> = {
 export function LeadForm() {
   const locale = useLocale() as Locale;
   const t = useTranslations("lead");
+  const tInner = useTranslations("inner");
   const contact = getContact();
   const families = getSolutionFamilies();
   const formRef = useRef<HTMLFormElement>(null);
@@ -141,6 +142,21 @@ export function LeadForm() {
             <a className="tx-link font-semibold text-accent" href={`mailto:${contact.email}`}>
               <LangText text={contact.email} />
             </a>
+            {/* D-088: when storage is down (or not configured) the visitor still
+                has two direct routes — email and WhatsApp */}
+            {contact.whatsapp ? (
+              <>
+                {" · "}
+                <a
+                  className="tx-link font-semibold text-accent"
+                  href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {tInner("whatsappShort")}
+                </a>
+              </>
+            ) : null}
           </p>
         </div>
       ) : null}

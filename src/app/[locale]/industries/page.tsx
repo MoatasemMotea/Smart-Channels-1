@@ -5,6 +5,7 @@ import { getIndustries, localize } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { MotionSection } from "@/components/motion/MotionSection";
 import { LangText } from "@/components/ui/LangText";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 
 export async function generateMetadata({
   params,
@@ -58,6 +59,7 @@ export default async function IndustriesPage({ params }: { params: Promise<{ loc
           ))}
         </ul>
       </MotionSection>
+      <BreadcrumbJsonLd locale={locale} trail={[{ name: t("title"), path: "/industries" }]} />
     </div>
   );
 }

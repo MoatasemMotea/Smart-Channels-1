@@ -11,9 +11,9 @@ import { CategoryCards } from "@/components/products/CategoryCards";
  * ONE CATEGORY, RENDERED (D-063).
  *
  * The whole body of a product category page — hero, the nine-category
- * side list with the current one marked, and the card grid. Extracted
- * from `/products/[category]` so that `/products` (which shows the first
- * category by `order`) renders the very same tree instead of a copy.
+ * side list with the current one marked, and the card grid. Rendered by
+ * `/products/[category]` (`/products` itself is a 308 to the first
+ * category since D-088).
  * Server component; the caller has already resolved the category and
  * called setRequestLocale. Metadata stays with each route.
  */

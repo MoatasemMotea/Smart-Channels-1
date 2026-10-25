@@ -37,11 +37,17 @@ approved, so no unapproved file is ever publicly reachable by URL.
   PDF, with alpha). The authoritative identity per D-001.
 - `documents/` — approved Company Profile 2026 (EN). The public download
   copy lives at `public/docs/`.
+- `fonts/` — the Arabic web fonts removed from the site at D-088 (Noto
+  Kufi Arabic, IBM Plex Sans Arabic; OFL — see `fonts/LICENSE.md`). The
+  site uses the system Arial stack; `notokufi-5.woff2` still renders the
+  Arabic Open Graph image (`scripts/generate-og.ts`).
 - `video/` — the three owner-supplied videos (originals, untouched):
   `event-network-build-2025.mp4` (848×464, 79s),
   `event-environment-night.mp4` (464×848, 25s),
   `hospitality-walkway-night.mp4` (464×848, 31s).
   Gallery classification/publication awaits owner approval (O-008/O-012).
+  D-088: the unpublished `event-network-build-2025` derivative and poster
+  were deleted from `public/`; this original is the only copy kept.
 - `video/intro-original.mp4` — the first homepage intro source (Gemini-generated, 10 s, 1280×720; D-085). Since D-085R the site plays two 7.6 s cuts the owner supplied ready for the web (`public/media/intro/intro-portrait.mp4`, `intro-landscape.mp4`), moved there as delivered.
 - `video/solutions/` — the seven owner-approved Solution films
   (untouched web-optimized uploads, 2026-08-30) with their binding

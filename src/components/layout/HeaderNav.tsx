@@ -143,7 +143,7 @@ export function HeaderNav() {
 
   const linkClass = () => "nav-link tx-link text-[0.8125rem] font-medium text-ink-muted";
 
-  const moreActive = overflow.some((i) => isActive(i.href));
+  const moreActive = overflow.some((i) => isActive(i.match ?? i.href));
 
   return (
     <nav aria-label={t("mainLabel")} className="ms-auto hidden items-center gap-4 xl:gap-6 lg:flex">
@@ -152,8 +152,8 @@ export function HeaderNav() {
           key={item.id}
           href={item.href}
           onClick={onClick(item.href)}
-          data-active={isActive(item.href) || undefined}
-          aria-current={isActive(item.href) ? "true" : undefined}
+          data-active={isActive(item.match ?? item.href) || undefined}
+          aria-current={isActive(item.match ?? item.href) ? "true" : undefined}
           className={`${linkClass()}${overflowNavIds.has(item.id) ? " nav-collapsible" : ""}`}
         >
           <LangText text={localize(item.label, locale)} />
@@ -184,8 +184,8 @@ export function HeaderNav() {
                 role="menuitem"
                 href={item.href}
                 onClick={onClick(item.href)}
-                data-active={isActive(item.href) || undefined}
-                aria-current={isActive(item.href) ? "true" : undefined}
+                data-active={isActive(item.match ?? item.href) || undefined}
+                aria-current={isActive(item.match ?? item.href) ? "true" : undefined}
                 className="nav-more-item"
               >
                 <LangText text={localize(item.label, locale)} />

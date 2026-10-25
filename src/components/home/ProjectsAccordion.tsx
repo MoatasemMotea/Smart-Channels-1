@@ -94,8 +94,9 @@ export function ProjectsAccordion({ items }: { items: AccordionItem[] }) {
             >
               <span className="pa-ground" aria-hidden="true">
                 {item.image ? (
+                  // D-088 (SEO-12): data alt for indexing; the ground stays aria-hidden (the link is labelled)
                   // eslint-disable-next-line @next/next/no-img-element -- owner-supplied project photograph, CSS-sized
-                  <img src={item.image.src} alt="" loading="lazy" decoding="async" />
+                  <img src={item.image.src} alt={item.image.alt} loading="lazy" decoding="async" />
                 ) : (
                   <svg className="pa-dots" aria-hidden="true" focusable="false">
                     <defs>

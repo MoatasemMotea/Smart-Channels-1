@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const routes = [
   "",
-  "/products",
+  // D-088 (SEO-2): /products is a 308 to the first category — see redirects
   "/products/networking",
   "/solutions",
   "/solutions/security-solutions",
@@ -25,11 +25,14 @@ const redirects: Array<[string, string]> = [
   ["/ar/contact", "/ar/#contact"],
   ["/en/smart-ai", "/en"],
   ["/ar/smart-ai", "/ar"],
+  // D-088 (SEO-2): one URL per page — the index is the first category
+  ["/en/products", "/en/products/networking"],
+  ["/ar/products", "/ar/products/networking"],
 ];
 for (const [from, to] of redirects) {
   test(`${from} redirects to ${to}`, async ({ request }) => {
     const res = await request.get(from, { maxRedirects: 0 });
-    expect([307, 308]).toContain(res.status());
+    expect(res.status()).toBe(308); // permanent since D-088
     expect(res.headers()["location"]).toBe(to);
   });
 }

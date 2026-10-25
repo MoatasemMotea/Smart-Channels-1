@@ -1,9 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { Lead } from "@/types/lead";
 import { validateLeadPayload } from "@/lib/leads/validate";
-import { getLeadStore, newLeadId } from "@/lib/leads/store";
+import { LeadStoreUnavailableError, getLeadStore, newLeadId } from "@/lib/leads/store";
 import { emitLeadCreated } from "@/lib/leads/notify";
-import { rateLimit } from "@/lib/leads/rate-limit";
+import { LEADS_RULE, limit } from "@/lib/leads/rate-limit";
+import { clientIp, declaredTooLarge, mediaType, readTextCapped, sameOriginRequest } from "@/lib/http/request-guard";
 
 /**
  * PUBLIC LEAD INTAKE — POST /api/leads (§§24–26, §33 · D-050).
@@ -12,9 +13,12 @@ import { rateLimit } from "@/lib/leads/rate-limit";
  * client shows success ONLY on this route's 2xx — a stored lead is the
  * only success there is (never fake success, §26).
  *
- * Protections (§33): JSON-only, 64KB body cap, per-IP fixed-window
- * rate limit, full server-side validation/sanitization, honeypot trap,
- * consent required. Conversation input is stored as data — it is never
+ * Protections (§33 · D-088): same-origin only (Origin header), JSON
+ * only (415 otherwise), 64KB body cap enforced before and during reading,
+ * shared per-IP rate limit with progressive lockout, full server-side
+ * validation/sanitization, honeypot trap, consent required. Without a
+ * configured store on Vercel the answer is 503 "storage-unconfigured" —
+ * never a fake success. Conversation input is stored as data — it is never
  * executed, never interpreted as instructions, and the AI layer has no
  * access to this store (§33).
  */
@@ -22,22 +26,27 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MAX_BODY_BYTES = 64 * 1024;
-const RATE_LIMIT = 5; // submissions
-const RATE_WINDOW_MS = 10 * 60 * 1000; // per 10 minutes per IP
-
-function clientKey(req: NextRequest): string {
-  const fwd = req.headers.get("x-forwarded-for");
-  const ip = fwd ? fwd.split(",")[0]!.trim() : "local";
-  return `leads:${ip}`;
-}
 
 export async function POST(req: NextRequest) {
-  if (!rateLimit(clientKey(req), RATE_LIMIT, RATE_WINDOW_MS)) {
-    return NextResponse.json({ ok: false, error: "rate-limited" }, { status: 429 });
+  if (!sameOriginRequest(req)) {
+    return NextResponse.json({ ok: false, error: "forbidden-origin" }, { status: 403 });
+  }
+  if (mediaType(req) !== "application/json") {
+    return NextResponse.json({ ok: false, error: "unsupported-media-type" }, { status: 415 });
+  }
+  if (declaredTooLarge(req, MAX_BODY_BYTES)) {
+    return NextResponse.json({ ok: false, error: "too-large" }, { status: 413 });
+  }
+  const gate = await limit(`leads:${clientIp(req)}`, LEADS_RULE);
+  if (!gate.ok) {
+    return NextResponse.json(
+      { ok: false, error: "rate-limited" },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfter) } },
+    );
   }
 
-  const raw = await req.text();
-  if (raw.length > MAX_BODY_BYTES) {
+  const raw = await readTextCapped(req, MAX_BODY_BYTES);
+  if (raw === null) {
     return NextResponse.json({ ok: false, error: "too-large" }, { status: 413 });
   }
   let body: unknown;
@@ -84,6 +93,10 @@ export async function POST(req: NextRequest) {
   try {
     await getLeadStore().create(lead);
   } catch (err) {
+    if (err instanceof LeadStoreUnavailableError) {
+      console.error("[leads] storage is not configured (Upstash Redis variables missing)");
+      return NextResponse.json({ ok: false, error: "storage-unconfigured" }, { status: 503 });
+    }
     console.error("[leads] store failure:", err);
     // storage failed = intake failed; the client must NOT show success
     return NextResponse.json({ ok: false, error: "storage" }, { status: 503 });
