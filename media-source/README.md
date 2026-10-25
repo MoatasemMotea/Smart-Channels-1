@@ -42,7 +42,7 @@ approved, so no unapproved file is ever publicly reachable by URL.
   `event-environment-night.mp4` (464×848, 25s),
   `hospitality-walkway-night.mp4` (464×848, 31s).
   Gallery classification/publication awaits owner approval (O-008/O-012).
-- `video/intro-original.mp4` — source of the homepage video intro (Gemini-generated, 10 s, 1280×720; D-085); its web encodes are in `public/media/intro/`.
+- `video/intro-original.mp4` — the first homepage intro source (Gemini-generated, 10 s, 1280×720; D-085). Since D-085R the site plays two 7.6 s cuts the owner supplied ready for the web (`public/media/intro/intro-portrait.mp4`, `intro-landscape.mp4`), moved there as delivered.
 - `video/solutions/` — the seven owner-approved Solution films
   (untouched web-optimized uploads, 2026-08-30) with their binding
   MAPPING.md manifest (D-050 Solutions integration). Delivery

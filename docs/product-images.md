@@ -134,3 +134,16 @@ Each is cut from an untouched source; the source stays where it is and keeps ser
 | `public/media/hero/riyadh-portrait-529.webp` | `media-source/images/riyadh-skyline-hero-approved-2026-08-29.webp` (1672×941) | crop x 913–1442 × full height (9:16, centred on the Kingdom Centre at 70.4%), native pixels (no upscale), WebP q74 | 52,364 B |
 
 The header and footer use the two logo derivatives. The PNG originals stay in `public/brand/`, and `logo-dark.png` remains the Organization JSON-LD logo. The portrait crop is served by `<picture>` only under `(orientation: portrait) and (max-aspect-ratio: 9/16)` and placed in the hero frame at its original position, so the network overlay stays registered. Wider screens keep the landscape set.
+
+### D-085R — the intro in two cuts
+
+The owner supplied two shorter cuts (7.6 s, final zoom removed) plus a portrait poster, uploaded to `media-source/` and **moved as delivered** to `public/media/intro/` (no re-encode: both are already H.264 High, faststart, AAC ~96k). The 10 s original stays in `media-source/video/intro-original.mp4`. `intro.mp4` and `intro.webm` were deleted.
+
+| File (`public/media/intro/`) | Source | Size (bytes) |
+|---|---|---|
+| `intro-portrait.mp4` | owner cut · 720×1280 · 25 fps · 7.6 s · AAC | 672,493 |
+| `intro-landscape.mp4` | owner cut · 1280×720 · 24 fps · 7.6 s · AAC | 984,876 |
+| `intro-portrait-poster.jpg` | owner poster · 720×1280 (uploaded as `intro-portrait-poster.jpg.jpg`) | 8,150 |
+| `intro-poster.jpg` | first frame of `intro-landscape.mp4`, `-q:v 3` | 8,300 |
+
+Under `(orientation: portrait)` the browser fetches the portrait cut and poster, otherwise the landscape ones: one video file per visit. Playwright's Chromium has no H.264, so the intro smoke tests answer these requests with `tests/smoke/fixtures/intro-test.webm`, a 320 px VP9 copy of the landscape cut (102,510 B). That file is a test fixture only and never served by the site.

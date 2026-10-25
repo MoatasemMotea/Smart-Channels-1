@@ -1926,6 +1926,15 @@ data. **Nothing is deleted here, by decision** — see the updated
   - Targets met: Desktop LCP < 1.2 s, Mobile SI < 3.5 s, SEO ≥ 95 at launch.
   - Mobile LCP 4.73 s is above 2.5 s locally, where the simulated FCP floor is 3.3 s (the owner's Vercel PageSpeed FCP was 1.2 s). Confirm on Vercel after deploy. The next levers are those deferred by the owner: critical CSS, deferring the engines' JS, and fonts (D-088).
 
+**D-085R — the intro in two cuts.** Owner directive "D-085R — تحسين المقدمة" (2026-10-25).
+- **Media:** the owner's `intro-portrait.mp4` (720×1280, 672,493 B) and `intro-landscape.mp4` (1280×720, 984,876 B), both 7.6 s with the final zoom removed, and `intro-portrait-poster.jpg`, moved as delivered from `media-source/` to `public/media/intro/`. They are already H.264 faststart, so nothing was re-encoded. The double `.jpg.jpg` extension was dropped. `intro.mp4` and `intro.webm` were deleted. `intro-poster.jpg` is now the landscape cut's first frame. The 10 s original stays in `media-source/video/`.
+- **IntroSplash:** `<source media="(orientation: portrait)" src="intro-portrait.mp4">` then `intro-landscape.mp4`, with the poster chosen by the same query: one file per visit, verified at 390 (portrait only) and 1440/2560 (landscape only).
+- **Stage:** portrait uses `object-fit: cover`, filling the screen. Landscape uses `object-fit: contain` on a radial gradient (#f6f4f7 → #d8d5da) with an 8 % mask on all four edges. The element is sized to the picture (`min(100vw, 100vh × 16/9)`), so the mask falls on the picture's own edges at every aspect ratio and no border shows (checked at 1440×900 and 2560×1080).
+- **Exit:** begins on `ended`; the D-085 close at `duration − 0.9 s` is removed because the zoom it cut away is gone. Scale 1 → 1.06 with a 0.7 s fade, and the blur is dropped. The sound fade follows the same 0.7 s.
+- **Unchanged:** the rest of D-085 (gate, once per session, muted start, Skip/Esc/sound button, 3 s guard, error and play() rejection close, scroll lock, `sc:intro-done`).
+- **Observed, not changed:** on tall phones (390×844 ≈ 19.5:9), `cover` crops about 43 px from each side of the 9:16 portrait cut, so the «Smart Channels» wordmark reaches the screen edges.
+- **Tests:** the intro spec serves a VP9 fixture for the .mp4 requests, because the test browser has no H.264. New tests cover one file and one poster per orientation and the exit beginning only at the video's end. The original-source sentence in `media-source/README.md` was updated.
+
 ## Open items register
 
 | ID | Item | Blocks | Notes |

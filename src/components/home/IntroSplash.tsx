@@ -9,21 +9,23 @@ import { useLocale, useTranslations } from "next-intl";
  * IntroScript decides pre-paint and marks html[data-intro="on"]; CSS shows
  * this container (and locks scroll) only under that attribute, so the
  * server markup is identical for every visitor and nothing flashes. The
- * <video> and its two sources mount on the client ONLY when the intro is
- * on — a visitor who never sees it downloads none of it.
+ * <video> mounts on the client ONLY when the intro is on — a visitor who
+ * never sees it downloads none of it. D-085R: two 7.6 s cuts — portrait
+ * (720×1280) under (orientation: portrait), landscape (1280×720)
+ * otherwise, each with its own poster — so one file is fetched.
  *
  * Sound never starts by itself: the video plays muted and only the sound
- * button unmutes it. It closes on the first of: video end, currentTime
- * past duration − 0.9 s, Skip, Esc, a media error, play() rejected, or
- * no playback within 3 s. The exit (0.9 s) scales and blurs the video,
- * fades the container and the sound together; then it records
+ * button unmutes it. It closes on the first of: video end, Skip, Esc, a
+ * media error, play() rejected, or no playback within 3 s. The exit
+ * (0.7 s) scales the video 1 → 1.06 and fades the container and the sound
+ * together; then it records
  * sessionStorage "sc-intro"="1", releases the scroll lock, leaves the DOM
  * and fires window "sc:intro-done". The hero below is final from the
  * first paint (D-086).
  */
-const EXIT_MS = 900;
+const EXIT_MS = 700;
 const START_GUARD_MS = 3000;
-const END_LEAD_S = 0.9;
+const PORTRAIT = "(orientation: portrait)";
 
 type Snap = "unknown" | "on" | "off";
 const noSubscribe = () => () => {};
@@ -86,9 +88,6 @@ export function IntroSplash() {
     const onPlaying = () => {
       started = true;
     };
-    const onTime = () => {
-      if (v.duration && v.currentTime > v.duration - END_LEAD_S) close();
-    };
     let raf = 0;
     const tick = () => {
       if (barRef.current && v.duration) barRef.current.style.transform = `scaleX(${Math.min(1, v.currentTime / v.duration)})`;
@@ -96,10 +95,9 @@ export function IntroSplash() {
     };
     raf = requestAnimationFrame(tick);
     // a failed <source> fires its error on that source, not the video —
-    // only the LAST one failing means nothing can play (WebM → MP4)
+    // only the LAST one failing means nothing can play
     const lastSource = v.querySelector("source:last-of-type");
     v.addEventListener("playing", onPlaying);
-    v.addEventListener("timeupdate", onTime);
     v.addEventListener("ended", close);
     v.addEventListener("error", close);
     lastSource?.addEventListener("error", close);
@@ -129,7 +127,6 @@ export function IntroSplash() {
       window.clearTimeout(guard);
       window.removeEventListener("keydown", onKey);
       v.removeEventListener("playing", onPlaying);
-      v.removeEventListener("timeupdate", onTime);
       v.removeEventListener("ended", close);
       v.removeEventListener("error", close);
       lastSource?.removeEventListener("error", close);
@@ -156,11 +153,13 @@ export function IntroSplash() {
           playsInline
           autoPlay
           preload="auto"
-          poster="/media/intro/intro-poster.jpg"
+          poster={
+            window.matchMedia(PORTRAIT).matches ? "/media/intro/intro-portrait-poster.jpg" : "/media/intro/intro-poster.jpg"
+          }
           aria-hidden="true"
         >
-          <source src="/media/intro/intro.webm" type="video/webm" />
-          <source src="/media/intro/intro.mp4" type="video/mp4" />
+          <source media={PORTRAIT} src="/media/intro/intro-portrait.mp4" />
+          <source src="/media/intro/intro-landscape.mp4" />
         </video>
       ) : null}
       <div className="intro-controls">

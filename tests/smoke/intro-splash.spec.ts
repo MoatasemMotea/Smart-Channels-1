@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 
 /**
@@ -8,16 +10,26 @@ import { expect, test, type Page } from "@playwright/test";
  * test here that needs the intro switches that flag off before any page
  * script runs. A log of every value html[data-opening] / html[data-intro]
  * takes proves no opening state is ever written (D-086 removed it).
+ *
+ * D-085R: the intro ships as two H.264 cuts (portrait / landscape). The
+ * test browser (Playwright's Chromium) has no H.264 decoder, so every
+ * intro .mp4 request is answered with a small VP9 copy of the same 7.6 s
+ * cut (tests/smoke/fixtures/intro-test.webm). The request itself — which
+ * file, how many — is still the page's own.
  */
 const COPY = {
   ar: { label: "مقدمة Smart Channels", skip: "تخطَّ المقدمة", on: "تشغيل الصوت", off: "كتم الصوت" },
   en: { label: "Smart Channels intro", skip: "Skip intro", on: "Turn sound on", off: "Mute sound" },
 } as const;
 
+const CLIP = readFileSync(join(__dirname, "fixtures/intro-test.webm"));
+
 async function asVisitor(page: Page) {
   await page.addInitScript(() => {
     Object.defineProperty(Navigator.prototype, "webdriver", { get: () => false, configurable: true });
   });
+  // a test that registers its own route later (e.g. abort) takes precedence
+  await page.route(/\/media\/intro\/.*\.mp4$/, (route) => route.fulfill({ status: 200, contentType: "video/webm", body: CLIP }));
 }
 
 /** records every value the two html attributes take, from the first byte
@@ -63,9 +75,11 @@ for (const loc of ["ar", "en"] as const) {
     await expect(splash).toHaveAttribute("aria-label", COPY[loc].label);
     await expect(page.locator(".intro-video")).toHaveAttribute("aria-hidden", "true");
     await expect(page.locator(".intro-video source")).toHaveCount(2);
-    expect(await page.locator(".intro-video source").evaluateAll((s) => s.map((x) => x.getAttribute("src")))).toEqual([
-      "/media/intro/intro.webm",
-      "/media/intro/intro.mp4",
+    expect(
+      await page.locator(".intro-video source").evaluateAll((s) => s.map((x) => [x.getAttribute("media"), x.getAttribute("src")])),
+    ).toEqual([
+      ["(orientation: portrait)", "/media/intro/intro-portrait.mp4"],
+      [null, "/media/intro/intro-landscape.mp4"],
     ]);
     // the buttons speak the page's language; Skip has focus
     const skip = page.locator(".intro-skip");
@@ -228,3 +242,64 @@ for (const loc of ["ar", "en"] as const) {
     await expect(page.locator(".intro-splash")).toHaveCount(0);
   });
 }
+
+test("one file per orientation: the matching cut and its poster, nothing else", async ({ page }, info) => {
+  await asVisitor(page);
+  const urls = introRequests(page);
+  await page.goto("/en");
+  const video = page.locator(".intro-video");
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentSrc)).toMatch(/intro-(portrait|landscape)\.mp4$/);
+  await page.waitForTimeout(1500);
+  const portrait = info.project.name === "mobile"; // 390×844 vs 1440×900
+  const cut = portrait ? "/media/intro/intro-portrait.mp4" : "/media/intro/intro-landscape.mp4";
+  const poster = portrait ? "/media/intro/intro-portrait-poster.jpg" : "/media/intro/intro-poster.jpg";
+  expect(new URL(await video.evaluate((v: HTMLVideoElement) => v.currentSrc)).pathname).toBe(cut);
+  await expect(video).toHaveAttribute("poster", poster);
+  const files = [...new Set(urls.map((u) => new URL(u).pathname))].sort();
+  expect(files).toEqual([cut, poster].sort());
+  // portrait fills the screen; landscape is shown whole, its edges masked
+  const css = await video.evaluate((v) => {
+    const cs = getComputedStyle(v);
+    return { fit: cs.objectFit, mask: cs.maskImage || cs.webkitMaskImage };
+  });
+  expect(css.fit).toBe(portrait ? "cover" : "contain");
+  if (portrait) expect(css.mask).toBe("none");
+  else expect(css.mask).toContain("linear-gradient");
+});
+
+test("the exit starts at the video's end, not 0.9 s before; it scales to 1.06 and fades in 0.7 s", async ({ page }) => {
+  await asVisitor(page);
+  await page.goto("/en");
+  const splash = page.locator(".intro-splash");
+  const video = page.locator(".intro-video");
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => (v.readyState >= 2 ? v.duration : 0))).toBeGreaterThan(7);
+  // record the video's state at the very moment the exit begins (2× speed
+  // keeps the test short; the fixture route cannot seek)
+  await video.evaluate((v: HTMLVideoElement) => {
+    const w = window as unknown as { __exitAt: { ended: boolean; remaining: number } | null };
+    w.__exitAt = null;
+    const s = document.querySelector(".intro-splash")!;
+    new MutationObserver((_, o) => {
+      if (s.classList.contains("is-out")) {
+        w.__exitAt = { ended: v.ended, remaining: v.duration - v.currentTime };
+        o.disconnect();
+      }
+    }).observe(s, { attributes: true, attributeFilter: ["class"] });
+    v.playbackRate = 2;
+  });
+  await expect(splash).toHaveClass(/is-out/, { timeout: 8000 });
+  const at = await page.evaluate(() => (window as unknown as { __exitAt: { ended: boolean; remaining: number } }).__exitAt);
+  expect(at.ended || at.remaining < 0.05, `exit began ${at.remaining.toFixed(2)} s before the end`).toBe(true);
+  const exit = await page.evaluate(() => {
+    const v = document.querySelector(".intro-video")!;
+    const s = document.querySelector(".intro-splash")!;
+    return { scale: getComputedStyle(v).transitionDuration, fade: getComputedStyle(s).transitionDuration };
+  });
+  expect(exit).toEqual({ scale: "0.7s", fade: "0.7s" });
+  // mid-exit the picture is growing toward 1.06 (removal follows at 0.7 s)
+  await page.waitForTimeout(300);
+  const scale = await video.evaluate((v) => new DOMMatrix(getComputedStyle(v).transform).a).catch(() => 0);
+  expect(scale).toBeGreaterThan(1);
+  expect(scale).toBeLessThanOrEqual(1.0601);
+  await expect(splash).toHaveCount(0, { timeout: 2000 });
+});

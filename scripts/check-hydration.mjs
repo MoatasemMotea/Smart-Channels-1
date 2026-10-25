@@ -17,6 +17,7 @@
  *   npm run check:hydration
  */
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { chromium } from "@playwright/test";
 
 const PORT = Number(process.env.HYDRATION_PORT || 3111);
@@ -71,6 +72,10 @@ try {
         await ctx.addInitScript(() => {
           Object.defineProperty(Navigator.prototype, "webdriver", { get: () => false, configurable: true });
         });
+        // D-085R: the intro cuts are H.264, which this Chromium cannot decode —
+        // serve the VP9 test copy so the intro stays on screen while we look
+        const clip = readFileSync("tests/smoke/fixtures/intro-test.webm");
+        await ctx.route(/\/media\/intro\/.*\.mp4$/, (route) => route.fulfill({ status: 200, contentType: "video/webm", body: clip }));
       }
       const page = await ctx.newPage();
       const hits = [];
