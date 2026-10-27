@@ -277,19 +277,18 @@ export interface ContactInfo {
   whatsapp?: string;
   /** Ships empty by design (D-011); future additions are data-only. */
   links?: { id: string; label: LocalizedText; href: string }[];
+  /** D-091: social presence, owner-supplied URLs only — never invented.
+   *  An icon with a null URL renders nothing (no dead links). Fixed
+   *  display order: Facebook, X, LinkedIn, Instagram. */
+  social: {
+    facebook: string | null;
+    x: string | null;
+    linkedin: string | null;
+    instagram: string | null;
+  };
 }
 
-/** Social platform record (P4 Rev3 §13). URLs are owner-supplied; an
- *  entry renders publicly ONLY when enabled with a real URL — no dead
- *  links, no placeholders. */
-export interface SocialLink {
-  platform: "linkedin" | "instagram" | "x" | "tiktok";
-  /** Official company URL — never invented. null until supplied. */
-  url: string | null;
-  enabled: boolean;
-  label: LocalizedText;
-  order: number;
-}
+export type SocialPlatform = keyof ContactInfo["social"];
 
 /** Regional Gulf reach destination (P4 Rev3 §10): storytelling reach
  *  trajectories, NOT project-evidence locations. */

@@ -25,4 +25,14 @@ export const contact: ContactInfo = {
   /* Owner-approved P4 Revision 3 §12 (floating WhatsApp action). */
   whatsapp: "+966 53 979 5999",
   links: [],
+  /* D-091: social presence. The LinkedIn URL carried over from the P4
+     Rev3 §13 footer treatment — still a personal profile (/in/), not
+     the company page (/company/), so src/lib/seo.ts excludes it from
+     Organization sameAs. Facebook, X and Instagram await owner URLs. */
+  social: {
+    facebook: null,
+    x: null,
+    linkedin: "https://www.linkedin.com/in/smart-channels-514a80372/",
+    instagram: null,
+  },
 };

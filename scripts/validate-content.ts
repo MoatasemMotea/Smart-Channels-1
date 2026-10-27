@@ -300,13 +300,10 @@ import { productCards, productCategories } from "../src/content/product-catalog"
     if (!productCards.some((k) => k.category === c.slug)) errors.push(`catalog category "${c.slug}": has no cards`);
 }
 
-/* ---- Rev3 §13: social records — no dead links, no invented URLs ---- */
-import { socialLinks } from "../src/content/social";
-for (const l of socialLinks) {
-  if (l.enabled && !l.url)
-    errors.push(`social ${l.platform}: enabled without a URL (would render a dead link)`);
-  if (l.url && !/^https:\/\//.test(l.url))
-    errors.push(`social ${l.platform}: URL must be absolute https`);
+/* ---- D-091: social links — absolute https only, no invented URLs ---- */
+import { contact } from "../src/content/contact";
+for (const [platform, url] of Object.entries(contact.social)) {
+  if (url && !/^https:\/\//.test(url)) errors.push(`social ${platform}: URL must be absolute https`);
 }
 // D-075: exactly five homepage projects, homeOrder 1..5, each once, none hidden
 {

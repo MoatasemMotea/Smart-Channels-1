@@ -4684,3 +4684,78 @@ html[data-intro="on"] .intro-splash.is-out { opacity: 0; pointer-events: none; }
   transform-origin: left;
 }
 [dir="rtl"] .intro-skip-bar { transform-origin: right; }
+
+/* ------------------------------------------------------------------ */
+/* FOOTER SOCIAL ICONS (D-091)                                         */
+/* ------------------------------------------------------------------ */
+/* White circle, white 3px border; a magenta layer rises from the
+   bottom on hover/focus (the border ring stays visible — overflow is
+   clipped to the padding-box, inside the border). The icon turns white
+   and does a 360deg Y-axis turn. Sizes: 56px desktop, 48px mobile
+   (both clear the 44px touch target). Icon is 35/80 of the circle
+   (the owner's own ratio), set from one custom property so both sizes
+   scale together. Logical properties throughout — correct in RTL with
+   no extra rule. */
+.social-icon {
+  --social-size: 56px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--social-size);
+  block-size: var(--social-size);
+  border-radius: 999px;
+  border: 3px solid #fff;
+  background: #fff;
+  overflow: hidden;
+  color: #0a0a0c;
+}
+@media (max-width: 640px) {
+  .social-icon { --social-size: 48px; }
+}
+.social-icon-fill {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 100%;
+  inset-block-start: 100%;
+  background: var(--brand-magenta);
+  transition: inset-block-start var(--dur-section) var(--ease-engineered);
+}
+.social-icon:hover .social-icon-fill,
+.social-icon:focus-visible .social-icon-fill {
+  inset-block-start: 0;
+}
+.social-icon-glyph {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  inline-size: calc(var(--social-size) * 35 / 80);
+  block-size: calc(var(--social-size) * 35 / 80);
+  transition:
+    color var(--dur-section) var(--ease-engineered),
+    transform var(--dur-section) var(--ease-engineered);
+}
+.social-icon-glyph svg { inline-size: 100%; block-size: 100%; }
+.social-icon:hover .social-icon-glyph,
+.social-icon:focus-visible .social-icon-glyph {
+  color: #fff;
+  transform: rotateY(360deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .social-icon-fill,
+  .social-icon-glyph {
+    transition: none;
+  }
+  .social-icon:hover .social-icon-glyph,
+  .social-icon:focus-visible .social-icon-glyph {
+    transform: none;
+  }
+}
+html[data-motion-tier="static"] .social-icon-fill,
+html[data-motion-tier="static"] .social-icon-glyph {
+  transition: none;
+}
+html[data-motion-tier="static"] .social-icon:hover .social-icon-glyph,
+html[data-motion-tier="static"] .social-icon:focus-visible .social-icon-glyph {
+  transform: none;
+}

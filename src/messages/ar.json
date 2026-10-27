@@ -121,7 +121,13 @@
     "brandTagline": "نأخذك إلى المستقبل",
     "navLabel": "روابط التذييل",
     "logoAlt": "Smart Channels — نأخذك إلى المستقبل",
-    "markAlt": "Smart Channels"
+    "markAlt": "Smart Channels",
+    "social": {
+      "facebook": "فيسبوك",
+      "x": "إكس",
+      "linkedin": "لينكدإن",
+      "instagram": "إنستغرام"
+    }
   },
   "hero": {
     "ariaLabel": "Smart Channels — التقنية التي تصنع التجربة",

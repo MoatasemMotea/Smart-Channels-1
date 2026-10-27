@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import type { Locale, SocialLink } from "@/types/content";
-import { getContact, getSocialLinks, localize } from "@/lib/content";
+import type { Locale, SocialPlatform } from "@/types/content";
+import { getContact, localize } from "@/lib/content";
 import { LEGAL_NAME_AR } from "@/content/lang-allowlist";
 
 /**
@@ -147,22 +147,22 @@ const ORGANIZATION_LOGO = "/brand/logo-dark.png";
  * working for links nobody has entered yet:
  *   - linkedin: organizations live under /company/, /showcase/ or
  *     /school/; /in/<slug> is a member (Person) profile.
- *   - instagram / x / tiktok: people and organizations share one handle
- *     namespace, so the URL carries no signal and the record is taken
- *     at face value.
+ *   - facebook / instagram / x: people and organizations share one
+ *     handle namespace, so the URL carries no signal and the record is
+ *     taken at face value.
  *
- * TO REVERSE: delete the platform's entry below and every enabled
- * record flows straight through to sameAs.
+ * TO REVERSE: delete the platform's entry below and every supplied URL
+ * flows straight through to sameAs.
  */
-const ORGANIZATION_PROFILE_PATH: Partial<Record<SocialLink["platform"], RegExp>> = {
+const ORGANIZATION_PROFILE_PATH: Partial<Record<SocialPlatform, RegExp>> = {
   linkedin: /^\/(company|showcase|school)\//,
 };
 
-function isOrganizationProfile(link: SocialLink): boolean {
-  const shape = ORGANIZATION_PROFILE_PATH[link.platform];
+function isOrganizationProfile(platform: SocialPlatform, url: string): boolean {
+  const shape = ORGANIZATION_PROFILE_PATH[platform];
   if (!shape) return true; // platform cannot express the distinction
   try {
-    return shape.test(new URL(link.url!).pathname);
+    return shape.test(new URL(url).pathname);
   } catch {
     return false; // unparseable URL is never an identity claim
   }
@@ -170,12 +170,16 @@ function isOrganizationProfile(link: SocialLink): boolean {
 
 /**
  * Official organization profiles, derived from the same single source of
- * truth the footer renders (`getSocialLinks()`). Enabling a real company
- * URL in src/content/social.ts fills this automatically — data edit only,
- * no engineering (D-029/D-055).
+ * truth the footer renders (`getContact().social`, D-091). Supplying a
+ * real company URL in src/content/contact.ts fills this automatically —
+ * a data edit only, no engineering (D-029/D-055).
  */
 export function organizationSameAs(): string[] {
-  return getSocialLinks().filter(isOrganizationProfile).map((l) => l.url!);
+  const social = getContact().social;
+  return (Object.entries(social) as [SocialPlatform, string | null][])
+    .filter((entry): entry is [SocialPlatform, string] => entry[1] !== null)
+    .filter(([platform, url]) => isOrganizationProfile(platform, url))
+    .map(([, url]) => url);
 }
 
 /**

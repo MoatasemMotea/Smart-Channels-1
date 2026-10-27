@@ -32,7 +32,6 @@ import { partners } from "@/content/partners";
 import { clients } from "@/content/clients";
 import { contact } from "@/content/contact";
 import { documents } from "@/content/documents";
-import { socialLinks } from "@/content/social";
 import { gulfRegions } from "@/content/regions";
 import { heroMedia } from "@/content/hero-media";
 import { products } from "@/content/products";
@@ -258,13 +257,6 @@ export function getProductCategoryBySlug(slug: string) {
 
 export function getProductCards(category?: CategorySlug) {
   return category ? productCards.filter((c) => c.category === category) : productCards;
-}
-
-export function getSocialLinks() {
-  // public boundary: only enabled records WITH a real URL ever render
-  return socialLinks
-    .filter((l) => l.enabled && l.url)
-    .sort((a, b) => a.order - b.order);
 }
 
 export function getGulfRegions() {

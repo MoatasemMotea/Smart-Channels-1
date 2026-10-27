@@ -121,7 +121,13 @@
     "brandTagline": "We Take You To The Future",
     "navLabel": "Footer",
     "logoAlt": "Smart Channels — we take you to the future",
-    "markAlt": "Smart Channels"
+    "markAlt": "Smart Channels",
+    "social": {
+      "facebook": "Facebook",
+      "x": "X",
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram"
+    }
   },
   "hero": {
     "ariaLabel": "Smart Channels — technology behind the experience",
