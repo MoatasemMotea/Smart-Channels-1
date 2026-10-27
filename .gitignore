@@ -29,3 +29,6 @@ next-env.d.ts
 # written by `next dev` on every start (Next 16 agent rules) — tool residue, not owner content (D-076)
 AGENTS.md
 CLAUDE.md
+
+# local impeccable design-critique snapshots — tool scratch, owner decides if any should ever be committed
+.impeccable/
