@@ -99,7 +99,7 @@ test("locale switcher navigates to the equivalent page", async ({ page }) => {
 test("Explore Projects CTA arrives at #projects", async ({ page }) => {
   await page.goto("/en");
   await page.getByRole("link", { name: /explore projects/i }).click();
-  await page.waitForURL("**/#projects");
+  await page.waitForURL((url) => url.hash === "#projects");
   await expect(page.locator("#projects")).toBeInViewport();
 });
 

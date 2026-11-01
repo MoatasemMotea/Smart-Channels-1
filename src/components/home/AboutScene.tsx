@@ -121,7 +121,7 @@ export async function AboutScene({ locale }: { locale: Locale }) {
     >
       {/* D-079: light line + fading shadow on the rising edge */}
       <div className="scene-edge" aria-hidden="true" />
-      <div className="mx-auto max-w-360 px-6 py-24 lg:px-12 lg:py-32">
+      <div className="about-shell mx-auto max-w-360 px-6 py-24 lg:px-12 lg:py-32">
         {/* أ) centered header */}
         <div className="about-header">
           <h2 className="section-title font-display text-3xl font-bold tracking-tight text-ink md:text-4xl">
@@ -138,7 +138,9 @@ export async function AboutScene({ locale }: { locale: Locale }) {
             <p className="about-lede">
               {aboutRest !== null ? (
                 <>
-                  <strong className="about-lede-brand">{ABOUT_BRAND_PREFIX}</strong>
+                  <strong className="about-lede-brand">
+                    <LangText text={ABOUT_BRAND_PREFIX} />
+                  </strong>
                   <LangText text={aboutRest} />
                 </>
               ) : (

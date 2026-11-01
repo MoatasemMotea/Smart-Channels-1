@@ -68,6 +68,7 @@ test("the About section keeps text contrast ≥ 4.5:1 on both themes", async ({ 
   await page.goto("/ar/", { waitUntil: "networkidle" });
   for (const theme of ["dark", "light"]) {
     await page.evaluate((t) => document.documentElement.setAttribute("data-theme", t), theme);
+    await page.waitForTimeout(400); // let the theme color transition settle
     const worst = await page.locator("#about").evaluate((root) => {
       const rgb = (s: string) => (s.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
       const lum = ([r, g, b]: number[]) => {

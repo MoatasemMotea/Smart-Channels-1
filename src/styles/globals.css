@@ -4331,7 +4331,7 @@ html[data-motion-tier="static"] .selected-projects-name { transition: none; }
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  color: var(--brand-magenta);
+  color: var(--accent);
 }
 
 /* دخول متتابع خفيف (16–24px) — a dedicated variant of .stagger-item so
@@ -4374,7 +4374,7 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
 }
 .about-lede-brand {
   font-weight: 800;
-  color: var(--brand-magenta);
+  color: var(--accent);
 }
 .about-highlights {
   display: flex;
@@ -4391,6 +4391,13 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
   padding: 1.125rem 1.375rem;
   font-weight: 700;
   font-size: 1rem;
+}
+.about-shell {
+  /* the decorative square (below) peeks past the placeholder on purpose —
+     clip at the section's own padded edge so it can never push the page
+     into horizontal scroll, while still showing the peek within the
+     padding on every viewport the design is meant for */
+  overflow: hidden;
 }
 .about-media-slot {
   position: relative;
@@ -4416,8 +4423,11 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
   padding: 3.25rem 3rem;
 }
 .about-vm-vision {
-  background: var(--brand-magenta);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.about-vm-vision .about-icon {
+  color: var(--accent-ink);
 }
 .about-vm-mission {
   background: var(--surface-2);
