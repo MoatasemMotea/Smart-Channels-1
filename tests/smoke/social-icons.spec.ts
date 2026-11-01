@@ -58,7 +58,7 @@ test("hover and focus-visible: the magenta fill rises and the icon turns white",
   expect(restColor).toBe("rgb(10, 10, 12)"); // dark icon on the white circle
 
   await icon.hover();
-  await page.waitForTimeout(600); // settle past the 0.5s rise
+  await page.waitForTimeout(800); // settle past the 700ms rise (D-092: a heavier homepage left the old 600ms margin too tight)
 
   const hoverFill = await icon.locator(".social-icon-fill").evaluate((e) => parseFloat(getComputedStyle(e).insetBlockStart));
   const hoverColor = await icon.locator(".social-icon-glyph").evaluate((e) => getComputedStyle(e).color);

@@ -114,8 +114,10 @@ for (const loc of ["ar", "en"] as const) {
     if (pendingSeen.length) console.log(`[${loc}] names awaiting official Arabic (${pendingSeen.length}): ${pendingSeen.join(" · ")}`);
     const report = findings.map((f) => `${f.route} · ${f.where} · «${f.run}» · ${f.problem} · in: ${f.text.slice(0, 90)}`);
     expect(report, `${findings.length} foreign-script runs:\n${report.join("\n")}`).toEqual([]);
-    // 36 since D-088: /products is a redirect to its first category, not a page
-    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(36);
+    // 29 since D-092: /projects and every /projects/[slug] redirect to the
+    // homepage's #projects — they are no longer pages the crawler counts
+    // (was 36 at D-088, which only accounted for /products becoming a redirect)
+    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(29);
   });
 }
 
