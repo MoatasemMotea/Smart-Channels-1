@@ -57,11 +57,8 @@ export async function Footer() {
         <address className="text-sm not-italic leading-7 text-ink-muted">
           <p className="microlabel mb-2">{t("sections.contact")}</p>
           <p><LangText text={localize(contact.address, locale)} /></p>
-          <p dir="ltr">
-            <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="tx-link">
-              {contact.phone}
-            </a>
-          </p>
+          {/* D-092: the phone number is withdrawn from display sitewide
+              (contact.phone stays in content, hidden, to restore easily) */}
           <p>
             <a href={`mailto:${contact.email}`} className="tx-link">
               <LangText text={contact.email} />

@@ -7,9 +7,10 @@ import type { NavItem } from "@/types/content";
  * footer all read this file.
  *
  * The homepage is the primary one-page experience (§4): About Us,
- * Solutions, Industries, Gallery, Technology Alliances and Our Clients
- * navigate to their homepage sections (anchor hrefs, with cinematic
- * arrival); Products and Projects open their dedicated pages. There is
+ * Solutions, Industries, Projects, Gallery, Technology Alliances and Our
+ * Clients navigate to their homepage sections (anchor hrefs, with
+ * cinematic arrival); Products opens its dedicated pages (D-092: Projects
+ * no longer does — /projects/* is a 308 to /#projects, D-092). There is
  * NO separate Contact item — the "Let's Talk" CTA IS the contact
  * destination (the homepage Let's Talk section). Smart AI is no longer
  * a navigation destination (§14 — the Digital Employee is a floating
@@ -22,7 +23,7 @@ export const navigation: NavItem[] = [
   // D-088 (SEO-2): /products is a 308 to the first category — link straight to it
   { id: "products", label: { en: "Products", ar: "المنتجات" }, href: "/products/networking", match: "/products", order: 4 },
   { id: "industries", label: { en: "Industries", ar: "القطاعات" }, href: "/#industries", order: 5 },
-  { id: "projects", label: { en: "Projects", ar: "المشاريع" }, href: "/projects", order: 6 },
+  { id: "projects", label: { en: "Projects", ar: "المشاريع" }, href: "/#projects", order: 6 },
   { id: "gallery", label: { en: "Gallery", ar: "المعرض" }, href: "/#gallery", order: 7 },
   {
     id: "alliances",

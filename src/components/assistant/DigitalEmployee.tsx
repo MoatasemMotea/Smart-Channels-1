@@ -160,7 +160,8 @@ export function DigitalEmployee() {
     setTranscript((tr) => [...tr, { role: "visitor", content }]);
   }, []);
 
-  const contactParams = { phone: contact.phone, email: contact.email };
+  // D-092: the phone number is withdrawn from display — email only.
+  const contactParams = { email: contact.email };
 
   const advance = (next: Step, question: string) => {
     setStep(next);

@@ -216,10 +216,9 @@ export function MobileMenu({ label, closeLabel }: { label: string; closeLabel: s
                   <LocaleSwitch />
                   <ThemeSwitch />
                 </div>
+                {/* D-092: the phone number is withdrawn from display sitewide
+                    (contact.phone stays in content, hidden, to restore easily) */}
                 <address className="site-menu-contact">
-                  <p dir="ltr">
-                    <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
-                  </p>
                   <p>
                     <a href={`mailto:${contact.email}`}><span lang="en" dir="ltr">{contact.email}</span></a>
                   </p>

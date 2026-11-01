@@ -21,6 +21,10 @@ export const contact: ContactInfo = {
     country: "SA",
   },
   phone: "+966 11 217 6668",
+  // D-092 (owner decision): withdrawn from display everywhere — the
+  // contact section, footer, mobile menu and JSON-LD. Flip to restore;
+  // the number itself is unchanged.
+  phoneHidden: true,
   email: "info@smartchannels.co",
   /* Owner-approved P4 Revision 3 §12 (floating WhatsApp action). */
   whatsapp: "+966 53 979 5999",

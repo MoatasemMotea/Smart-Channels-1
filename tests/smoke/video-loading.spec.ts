@@ -61,7 +61,7 @@ test("solution page: the cinematic moment downloads only once on screen and is r
   await expect(moment).not.toHaveAttribute("src");
 });
 
-for (const route of ["/en", "/ar", "/en/solutions/networking-connectivity", "/en/projects"]) {
+for (const route of ["/en", "/ar", "/en/solutions/networking-connectivity", "/en/industries"]) {
   test(`no preload="auto" on ${route} (the intro is the only exception)`, async ({ page }) => {
     await page.goto(route, { waitUntil: "networkidle" });
     expect(await page.locator('video[preload="auto"]:not(.intro-video)').count()).toBe(0);

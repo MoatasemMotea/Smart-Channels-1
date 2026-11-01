@@ -217,13 +217,15 @@ export function organizationSchema(opts: {
           addressCountry: parts.country,
         }
       : localize(contact.address, opts.locale),
-    telephone: contact.phone,
+    // D-092: telephone withdrawn from the public identity claim while
+    // contact.phoneHidden is true — an unlisted number stays unlisted.
+    ...(contact.phoneHidden ? {} : { telephone: contact.phone }),
     email: contact.email,
     contactPoint: [
       {
         "@type": "ContactPoint",
         contactType: "customer service",
-        telephone: contact.phone,
+        ...(contact.phoneHidden ? {} : { telephone: contact.phone }),
         email: contact.email,
         areaServed: "SA",
         availableLanguage: ["ar", "en"],

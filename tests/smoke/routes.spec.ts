@@ -6,11 +6,6 @@ const routes = [
   "/products/networking",
   "/solutions",
   "/solutions/security-solutions",
-  "/projects",
-  "/projects/diriyah-season",
-  "/projects/grand-mosque-makkah",
-  "/projects/rcu-outdoor-entertainment-alula", // D-075: a homepage project earns a detail route
-  "/projects/king-abdullah-sports-city",
   "/industries",
   "/company",
   "/partners",
@@ -28,6 +23,15 @@ const redirects: Array<[string, string]> = [
   // D-088 (SEO-2): one URL per page — the index is the first category
   ["/en/products", "/en/products/networking"],
   ["/ar/products", "/ar/products/networking"],
+  // D-092: projects no longer have their own pages — every /projects
+  // destination (bare route and every historical detail slug) redirects
+  // to the homepage section, locale preserved.
+  ["/en/projects", "/en/#projects"],
+  ["/ar/projects", "/ar/#projects"],
+  ["/en/projects/diriyah-season", "/en/#projects"],
+  ["/ar/projects/grand-mosque-makkah", "/ar/#projects"],
+  ["/en/projects/rcu-outdoor-entertainment-alula", "/en/#projects"],
+  ["/ar/projects/king-abdullah-sports-city", "/ar/#projects"],
 ];
 for (const [from, to] of redirects) {
   test(`${from} redirects to ${to}`, async ({ request }) => {
@@ -88,4 +92,24 @@ test("locale switcher navigates to the equivalent page", async ({ page }) => {
   await page.getByRole("button", { name: /switch language/i }).click();
   await page.waitForURL("**/ar/company");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+});
+
+// D-092: the hero CTA scrolls to the homepage Selected Projects section —
+// project detail pages no longer exist.
+test("Explore Projects CTA arrives at #projects", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("link", { name: /explore projects/i }).click();
+  await page.waitForURL("**/#projects");
+  await expect(page.locator("#projects")).toBeInViewport();
+});
+
+// D-092: the withdrawn company phone number must not appear anywhere —
+// display text, tel: links or JSON-LD — while the address/email stay.
+test("the withdrawn phone number never renders on any page", async ({ page }) => {
+  for (const path of ["/en", "/ar", "/en/company", "/ar/company"]) {
+    await page.goto(path);
+    const html = await page.content();
+    expect(html).not.toContain("217 6668");
+    expect(html).not.toContain("2176668");
+  }
 });

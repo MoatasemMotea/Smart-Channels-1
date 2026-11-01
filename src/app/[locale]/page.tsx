@@ -90,7 +90,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         data-scene="solutions"
       >
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
-          <SectionHeading>{t("solutions")}</SectionHeading>
+          <SectionHeading center>{t("solutions")}</SectionHeading>
           <SolutionsShowcase />
         </div>
       </MotionSection>
@@ -112,7 +112,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         data-scene="gallery"
       >
         <div className="mx-auto max-w-360 px-6 py-20 lg:px-12">
-          <SectionHeading>{t("gallery")}</SectionHeading>
+          <SectionHeading center>{t("gallery")}</SectionHeading>
           <GallerySection />
         </div>
       </MotionSection>

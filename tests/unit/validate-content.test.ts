@@ -247,18 +247,18 @@ describe("D-082 the registered Arabic name", () => {
     expect(en.alternateName).toBe("القنوات الذكية");
   });
 
-  it("one mission: the homepage About and /company read the same company.mission", async () => {
+  it("one mission: the homepage About and /company read the same company.mission (D-092 wording)", async () => {
     const { company } = await import("../../src/content/company");
-    expect(company.mission.ar).toBe("نصمّم البنية التقنية ونورّدها ونركّبها ونشغّلها — شبكات وأمن واتصالات وأنظمة عرض — ونسلّمها في موعدها، جاهزة للعمل من اليوم الأول.");
+    expect(company.mission.ar).toBe("نقدّم حلولًا تقنية متكاملة بمعايير عالمية، من التصميم والتوريد إلى التركيب والتشغيل والدعم، ونسلّمها في موعدها جاهزة للعمل من اليوم الأول.");
     expect("mission" in company.aboutPillars).toBe(false);
   });
 });
 
 describe("D-083 one set of values, closed pending list", () => {
-  it("the homepage About and /company read the same five company.values; the profile's three are gone", async () => {
+  it("the homepage About and /company read the same five company.values (D-092 wording); the profile's three are gone", async () => {
     const { company } = await import("../../src/content/company");
-    expect(company.values.map((v) => v.name.ar)).toEqual(["الموثوقية", "الدقة", "السرعة", "السلامة", "الشراكة"]);
-    expect(company.values.map((v) => v.name.en)).toEqual(["Reliability", "Precision", "Speed", "Safety", "Partnership"]);
+    expect(company.values.map((v) => v.name.ar)).toEqual(["الموثوقية", "الدقة", "سرعة الاستجابة", "السلامة", "الشراكة"]);
+    expect(company.values.map((v) => v.name.en)).toEqual(["Reliability", "Precision", "Responsiveness", "Safety", "Partnership"]);
     expect(company.values.every((v) => v.line.ar && v.line.en)).toBe(true);
     expect("values" in company.aboutPillars).toBe(false);
     expect(JSON.stringify(company)).not.toContain("Comprehensive and integrated solutions");

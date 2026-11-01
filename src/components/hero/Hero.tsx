@@ -75,8 +75,12 @@ export async function Hero() {
             {t("sub")}
           </p>
           <div className="hero-stage mt-8 flex flex-wrap gap-4" data-stage="6">
+            {/* D-092: Projects no longer has its own page — same-page
+                arrival, same mechanism as every other section anchor
+                (HashArrival + arriveAt: smooth, reduced-motion respected
+                natively by the browser's scrollTo). */}
             <Link
-              href="/projects"
+              href="/#projects"
               className="magnetic rounded bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink"
             >
               {t("ctaProjects")}&nbsp;&nbsp;<span aria-hidden="true">→</span>

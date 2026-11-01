@@ -9,13 +9,14 @@ import { LangText } from "@/components/ui/LangText";
 /**
  * LET'S TALK — the homepage contact chapter (§§24–27 · D-050).
  *
- * The closing signal moment (the converge motif returns from the
- * opening) now carries the REAL lead form: submissions go to the local
- * lead system (POST /api/leads) and success is only ever the backend's
- * confirmation (§26). Beside it: the approved contact information —
- * phone, email, address and the click-to-load Google map. Deliberately
- * NO WhatsApp number row here (§27 — WhatsApp lives in the floating
- * action only).
+ * Carries the REAL lead form: submissions go to the local lead system
+ * (POST /api/leads) and success is only ever the backend's confirmation
+ * (§26). Beside it: the approved contact information — email, address
+ * and the click-to-load Google map. Deliberately NO WhatsApp number row
+ * here (§27 — WhatsApp lives in the floating action only). D-092: the
+ * phone number is withdrawn from display (contact.phone stays in
+ * content, hidden, to restore easily), and the decorative
+ * ".cta-converge" motif is removed.
  */
 export async function LetsTalk() {
   const locale = (await getLocale()) as Locale;
@@ -30,40 +31,26 @@ export async function LetsTalk() {
       data-scene="cta"
     >
       <div className="relative mx-auto max-w-360 px-6 py-24 lg:px-12">
-        <div aria-hidden="true" className="cta-converge">
-          <span /><span /><span /><span /><span /><span />
+        {/* D-092: homepage section headings (and their intro lines) are
+            centered; the form/info grid below keeps its current alignment */}
+        <div className="text-center">
+          <p className="microlabel relative text-accent">{t("lead.overline")}</p>
+          <h2 className="section-title relative mx-auto mt-4 max-w-3xl font-display text-4xl font-bold md:text-5xl">
+            {locale === "ar" ? "مشروعك القادم يبدأ من هنا." : "Your next project starts here."}
+          </h2>
+          <p className="section-lead relative mx-auto mt-5 max-w-xl text-base leading-8 text-ink-muted">
+            {t("lead.intro")}
+          </p>
         </div>
-
-        <p className="microlabel relative text-accent">{t("lead.overline")}</p>
-        <h2 className="section-title relative mt-4 max-w-3xl font-display text-4xl font-bold md:text-5xl">
-          {locale === "ar" ? (
-            <>
-              لنبنِه <span className="text-accent">معًا.</span>
-            </>
-          ) : (
-            <>
-              Let&apos;s build it <span className="text-accent">together.</span>
-            </>
-          )}
-        </h2>
-        <p className="section-lead relative mt-5 max-w-xl text-base leading-8 text-ink-muted">
-          {t("lead.intro")}
-        </p>
 
         <div className="relative mt-12 grid gap-14 lg:grid-cols-[7fr_5fr] lg:gap-16">
           <LeadForm />
 
           <aside aria-label={t("lead.infoTitle")}>
             <p className="microlabel text-accent">{t("lead.infoTitle")}</p>
+            {/* D-092: the phone row is withdrawn from display (contact.phone
+                stays in content, hidden, to restore easily) */}
             <dl className="lets-talk-info mt-6">
-              <div>
-                <dt className="microlabel">{t("contact.phoneLabel")}</dt>
-                <dd>
-                  <a dir="ltr" className="tx-link" href={`tel:${contact.phone.replace(/\s/g, "")}`}>
-                    {contact.phone}
-                  </a>
-                </dd>
-              </div>
               <div>
                 <dt className="microlabel">{t("contact.emailLabel")}</dt>
                 <dd>

@@ -86,27 +86,27 @@ interface NetNode {
   hq: boolean;
 }
 
-/* Timeline (ms). FULL ≈ 7s of story; LITE compresses to ≈ 5.9s. */
+/* Timeline (ms). FULL ≈ 7s of story; LITE compresses to ≈ 5.9s.
+ * D-092 (owner decision #2): every route — the nine national destinations
+ * AND the Bahrain regional-reach line — launches from Riyadh at the SAME
+ * instant (routesStart) and draws concurrently; each bursts into bloom on
+ * arrival. No per-route stagger any more. */
 const NET_FULL = {
   emergeEnd: 1600,
   riyadh: 1600,
   routesStart: 2300,
-  routeStagger: 380,
   routeTravel: 760,
   countStart: 2500,
   countEnd: 6300,
-  gulf: 5300,
   end: 7000,
 };
 const NET_LITE = {
   emergeEnd: 1350,
   riyadh: 1350,
   routesStart: 1950,
-  routeStagger: 430, // strictly sequential feel on small screens (§17)
   routeTravel: 640,
   countStart: 2150,
   countEnd: 5300,
-  gulf: 4450,
   end: 5900,
 };
 
@@ -414,7 +414,7 @@ export class NetworkEngine {
     if (hq) {
       const dests = this.nodes.filter((n) => !n.hq);
       dests.forEach((n, i) => {
-        const t0 = tl.routesStart + i * tl.routeStagger;
+        const t0 = tl.routesStart; // D-092: all routes launch together
         const travel = clamp01((t - t0) / tl.routeTravel);
         if (travel <= 0) return;
         const tp = easeCinematic(travel);
@@ -515,7 +515,7 @@ export class NetworkEngine {
        distinct from filled project-evidence nodes — and their labels are
        DOM text under a "Regional reach" legend. Nothing claims projects. */
     this.regions.forEach((r, i) => {
-      const t0 = tl.gulf + i * 350;
+      const t0 = tl.routesStart; // D-092: Bahrain launches with every other route
       const travel = clamp01((t - t0) / 700);
       if (travel <= 0) {
         this.cb.onRegion?.(r.id, null);

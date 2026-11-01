@@ -91,7 +91,8 @@ export interface MapCityView {
 export interface MapCityListItem {
   id: string;
   name: string;
-  projects: { name: string; href: string | null }[];
+  /** D-092: names only — project detail pages no longer exist. */
+  projects: { name: string }[];
 }
 
 export function getMapCities(locale: Locale): { buttons: MapCityView[]; list: MapCityListItem[] } {
@@ -108,10 +109,11 @@ export function getMapCities(locale: Locale): { buttons: MapCityView[]; list: Ma
   const list: MapCityListItem[] = withProjects.map((l) => ({
     id: l.id,
     name: localize(l.name, locale),
+    // D-092: project names only — no detail pages exist any more
     projects: l.projectIds
       .map(projectOf)
       .filter((p): p is Project => Boolean(p))
-      .map((p) => ({ name: localize(p.name, locale), href: hrefOf(p) })),
+      .map((p) => ({ name: localize(p.name, locale) })),
   }));
   const groups = new Map<string, typeof withProjects>();
   for (const l of withProjects) {
@@ -184,10 +186,6 @@ export function getHomeProjects(): Project[] {
  */
 export function projectHasDetail(p: Project): boolean {
   return p.featured || p.homeOrder !== undefined || Boolean(p.years && p.scope && p.scope.length > 0);
-}
-
-export function getDetailProjects(): Project[] {
-  return getPublicProjects().filter(projectHasDetail);
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {

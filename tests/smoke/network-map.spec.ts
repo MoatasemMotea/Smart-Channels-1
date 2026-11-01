@@ -132,7 +132,9 @@ test("small screens: the buttons give way to the visible list of cities and thei
   await expect(list).toBeVisible();
   await expect(list.locator(".map-city-list-name")).toHaveCount(9);
   await expect(list).toContainText("مكة المكرمة");
-  await expect(list.getByRole("link", { name: "المسجد الحرام — مكة المكرمة" })).toHaveAttribute("href", "/ar/projects/grand-mosque-makkah");
+  // D-092: project names in the city list are plain text — no detail pages exist
+  await expect(list.getByRole("link", { name: "المسجد الحرام — مكة المكرمة" })).toHaveCount(0);
+  await expect(list).toContainText("المسجد الحرام — مكة المكرمة");
 });
 
 test("200 % zoom (720 px wide): no overflowing card — the list takes over", async ({ page }, info) => {

@@ -28,6 +28,7 @@ const ANCHOR_SCENES: Record<string, string> = {
   "/#about": "about",
   "/#solutions": "solutions",
   "/#industries": "industries",
+  "/#projects": "projects",
   "/#gallery": "gallery",
   "/#partners": "partners",
   "/#clients": "clients",

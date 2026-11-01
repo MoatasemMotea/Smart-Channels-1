@@ -259,15 +259,10 @@ export function MapCityList({ list, heading }: { list: MapCityListItem[]; headin
           <li key={c.id}>
             <span className="map-city-list-name">{c.name}</span>
             <ul>
+              {/* D-092: names only — project detail pages no longer exist */}
               {c.projects.map((p) => (
                 <li key={p.name}>
-                  {p.href ? (
-                    <Link className="tx-link" href={p.href}>
-                      <LangText text={p.name} />
-                    </Link>
-                  ) : (
-                    <LangText text={p.name} />
-                  )}
+                  <LangText text={p.name} />
                 </li>
               ))}
             </ul>

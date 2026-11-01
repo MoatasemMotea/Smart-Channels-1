@@ -31,7 +31,7 @@ export async function IndustriesSection({ locale }: { locale: Locale }) {
       data-stack="stick"
     >
       <div className="mx-auto max-w-360 px-6 pt-20 lg:px-12">
-        <SectionHeading>{t("sections.industries")}</SectionHeading>
+        <SectionHeading center>{t("sections.industries")}</SectionHeading>
       </div>
       <IndustriesSlider items={items} />
       {/* D-079: darkens with --cover as Selected Projects rises over it */}

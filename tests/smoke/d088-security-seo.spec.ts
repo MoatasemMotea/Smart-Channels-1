@@ -97,7 +97,7 @@ test.describe("sitemap, share image, structured data", () => {
   });
 
   test("every page carries its locale's absolute 1200×630 share image and a large Twitter card", async ({ page, request }) => {
-    for (const [path, locale] of [["/ar", "ar"], ["/en/projects", "en"], ["/ar/products/networking", "ar"]] as const) {
+    for (const [path, locale] of [["/ar", "ar"], ["/en/industries", "en"], ["/ar/products/networking", "ar"]] as const) {
       await page.goto(path);
       const og = await page.locator('meta[property="og:image"]').getAttribute("content");
       expect(og).toMatch(new RegExp(`^https?://[^/]+/og/og-${locale}\\.png$`));
@@ -113,12 +113,12 @@ test.describe("sitemap, share image, structured data", () => {
     await page.goto("/ar");
     await expect(page).toHaveTitle("القنوات الذكية — التقنية التي تصنع التجربة");
     await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "القنوات الذكية");
-    await page.goto("/ar/projects");
+    await page.goto("/ar/industries");
     await expect(page).toHaveTitle(/ — القنوات الذكية$/);
   });
 
   test("no structured data is published while indexing is off (noindex preview)", async ({ page }) => {
-    await page.goto("/ar/projects/diriyah-season");
+    await page.goto("/ar/industries");
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
   });
 });

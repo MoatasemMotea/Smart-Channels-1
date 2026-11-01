@@ -38,6 +38,7 @@
     "title": "Smart Channels — Technology Behind the Experience",
     "description": "Smart Channels delivers integrated technology, communications, infrastructure and security solutions across the Kingdom and the Gulf.",
     "missionLabel": "Our mission",
+    "aboutHeading": "About us",
     "aboutImageCaption": "Fiber fusion splicing — Riyadh, 2025",
     "featuredMark": "Featured focus sector",
     "products": {
@@ -48,10 +49,6 @@
     },
     "morePartners": "And more technology partners",
     "moreClients": "And more trusted organizations",
-    "selectedProjects": {
-      "exploreProject": "Explore Project",
-      "allProjects": "View all projects"
-    },
     "aboutPillars": {
       "vision": "Our vision",
       "mission": "Our mission",
@@ -75,10 +72,6 @@
     "solutions": {
       "title": "Solutions",
       "description": "Seven integrated solution families — from infrastructure and networking to security, AV, communications and AI-powered surveillance."
-    },
-    "projects": {
-      "title": "Projects",
-      "description": "Delivered projects across the Kingdom's venues, events and institutions."
     },
     "industries": {
       "title": "Industries",
@@ -138,10 +131,10 @@
     "ctaContact": "Let's Talk"
   },
   "network": {
-    "title": "From Riyadh, across the Kingdom and the Gulf",
+    "title": "From Riyadh to the Kingdom's cities and the Arab world",
     "city": "RIYADH",
     "role": "HEADQUARTERS",
-    "asOf": "As of 2026",
+    "asOf": "Since 2019",
     "regional": "Regional reach",
     "citiesLabel": "Cities and their projects",
     "cityProjects": "{count, plural, one {# project} other {# projects}}",
@@ -168,15 +161,7 @@
     "evidenceNote": "Delivered engagements — approved records only",
     "startConversation": "Start the conversation",
     "featuredChapter": "Featured Projects",
-    "completeRecord": "Complete record",
-    "enterProject": "Enter project",
-    "relatedProjects": "Related projects",
-    "nextProject": "Next featured project",
-    "prevProject": "Previous featured project",
-    "deliveredScope": "Delivered scope",
-    "overview": "Overview",
-    "projectMedia": "Project media",
-    "allProjects": "All projects"
+    "completeRecord": "Complete record"
   },
   "form": {
     "title": "Send us an enquiry",
@@ -203,7 +188,7 @@
   "lead": {
     "overline": "Let's Talk",
     "title": "Tell us about your next project.",
-    "intro": "Share a few details and our team will get back to you.",
+    "intro": "Share your project details, and one of our engineers will get back to you shortly.",
     "name": "Full name",
     "company": "Company",
     "phone": "Phone number",
@@ -244,13 +229,13 @@
     "consentText": "By submitting your details, you agree that Smart Channels may contact you regarding your enquiry.",
     "consentAgree": "I agree — send it",
     "consentDecline": "Not now",
-    "declined": "Understood — nothing has been recorded. You can reach our team directly at {phone} or {email}, and I'm here whenever you'd like to continue.",
+    "declined": "Understood — nothing has been recorded. You can reach our team directly at {email}, and I'm here whenever you'd like to continue.",
     "submitting": "Recording your enquiry…",
     "done": "Thank you, {name} — your enquiry has been recorded (reference {ref}). Our team will contact you soon.",
     "failed": "I couldn't record your enquiry just now — nothing was sent. Please try again, or reach our team directly at {email}.",
     "retry": "Try again",
     "skip": "Skip",
-    "handoff": "Just to be clear — I'm a digital assistant, not a human. To talk to a person right away, call {phone} or email {email}. Or continue here and a member of our team will follow up personally.",
+    "handoff": "Just to be clear — I'm a digital assistant, not a human. To talk to a person right away, email {email}. Or continue here and a member of our team will follow up personally.",
     "errEmail": "That doesn't look like a valid email address — could you check it?",
     "errPhone": "That doesn't look like a valid phone number — could you check it?",
     "errEmpty": "Could you type a short reply so I can continue?",

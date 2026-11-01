@@ -53,7 +53,7 @@ export async function AlliancesIndex({ locale }: { locale: Locale }) {
     >
       <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
-          <SectionHeading>{t("sections.partners")}</SectionHeading>
+          <SectionHeading center>{t("sections.partners")}</SectionHeading>
           <p className="rail-head-echo" lang={otherLang} dir={otherDir} aria-hidden="true">
             {tOther("sections.partners")}
           </p>
@@ -91,7 +91,7 @@ export async function ClientsField({ locale }: { locale: Locale }) {
     >
       <div className="mx-auto max-w-360 px-6 py-14 lg:px-12">
         <div className="rail-head">
-          <SectionHeading>{t("sections.clients")}</SectionHeading>
+          <SectionHeading center>{t("sections.clients")}</SectionHeading>
           <p className="rail-head-echo" lang={otherLang} dir={otherDir} aria-hidden="true">
             {tOther("sections.clients")}
           </p>

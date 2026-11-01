@@ -265,8 +265,12 @@ export interface Client {
 
 export interface ContactInfo {
   address: LocalizedText;
-  /** Rendered as a tel: link. */
+  /** D-092: withdrawn from display sitewide (contact section, footer,
+   *  mobile menu, JSON-LD) by owner decision. The value stays on record
+   *  so restoring it is a data-only change; `phoneHidden` marks the
+   *  decision for anyone searching the data, not a rendering gate. */
   phone: string;
+  phoneHidden: true;
   /** Rendered as a mailto: link. */
   email: string;
   /** D-088 (SEO-11): the same approved address, split for schema.org

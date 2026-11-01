@@ -114,8 +114,9 @@ for (const loc of ["ar", "en"] as const) {
   });
 }
 
-// (/ar/contact is not here: it redirects to the homepage's #contact)
-for (const route of ["/ar/products", "/en/company", "/ar/partners", "/en/projects"]) {
+// (/ar/contact and /en/projects are not here: both redirect to the
+// homepage's #contact / #projects — D-092 for the latter)
+for (const route of ["/ar/products", "/en/company", "/ar/partners"]) {
   test(`no intro on ${route}`, async ({ page }) => {
     await asVisitor(page);
     const urls = introRequests(page);

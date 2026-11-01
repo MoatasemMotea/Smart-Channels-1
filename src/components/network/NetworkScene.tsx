@@ -79,6 +79,15 @@ export function NetworkScene({
   const regionRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const legendRef = useRef<HTMLParagraphElement>(null);
   const engineRef = useRef<NetworkEngine | null>(null);
+  /* D-092 decision #3: once the story settles, a quiet CSS pulse stays on
+     the Riyadh node only — the particle engine has already stopped. */
+  const riyadhDotRef = useRef<HTMLSpanElement>(null);
+  const riyadhPosRef = useRef<{ x: number; y: number } | null>(null);
+  /* D-092: the Track Record figures count up 0→value once, independent of
+     the canvas story's own timeline/tier. */
+  const statGridRef = useRef<HTMLDListElement>(null);
+  const statNumRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+  const countedRef = useRef(false);
 
   useEffect(() => {
     if (tier === "static") return; // designed static frame stays (§18)
@@ -105,6 +114,7 @@ export function NetworkScene({
           if (legendRef.current) legendRef.current.style.opacity = "1";
         },
         onLabel: (pos) => {
+          if (pos) riyadhPosRef.current = pos; // last known Riyadh screen anchor
           const el = labelRef.current;
           if (!el) return;
           if (!pos) {
@@ -115,8 +125,12 @@ export function NetworkScene({
           el.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
         },
         onDone: () => {
-          io.disconnect();
-          document.removeEventListener("visibilitychange", onVisibility);
+          const dot = riyadhDotRef.current;
+          const pos = riyadhPosRef.current;
+          if (dot && pos) {
+            dot.style.opacity = "1";
+            dot.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
+          }
         },
       },
     });
@@ -124,8 +138,10 @@ export function NetworkScene({
 
     let inView = false;
     const sync = () => {
+      const active = inView && document.visibilityState === "visible";
+      riyadhDotRef.current?.classList.toggle("is-pulsing", active);
       if (engine.isDone()) return;
-      if (inView && document.visibilityState === "visible") engine.start();
+      if (active) engine.start();
       else engine.pause();
     };
     const io = new IntersectionObserver(
@@ -159,6 +175,42 @@ export function NetworkScene({
     // first client render matches the "static" server snapshot (no canvas);
     // the effect re-runs once the real tier resolves and the canvas exists
   }, [tier]);
+
+  /* D-092: each figure counts up 0 → its value over ~1.6s with a
+     deceleration curve, once, the first time the stat grid appears. The
+     static tier (incl. prefers-reduced-motion) and no-JS both keep the
+     server-rendered final values untouched — stats.ts growth math never
+     runs on the client. */
+  useEffect(() => {
+    if (tier === "static") return;
+    const grid = statGridRef.current;
+    if (!grid) return;
+    const run = () => {
+      if (countedRef.current) return;
+      countedRef.current = true;
+      const duration = 1600;
+      const start = performance.now();
+      const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        const e = easeOut(p);
+        for (const s of stats) {
+          const el = statNumRefs.current[s.id];
+          if (el) el.textContent = String(Math.round(s.value * e));
+        }
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) run();
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(grid);
+    return () => io.disconnect();
+  }, [tier, stats]);
 
   /* ---- designed static frame (server-rendered; STATIC/no-JS, §18) ---- */
   const W = 1000;
@@ -194,7 +246,7 @@ export function NetworkScene({
       <div className="relative mx-auto max-w-360 px-6 py-20 lg:px-12">
         {/* D-050 §8: no visible "Track Record" heading — the reach title
             leads and the approved figures speak for themselves. */}
-        <h2 className="max-w-3xl font-display text-3xl font-bold md:text-4xl">
+        <h2 className="mx-auto max-w-3xl text-center font-display text-3xl font-bold md:text-4xl">
           {t("network.title")}
         </h2>
 
@@ -211,6 +263,10 @@ export function NetworkScene({
               <p ref={legendRef} className="network-regional-legend microlabel">
                 {t("network.regional")}
               </p>
+              {/* D-092 decision #3: quiet post-story pulse on Riyadh only,
+                  gated by the same IntersectionObserver/visibility signal
+                  that drives the engine — never a running particle loop. */}
+              <span ref={riyadhDotRef} className="map-riyadh-pulse" aria-hidden="true" />
             </>
           )}
 
@@ -318,12 +374,18 @@ export function NetworkScene({
             RTL), while the numeric TOKEN keeps its own dir="ltr" bidi
             isolation so 200+ never renders as +200. Logical flow only —
             no hard-coded left/right; EN composition unchanged. */}
-        <dl className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
+        <dl ref={statGridRef} className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((s) => (
             <div key={s.id} className="stat-block border-t border-line pt-4">
               <dd className="font-display text-5xl font-bold tabular-nums">
                 <span dir="ltr" className="inline-block">
-                  <span>{s.value}</span>
+                  <span
+                    ref={(el) => {
+                      statNumRefs.current[s.id] = el;
+                    }}
+                  >
+                    {s.value}
+                  </span>
                   {s.suffix ? <span className="text-accent">{s.suffix}</span> : null}
                 </span>
               </dd>
