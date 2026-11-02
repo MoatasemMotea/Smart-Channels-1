@@ -50,10 +50,10 @@ const easeEngineered = (t: number) => {
   return x * x * (3 - 2 * x);
 };
 /* D-095: route drawing — and the counter that mirrors it — stretch to
- * ~10s. easeCinematic's heavy front-load (≈89% done by the 50% mark)
- * reads fine over a ~0.76s burst but leaves a long, nearly static tail
- * over 10s. This quad ease-in-out keeps a roughly constant, visible
- * pace through the middle with only gentle easing at both ends. */
+ * ~5s. easeCinematic's heavy front-load (≈89% done by the 50% mark)
+ * reads fine over a ~0.76s burst but leaves a noticeably static tail
+ * over several seconds. This quad ease-in-out keeps a roughly constant,
+ * visible pace through the middle with only gentle easing at both ends. */
 const easeInOutQuad = (t: number) => {
   const x = clamp01(t);
   return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
@@ -95,22 +95,22 @@ interface NetNode {
  * national destinations AND the Bahrain regional-reach line — launches
  * from Riyadh at the SAME instant (routesStart) and draws concurrently;
  * each bursts into bloom on arrival. No per-route stagger.
- * D-095: the intro (emergence + Riyadh origin pulse) is unchanged; only
- * routeTravel stretches to ~10s so the lines read clearly, and `end`
+ * D-095: the intro (emergence + Riyadh origin pulse) is unchanged;
+ * routeTravel stretches to ~5s so the lines read clearly, and `end`
  * grows by the same amount to keep the same settle buffer after them. */
 const NET_FULL = {
   emergeEnd: 1600,
   riyadh: 1600,
   routesStart: 2300,
-  routeTravel: 10000,
-  end: 16240,
+  routeTravel: 5000,
+  end: 11240,
 };
 const NET_LITE = {
   emergeEnd: 1350,
   riyadh: 1350,
   routesStart: 1950,
-  routeTravel: 10000,
-  end: 15260,
+  routeTravel: 5000,
+  end: 10260,
 };
 
 export class NetworkEngine {
@@ -420,7 +420,7 @@ export class NetworkEngine {
         const t0 = tl.routesStart; // D-092: all routes launch together
         const travel = clamp01((t - t0) / tl.routeTravel);
         if (travel <= 0) return;
-        const tp = easeInOutQuad(travel); // D-095: visible pace across the full ~10s
+        const tp = easeInOutQuad(travel); // D-095: visible pace across the full ~5s
         // curved, physically coherent path — perpendicular bow scaled by
         // route length, alternating sides so the constellation breathes
         const mx = (hq.x + n.x) / 2;
@@ -442,9 +442,9 @@ export class NetworkEngine {
         ctx.lineWidth = settled ? 1.4 : 1.9;
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
-        // subdivide for partial draw. D-095: 10× the segments — at ~0.76s
-        // the old 24 steps updated every ~0.03s (imperceptible); stretched
-        // to ~10s that same count would visibly jump every ~0.4s.
+        // subdivide for partial draw. D-095: more segments than the old
+        // 24 — at ~0.76s that count updated every ~0.03s (imperceptible);
+        // stretched to several seconds it would visibly jump.
         const STEPS = 300;
         const upto = Math.max(1, Math.round(STEPS * tp));
         for (let q = 1; q <= upto; q++) {
