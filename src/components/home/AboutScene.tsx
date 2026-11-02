@@ -57,35 +57,42 @@ const FlagIcon = () => (
     <path d="M5 4h11l-2 4 2 4H5" />
   </Icon>
 );
+/* D-093 item 5: the five "قيمنا" icons redrawn as one cohesive set — same
+   viewBox, stroke and visual footprint (~18×18 inside the 24×24 box). */
 const ShieldIcon = () => (
   <Icon>
-    <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" />
-    <path d="M8.5 12l2.5 2.5 4.5-5" />
+    <path d="M12 3.5l7 2.7v5.3c0 4.6-3 7.7-7 8.5-4-0.8-7-3.9-7-8.5V6.2z" />
+    <path d="M8.4 12.3l2.4 2.4 4.6-5" />
   </Icon>
 );
 const TargetIcon = () => (
   <Icon>
-    <circle cx="12" cy="12" r="8" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="12" cy="12" r={0.6} />
+    <circle cx="12" cy="12" r="8.5" />
+    <circle cx="12" cy="12" r="4.7" />
+    <circle cx="12" cy="12" r={0.8} />
   </Icon>
 );
 const BoltIcon = () => (
   <Icon>
-    <path d="M13 2L5 14h6l-1 8 8-12h-6z" />
+    <path d="M13 4L6 14h5l-1 6 7-10h-5z" />
   </Icon>
 );
+/* a hard hat profile — dome, a wide extended brim, a top ridge bump —
+   not a dish/lid */
 const HelmetIcon = () => (
   <Icon>
-    <path d="M4 17a8 8 0 0 1 16 0" />
-    <path d="M2 17h20v2H2z" />
-    <path d="M10 9V5h4v4" />
+    <path d="M4 16a8 8 0 0 1 16 0" />
+    <path d="M1.5 16h21" />
+    <path d="M9.5 7.5q2.5-2.5 5 0" />
   </Icon>
 );
-const HandshakeIcon = () => (
+/* two people side by side, not a handshake */
+const PartnershipIcon = () => (
   <Icon>
-    <path d="M3 12l4-4 4 3 3-3 7 6" />
-    <path d="M7 13l3 3a1.5 1.5 0 0 0 2 0l1-1 1 1a1.5 1.5 0 0 0 2-2" />
+    <circle cx="8" cy="7.5" r="2.3" />
+    <path d="M3.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
+    <circle cx="16" cy="7.5" r="2.3" />
+    <path d="M11.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
   </Icon>
 );
 const CheckIcon = () => (
@@ -95,7 +102,7 @@ const CheckIcon = () => (
   </Icon>
 );
 
-const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, HelmetIcon, HandshakeIcon];
+const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, HelmetIcon, PartnershipIcon];
 
 /** The paragraph opens with the company name — set apart in bold magenta
  *  per the approved design, in both languages (both authored forms start

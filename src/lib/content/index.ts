@@ -38,7 +38,6 @@ import { products } from "@/content/products";
 import { productCards, productCategories, type CategorySlug } from "@/content/product-catalog";
 import { navigation } from "@/content/navigation";
 import { company } from "@/content/company";
-import { project } from "@/lib/map/geo";
 
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
@@ -77,16 +76,6 @@ export function getStats(now: Date = new Date()): Stat[] {
   });
 }
 
-/** One button on the network map (a city, or a group of cities closer
- *  than a touch target) and the data its card shows (D-081). */
-export interface MapCityView {
-  id: string;
-  label: string;
-  /** member node positions (normalized map coordinates) */
-  points: { nx: number; ny: number }[];
-  projectCount: number;
-  first: { name: string; sector: string; href: string | null; image: { src: string; alt: string } | null };
-}
 /** The text alternative: every city with all of its projects. */
 export interface MapCityListItem {
   id: string;
@@ -95,16 +84,12 @@ export interface MapCityListItem {
   projects: { name: string }[];
 }
 
-export function getMapCities(locale: Locale): { buttons: MapCityView[]; list: MapCityListItem[] } {
-  const join = (names: string[]) =>
-    locale === "ar"
-      ? names.join(" و")
-      : names.length < 3
-        ? names.join(" and ")
-        : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+/** D-093: the map is a pure animated panel now — no city buttons, no
+ *  popover cards, no interaction. This returns only the text list (the
+ *  visible mobile list / the screen-reader alternative to the drawing). */
+export function getMapCities(locale: Locale): { list: MapCityListItem[] } {
   const visible = new Set(getPublicProjects().map((p) => p.id));
   const projectOf = (id: string) => (visible.has(id) ? projects.find((p) => p.id === id) : undefined);
-  const hrefOf = (p: Project) => (projectHasDetail(p) ? `/projects/${p.slug}` : null);
   const withProjects = locations.filter((l) => l.kind !== "coverage-city" && l.projectIds.length > 0);
   const list: MapCityListItem[] = withProjects.map((l) => ({
     id: l.id,
@@ -115,37 +100,7 @@ export function getMapCities(locale: Locale): { buttons: MapCityView[]; list: Ma
       .filter((p): p is Project => Boolean(p))
       .map((p) => ({ name: localize(p.name, locale) })),
   }));
-  const groups = new Map<string, typeof withProjects>();
-  for (const l of withProjects) {
-    const key = l.group ?? l.id;
-    groups.set(key, [...(groups.get(key) ?? []), l]);
-  }
-  const buttons: MapCityView[] = [...groups.entries()].map(([key, members]) => {
-    const all = members.flatMap((m) => m.projectIds.map(projectOf)).filter((p): p is Project => Boolean(p));
-    // the card leads with a project that has its own page (owner's selection
-    // first, by homeOrder), otherwise the first on record
-    const ranked = [...all].sort((a, b) => {
-      const da = hrefOf(a) ? 0 : 1;
-      const db = hrefOf(b) ? 0 : 1;
-      return da - db || (a.homeOrder ?? 99) - (b.homeOrder ?? 99);
-    });
-    const lead = ranked[0]!;
-    const sector = industries.find((i) => i.id === lead.sectorIds[0]);
-    const media = lead.media?.find((m) => m.type === "image");
-    return {
-      id: key,
-      label: join(members.map((m) => localize(m.name, locale))),
-      points: members.map((m) => project(m.latitude, m.longitude)).map((p) => ({ nx: p.x, ny: p.y })),
-      projectCount: all.length,
-      first: {
-        name: localize(lead.name, locale),
-        sector: sector ? localize(sector.name, locale) : "",
-        href: hrefOf(lead),
-        image: media ? { src: media.src, alt: localize(media.alt, locale) } : null,
-      },
-    };
-  });
-  return { buttons, list };
+  return { list };
 }
 
 export function getSolutionFamilies(): SolutionFamily[] {
@@ -175,17 +130,6 @@ export function getHomeProjects(): Project[] {
   return getPublicProjects()
     .filter((p) => p.homeOrder !== undefined)
     .sort((a, b) => a.homeOrder! - b.homeOrder!);
-}
-
-/**
- * P9 evidence-adaptive rule: a project earns a detail route when it is
- * Featured OR carries deep approved evidence (years + delivered scope).
- * Thin records stay ledger-only so weak pages never exist.
- * D-075 extension (owner decision): a project the owner shows on the
- * homepage (`homeOrder`) deserves a page.
- */
-export function projectHasDetail(p: Project): boolean {
-  return p.featured || p.homeOrder !== undefined || Boolean(p.years && p.scope && p.scope.length > 0);
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {

@@ -73,8 +73,8 @@ export const company = {
    *  only), owner-authored. */
   aboutSectionIntros: {
     values: {
-      en: "Five values that govern how we work, on every site and every project.",
-      ar: "خمس قيم تحكم طريقة عملنا في كل موقع وكل مشروع.",
+      en: "Five values that guide how we work, on every site and every project.",
+      ar: "خمس قيم توجّه طريقة عملنا في كل موقع وكل مشروع.",
     } satisfies LocalizedText,
     goals: {
       en: "What we're working to achieve in the Kingdom over the years ahead.",

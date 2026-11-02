@@ -29,9 +29,6 @@ export interface NetRegion {
   /** normalized map coords of the regional destination */
   nx: number;
   ny: number;
-  /** normalized departure anchor on the Saudi outline */
-  ax: number;
-  ay: number;
 }
 
 export interface NetCallbacks {
@@ -463,7 +460,10 @@ export class NetworkEngine {
             ctx.fill();
           }
         }
-        // destination activates on arrival (bloom → settled node)
+        // destination activates on arrival (bloom → settled node). D-093
+        // item 3: one uniform glow size for every city, small enough that
+        // the tight Jeddah/Makkah/Taif cluster never overlaps — only
+        // Riyadh (drawn separately, below) is intentionally larger.
         const nodeP = clamp01((t - (t0 + tl.routeTravel)) / 340);
         if (nodeP > 0) {
           const na = easeEngineered(nodeP);
@@ -473,7 +473,7 @@ export class NetworkEngine {
           ctx.fill();
           ctx.fillStyle = `rgb(${this.pal.node} / ${0.15 * na * (final ? 1 : 1 + 0.4 * (1 - nodeP))})`;
           ctx.beginPath();
-          ctx.arc(n.x, n.y, 8 + 5 * (1 - nodeP), 0, Math.PI * 2);
+          ctx.arc(n.x, n.y, 5 + 3 * (1 - nodeP), 0, Math.PI * 2);
           ctx.fill();
         }
       });
@@ -509,68 +509,81 @@ export class NetworkEngine {
       }
     }
 
-    /* Gulf regional reach (Rev3 §10): after the national network, three
-       restrained routes leave the Kingdom toward real regional geography
-       (Bahrain / Qatar / UAE). Reach markers are HOLLOW rings — visually
-       distinct from filled project-evidence nodes — and their labels are
-       DOM text under a "Regional reach" legend. Nothing claims projects. */
-    this.regions.forEach((r, i) => {
-      const t0 = tl.routesStart; // D-092: Bahrain launches with every other route
-      const travel = clamp01((t - t0) / 700);
-      if (travel <= 0) {
-        this.cb.onRegion?.(r.id, null);
-        return;
-      }
-      if (!this.regionalFired) {
-        this.regionalFired = true;
-        this.cb.onRegional?.();
-      }
-      const tp = easeCinematic(travel);
-      const ax = this.mapRect.x + r.ax * this.mapRect.w;
-      const ay = this.mapRect.y + r.ay * this.mapRect.h;
-      const nx = this.mapRect.x + r.nx * this.mapRect.w;
-      const ny = this.mapRect.y + r.ny * this.mapRect.h;
-      const dx = nx - ax;
-      const dy = ny - ay;
-      const len = Math.hypot(dx, dy) || 1;
-      const bow = Math.min(22, len * 0.2) * (i % 2 === 0 ? 1 : -1);
-      const cx = (ax + nx) / 2 + (-dy / len) * bow;
-      const cy = (ay + ny) / 2 + (dx / len) * bow;
-      const settled = travel >= 1;
-      ctx.strokeStyle = settled
-        ? `rgb(${this.pal.signal} / ${this.sig(0.18)})`
-        : `rgb(${this.pal.signal} / ${this.sig(0.4 - 0.2 * tp)})`;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice
-      ctx.beginPath();
-      ctx.moveTo(ax, ay);
-      const STEPS = 18;
-      const upto = Math.max(1, Math.round(STEPS * tp));
-      for (let q = 1; q <= upto; q++) {
-        const u = (q / STEPS) * tp;
-        const ix = (1 - u) * (1 - u) * ax + 2 * (1 - u) * u * cx + u * u * nx;
-        const iy = (1 - u) * (1 - u) * ay + 2 * (1 - u) * u * cy + u * u * ny;
-        ctx.lineTo(ix, iy);
-      }
-      ctx.stroke();
-      ctx.setLineDash([]);
-      const ringP = clamp01((t - (t0 + 700)) / 320);
-      if (ringP > 0) {
-        const a = easeEngineered(ringP);
-        ctx.strokeStyle = `rgb(${this.pal.ring} / ${0.65 * a})`;
-        ctx.lineWidth = 1.2;
+    /* Gulf regional reach (Rev3 §10, D-093): a Bahrain-only route today.
+       It launches from RIYADH — the same hq origin and the same timing
+       as every national route — so its length and visual clarity match
+       them exactly; only the dashed stroke (D-021) and the hollow-ring
+       destination mark it as "reach" rather than project evidence. */
+    if (hq) {
+      this.regions.forEach((r) => {
+        const t0 = tl.routesStart;
+        const travel = clamp01((t - t0) / tl.routeTravel);
+        if (travel <= 0) {
+          this.cb.onRegion?.(r.id, null);
+          return;
+        }
+        if (!this.regionalFired) {
+          this.regionalFired = true;
+          this.cb.onRegional?.();
+        }
+        const tp = easeCinematic(travel);
+        const nx = this.mapRect.x + r.nx * this.mapRect.w;
+        const ny = this.mapRect.y + r.ny * this.mapRect.h;
+        const mx = (hq.x + nx) / 2;
+        const my = (hq.y + ny) / 2;
+        const dx = nx - hq.x;
+        const dy = ny - hq.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const bow = Math.min(34, len * 0.16);
+        const cx = mx + (-dy / len) * bow;
+        const cy = my + (dx / len) * bow;
+        const settled = travel >= 1;
+        ctx.strokeStyle = settled
+          ? `rgb(${this.pal.signal} / ${this.sig(0.22)})`
+          : `rgb(${this.pal.signal} / ${this.sig(0.5 - 0.24 * tp)})`;
+        ctx.lineWidth = settled ? 1 : 1.25;
+        ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice (D-021)
         ctx.beginPath();
-        ctx.arc(nx, ny, 4.4, 0, Math.PI * 2);
+        ctx.moveTo(hq.x, hq.y);
+        const STEPS = 24;
+        const upto = Math.max(1, Math.round(STEPS * tp));
+        for (let q = 1; q <= upto; q++) {
+          const u = (q / STEPS) * tp;
+          const ix = (1 - u) * (1 - u) * hq.x + 2 * (1 - u) * u * cx + u * u * nx;
+          const iy = (1 - u) * (1 - u) * hq.y + 2 * (1 - u) * u * cy + u * u * ny;
+          ctx.lineTo(ix, iy);
+        }
         ctx.stroke();
-        ctx.strokeStyle = `rgb(${this.pal.signal} / ${this.sig(0.3 * a)})`;
-        ctx.beginPath();
-        ctx.arc(nx, ny, 8.5, 0, Math.PI * 2);
-        ctx.stroke();
-        this.cb.onRegion?.(r.id, this.toScreen(nx, ny, s, push));
-      } else {
-        this.cb.onRegion?.(r.id, null);
-      }
-    });
+        ctx.setLineDash([]);
+        if (!settled) {
+          const u = tp;
+          const hx = (1 - u) * (1 - u) * hq.x + 2 * (1 - u) * u * cx + u * u * nx;
+          const hy = (1 - u) * (1 - u) * hq.y + 2 * (1 - u) * u * cy + u * u * ny;
+          ctx.fillStyle = `rgb(${this.pal.signal} / ${this.sig(0.95)})`;
+          ctx.beginPath();
+          ctx.arc(hx, hy, 2.3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // destination activates on arrival — hollow ring (reach, not a
+        // filled evidence node), same bloom strength as every city
+        const ringP = clamp01((t - (t0 + tl.routeTravel)) / 340);
+        if (ringP > 0) {
+          const a = easeEngineered(ringP);
+          ctx.strokeStyle = `rgb(${this.pal.ring} / ${0.65 * a})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(nx, ny, 4.4, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = `rgb(${this.pal.node} / ${0.15 * a * (final ? 1 : 1 + 0.4 * (1 - ringP))})`;
+          ctx.beginPath();
+          ctx.arc(nx, ny, 5 + 3 * (1 - ringP), 0, Math.PI * 2);
+          ctx.fill();
+          this.cb.onRegion?.(r.id, this.toScreen(nx, ny, s, push));
+        } else {
+          this.cb.onRegion?.(r.id, null);
+        }
+      });
+    }
 
     /* counters (§9): coordinated with the network choreography */
     if (this.cb.onCount && !this.done) {

@@ -3,12 +3,12 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale, Stat } from "@/types/content";
-import type { MapCityListItem, MapCityView } from "@/lib/content";
+import type { MapCityListItem } from "@/lib/content";
 import { locations } from "@/content/locations";
 import { gulfRegions } from "@/content/regions";
 import { SAUDI_OUTLINE, GEO_BOUNDS, project } from "@/lib/map/geo";
 import { NetworkEngine, type NetRegion, type NetTier } from "./engine";
-import { MapCities, MapCityList } from "./MapCities";
+import { MapCityList } from "./MapCities";
 
 /**
  * Homepage chapter 04 — TRACK RECORD × NATIONAL NETWORK (Revision 2 §§3–9).
@@ -30,25 +30,15 @@ import { MapCities, MapCityList } from "./MapCities";
  * The Saudi geometry is never mirrored in RTL (§11) — the SVG carries an
  * explicit dir="ltr" isolation and the canvas draws in screen space.
  */
-/** Regional-reach geometry (Rev3 §10): destination = projected lat/lon;
- *  departure anchor = nearest Saudi outline vertex, so reach routes grow
- *  out of the geography. Enabled records only (owner-editable data). */
+/** Regional-reach geometry (Rev3 §10, D-093): destination = projected
+ *  lat/lon. The route departs from Riyadh now, like every national
+ *  route — no separate departure anchor to compute. Enabled records
+ *  only (owner-editable data). */
 const REGIONS: NetRegion[] = gulfRegions
   .filter((r) => r.enabled)
   .map((r) => {
     const d = project(r.latitude, r.longitude);
-    let best = SAUDI_OUTLINE[0]!;
-    let bestDist = Infinity;
-    for (const v of SAUDI_OUTLINE) {
-      const p = project(v[1], v[0]);
-      const dist = Math.hypot(p.x - d.x, p.y - d.y);
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = v;
-      }
-    }
-    const a = project(best[1], best[0]);
-    return { id: r.id, nx: d.x, ny: d.y, ax: a.x, ay: a.y };
+    return { id: r.id, nx: d.x, ny: d.y };
   });
 
 /** Reads the pre-paint motion tier without setState-in-effect. */
@@ -65,8 +55,9 @@ export function NetworkScene({
 }: {
   /** server-computed (getStats) — final values, never animated */
   stats: Stat[];
-  /** server-computed (getMapCities) — city buttons + the text list */
-  cities: { buttons: MapCityView[]; list: MapCityListItem[] };
+  /** server-computed (getMapCities) — the city/project text list (D-093:
+   *  no interactive buttons any more, the map is a pure animated panel) */
+  cities: { list: MapCityListItem[] };
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations();
@@ -136,10 +127,62 @@ export function NetworkScene({
     });
     engineRef.current = engine;
 
+    /* D-093: the counter launches from the SAME signal that starts the
+       engine — the exact moment the route-lines begin drawing — instead
+       of a separate observer on the stat grid (which fired at an
+       unpredictable point relative to the map and made the count-up
+       invisible in practice). 2s, eased out, once. If the stat grid
+       itself is off-screen at that moment (small screens, the map is
+       tall), counting waits for the grid's own first appearance instead —
+       still exactly once. */
+    const startCount = () => {
+      if (countedRef.current) return;
+      countedRef.current = true;
+      const duration = 2000;
+      const start = performance.now();
+      const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        const e = easeOut(p);
+        for (const s of stats) {
+          const el = statNumRefs.current[s.id];
+          if (el) el.textContent = String(Math.round(s.value * e));
+        }
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    let gridIO: IntersectionObserver | null = null;
+    const armCounter = () => {
+      if (countedRef.current) return;
+      const grid = statGridRef.current;
+      if (!grid) return;
+      const r = grid.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        startCount();
+        return;
+      }
+      if (!gridIO) {
+        gridIO = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                startCount();
+                gridIO?.disconnect();
+              }
+            }
+          },
+          { threshold: 0.3 },
+        );
+        gridIO.observe(grid);
+      }
+    };
+
     let inView = false;
     const sync = () => {
       const active = inView && document.visibilityState === "visible";
       riyadhDotRef.current?.classList.toggle("is-pulsing", active);
+      if (active) armCounter();
       if (engine.isDone()) return;
       if (active) engine.start();
       else engine.pause();
@@ -167,6 +210,7 @@ export function NetworkScene({
 
     return () => {
       io.disconnect();
+      gridIO?.disconnect();
       themeObs.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
@@ -174,42 +218,6 @@ export function NetworkScene({
     };
     // first client render matches the "static" server snapshot (no canvas);
     // the effect re-runs once the real tier resolves and the canvas exists
-  }, [tier]);
-
-  /* D-092: each figure counts up 0 → its value over ~1.6s with a
-     deceleration curve, once, the first time the stat grid appears. The
-     static tier (incl. prefers-reduced-motion) and no-JS both keep the
-     server-rendered final values untouched — stats.ts growth math never
-     runs on the client. */
-  useEffect(() => {
-    if (tier === "static") return;
-    const grid = statGridRef.current;
-    if (!grid) return;
-    const run = () => {
-      if (countedRef.current) return;
-      countedRef.current = true;
-      const duration = 1600;
-      const start = performance.now();
-      const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
-      const tick = (now: number) => {
-        const p = Math.min(1, (now - start) / duration);
-        const e = easeOut(p);
-        for (const s of stats) {
-          const el = statNumRefs.current[s.id];
-          if (el) el.textContent = String(Math.round(s.value * e));
-        }
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) run();
-      },
-      { threshold: 0.4 },
-    );
-    io.observe(grid);
-    return () => io.disconnect();
   }, [tier, stats]);
 
   /* ---- designed static frame (server-rendered; STATIC/no-JS, §18) ---- */
@@ -232,8 +240,6 @@ export function NetworkScene({
     id: r.id,
     x: r.nx * W,
     y: r.ny * H,
-    ax: r.ax * W,
-    ay: r.ay * H,
   }));
 
   return (
@@ -299,27 +305,28 @@ export function NetworkScene({
                       />
                     ))
                 : null}
-              {regionPts.map((r) => (
-                <g key={`reach-${r.id}`}>
-                  <line
-                    x1={r.ax}
-                    y1={r.ay}
-                    x2={r.x}
-                    y2={r.y}
-                    style={{ stroke: "rgb(var(--map-signal) / 0.2)" }}
-                    strokeWidth="1"
-                    strokeDasharray="3 5"
-                  />
-                  <circle
-                    cx={r.x}
-                    cy={r.y}
-                    r="4.2"
-                    fill="none"
-                    style={{ stroke: "rgb(var(--map-ring) / 0.6)" }}
-                    strokeWidth="1.2"
-                  />
-                </g>
-              ))}
+              {hqNode &&
+                regionPts.map((r) => (
+                  <g key={`reach-${r.id}`}>
+                    <line
+                      x1={hqNode.x}
+                      y1={hqNode.y}
+                      x2={r.x}
+                      y2={r.y}
+                      style={{ stroke: "rgb(var(--map-signal) / 0.2)" }}
+                      strokeWidth="1"
+                      strokeDasharray="3 5"
+                    />
+                    <circle
+                      cx={r.x}
+                      cy={r.y}
+                      r="4.2"
+                      fill="none"
+                      style={{ stroke: "rgb(var(--map-ring) / 0.6)" }}
+                      strokeWidth="1.2"
+                    />
+                  </g>
+                ))}
               {nodePts.map((n) =>
                 n.hq ? (
                   <g key={n.id}>
@@ -360,10 +367,11 @@ export function NetworkScene({
           </div>
         </div>
 
-        {/* D-081: city buttons + project cards over the map (outside the
-            aria-hidden stage), and the text alternative / mobile list */}
-        <MapCities buttons={cities.buttons} tier={tier} />
         </div>
+        {/* D-093: the map is a pure animated panel — no buttons, no cards,
+            no interaction. The drawing is aria-hidden (above); this list is
+            the text alternative for screen readers, and the visible list
+            once the map gives way below 768px. */}
         <MapCityList list={cities.list} heading={t("network.citiesLabel")} />
 
         {/* Track Record — approved figures (D-002); server-rendered final
