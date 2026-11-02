@@ -77,14 +77,12 @@ const BoltIcon = () => (
     <path d="M13 4L6 14h5l-1 6 7-10h-5z" />
   </Icon>
 );
-/* D-094: a clear handshake — two forearms meeting at a rounded,
-   overlapping clasp (not two people, not an abstract zigzag) */
-const HandshakeIcon = () => (
+const PartnershipIcon = () => (
   <Icon>
-    <path d="M2 18l5-4h2" />
-    <ellipse cx="11" cy="13" rx="2.3" ry="1.8" transform="rotate(20 11 13)" />
-    <path d="M22 18l-5-4h-2" />
-    <ellipse cx="13" cy="13" rx="2.3" ry="1.8" transform="rotate(-20 13 13)" />
+    <circle cx="8" cy="7.5" r="2.3" />
+    <path d="M3.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
+    <circle cx="16" cy="7.5" r="2.3" />
+    <path d="M11.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
   </Icon>
 );
 const CheckIcon = () => (
@@ -94,7 +92,7 @@ const CheckIcon = () => (
   </Icon>
 );
 
-const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, HandshakeIcon];
+const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, PartnershipIcon];
 
 /** The paragraph opens with the company name — set apart in bold magenta
  *  per the approved design, in both languages (both authored forms start
@@ -196,9 +194,6 @@ export async function AboutScene({ locale }: { locale: Locale }) {
         <div className="about-values-section mt-20">
           <div className="about-values-head">
             <h3 className="font-display text-3xl font-bold md:text-4xl">{t("home.aboutPillars.values")}</h3>
-            <p className="text-ink-muted">
-              <LangText text={localize(company.aboutSectionIntros.values, locale)} />
-            </p>
           </div>
           <ul className="about-values-grid mt-8">
             {company.values.map((v, i) => {

@@ -74,13 +74,9 @@ export const company = {
     { en: "Ongoing support after handover", ar: "دعم مستمر بعد التسليم" },
   ] satisfies LocalizedText[],
 
-  /** D-092: the "Our values" and "Our goals" section intros (homepage
-   *  only), owner-authored. */
+  /** D-092: the "Our goals" section intro (homepage only), owner-authored.
+   *  D-095: the matching "Our values" intro was removed. */
   aboutSectionIntros: {
-    values: {
-      en: "Four values that guide how we work, on every site and every project.",
-      ar: "أربع قيم توجّه طريقة عملنا في كل موقع وكل مشروع.",
-    } satisfies LocalizedText,
     goals: {
       en: "What we're working to achieve in the Kingdom over the years ahead.",
       ar: "ما نعمل على تحقيقه في المملكة خلال السنوات القادمة.",

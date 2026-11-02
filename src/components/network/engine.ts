@@ -49,10 +49,15 @@ const easeEngineered = (t: number) => {
   const x = clamp01(t);
   return x * x * (3 - 2 * x);
 };
-/* D-094: the counter's own curve — a cubic ease-out, decelerating into
-   the exact moment the last route (Bahrain included) arrives. */
-const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
-
+/* D-095: route drawing — and the counter that mirrors it — stretch to
+ * ~10s. easeCinematic's heavy front-load (≈89% done by the 50% mark)
+ * reads fine over a ~0.76s burst but leaves a long, nearly static tail
+ * over 10s. This quad ease-in-out keeps a roughly constant, visible
+ * pace through the middle with only gentle easing at both ends. */
+const easeInOutQuad = (t: number) => {
+  const x = clamp01(t);
+  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+};
 function mulberry32(seed: number) {
   return function () {
     seed |= 0;
@@ -86,24 +91,26 @@ interface NetNode {
   hq: boolean;
 }
 
-/* Timeline (ms). FULL ≈ 7s of story; LITE compresses to ≈ 5.9s.
- * D-092 (owner decision #2): every route — the nine national destinations
- * AND the Bahrain regional-reach line — launches from Riyadh at the SAME
- * instant (routesStart) and draws concurrently; each bursts into bloom on
- * arrival. No per-route stagger any more. */
+/* Timeline (ms). D-092 (owner decision #2): every route — the nine
+ * national destinations AND the Bahrain regional-reach line — launches
+ * from Riyadh at the SAME instant (routesStart) and draws concurrently;
+ * each bursts into bloom on arrival. No per-route stagger.
+ * D-095: the intro (emergence + Riyadh origin pulse) is unchanged; only
+ * routeTravel stretches to ~10s so the lines read clearly, and `end`
+ * grows by the same amount to keep the same settle buffer after them. */
 const NET_FULL = {
   emergeEnd: 1600,
   riyadh: 1600,
   routesStart: 2300,
-  routeTravel: 760,
-  end: 7000,
+  routeTravel: 10000,
+  end: 16240,
 };
 const NET_LITE = {
   emergeEnd: 1350,
   riyadh: 1350,
   routesStart: 1950,
-  routeTravel: 640,
-  end: 5900,
+  routeTravel: 10000,
+  end: 15260,
 };
 
 export class NetworkEngine {
@@ -413,7 +420,7 @@ export class NetworkEngine {
         const t0 = tl.routesStart; // D-092: all routes launch together
         const travel = clamp01((t - t0) / tl.routeTravel);
         if (travel <= 0) return;
-        const tp = easeCinematic(travel);
+        const tp = easeInOutQuad(travel); // D-095: visible pace across the full ~10s
         // curved, physically coherent path — perpendicular bow scaled by
         // route length, alternating sides so the constellation breathes
         const mx = (hq.x + n.x) / 2;
@@ -435,8 +442,10 @@ export class NetworkEngine {
         ctx.lineWidth = settled ? 1.4 : 1.9;
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
-        // subdivide for partial draw
-        const STEPS = 24;
+        // subdivide for partial draw. D-095: 10× the segments — at ~0.76s
+        // the old 24 steps updated every ~0.03s (imperceptible); stretched
+        // to ~10s that same count would visibly jump every ~0.4s.
+        const STEPS = 300;
         const upto = Math.max(1, Math.round(STEPS * tp));
         for (let q = 1; q <= upto; q++) {
           const u = (q / STEPS) * tp;
@@ -527,7 +536,7 @@ export class NetworkEngine {
           this.regionalFired = true;
           this.cb.onRegional?.();
         }
-        const tp = easeCinematic(travel);
+        const tp = easeInOutQuad(travel); // D-095: same curve as every national route
         const nx = this.mapRect.x + r.nx * this.mapRect.w;
         const ny = this.mapRect.y + r.ny * this.mapRect.h;
         const mx = (hq.x + nx) / 2;
@@ -547,7 +556,7 @@ export class NetworkEngine {
         ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice (D-021)
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
-        const STEPS = 24;
+        const STEPS = 300; // D-095: matches the national routes' resolution
         const upto = Math.max(1, Math.round(STEPS * tp));
         for (let q = 1; q <= upto; q++) {
           const u = (q / STEPS) * tp;
@@ -591,7 +600,7 @@ export class NetworkEngine {
        reaches 1 at the exact instant the last route (Bahrain included)
        arrives, never before and never independently of the lines. */
     if (this.cb.onCount && !this.done) {
-      const cp = easeOut(clamp01((t - tl.routesStart) / tl.routeTravel));
+      const cp = easeInOutQuad(clamp01((t - tl.routesStart) / tl.routeTravel));
       this.cb.onCount(cp);
     }
   }
