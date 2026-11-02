@@ -24,7 +24,7 @@ for (const loc of ["en", "ar"] as const) {
     const dd = [...html.matchAll(/<dd[^>]*><span dir="ltr"[^>]*><span>(\d+)<\/span>/g)].map((m) => m[1]);
     expect(dd).toEqual(["200", "7", "16", "100"]); // 2026: the approved values
     await gotoMap(page, loc);
-    await page.waitForTimeout(9000); // D-095: the whole network story is now ~5s of routes
+    await page.waitForTimeout(8000); // D-095: the whole network story is now ~4s of routes
     const shown = await page.locator(".stat-grid dd > span > span:first-child").allTextContents();
     expect(shown).toEqual(["200", "7", "16", "100"]);
   });
@@ -129,7 +129,7 @@ for (const [loc, w, selector] of [
       await page.mouse.wheel(0, box.y / steps);
       await page.waitForTimeout(20);
     }
-    await page.waitForTimeout(9000); // D-095: routesStart + routeTravel(~5s) + margin
+    await page.waitForTimeout(8000); // D-095: routesStart + routeTravel(~4s) + margin
 
     const log = await page.evaluate(() => (window as unknown as { __log: { v: string; t: number }[] }).__log);
     expect(log.length, "the figure changed at least once").toBeGreaterThan(0);

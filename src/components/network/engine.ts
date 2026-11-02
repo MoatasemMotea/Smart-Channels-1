@@ -49,14 +49,16 @@ const easeEngineered = (t: number) => {
   const x = clamp01(t);
   return x * x * (3 - 2 * x);
 };
-/* D-095: route drawing — and the counter that mirrors it — stretch to
- * ~5s. easeCinematic's heavy front-load (≈89% done by the 50% mark)
+/* D-095: route drawing — and the counter that mirrors it — run over
+ * ~4s. easeCinematic's heavy front-load (≈89% done by the 50% mark)
  * reads fine over a ~0.76s burst but leaves a noticeably static tail
- * over several seconds. This quad ease-in-out keeps a roughly constant,
- * visible pace through the middle with only gentle easing at both ends. */
-const easeInOutQuad = (t: number) => {
+ * over several seconds. This cubic ease-in-out gives a soft, confident
+ * launch out of Riyadh, a full-speed middle, and a gentle settle into
+ * arrival — a smoother, more deliberate S-curve than a quadratic
+ * ease, without reintroducing a long dead tail at the end. */
+const easeInOutCubic = (t: number) => {
   const x = clamp01(t);
-  return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 };
 function mulberry32(seed: number) {
   return function () {
@@ -96,21 +98,21 @@ interface NetNode {
  * from Riyadh at the SAME instant (routesStart) and draws concurrently;
  * each bursts into bloom on arrival. No per-route stagger.
  * D-095: the intro (emergence + Riyadh origin pulse) is unchanged;
- * routeTravel stretches to ~5s so the lines read clearly, and `end`
- * grows by the same amount to keep the same settle buffer after them. */
+ * routeTravel runs ~4s so the lines read clearly, and `end` grows by
+ * the same amount to keep the same settle buffer after them. */
 const NET_FULL = {
   emergeEnd: 1600,
   riyadh: 1600,
   routesStart: 2300,
-  routeTravel: 5000,
-  end: 11240,
+  routeTravel: 4000,
+  end: 10240,
 };
 const NET_LITE = {
   emergeEnd: 1350,
   riyadh: 1350,
   routesStart: 1950,
-  routeTravel: 5000,
-  end: 10260,
+  routeTravel: 4000,
+  end: 9260,
 };
 
 export class NetworkEngine {
@@ -420,7 +422,7 @@ export class NetworkEngine {
         const t0 = tl.routesStart; // D-092: all routes launch together
         const travel = clamp01((t - t0) / tl.routeTravel);
         if (travel <= 0) return;
-        const tp = easeInOutQuad(travel); // D-095: visible pace across the full ~5s
+        const tp = easeInOutCubic(travel); // D-095: a confident launch/settle across the full ~4s
         // curved, physically coherent path — perpendicular bow scaled by
         // route length, alternating sides so the constellation breathes
         const mx = (hq.x + n.x) / 2;
@@ -522,8 +524,10 @@ export class NetworkEngine {
     /* Gulf regional reach (Rev3 §10, D-093): a Bahrain-only route today.
        It launches from RIYADH — the same hq origin and the same timing
        as every national route — so its length and visual clarity match
-       them exactly; only the dashed stroke (D-021) and the hollow-ring
-       destination mark it as "reach" rather than project evidence. */
+       them exactly. D-095 (owner feedback): the dashed stroke (D-021)
+       read as a broken/interrupted line, not a deliberate "reach" voice
+       — now drawn solid, matching every national route; only the
+       hollow-ring destination still marks it as reach, not evidence. */
     if (hq) {
       this.regions.forEach((r) => {
         const t0 = tl.routesStart;
@@ -536,7 +540,7 @@ export class NetworkEngine {
           this.regionalFired = true;
           this.cb.onRegional?.();
         }
-        const tp = easeInOutQuad(travel); // D-095: same curve as every national route
+        const tp = easeInOutCubic(travel); // D-095: same curve as every national route
         const nx = this.mapRect.x + r.nx * this.mapRect.w;
         const ny = this.mapRect.y + r.ny * this.mapRect.h;
         const mx = (hq.x + nx) / 2;
@@ -553,7 +557,6 @@ export class NetworkEngine {
           ? `rgb(${this.pal.signal} / ${this.sig(0.32)})`
           : `rgb(${this.pal.signal} / ${this.sig(0.78 - 0.3 * tp)})`;
         ctx.lineWidth = settled ? 1.4 : 1.9;
-        ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice (D-021)
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
         const STEPS = 300; // D-095: matches the national routes' resolution
@@ -565,7 +568,6 @@ export class NetworkEngine {
           ctx.lineTo(ix, iy);
         }
         ctx.stroke();
-        ctx.setLineDash([]);
         if (!settled) {
           const u = tp;
           const hx = (1 - u) * (1 - u) * hq.x + 2 * (1 - u) * u * cx + u * u * nx;
@@ -600,7 +602,7 @@ export class NetworkEngine {
        reaches 1 at the exact instant the last route (Bahrain included)
        arrives, never before and never independently of the lines. */
     if (this.cb.onCount && !this.done) {
-      const cp = easeInOutQuad(clamp01((t - tl.routesStart) / tl.routeTravel));
+      const cp = easeInOutCubic(clamp01((t - tl.routesStart) / tl.routeTravel));
       this.cb.onCount(cp);
     }
   }

@@ -223,9 +223,9 @@ export function NetworkScene({
             <>
               <canvas ref={canvasRef} className="network-canvas" />
               {/* D-042: no city/country text labels on the network — the
-                  origin pulse, national routes and dashed regional-reach
-                  markers carry the geography visually. The label/region
-                  refs stay declared; every engine callback null-guards. */}
+                  origin pulse, national routes and regional-reach markers
+                  carry the geography visually. The label/region refs stay
+                  declared; every engine callback null-guards. */}
               <p ref={legendRef} className="network-regional-legend microlabel">
                 {t("network.regional")}
               </p>
