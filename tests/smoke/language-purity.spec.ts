@@ -114,10 +114,10 @@ for (const loc of ["ar", "en"] as const) {
     if (pendingSeen.length) console.log(`[${loc}] names awaiting official Arabic (${pendingSeen.length}): ${pendingSeen.join(" · ")}`);
     const report = findings.map((f) => `${f.route} · ${f.where} · «${f.run}» · ${f.problem} · in: ${f.text.slice(0, 90)}`);
     expect(report, `${findings.length} foreign-script runs:\n${report.join("\n")}`).toEqual([]);
-    // 29 since D-092: /projects and every /projects/[slug] redirect to the
-    // homepage's #projects — they are no longer pages the crawler counts
-    // (was 36 at D-088, which only accounted for /products becoming a redirect)
-    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(29);
+    // 24 since D-093: the map's city-button popovers (each card held a
+    // "View project" link) are gone — no interactive links left on the
+    // map for the crawler to follow (was 29 at D-092, 36 at D-088)
+    expect(pages, "the crawl reached the whole site").toBeGreaterThanOrEqual(24);
   });
 }
 
