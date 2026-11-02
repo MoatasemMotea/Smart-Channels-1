@@ -77,22 +77,14 @@ const BoltIcon = () => (
     <path d="M13 4L6 14h5l-1 6 7-10h-5z" />
   </Icon>
 );
-/* a hard hat profile — dome, a wide extended brim, a top ridge bump —
-   not a dish/lid */
-const HelmetIcon = () => (
+/* D-094: a clear handshake — two forearms meeting at a rounded,
+   overlapping clasp (not two people, not an abstract zigzag) */
+const HandshakeIcon = () => (
   <Icon>
-    <path d="M4 16a8 8 0 0 1 16 0" />
-    <path d="M1.5 16h21" />
-    <path d="M9.5 7.5q2.5-2.5 5 0" />
-  </Icon>
-);
-/* two people side by side, not a handshake */
-const PartnershipIcon = () => (
-  <Icon>
-    <circle cx="8" cy="7.5" r="2.3" />
-    <path d="M3.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
-    <circle cx="16" cy="7.5" r="2.3" />
-    <path d="M11.8 19c0-3.2 1.9-5.3 4.2-5.3s4.2 2.1 4.2 5.3" />
+    <path d="M2 18l5-4h2" />
+    <ellipse cx="11" cy="13" rx="2.3" ry="1.8" transform="rotate(20 11 13)" />
+    <path d="M22 18l-5-4h-2" />
+    <ellipse cx="13" cy="13" rx="2.3" ry="1.8" transform="rotate(-20 13 13)" />
   </Icon>
 );
 const CheckIcon = () => (
@@ -102,7 +94,7 @@ const CheckIcon = () => (
   </Icon>
 );
 
-const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, HelmetIcon, PartnershipIcon];
+const VALUE_ICONS = [ShieldIcon, TargetIcon, BoltIcon, HandshakeIcon];
 
 /** The paragraph opens with the company name — set apart in bold magenta
  *  per the approved design, in both languages (both authored forms start

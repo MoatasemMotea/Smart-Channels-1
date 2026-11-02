@@ -253,10 +253,10 @@ describe("D-082 the registered Arabic name", () => {
 });
 
 describe("D-083 one set of values, closed pending list", () => {
-  it("the homepage About and /company read the same five company.values (D-092 wording); the profile's three are gone", async () => {
+  it("the homepage About and /company read the same four company.values (D-094: Reliability+Safety merged)", async () => {
     const { company } = await import("../../src/content/company");
-    expect(company.values.map((v) => v.name.ar)).toEqual(["الموثوقية", "الدقة", "سرعة الاستجابة", "السلامة", "الشراكة"]);
-    expect(company.values.map((v) => v.name.en)).toEqual(["Reliability", "Precision", "Responsiveness", "Safety", "Partnership"]);
+    expect(company.values.map((v) => v.name.ar)).toEqual(["الموثوقية والسلامة", "الدقة", "سرعة الاستجابة", "الشراكة"]);
+    expect(company.values.map((v) => v.name.en)).toEqual(["Reliability & Safety", "Precision", "Responsiveness", "Partnership"]);
     expect(company.values.every((v) => v.line.ar && v.line.en)).toBe(true);
     expect("values" in company.aboutPillars).toBe(false);
     expect(JSON.stringify(company)).not.toContain("Comprehensive and integrated solutions");

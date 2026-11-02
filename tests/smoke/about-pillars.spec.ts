@@ -14,7 +14,7 @@ const EXPECT = {
     mission: "Our mission",
     valuesTitle: "Our values",
     goalsTitle: "Our goals",
-    values: ["Reliability", "Precision", "Responsiveness", "Safety", "Partnership"],
+    values: ["Reliability & Safety", "Precision", "Responsiveness", "Partnership"],
     goal: "Empower national talent and develop their technical skills.",
     gone: "Fiber fusion splicing",
   },
@@ -24,14 +24,14 @@ const EXPECT = {
     mission: "رسالتنا",
     valuesTitle: "قيمنا",
     goalsTitle: "أهدافنا",
-    values: ["الموثوقية", "الدقة", "سرعة الاستجابة", "السلامة", "الشراكة"],
+    values: ["الموثوقية والسلامة", "الدقة", "سرعة الاستجابة", "الشراكة"],
     goal: "تمكين الكفاءات الوطنية وتطوير مهاراتها التقنية.",
     gone: "لِحام ألياف بصرية",
   },
 } as const;
 
 for (const loc of ["en", "ar"] as const) {
-  test(`${loc}: one centered h2, intro + highlights, vision/mission, five values, four goals; the old photo is gone`, async ({
+  test(`${loc}: one centered h2, intro + highlights, vision/mission, four values, four goals; the old photo is gone`, async ({
     page,
   }, info) => {
     test.skip(info.project.name !== "desktop");
@@ -53,7 +53,7 @@ for (const loc of ["en", "ar"] as const) {
     await expect(about.locator(".about-vm-mission .about-vm-label")).toContainText(e.mission);
 
     await expect(about.locator(".about-values-head h3")).toHaveText(e.valuesTitle);
-    await expect(about.locator(".about-value-card")).toHaveCount(5);
+    await expect(about.locator(".about-value-card")).toHaveCount(4);
     await expect(about.locator(".about-value-name")).toHaveText(e.values.map((v) => new RegExp(v)));
 
     await expect(about.locator(".about-goals-head h3")).toHaveText(e.goalsTitle);

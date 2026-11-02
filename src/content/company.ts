@@ -30,13 +30,18 @@ export const company = {
   } satisfies LocalizedText,
 
   /** The company's values — ONE source for the homepage About and /company
-   *  (D-092: the owner's five, each a name and one line, replacing the
-   *  D-083 wording everywhere). */
+   *  (D-094: four, "Reliability" and "Safety" merged into one leading
+   *  value; replaces the D-092/D-083 five everywhere). */
   values: [
-    { name: { en: "Reliability", ar: "الموثوقية" }, line: { en: "Systems you can rely on in decisive moments.", ar: "أنظمة يُعتمد عليها في اللحظات الحاسمة." } },
+    {
+      name: { en: "Reliability & Safety", ar: "الموثوقية والسلامة" },
+      line: {
+        en: "Systems you can rely on in decisive moments, built to strict safety standards for our teams and our clients' sites.",
+        ar: "أنظمة يُعتمد عليها في اللحظات الحاسمة، بمعايير سلامة صارمة لفرقنا ولمواقع عملائنا.",
+      },
+    },
     { name: { en: "Precision", ar: "الدقة" }, line: { en: "We measure and plan before we execute.", ar: "نقيس ونخطط قبل أن ننفّذ." } },
     { name: { en: "Responsiveness", ar: "سرعة الاستجابة" }, line: { en: "We deploy from our own stock, without waiting on suppliers.", ar: "ننشر من مخزوننا دون انتظار الموردين." } },
-    { name: { en: "Safety", ar: "السلامة" }, line: { en: "Strict standards for our teams and our clients' sites.", ar: "معايير صارمة لفرقنا ولمواقع عملائنا." } },
     { name: { en: "Partnership", ar: "الشراكة" }, line: { en: "We stay with our clients after handover.", ar: "نبقى مع عملائنا بعد التسليم." } },
   ] satisfies { name: LocalizedText; line: LocalizedText }[],
 
@@ -73,8 +78,8 @@ export const company = {
    *  only), owner-authored. */
   aboutSectionIntros: {
     values: {
-      en: "Five values that guide how we work, on every site and every project.",
-      ar: "خمس قيم توجّه طريقة عملنا في كل موقع وكل مشروع.",
+      en: "Four values that guide how we work, on every site and every project.",
+      ar: "أربع قيم توجّه طريقة عملنا في كل موقع وكل مشروع.",
     } satisfies LocalizedText,
     goals: {
       en: "What we're working to achieve in the Kingdom over the years ahead.",

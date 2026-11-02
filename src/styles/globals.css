@@ -4379,7 +4379,7 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
 }
 .about-values-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   padding: 0;
   list-style: none;
@@ -4446,7 +4446,6 @@ html[data-motion-tier="static"] .about-value-card { transition: none; }
   .about-media-accent { inline-size: 50%; block-size: 50%; }
   .about-vm { grid-template-columns: 1fr; }
   .about-values-grid { grid-template-columns: repeat(2, 1fr); }
-  .about-value-card:last-child { grid-column: 1 / -1; }
   .about-goals-panel {
     grid-template-columns: 1fr;
     padding: 2.25rem;

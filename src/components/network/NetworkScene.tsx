@@ -74,11 +74,9 @@ export function NetworkScene({
      the Riyadh node only — the particle engine has already stopped. */
   const riyadhDotRef = useRef<HTMLSpanElement>(null);
   const riyadhPosRef = useRef<{ x: number; y: number } | null>(null);
-  /* D-092: the Track Record figures count up 0→value once, independent of
-     the canvas story's own timeline/tier. */
-  const statGridRef = useRef<HTMLDListElement>(null);
+  /* D-094: the Track Record figures are a direct readout of the engine's
+     route-drawing progress (onCount) — no independent timer. */
   const statNumRefs = useRef<Record<string, HTMLSpanElement | null>>({});
-  const countedRef = useRef(false);
 
   useEffect(() => {
     if (tier === "static") return; // designed static frame stays (§18)
@@ -123,66 +121,29 @@ export function NetworkScene({
             dot.style.transform = `translate(${Math.round(pos.x)}px, ${Math.round(pos.y)}px)`;
           }
         },
+        /* D-094: the figures are a direct readout of route-drawing
+           progress (0 before the lines start, 1 the instant the last
+           one — Bahrain included — arrives). No independent timer, no
+           dependency on the stat grid's own visibility: this runs every
+           frame regardless of whether the grid is on screen, so a
+           mobile visitor who scrolls to it mid-story sees it already at
+           the correct, current value rather than restarting from 0. */
+        onCount: (p) => {
+          for (const s of stats) {
+            const el = statNumRefs.current[s.id];
+            if (!el) continue;
+            const next = String(Math.round(s.value * p));
+            if (el.textContent !== next) el.textContent = next; // skip redundant writes once settled
+          }
+        },
       },
     });
     engineRef.current = engine;
-
-    /* D-093: the counter launches from the SAME signal that starts the
-       engine — the exact moment the route-lines begin drawing — instead
-       of a separate observer on the stat grid (which fired at an
-       unpredictable point relative to the map and made the count-up
-       invisible in practice). 2s, eased out, once. If the stat grid
-       itself is off-screen at that moment (small screens, the map is
-       tall), counting waits for the grid's own first appearance instead —
-       still exactly once. */
-    const startCount = () => {
-      if (countedRef.current) return;
-      countedRef.current = true;
-      const duration = 2000;
-      const start = performance.now();
-      const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
-      const tick = (now: number) => {
-        const p = Math.min(1, (now - start) / duration);
-        const e = easeOut(p);
-        for (const s of stats) {
-          const el = statNumRefs.current[s.id];
-          if (el) el.textContent = String(Math.round(s.value * e));
-        }
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-    let gridIO: IntersectionObserver | null = null;
-    const armCounter = () => {
-      if (countedRef.current) return;
-      const grid = statGridRef.current;
-      if (!grid) return;
-      const r = grid.getBoundingClientRect();
-      if (r.top < window.innerHeight && r.bottom > 0) {
-        startCount();
-        return;
-      }
-      if (!gridIO) {
-        gridIO = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                startCount();
-                gridIO?.disconnect();
-              }
-            }
-          },
-          { threshold: 0.3 },
-        );
-        gridIO.observe(grid);
-      }
-    };
 
     let inView = false;
     const sync = () => {
       const active = inView && document.visibilityState === "visible";
       riyadhDotRef.current?.classList.toggle("is-pulsing", active);
-      if (active) armCounter();
       if (engine.isDone()) return;
       if (active) engine.start();
       else engine.pause();
@@ -210,7 +171,6 @@ export function NetworkScene({
 
     return () => {
       io.disconnect();
-      gridIO?.disconnect();
       themeObs.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
@@ -382,7 +342,7 @@ export function NetworkScene({
             RTL), while the numeric TOKEN keeps its own dir="ltr" bidi
             isolation so 200+ never renders as +200. Logical flow only —
             no hard-coded left/right; EN composition unchanged. */}
-        <dl ref={statGridRef} className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
+        <dl className="stat-grid grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((s) => (
             <div key={s.id} className="stat-block border-t border-line pt-4">
               <dd className="font-display text-5xl font-bold tabular-nums">

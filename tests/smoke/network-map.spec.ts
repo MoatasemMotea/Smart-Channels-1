@@ -89,19 +89,39 @@ test("200 % zoom (720 px wide): no horizontal overflow — the list takes over",
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-// D-093 item 4: the counter must visibly count up, not snap to final —
-// a real scroll arrival, sampled early (<300ms, under 200) and settled
-// (2.5s, at the final value).
+// D-094: the counter is a direct readout of route-drawing progress — it
+// must read a VALUE UNDER 200 the entire time any route is still
+// travelling, and only read exactly 200 once every route (Bahrain
+// included) has arrived. A MutationObserver records every value the
+// figure takes with its timestamp, so the assertion doesn't depend on
+// guessing wall-clock offsets around the scroll-to-visible delay.
 for (const [loc, w, selector] of [
   ["en", 1440, '[data-scene="track-record"]'] as const,
-  // mobile: the stat grid sits far below the (tall) map stage, so arrival
-  // is scrolling to the grid itself — exactly the off-screen-at-launch
-  // case the fallback observer exists for
-  ["ar", 390, ".stat-grid"] as const,
+  // mobile: arrival is scrolling to the SECTION, same as desktop — not
+  // straight to the stat grid at its bottom, which on a short viewport
+  // leaves under 35% of the (tall) section visible and pauses the whole
+  // engine (§19, by design: it isn't considered "in view"). A real visit
+  // passes through the section arriving, satisfying that threshold,
+  // before the grid itself scrolls into view — the counter keeps
+  // reading the engine's progress the whole time regardless of the
+  // grid's own visibility (that's the "catches up" behavior D-094 asks for).
+  ["ar", 390, '[data-scene="track-record"]'] as const,
 ]) {
-  test(`${loc} @${w}px: the figures visibly count up from scroll arrival`, async ({ page }) => {
+  test(`${loc} @${w}px: the figures only read 200 once the lines finish — never before`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: 900 });
     await page.goto(`/${loc}/`, { waitUntil: "networkidle" });
+
+    await page.evaluate(() => {
+      const el = document.querySelector(".stat-grid dd > span > span:first-child")!;
+      (window as unknown as { __log: { v: string; t: number }[] }).__log = [];
+      const log = (window as unknown as { __log: { v: string; t: number }[] }).__log;
+      new MutationObserver(() => log.push({ v: el.textContent ?? "", t: performance.now() })).observe(el, {
+        characterData: true,
+        childList: true,
+        subtree: true,
+      });
+    });
+
     const target = page.locator(selector);
     const box = (await target.boundingBox())!;
     const steps = 20;
@@ -109,14 +129,17 @@ for (const [loc, w, selector] of [
       await page.mouse.wheel(0, box.y / steps);
       await page.waitForTimeout(20);
     }
-    const first = () => page.locator(".stat-grid dd > span > span:first-child").first().textContent();
+    await page.waitForTimeout(9000); // the whole story, generous margin
 
-    await page.waitForTimeout(300);
-    const early = Number(await first());
-    expect(early, "under 300ms past arrival, still rising").toBeLessThan(200);
+    const log = await page.evaluate(() => (window as unknown as { __log: { v: string; t: number }[] }).__log);
+    expect(log.length, "the figure changed at least once").toBeGreaterThan(0);
 
-    await page.waitForTimeout(2200); // total ≈ 2.5s past arrival
-    const settled = await first();
-    expect(settled).toBe("200");
+    const last = log[log.length - 1]!;
+    expect(last.v, "settles at the approved value").toBe("200");
+    // every value recorded BEFORE the final one is strictly under 200 —
+    // the lines, not an independent timer, decide when it reaches 200
+    for (const entry of log.slice(0, -1)) {
+      expect(Number(entry.v), `reads ${entry.v} before the lines finished`).toBeLessThan(200);
+    }
   });
 }

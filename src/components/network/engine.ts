@@ -49,6 +49,9 @@ const easeEngineered = (t: number) => {
   const x = clamp01(t);
   return x * x * (3 - 2 * x);
 };
+/* D-094: the counter's own curve — a cubic ease-out, decelerating into
+   the exact moment the last route (Bahrain included) arrives. */
+const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
 
 function mulberry32(seed: number) {
   return function () {
@@ -93,8 +96,6 @@ const NET_FULL = {
   riyadh: 1600,
   routesStart: 2300,
   routeTravel: 760,
-  countStart: 2500,
-  countEnd: 6300,
   end: 7000,
 };
 const NET_LITE = {
@@ -102,8 +103,6 @@ const NET_LITE = {
   riyadh: 1350,
   routesStart: 1950,
   routeTravel: 640,
-  countStart: 2150,
-  countEnd: 5300,
   end: 5900,
 };
 
@@ -427,11 +426,13 @@ export class NetworkEngine {
         const cx = mx + (-dy / len) * bow;
         const cy = my + (dx / len) * bow;
         const settled = travel >= 1;
-        // the drawn portion of the quadratic curve
+        // the drawn portion of the quadratic curve. D-094: raised
+        // thickness/brightness so the lines read clearly against the
+        // point-cloud while they move, not just once settled.
         ctx.strokeStyle = settled
-          ? `rgb(${this.pal.signal} / ${this.sig(0.22)})`
-          : `rgb(${this.pal.signal} / ${this.sig(0.5 - 0.24 * tp)})`;
-        ctx.lineWidth = settled ? 1 : 1.25;
+          ? `rgb(${this.pal.signal} / ${this.sig(0.32)})`
+          : `rgb(${this.pal.signal} / ${this.sig(0.78 - 0.3 * tp)})`;
+        ctx.lineWidth = settled ? 1.4 : 1.9;
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
         // subdivide for partial draw
@@ -538,10 +539,11 @@ export class NetworkEngine {
         const cx = mx + (-dy / len) * bow;
         const cy = my + (dx / len) * bow;
         const settled = travel >= 1;
+        // D-094: same thickness/brightness as every national route
         ctx.strokeStyle = settled
-          ? `rgb(${this.pal.signal} / ${this.sig(0.22)})`
-          : `rgb(${this.pal.signal} / ${this.sig(0.5 - 0.24 * tp)})`;
-        ctx.lineWidth = settled ? 1 : 1.25;
+          ? `rgb(${this.pal.signal} / ${this.sig(0.32)})`
+          : `rgb(${this.pal.signal} / ${this.sig(0.78 - 0.3 * tp)})`;
+        ctx.lineWidth = settled ? 1.4 : 1.9;
         ctx.setLineDash([3, 5]); // reach, not evidence: dashed voice (D-021)
         ctx.beginPath();
         ctx.moveTo(hq.x, hq.y);
@@ -585,10 +587,12 @@ export class NetworkEngine {
       });
     }
 
-    /* counters (§9): coordinated with the network choreography */
+    /* D-094: the counter tracks route-drawing progress directly — it
+       reaches 1 at the exact instant the last route (Bahrain included)
+       arrives, never before and never independently of the lines. */
     if (this.cb.onCount && !this.done) {
-      const cp = easeCinematic(clamp01((t - tl.countStart) / (tl.countEnd - tl.countStart)));
-      if (cp > 0) this.cb.onCount(cp);
+      const cp = easeOut(clamp01((t - tl.routesStart) / tl.routeTravel));
+      this.cb.onCount(cp);
     }
   }
 
