@@ -8,11 +8,11 @@ import {
   verifyPassword,
 } from "@/lib/admin/auth";
 import { LOGIN_RULE, clearLimit, limit } from "@/lib/leads/rate-limit";
-import { clientIp, declaredTooLarge, mediaType, sameOriginRequest } from "@/lib/http/request-guard";
+import { clientIp, declaredTooLarge, mediaType, readTextCapped, sameOriginRequest } from "@/lib/http/request-guard";
 
 /**
  * Admin sign-in (§28 · D-088): same-origin form posts only, 64 KB cap
- * before reading, shared rate limit with progressive lockout,
+ * before and during reading, shared rate limit with progressive lockout,
  * constant-time check, revocable sameSite=strict session cookie.
  */
 export const runtime = "nodejs";
@@ -32,7 +32,13 @@ export async function POST(req: NextRequest) {
   const key = `admin-login:${clientIp(req)}`;
   if (!(await limit(key, LOGIN_RULE)).ok) return to("?error=rate");
 
-  const form = await req.formData().catch(() => null);
+  // the declared length can be absent or false (chunked body): enforce
+  // the cap while reading too, as the lead intake does
+  const raw = await readTextCapped(req, MAX_BODY_BYTES);
+  if (raw === null) return NextResponse.json({ ok: false, error: "too-large" }, { status: 413 });
+  const form = await new Response(raw, { headers: { "content-type": req.headers.get("content-type") ?? "" } })
+    .formData()
+    .catch(() => null);
   const password = String(form?.get("password") ?? "");
   if (!password || !verifyPassword(password)) return to("?error=auth");
 

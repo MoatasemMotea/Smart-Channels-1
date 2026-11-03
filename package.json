@@ -24,7 +24,7 @@
     "generate:opening": "tsx scripts/generate-opening-data.ts"
   },
   "dependencies": {
-    "next": "16.3.3",
+    "next": "16.4.5",
     "next-intl": "4.14.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -39,7 +39,7 @@
     "eslint-config-next": "16.3.3",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "prettier": "3.9.6",
-    "sharp": "0.35.4",
+    "sharp": "0.35.5",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
