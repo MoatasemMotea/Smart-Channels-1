@@ -332,16 +332,17 @@ html[data-header-env="dark"] .site-header .logo-light-mark { display: none; }
   width: 100%;
   height: 100%;
 }
-/* The designed backdrop linework is the STATIC/no-JS experience only;
-   animating tiers keep it hidden (Revision 2 defect C). D-086 removed the
-   opening and its particle field, and this rule keeps the hero as it was. */
+/* The designed backdrop linework is the STATIC/no-JS experience only:
+   any animating tier keeps it hidden — the live opening canvas (D-097)
+   owns the field instead (Revision 2 defect C — a double field read
+   magenta-heavy). */
 html:not([data-motion-tier="static"]) .hero-backdrop circle,
 html:not([data-motion-tier="static"]) .hero-backdrop polyline {
   display: none;
 }
 
-/* staged entrance used by the inner-page PageHero (the homepage hero is
-   final from the first paint since D-086) */
+/* staged entrance: reused by the homepage hero (D-097 below) and by the
+   inner-page PageHero */
 @keyframes hero-stage-enter {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
@@ -4043,99 +4044,209 @@ html[data-motion-tier="static"] .catalog-side-link { transition: none; }
 }
 
 /* ============================================================
-   VIDEO INTRO SPLASH (D-085) — homepage, once per session.
-   Hidden unless the pre-paint IntroScript set html[data-intro="on"];
-   that same attribute locks scroll until the exit finishes.
+   DOTS-LOGO OPENING (D-017/D-018/D-050; restored by D-097, once per
+   session — session gating lives in ThemeAndTierScript's bootstrap).
    ============================================================ */
-.intro-splash { display: none; }
-html[data-intro="on"],
-html[data-intro="on"] body { overflow: hidden; }
-html[data-intro="on"] .intro-splash {
+.opening-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background-color 600ms var(--ease-cinematic);
+}
+/* The opening OWNS the viewport while it plays: a fixed, opaque stage
+   above the header (z-40) and hero — the server-rendered site exists
+   beneath for LCP/accessibility but cannot visually dominate until the
+   reveal. During "revealing" the stage ground fades out while the
+   particle field carries into the hero; at "done" the host returns to
+   an inert absolute layer behind the hero content. */
+html[data-opening="pending"] .opening-host,
+html[data-opening="running"] .opening-host {
+  position: fixed;
+  z-index: 60;
+  background: #060607;
+}
+html[data-opening="revealing"] .opening-host {
+  position: fixed;
+  z-index: 60;
+  background: transparent;
+}
+/* CSS-only pre-stage: pure darkness with one subtle signal pulse,
+   guaranteed from first paint even before ANY JavaScript beyond the
+   bootstrap. Deliberately NOT the logo — the logo appears exactly once,
+   after the cinematic motion, driven by the engine. The engine's stage
+   (z-60) covers this the moment it takes over. */
+.opening-prestage {
+  display: none;
+}
+html[data-opening="pending"] .opening-prestage {
+  display: flex;
   position: fixed;
   inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  /* D-085R: the landscape cut's light ground, carried to the screen edges */
-  background: radial-gradient(ellipse at 50% 50%, #f6f4f7 0%, #d8d5da 100%);
-  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.intro-video {
-  max-width: none;
-  transform-origin: 50% 50%;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-}
-html[data-intro="on"] .intro-splash.is-out { opacity: 0; pointer-events: none; }
-.intro-splash.is-out .intro-video { transform: scale(1.06); }
-/* phones (portrait): the portrait cut fills the screen */
-@media (orientation: portrait) {
-  .intro-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-/* desktop (landscape): the landscape cut whole; the element is sized to the
-   picture itself, so the 8 % mask fades the picture's four edges into the
-   ground at every aspect ratio — no visible border */
-@media (orientation: landscape) {
-  .intro-video {
-    width: min(100vw, calc(100vh * 16 / 9));
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: contain;
-    -webkit-mask-image:
-      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
-      linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
-    -webkit-mask-composite: source-in;
-    mask-image:
-      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
-      linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
-    mask-composite: intersect;
-  }
-}
-.intro-controls {
-  position: absolute;
-  left: max(20px, env(safe-area-inset-left, 0px));
-  right: max(20px, env(safe-area-inset-right, 0px));
-  bottom: max(24px, env(safe-area-inset-bottom, 0px));
-  display: flex;
-  justify-content: space-between;
+  z-index: 59;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  background: #060607;
+  pointer-events: none;
 }
-.intro-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(18, 20, 26, 0.62);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  color: #fff;
-  font: inherit;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-.intro-btn:focus-visible { outline: 2px solid var(--brand-magenta); outline-offset: 3px; border-radius: 999px; }
-.intro-sound { width: 44px; justify-content: center; padding: 0; }
-.intro-sound svg { width: 20px; height: 20px; }
-.intro-skip { position: relative; overflow: hidden; padding-inline: 20px; }
-.intro-skip-bar {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: 2px;
+.prestage-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
   background: var(--brand-magenta);
-  transform: scaleX(0);
-  transform-origin: left;
+  opacity: 0;
+  animation: prestage-pulse 1600ms var(--ease-engineered) 350ms infinite;
 }
-[dir="rtl"] .intro-skip-bar { transform-origin: right; }
+@keyframes prestage-pulse {
+  0% { opacity: 0; box-shadow: 0 0 0 0 rgba(255, 24, 156, 0.35); }
+  35% { opacity: 0.9; }
+  70% { opacity: 0.25; box-shadow: 0 0 0 18px rgba(255, 24, 156, 0); }
+  100% { opacity: 0; box-shadow: 0 0 0 26px rgba(255, 24, 156, 0); }
+}
+.opening-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.opening-logo {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(34vw, 52svh, 460px);
+  transform: translate(-50%, -46%);
+  opacity: 0;
+  transition: opacity 420ms var(--ease-cinematic);
+}
+/* the separate wordmark caption and the geographic HQ label were removed
+   with the resequenced opening — no text accompanies the logo. */
+
+/* Page hold-back while the cinematic runs: everything after the hero is
+   covered; header hidden; hero content staged. */
+html[data-opening="pending"] main > *:not(.hero-scene):not(.scene-stack),
+html[data-opening="running"] main > *:not(.hero-scene):not(.scene-stack),
+html[data-opening="pending"] main > .scene-stack > *:not(.hero-scene),
+html[data-opening="running"] main > .scene-stack > *:not(.hero-scene) {
+  visibility: hidden;
+}
+html[data-opening="pending"] .site-header,
+html[data-opening="running"] .site-header {
+  opacity: 0;
+  pointer-events: none;
+}
+html[data-opening="pending"] .site-footer,
+html[data-opening="running"] .site-footer {
+  visibility: hidden;
+}
+html[data-opening="pending"] .hero-stage,
+html[data-opening="running"] .hero-stage {
+  opacity: 0;
+  transform: translateY(26px);
+}
+/* opening decor only exists during the sequence */
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-logo,
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-caption,
+html:not([data-opening="pending"]):not([data-opening="running"]) .opening-hq-label {
+  display: none;
+}
+
+/* Staged hero reveal (revealing → done). Engineered/cinematic tokens;
+   delays per data-stage; STATIC tier renders instantly via the global
+   static override. */
+html[data-opening="revealing"] .hero-stage,
+html[data-opening="done"] .hero-stage,
+html[data-opening="skipped"] .hero-stage {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-section) var(--ease-cinematic),
+    transform var(--dur-section) var(--ease-cinematic);
+}
+html[data-opening="revealing"] [data-stage="1"] { transition-delay: 0ms; }
+html[data-opening="revealing"] [data-stage="2"] { transition-delay: 90ms; }
+html[data-opening="revealing"] [data-stage="3"] { transition-delay: 200ms; }
+html[data-opening="revealing"] [data-stage="4"] { transition-delay: 320ms; }
+html[data-opening="revealing"] [data-stage="5"] { transition-delay: 520ms; }
+html[data-opening="revealing"] [data-stage="6"] { transition-delay: 660ms; }
+html[data-opening="revealing"] [data-stage="7"] { transition-delay: 820ms; }
+html[data-opening="revealing"] [data-stage="8"] { transition-delay: 960ms; }
+
+/* Cinematic parity on every arrival where the full opening does not
+   run — return visits within the same session, locale switches,
+   auto-skip — still receive a staged hero entrance instead of a static
+   pop-in. The STATIC tier neutralizes this via the global animation
+   override. */
+html[data-opening="skipped"] .hero-stage,
+html:not([data-opening]) .hero-stage {
+  animation: hero-stage-enter 720ms var(--ease-cinematic) both;
+}
+html[data-opening="skipped"] [data-stage="1"], html:not([data-opening]) [data-stage="1"] { animation-delay: 60ms; }
+html[data-opening="skipped"] [data-stage="2"], html:not([data-opening]) [data-stage="2"] { animation-delay: 150ms; }
+html[data-opening="skipped"] [data-stage="3"], html:not([data-opening]) [data-stage="3"] { animation-delay: 250ms; }
+html[data-opening="skipped"] [data-stage="4"], html:not([data-opening]) [data-stage="4"] { animation-delay: 360ms; }
+html[data-opening="skipped"] [data-stage="5"], html:not([data-opening]) [data-stage="5"] { animation-delay: 540ms; }
+html[data-opening="skipped"] [data-stage="6"], html:not([data-opening]) [data-stage="6"] { animation-delay: 670ms; }
+html[data-opening="skipped"] [data-stage="7"], html:not([data-opening]) [data-stage="7"] { animation-delay: 820ms; }
+html[data-opening="skipped"] [data-stage="8"], html:not([data-opening]) [data-stage="8"] { animation-delay: 960ms; }
+/* the earned accent sweeps on these arrivals too */
+html[data-opening="skipped"] .hero-accent-word,
+html:not([data-opening]) .hero-accent-word {
+  animation: hero-accent-sweep 620ms var(--ease-cinematic) 980ms both;
+}
+/* the accent is earned: EXPERIENCE arrives muted, magenta sweeps once */
+html[data-opening="revealing"] .hero-accent-word {
+  animation: hero-accent-sweep 620ms var(--ease-cinematic) 700ms both;
+}
+@keyframes hero-accent-sweep {
+  from { color: var(--ink-muted); }
+  to { color: var(--accent); }
+}
+/* the opening disperses INTO the Riyadh scene: hidden under the opaque
+   stage, then a slow cinematic materialization at reveal; calm quick
+   entrance on skipped/return loads; instant on STATIC (global override).
+   The photograph is preloaded, so this never reveals into an empty hero. */
+html[data-opening="pending"] .hero-photo-stage,
+html[data-opening="running"] .hero-photo-stage {
+  opacity: 0;
+}
+/* the same declaration spans revealing → done, so the fade completes
+   without restarting or snapping when the state flips mid-animation */
+html[data-opening="revealing"] .hero-photo-stage,
+html[data-opening="done"] .hero-photo-stage {
+  animation: riyadh-arrive 1600ms var(--ease-cinematic) both;
+}
+html[data-opening="skipped"] .hero-photo-stage,
+html:not([data-opening]) .hero-photo-stage {
+  animation: riyadh-arrive 800ms var(--ease-cinematic) both;
+}
+@keyframes riyadh-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* the particle field re-reads as telemetry over the photograph: reduced
+   presence once the opening resolves (full density belongs to the
+   opening choreography itself) */
+html[data-opening="done"] .opening-canvas,
+html[data-opening="skipped"] .opening-canvas,
+html:not([data-opening]) .opening-canvas {
+  opacity: 0.5;
+  transition: opacity 1400ms var(--ease-cinematic);
+}
+html[data-opening="revealing"] .site-header {
+  opacity: 0;
+  animation: header-in var(--dur-section) var(--ease-cinematic) 900ms forwards;
+}
+@keyframes header-in {
+  to { opacity: 1; }
+}
+html[data-opening="pending"] .floating-whatsapp,
+html[data-opening="running"] .floating-whatsapp,
+html[data-opening="pending"] .floating-de,
+html[data-opening="running"] .floating-de,
+html[data-opening="pending"] .floating-top,
+html[data-opening="running"] .floating-top {
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* ------------------------------------------------------------------ */
 /* FOOTER SOCIAL ICONS (D-091)                                         */

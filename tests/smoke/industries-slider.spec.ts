@@ -279,6 +279,10 @@ test("lazy scenes: the first is decoded before the section arrives (not at load)
     if (r.url().includes("/media/industries/")) early.push(r.url());
   });
   await page.goto("/en/", { waitUntil: "networkidle" });
+  await page.waitForFunction(() => {
+    const s = document.documentElement.getAttribute("data-opening");
+    return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === "");
+  }, null, { timeout: 15000 });
   expect(early).toEqual([]);
   // approach: the section is still 300 px below the fold — the first scene decodes already
   await page.evaluate(() => {

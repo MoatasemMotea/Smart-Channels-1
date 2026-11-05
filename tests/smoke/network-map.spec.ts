@@ -110,6 +110,13 @@ for (const [loc, w, selector] of [
   test(`${loc} @${w}px: the figures only read 200 once the lines finish — never before`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: 900 });
     await page.goto(`/${loc}/`, { waitUntil: "networkidle" });
+    // D-097: a fresh session plays the dots opening first and holds
+    // scroll until it resolves — wait it out before simulating the
+    // visitor's own scroll toward the network map.
+    await page.waitForFunction(() => {
+      const s = document.documentElement.getAttribute("data-opening");
+      return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === "");
+    }, null, { timeout: 15000 });
 
     await page.evaluate(() => {
       const el = document.querySelector(".stat-grid dd > span > span:first-child")!;

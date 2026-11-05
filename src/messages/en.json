@@ -258,11 +258,5 @@
       "mute": "Mute video",
       "unmute": "Unmute video"
     }
-  },
-  "intro": {
-    "label": "Smart Channels intro",
-    "skip": "Skip intro",
-    "soundOn": "Turn sound on",
-    "soundOff": "Mute sound"
   }
 }

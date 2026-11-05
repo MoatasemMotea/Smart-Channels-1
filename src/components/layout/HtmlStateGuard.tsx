@@ -2,6 +2,7 @@
 
 import { useLayoutEffect } from "react";
 import { currentMotionTier } from "@/lib/motion/capability";
+import { restoreOpeningState } from "@/lib/opening-state";
 
 /**
  * Cinematic-state guard (P4 Revision 3 §§4/5/17 — root-cause fix).
@@ -15,7 +16,7 @@ import { currentMotionTier } from "@/lib/motion/capability";
  * This runs a dependency-free layout effect after EVERY layout commit and
  * re-asserts the client-owned attributes synchronously before paint — so
  * mutation observers only ever see the corrected values and the cinematic
- * world (Saudi map, header environment) survives locale and
+ * world (hero field, Saudi map, header environment) survives locale and
  * theme changes intact.
  */
 export function HtmlStateGuard() {
@@ -29,6 +30,7 @@ export function HtmlStateGuard() {
     }
     el.setAttribute("data-theme", theme === "light" ? "light" : "dark");
     el.setAttribute("data-motion-tier", currentMotionTier());
+    restoreOpeningState();
     if (!el.hasAttribute("data-header-env")) {
       // recompute promptly; ScrollState listens for this
       window.dispatchEvent(new Event("scroll"));

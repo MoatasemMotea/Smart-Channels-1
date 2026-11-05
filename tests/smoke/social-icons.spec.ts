@@ -49,6 +49,13 @@ for (const [w, h] of [
 test("hover and focus-visible: the magenta fill rises and the icon turns white", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/en");
+  // D-097: let the dots opening resolve first — its mid-sequence canvas
+  // work competes with the CSS transition's own frame budget and was
+  // eating into the settle margin below
+  await page.waitForFunction(() => {
+    const s = document.documentElement.getAttribute("data-opening");
+    return s === "done" || s === "skipped" || (s === null && document.body.style.overflow === "");
+  }, null, { timeout: 15000 });
   const icon = page.locator(".social-icon").first();
   await icon.scrollIntoViewIfNeeded();
 

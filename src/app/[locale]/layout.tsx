@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing, isRtl } from "@/i18n/routing";
-import { IntroScript } from "@/components/layout/IntroScript";
 import { ThemeAndTierScript } from "@/components/layout/ThemeAndTierScript";
 import { HtmlStateGuard } from "@/components/layout/HtmlStateGuard";
 import { Header } from "@/components/layout/Header";
@@ -67,8 +66,6 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static" suppressHydrationWarning>
       <head>
-        {/* D-085: decides the video intro before the first paint */}
-        <IntroScript />
         <ThemeAndTierScript />
         {orgSchema && (
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgSchema }} />

@@ -6,8 +6,9 @@ import { expect, test, type Page } from "@playwright/test";
  * Every decorative video (homepage Solutions stage, the solution page's
  * cinematic moment, project heroes, About) is a LazyVideo: poster and
  * preload="none" until it enters the viewport, released (src removed,
- * buffer freed) when it leaves; one Solutions video at a time. The only
- * preload="auto" on the site is the D-085 intro.
+ * buffer freed) when it leaves; one Solutions video at a time. Nothing
+ * on the site carries preload="auto" (the D-085 intro, the one former
+ * exception, was removed by D-097).
  */
 function videoRequests(page: Page, part: string) {
   const urls: string[] = [];
@@ -62,8 +63,8 @@ test("solution page: the cinematic moment downloads only once on screen and is r
 });
 
 for (const route of ["/en", "/ar", "/en/solutions/networking-connectivity", "/en/industries"]) {
-  test(`no preload="auto" on ${route} (the intro is the only exception)`, async ({ page }) => {
+  test(`no preload="auto" on ${route}`, async ({ page }) => {
     await page.goto(route, { waitUntil: "networkidle" });
-    expect(await page.locator('video[preload="auto"]:not(.intro-video)').count()).toBe(0);
+    expect(await page.locator('video[preload="auto"]').count()).toBe(0);
   });
 }

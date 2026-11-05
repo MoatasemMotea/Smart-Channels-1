@@ -9,26 +9,22 @@
  * writes `data-scrolled` on <html> only after hydration), counts console
  * messages that mention hydration, stops the server and exits non-zero
  * when any were seen. The pre-paint bootstrap rewrites attributes on
- * <html> (theme, motion tier, header environment, intro) before
- * React compares them; `suppressHydrationWarning` on that one element is
- * what keeps this at zero. D-085: a third pass hides navigator.webdriver
- * so the video intro (never shown to automation) is checked too.
+ * <html> (theme, motion tier, header environment, opening) before React
+ * compares them; `suppressHydrationWarning` on that one element is what
+ * keeps this at zero. D-097: the dots-logo opening doesn't exclude
+ * automated browsers (unlike the D-085 video intro it replaced), so the
+ * plain "no-preference" pass already exercises data-opening=running —
+ * no separate pass is needed.
  *
  *   npm run check:hydration
  */
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { chromium } from "@playwright/test";
 
 const PORT = Number(process.env.HYDRATION_PORT || 3111);
 const BASE = `http://localhost:${PORT}`;
 const ROUTES = ["/en/", "/ar/"];
-// [reducedMotion, intro shown] — the intro needs a non-automated browser
-const SETTINGS = [
-  ["reduce", false],
-  ["no-preference", false],
-  ["no-preference", true],
-];
+const SETTINGS = ["reduce", "no-preference"];
 
 const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "--port", String(PORT)], {
   stdio: ["ignore", "pipe", "pipe"],
@@ -65,18 +61,9 @@ let total = 0;
 try {
   await waitForServer();
   const browser = await chromium.launch();
-  for (const [reducedMotion, intro] of SETTINGS) {
+  for (const reducedMotion of SETTINGS) {
     for (const route of ROUTES) {
       const ctx = await browser.newContext({ reducedMotion, viewport: { width: 1440, height: 900 } });
-      if (intro) {
-        await ctx.addInitScript(() => {
-          Object.defineProperty(Navigator.prototype, "webdriver", { get: () => false, configurable: true });
-        });
-        // D-085R: the intro cuts are H.264, which this Chromium cannot decode —
-        // serve the VP9 test copy so the intro stays on screen while we look
-        const clip = readFileSync("tests/smoke/fixtures/intro-test.webm");
-        await ctx.route(/\/media\/intro\/.*\.mp4$/, (route) => route.fulfill({ status: 200, contentType: "video/webm", body: clip }));
-      }
       const page = await ctx.newPage();
       const hits = [];
       page.on("console", (m) => {
@@ -91,7 +78,7 @@ try {
       const attrs = await page.evaluate(() => Object.fromEntries([...document.documentElement.attributes].map((a) => [a.name, a.value])));
       total += hits.length;
       console.log(
-        `${(reducedMotion + (intro ? "+intro" : "")).padEnd(20)} ${route.padEnd(6)} hydrated=${hydrated} hydration messages=${hits.length} tier=${attrs["data-motion-tier"]} header-env=${attrs["data-header-env"] ?? "-"} opening=${attrs["data-opening"] ?? "-"} intro=${attrs["data-intro"] ?? "-"}`,
+        `${reducedMotion.padEnd(20)} ${route.padEnd(6)} hydrated=${hydrated} hydration messages=${hits.length} tier=${attrs["data-motion-tier"]} header-env=${attrs["data-header-env"] ?? "-"} opening=${attrs["data-opening"] ?? "-"}`,
       );
       for (const h of hits) console.log("   " + h.split("\n").slice(0, 1).join("") + " …");
       if (!hydrated) {
