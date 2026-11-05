@@ -66,6 +66,18 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"} data-theme="dark" data-motion-tier="static" suppressHydrationWarning>
       <head>
+        {/* D-096: the 400-weight (body text) cut only — the weight read
+            on first paint for the most Arabic text on screen; 500/700
+            load as normal font requests once needed. */}
+        {isRtl(locale) && (
+          <link
+            rel="preload"
+            href="/fonts/plexarabic-400.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        )}
         <ThemeAndTierScript />
         {orgSchema && (
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgSchema }} />

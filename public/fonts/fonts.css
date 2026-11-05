@@ -1,9 +1,11 @@
 /* Smart Channels — self-hosted production fonts (all SIL OFL).
-   Families: Archivo (variable wght/wdth), Inter, IBM Plex Mono.
-   D-088: Arabic text uses the system Arial stack (globals.css); the Noto
-   Kufi Arabic and IBM Plex Sans Arabic files are archived in
-   media-source/fonts/ (the OG images still render with Noto Kufi).
-   Subset per unicode-range exactly as upstream; font-display: swap.
+   Families: Archivo (variable wght/wdth), Inter, IBM Plex Mono, IBM Plex
+   Sans Arabic (D-096 — replaces the D-088 system-Arial stand-in; the OG
+   images still render with Noto Kufi, archived in media-source/fonts/).
+   Latin families subset per unicode-range exactly as upstream; IBM Plex
+   Sans Arabic is subset down to the modern Arabic block + presentation
+   forms only (no Cyrillic/Latin splits, no rare extended blocks — kept
+   the three weights under the size budget). font-display: swap.
    Licenses: see public/fonts/LICENSE.md. Do not hotlink external fonts. */
 @font-face {
   font-family: 'Archivo';
@@ -335,4 +337,32 @@
   font-display: swap;
   src: url(/fonts/plexmono-9.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* D-096 — IBM Plex Sans Arabic: text 400, labels/buttons 500, headings
+   700. Arabic block + joiners + presentation forms A/B only, so this
+   never engages for Latin/Cyrillic text in the same document. */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/plexarabic-400.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/plexarabic-500.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/plexarabic-700.woff2) format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
 }

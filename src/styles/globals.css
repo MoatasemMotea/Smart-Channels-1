@@ -64,10 +64,13 @@
   --motif-line-strong: rgba(226, 226, 229, 0.09);
 
   /* type roles (D-014 — Candidate A locked) */
-  /* Arabic words on English pages (e.g. the «العربية» switch) use the same
-     system Arabic stack as the Arabic pages (D-088) */
-  --font-display: "Archivo", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
-  --font-body: "Inter", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+  /* D-096: self-hosted IBM Plex Sans Arabic carries Arabic text (English
+     stays Archivo/Inter, unchanged) — the system Arabic stack (D-088)
+     remains as the fallback chain if the webfont fails to load. Arabic
+     words on English pages (e.g. the «العربية» switch) pick it up too,
+     since its unicode-range only ever engages for Arabic-block glyphs. */
+  --font-display: "Archivo", "IBM Plex Sans Arabic", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+  --font-body: "Inter", "IBM Plex Sans Arabic", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   /* motion tokens (motion contract §8) — read by CSS and JS alike */
@@ -130,14 +133,16 @@
   color-scheme: light;
 }
 
-/* Arabic type-role swap (Q-P3-5 · D-088): the system Arial stack for
-   Arabic. The Latin families come first, but they carry no Arabic glyphs,
-   so Arabic letters fall through to Arial (Geeza Pro on Apple, Noto Naskh
-   Arabic on Android) while Latin words inside Arabic pages keep
-   Archivo/Inter. No Arabic webfont is downloaded. */
+/* Arabic type-role swap (Q-P3-5 · D-096, replacing D-088's system-Arial
+   stand-in): self-hosted IBM Plex Sans Arabic. The Latin families come
+   first but carry no Arabic glyphs, so Arabic letters fall through to
+   IBM Plex Sans Arabic (unicode-range: the modern Arabic block +
+   presentation forms only); Latin words inside Arabic pages keep
+   Archivo/Inter. The system Arial stack stays as the fallback chain if
+   the webfont fails to load. */
 [dir="rtl"] {
-  --font-display: "Archivo", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
-  --font-body: "Inter", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
+  --font-display: "Archivo", "IBM Plex Sans Arabic", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
+  --font-body: "Inter", "IBM Plex Sans Arabic", Arial, "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", sans-serif;
 }
 
 /* Map semantic tokens into Tailwind v4 utilities (bg-surface, text-ink…). */
@@ -386,6 +391,14 @@ html:not([data-motion-tier="static"]) .hero-backdrop polyline {
 /* Arabic nav + CTAs: slightly larger UI type for equivalent legibility. */
 [dir="rtl"] .site-header nav a {
   font-size: 0.9375rem;
+}
+/* D-096: IBM Plex Sans Arabic only ships 400/500/700 (headings/text/
+   labels+buttons) — without this, a Tailwind font-semibold (600) request
+   has no exact match and the browser's nearest-weight fallback would
+   land on 700 (same visual weight as headings) instead of the intended
+   500 label/button voice. */
+[dir="rtl"] .font-semibold {
+  font-weight: 500;
 }
 .hero-line { display: block; }
 .hero-accent-word {
