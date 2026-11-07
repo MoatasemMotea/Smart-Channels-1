@@ -26,6 +26,18 @@
      tier — and reads as the same brand magenta. */
   --brand-magenta-deep: #c50d73;
   --brand-purple: #8d3492;
+  /* D-101: additional gradient stops for the About "skew cards" — each
+     card's panel gradient stays within this brand range. */
+  --brand-magenta-bright: #ff4fb0;
+  --brand-magenta-deepest: #6b0a45;
+  --brand-magenta-darkest: #4a0a33;
+  /* Theme-invariant: the cards' panels are always a dark-to-bright brand
+     gradient regardless of site theme, so their text/icon color and the
+     content box's darkening tint stay fixed too (D-101) — using the
+     theme-reactive --ink here would flip to near-black in light mode and
+     fail contrast against the gradient. */
+  --skew-card-ink: #f5f5f4;
+  --skew-card-shade: rgba(6, 6, 8, 0.6);
 
   /* dark environment (default) */
   --bg: #0a0a0c;
@@ -3974,29 +3986,32 @@ html[data-motion-tier="static"] .catalog-side-link { transition: none; }
    chapter is a pink bar. Desktop only, never STATIC. */
 .scene-index { display: none; }
 @media (min-width: 880px) {
+  /* owner request (post-D-101): smaller (~60%) and hugging the outer
+     edge so it never intersects the content container or section
+     headings; hidden below 880px (covers the <768px mobile case) */
   html:not([data-motion-tier="static"]) .scene-index {
     display: flex;
     position: fixed;
-    inset-inline-end: 24px;
+    inset-inline-end: 16px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 35;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
     pointer-events: none;
   }
 }
 .scene-index span {
-  inline-size: 6px;
-  block-size: 6px;
+  inline-size: 4px;
+  block-size: 4px;
   border-radius: 9999px;
   background: rgba(146, 154, 180, 0.45);
   transition: background-color 300ms var(--ease-engineered);
 }
 .scene-index span[data-on] {
-  block-size: 26px;
-  border-radius: 4px;
+  block-size: 16px;
+  border-radius: 3px;
   background: var(--brand-magenta);
 }
 
@@ -4451,9 +4466,23 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
 }
 .about-media-placeholder {
   aspect-ratio: 4 / 3;
-  background: var(--bg-deep);
+  background: var(--surface);
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.about-media-mark {
+  inline-size: 23%;
+  block-size: auto;
+  opacity: 0.15;
+}
+.about-media-photo {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
 }
 .about-media-accent {
   position: absolute;
@@ -4465,114 +4494,212 @@ html:not([data-motion-tier="static"]) .arrive.is-visible .stagger-item-lg {
   z-index: 0;
 }
 
-/* ج) vision / mission */
-.about-vm-card {
-  padding: 3.25rem 3rem;
-}
-.about-vm-vision {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-.about-vm-vision .about-icon {
-  color: var(--accent-ink);
-}
-.about-vm-mission {
-  background: var(--surface-2);
-}
-.about-vm-label {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.375rem;
-  font-weight: 600;
-}
-.about-vm-text {
-  margin-top: 1.25rem;
-  font-size: clamp(1.25rem, 1.8vw, 1.6875rem);
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-/* د) values */
-.about-values-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.about-values-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  padding: 0;
-  list-style: none;
-}
-.about-value-card {
-  padding: 2.125rem 1.625rem;
-  transition: background-color var(--dur-control) var(--ease-engineered);
-}
-.about-value-card:hover {
-  background: var(--surface);
-}
-.about-value-name {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-.about-value-line {
-  margin-top: 0.75rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--ink-muted);
-}
-
-/* هـ) goals */
-.about-goals-panel {
-  background: var(--surface);
-  padding: 4rem;
-  display: grid;
-  gap: 2.5rem;
-  grid-template-columns: 1fr 1fr;
-}
-.about-goals-head p {
-  margin-top: 0.75rem;
-}
-.about-goals-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem 2rem;
-  padding: 0;
-  list-style: none;
-  align-content: start;
-}
-.about-goal-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 1.1875rem;
-  font-weight: 700;
-}
-.about-goal-item .about-icon {
-  margin-top: 0.125rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .about-value-card { transition: none; }
-}
-html[data-motion-tier="static"] .about-value-card { transition: none; }
-
 @media (max-width: 759px) {
   .about-intro-text { order: 2; }
   .about-media-slot { order: 1; }
   .about-media-accent { inline-size: 50%; block-size: 50%; }
-  .about-vm { grid-template-columns: 1fr; }
-  .about-values-grid { grid-template-columns: repeat(2, 1fr); }
-  .about-goals-panel {
-    grid-template-columns: 1fr;
-    padding: 2.25rem;
+}
+
+/* ج-هـ) vision / mission / values / goals — "skew cards" (D-101, idea
+   adapted from a 21st.dev reference). Four cards, one grid: each has two
+   absolutely-positioned skewed gradient panels (a crisp one + a blurred
+   glow behind it) and a glass content box on top. Hover/focus-within
+   straightens and widens the panels, nudges the content box and reveals
+   two small "blob" squares at opposite corners. */
+.skew-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+.skew-card {
+  position: relative;
+  min-height: 320px;
+  border-radius: 1.25rem;
+  overflow: hidden; /* clips the skewed panels and blobs to the card — the
+                        source of the "no horizontal scroll" guarantee */
+}
+.skew-card:focus-visible {
+  outline: 2px solid var(--brand-magenta);
+  outline-offset: 3px;
+}
+.skew-card-panel {
+  /* D-101 Round 2: fixed-px horizontal overshoot (not a % of card width)
+     so coverage scales with skewX()'s own geometry — displacement at a
+     skewed edge is (height / 2) * tan(15deg), independent of card width.
+     56px clears every card height seen in practice down to a residual
+     corner gap the content box's own padding (below) is sized to clear. */
+  position: absolute;
+  inset: -8% -56px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, var(--sk-from), var(--sk-to));
+  transform: skewX(15deg);
+  transition:
+    transform var(--dur-component) var(--ease-engineered),
+    inset var(--dur-component) var(--ease-engineered);
+}
+.skew-card-panel-solid { z-index: 1; opacity: 0.92; }
+.skew-card-panel-glow {
+  z-index: 0;
+  opacity: 0.55;
+  filter: blur(30px);
+}
+.skew-card:hover .skew-card-panel,
+.skew-card:focus-within .skew-card-panel {
+  /* unskewed: a plain rect, so any non-negative overshoot already covers
+     the card fully — no corner-gap risk in this state. */
+  transform: skewX(0deg);
+  inset: -8% -64px;
+}
+.skew-card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  /* D-101 Round 2: inline padding cleared against the panel's worst-case
+     residual corner gap (~26px at the tallest observed card) + 24px, per
+     the directive's own formula — kept equal on both sides since the
+     exposed corner alternates between top/bottom on opposite edges. */
+  padding: 1.75rem 2.75rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(var(--skew-card-shade), var(--skew-card-shade)),
+    rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--skew-card-ink);
+  transition:
+    transform var(--dur-component) var(--ease-engineered),
+    padding var(--dur-component) var(--ease-engineered);
+}
+.skew-card:hover .skew-card-content,
+.skew-card:focus-within .skew-card-content {
+  transform: translate(6px, -6px);
+  padding: 2.1rem 2.75rem;
+}
+[dir="rtl"] .skew-card-panel { transform: skewX(-15deg); }
+[dir="rtl"] .skew-card:hover .skew-card-panel,
+[dir="rtl"] .skew-card:focus-within .skew-card-panel {
+  transform: skewX(0deg);
+}
+[dir="rtl"] .skew-card:hover .skew-card-content,
+[dir="rtl"] .skew-card:focus-within .skew-card-content {
+  transform: translate(-6px, -6px);
+}
+.skew-card-blob {
+  position: absolute;
+  z-index: 3;
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-component) var(--ease-engineered);
+}
+.skew-card-blob-a { inset-block-start: 14px; inset-inline-start: 14px; }
+.skew-card-blob-b { inset-block-end: 14px; inset-inline-end: 14px; animation-delay: -3.5s; }
+.skew-card:hover .skew-card-blob,
+.skew-card:focus-within .skew-card-blob {
+  opacity: 1;
+  animation: skew-card-blob 7s var(--ease-engineered) infinite;
+}
+@keyframes skew-card-blob {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 5px; }
+  33% { transform: translate(3px, -4px) scale(1.15); border-radius: 8px; }
+  66% { transform: translate(-3px, 3px) scale(0.9); border-radius: 3px; }
+}
+.skew-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.1875rem;
+  font-weight: 700;
+}
+.skew-card-title .about-icon,
+.skew-card-item-name .about-icon,
+.skew-card-goal .about-icon {
+  color: var(--skew-card-ink);
+}
+.skew-card-title .about-icon { inline-size: 22px; block-size: 22px; }
+.skew-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.skew-card-text {
+  margin-top: 0.9rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.skew-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0;
+  list-style: none;
+}
+.skew-card-item-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+.skew-card-item-name .about-icon { inline-size: 18px; block-size: 18px; }
+.skew-card-item-line {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+.skew-card-goal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.skew-card-goal + .skew-card-goal { margin-top: 0.75rem; }
+.skew-card-goal .about-icon {
+  inline-size: 18px;
+  block-size: 18px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* touch (no real hover) and reduced motion/STATIC tier: the straightened
+   end-state, permanently — no skew, no blob, nothing to trigger it */
+@media (hover: none) {
+  .skew-card-panel { transform: skewX(0deg); transition: none; }
+  .skew-card-content { transition: none; }
+  .skew-card-blob { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skew-card-panel,
+  .skew-card-content {
+    transform: none;
+    transition: none;
   }
-  .about-goals-grid { grid-template-columns: 1fr; }
+  .skew-card-panel { transform: skewX(0deg); }
+  .skew-card-blob { display: none; }
+}
+html[data-motion-tier="static"] .skew-card-panel {
+  transform: skewX(0deg);
+  transition: none;
+}
+html[data-motion-tier="static"] .skew-card-content { transition: none; }
+html[data-motion-tier="static"] .skew-card-blob { display: none; }
+
+@media (max-width: 1023px) {
+  .skew-cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 639px) {
+  .skew-cards-grid { grid-template-columns: 1fr; }
 }

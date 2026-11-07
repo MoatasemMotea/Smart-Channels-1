@@ -37,7 +37,7 @@ import { heroMedia } from "@/content/hero-media";
 import { products } from "@/content/products";
 import { productCards, productCategories, type CategorySlug } from "@/content/product-catalog";
 import { navigation } from "@/content/navigation";
-import { company } from "@/content/company";
+import { company, aboutMedia } from "@/content/company";
 
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
@@ -211,4 +211,8 @@ export function getHeroMedia() {
 
 export function getCompany() {
   return company;
+}
+
+export function getAboutMedia() {
+  return aboutMedia;
 }

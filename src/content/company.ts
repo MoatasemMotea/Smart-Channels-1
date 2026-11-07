@@ -134,21 +134,24 @@ export const company = {
 };
 
 /**
- * ABOUT MEDIA SLOT (final pre-media directive §7 · D-050).
+ * ABOUT MEDIA SLOT (final pre-media directive §7 · D-050; `photoSrc`
+ * added D-101 Round 3).
  *
  * The About section is designed to carry an owner-approved company
- * film later. While `enabled` is false the section renders the
- * approved fiber-splicing photograph; when the owner supplies the
- * video, place the files under /public/media/about/, fill the paths
- * and set enabled: true — no component changes. Never stock footage,
- * never AI media presented as evidence (D-009).
+ * photo or film later. While both are unset, the section renders a
+ * brand-mark placeholder (D-101). To swap in a real photo, place the
+ * file under /public/media/about/ and set `photoSrc` — no component
+ * changes. `enabled`/`videoSrc`/`poster` remain for the future video.
+ * Never stock footage, never AI media presented as evidence (D-009).
  */
 export const aboutMedia: {
   enabled: boolean;
   videoSrc: string | null;
   poster: string | null;
+  photoSrc: string | null;
 } = {
   enabled: false,
   videoSrc: null,
   poster: null,
+  photoSrc: null,
 };
