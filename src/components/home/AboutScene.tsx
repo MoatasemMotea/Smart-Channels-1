@@ -194,6 +194,9 @@ export async function AboutScene({ locale }: { locale: Locale }) {
         <div className="about-values-section mt-20">
           <div className="about-values-head">
             <h3 className="font-display text-3xl font-bold md:text-4xl">{t("home.aboutPillars.values")}</h3>
+            <p className="text-ink-muted">
+              <LangText text={localize(company.aboutSectionIntros.values, locale)} />
+            </p>
           </div>
           <ul className="about-values-grid mt-8">
             {company.values.map((v, i) => {

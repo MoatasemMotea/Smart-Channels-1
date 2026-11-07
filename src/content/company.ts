@@ -14,11 +14,11 @@ export const company = {
     ar: "شريك موثوق لحلول التقنية في المملكة العربية السعودية",
   } satisfies LocalizedText,
 
-  /** D-092: the homepage "About Us" paragraph, owner-authored (replaces
-   *  the earlier p.3 profile paragraph everywhere `about` is read). */
+  /** D-100: the homepage "About Us" paragraph, owner-approved verbatim
+   *  (replaces the D-092 wording everywhere `about` is read). */
   about: {
-    en: "Smart Channels is a Saudi company specialized in technology and communications systems integration. We design infrastructure, networks, security, communication and display systems, and we supply, install and operate them for government entities, institutions, major projects and national events.",
-    ar: "Smart Channels شركة سعودية متخصصة في تكامل أنظمة التقنية والاتصالات. نصمّم البنية التحتية والشبكات وأنظمة الأمن والاتصال والعرض، ونورّدها ونركّبها ونشغّلها للجهات الحكومية والمؤسسات والمشاريع الكبرى والفعاليات الوطنية.",
+    en: "Smart Channels is one of the leading companies in the Saudi market in communications systems, information technology, security systems and networking. We also provide high-tech infrastructure services, unified communications solutions, consulting, technical and integration services, and managed systems and services, with the highest quality at the lowest cost.",
+    ar: "تُعدّ Smart Channels من المؤسسات الرائدة في السوق السعودي في مجال أنظمة الاتصالات وتقنية المعلومات والأنظمة الأمنية وأنظمة الشبكات. كما نقدّم خدمات البنية التحتية عالية التقنية، وحلول الاتصالات الموحدة، والخدمات الاستشارية والفنية وخدمات التكامل، والأنظمة والخدمات المُدارة، بأفضل جودة وأقل تكلفة.",
   } satisfies LocalizedText,
 
   /** The company's mission — ONE source for the homepage About and
@@ -52,9 +52,10 @@ export const company = {
    * homepage-only — /company keeps its own `capabilities`.
    */
   aboutPillars: {
+    /** D-100: owner-approved verbatim, replaces the D-081 wording. */
     vision: {
-      en: "To be the leading technology partner that government entities and major projects in the Kingdom rely on to build smart, secure and sustainable infrastructure.",
-      ar: "أن نكون الشريك التقني الأول الذي تعتمد عليه الجهات الحكومية والمشاريع الكبرى في المملكة لبناء بنية تحتية ذكية وآمنة ومستدامة.",
+      en: "Caring for our people is one of our most important investments. We foster initiative, collaboration and team spirit among our employees and partners, and we are committed to excellence with unprecedented transparency and accountability.",
+      ar: "رعاية موظفينا والعناية بهم من أهم استثماراتنا؛ إذ ننمّي روح المبادرة والتعاون والعمل الجماعي بين موظفينا وشركائنا، ونلتزم بالتميّز مع شفافية ومسؤولية غير مسبوقة.",
     } satisfies LocalizedText,
     // mission: read from `company.mission` above (one source, D-082)
     // values: read from `company.values` above (one source, D-083)
@@ -75,8 +76,13 @@ export const company = {
   ] satisfies LocalizedText[],
 
   /** D-092: the "Our goals" section intro (homepage only), owner-authored.
-   *  D-095: the matching "Our values" intro was removed. */
+   *  D-095 removed the matching "Our values" intro; D-100 restores it with
+   *  new owner-approved wording. */
   aboutSectionIntros: {
+    values: {
+      en: "We rely on the expertise and professional competence of our people, and on close collaboration with our technology partners.",
+      ar: "نعتمد على الخبرة والكفاءة المهنية لموظفينا، والتعاون الوثيق مع شركائنا في مجال التكنولوجيا.",
+    } satisfies LocalizedText,
     goals: {
       en: "What we're working to achieve in the Kingdom over the years ahead.",
       ar: "ما نعمل على تحقيقه في المملكة خلال السنوات القادمة.",
